@@ -1,0 +1,34 @@
+.widget-searchbox {
+	border: 2px inset ThreeDFace;
+	background-color: Window;
+	line-height: normal;
+	display: inline-block;
+	
+	input, button {
+		border: none;
+		font-family: inherit;
+		font-size: inherit;
+		padding: 2px;
+		background: transparent;
+		box-shadow: none;
+		width: auto;
+		
+		&:focus {
+			box-shadow: none;
+		}
+	}
+	
+	input:-moz-placeholder, input.placeholder {
+		font-style: italic;
+	}
+	
+	button {
+		text-indent: -10000px;
+		background: url(searchbox-search.png) center center no-repeat;
+		width: 20px;
+	}
+	
+	&.busy button {
+		background-image: url(searchbox-busy.gif);
+	}
+}
