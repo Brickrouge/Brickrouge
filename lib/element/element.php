@@ -16,7 +16,7 @@ use ICanBoogie;
 /**
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
-class Element extends ICanBoogie\Object
+class Element extends ICanBoogie\Object implements \ArrayAccess
 {
 	#
 	# special elements
@@ -176,6 +176,39 @@ class Element extends ICanBoogie\Object
 		}
 
 		$this->set($tags);
+	}
+
+	/**
+	 * @param offset
+	 */
+	public function offsetExists($offset)
+	{
+		return isset($this->tags[$offset]);
+	}
+
+	/**
+	 * @param offset
+	 */
+	public function offsetGet($offset)
+	{
+		return isset($this->tags[$offset]) ? $this->tags[$offset] : null;
+	}
+
+	/**
+	 * @param offset
+	 * @param value
+	 */
+	public function offsetSet($offset, $value)
+	{
+		$this->tags[$offset] = $value;
+	}
+
+	/**
+	 * @param offset
+	 */
+	public function offsetUnset($offset)
+	{
+		unset($this->tags[$offset]);
 	}
 
 	static protected $auto_element_id = 1;
@@ -357,7 +390,6 @@ class Element extends ICanBoogie\Object
 	 *
 	 * @param $name Optional, the name of the child element
 	 */
-
 	public function addChild($child, $name=null)
 	{
 		if ($name)

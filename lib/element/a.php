@@ -11,16 +11,17 @@
 
 namespace BrickRouge;
 
-class Text extends Element
+class A extends Element
 {
-	public function __construct($tags)
+	public function __construct($label, $tags=array())
 	{
 		parent::__construct
 		(
-			'input', $tags + array
+			'a', $tags + array
 			(
-				'type' => 'text',
-				'size' => 30
+				'href' => '#',
+
+				self::T_INNER_HTML => wd_entities(t($label, array(), array('scope' => 'a')))
 			)
 		);
 	}

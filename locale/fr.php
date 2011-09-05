@@ -31,6 +31,15 @@ return array
 	'From :start to :finish on :max' => 'De :start à :finish sur :max',
 	'The maximum file size must be less than :size.' => 'La taille du fichier doit être inférieure à :size.',
 
+	'button' => array
+	(
+		'Cancel' => 'Annuler',
+		'Continue' => 'Continuer',
+		'Save' => 'Enregistrer',
+		'Send' => 'Envoyer',
+		'Use' => 'Utiliser'
+	),
+
 	#
 	# wdform
 	#

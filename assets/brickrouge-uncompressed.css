@@ -467,7 +467,7 @@ q:lang(fr):after {
   max-width: 76ex;
 }
 /*! Shared colors for buttons and alerts */
-.btn, .alert-message {
+button, .btn, .alert-message {
   /*! Set text color */
 
   /*! Danger and error appear as red */
@@ -477,30 +477,42 @@ q:lang(fr):after {
   /*! Info appears as a neutral blue */
 
 }
+button.danger,
 .btn.danger,
 .alert-message.danger,
+button.danger:hover,
 .btn.danger:hover,
 .alert-message.danger:hover,
+button.error,
 .btn.error,
 .alert-message.error,
+button.error:hover,
 .btn.error:hover,
 .alert-message.error:hover,
+button.continue,
 .btn.continue,
 .alert-message.continue,
+button.continue:hover,
 .btn.continue:hover,
 .alert-message.continue:hover,
+button.success,
 .btn.success,
 .alert-message.success,
+button.success:hover,
 .btn.success:hover,
 .alert-message.success:hover,
+button.info,
 .btn.info,
 .alert-message.info,
+button.info:hover,
 .btn.info:hover,
 .alert-message.info:hover {
   color: #ffffff;
 }
+button.danger,
 .btn.danger,
 .alert-message.danger,
+button.error,
 .btn.error,
 .alert-message.error {
   background-color: #c43c35;
@@ -517,8 +529,10 @@ q:lang(fr):after {
   border-color: #c43c35 #c43c35 #882a25;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
+button.continue,
 .btn.continue,
 .alert-message.continue,
+button.success,
 .btn.success,
 .alert-message.success {
   background-color: #57a957;
@@ -535,7 +549,7 @@ q:lang(fr):after {
   border-color: #57a957 #57a957 #3d773d;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
-.btn.info, .alert-message.info {
+button.info, .btn.info, .alert-message.info {
   background-color: #339bb9;
   background-repeat: repeat-x;
   background-image: -khtml-gradient(linear, left top, left bottom, from(#5bc0de), to(#339bb9));
@@ -549,12 +563,6 @@ q:lang(fr):after {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   border-color: #339bb9 #339bb9 #22697d;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-}
-ul.unstyled, ol.unstyled {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: block;
 }
 /*! inputs */
 button,
@@ -572,9 +580,6 @@ textarea,
   font-family: Droid Sans, Arial, Helvetica, sans-serif;
   padding: .2em .5ex;
   font-size: .9em;
-}
-button, .btn {
-  padding: 0.3em 1ex;
 }
 .uneditable-input {
   background-color: #eee;
@@ -660,7 +665,7 @@ textarea.xxlarge {
 /*! BUTTON STYLES
 	------------- */
 /*! Base .btn styles */
-.btn {
+button, .btn {
   /*! Button Base */
 
   cursor: pointer;
@@ -674,10 +679,13 @@ textarea.xxlarge {
   background-image: -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
   background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
-  padding: 5px 14px 6px;
+  /*padding: 5px 14px 6px;*/
+
+  padding: 0.45em 2ex;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
   color: #333;
-  font-size: 13px;
+  /*font-size: 13px;*/
+
   line-height: normal;
   border: 1px solid #ccc;
   border-bottom-color: #bbb;
@@ -691,12 +699,12 @@ textarea.xxlarge {
   -moz-transition: 0.1s linear all;
   transition: 0.1s linear all;
 }
-.btn:hover {
+button:hover, .btn:hover {
   background-position: 0 -15px;
   color: #333;
   text-decoration: none;
 }
-.btn.primary {
+button.primary, .btn.primary {
   color: #fff;
   background-color: #0064cd;
   background-repeat: repeat-x;
@@ -712,12 +720,12 @@ textarea.xxlarge {
   border-color: #0064cd #0064cd #003f81;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
-.btn:active {
+button:active, .btn:active {
   -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-.btn.disabled {
+button.disabled, .btn.disabled {
   cursor: default;
   background-image: none;
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
@@ -729,7 +737,7 @@ textarea.xxlarge {
   -moz-box-shadow: none;
   box-shadow: none;
 }
-.btn[disabled] {
+button[disabled], .btn[disabled] {
   cursor: default;
   background-image: none;
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
@@ -741,7 +749,7 @@ textarea.xxlarge {
   -moz-box-shadow: none;
   box-shadow: none;
 }
-.btn.large {
+button.large, .btn.large {
   font-size: 16px;
   line-height: normal;
   padding: 9px 14px 9px;
@@ -749,18 +757,27 @@ textarea.xxlarge {
   -moz-border-radius: 6px;
   border-radius: 6px;
 }
-.btn.small {
+button.small, .btn.small {
   padding: 7px 9px 7px;
   font-size: 11px;
 }
 /*! Super jank hack for removing border-radius from IE9 so we can keep filter gradients on alerts and buttons */
-:root .alert-message, :root .btn {
+:root button, :root .alert-message, :root .btn {
   border-radius: 0 \0;
 }
 /*! Help Firefox not be a jerk about adding extra padding to buttons */
-button.btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
+button::-moz-focus-inner, .btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
   padding: 0;
   border: 0;
+}
+a[href].btn {
+  text-decoration: none;
+}
+ul.unstyled, ol.unstyled {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: block;
 }
 /*! ERROR STYLES
     ------------ */
@@ -971,6 +988,7 @@ fieldset legend {
   line-height: normal;
   color: #404040;
   margin-bottom: 0.665em;
+  padding: 0;
 }
 /*!
  * A field is a container for an input and its label.
@@ -1003,10 +1021,10 @@ div.field.error {
 div.field.error span.help-inline, div.field.error span.help-block {
   color: #9d261d;
 }
-div.field.error label.required {
+div.field.error label.input-label {
   color: #9d261d;
 }
-div.field.error label.required sup, div.field.error label.required:after {
+div.field.error label.input-label sup, div.field.error label.input-label:after {
   color: #b9554d;
 }
 div.field.error input, div.field.error textarea {
@@ -1048,7 +1066,7 @@ form .actions {
   background: #f5f5f5;
   margin-top: 1.33em;
   margin-bottom: 1.33em;
-  padding: 0.33000000000000007em 20px 1.33em 150px;
+  padding: 1.33em 20px 1.33em 150px;
   border-top: 1px solid #ddd;
   -webkit-border-radius: 0 0 3px 3px;
   -moz-border-radius: 0 0 3px 3px;
@@ -1058,7 +1076,8 @@ form .actions .secondary-action {
   float: right;
 }
 form .actions .secondary-action a {
-  line-height: 30px;
+  /*line-height: 30px;*/
+
 }
 form .actions .secondary-action a:hover {
   text-decoration: underline;
@@ -1181,6 +1200,9 @@ form.stacked .inputs-list li {
 form.stacked .inputs-list li label {
   font-weight: normal;
   padding-top: 0;
+}
+form.stacked div.actions {
+  padding-left: 10px;
 }
 .widget-searchbox {
   border: 2px inset ThreeDFace;

@@ -10,6 +10,7 @@
 }
 
 /*! Shared colors for buttons and alerts */
+button,
 .btn,
 .alert-message {
 	/*! Set text color */
@@ -41,14 +42,6 @@
 	}
 }
 
-ul.unstyled, ol.unstyled
-{
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	display: block;
-}
-
 /*! inputs */
 
 button,
@@ -64,12 +57,6 @@ textarea,
 	font-family: Droid Sans, Arial, Helvetica, sans-serif;
 	padding: .2em .5ex;
 	font-size: .9em;
-}
-
-button,
-.btn
-{
-	padding: 0.3em 1ex;
 }
 
 .uneditable-input {
@@ -167,15 +154,17 @@ textarea.xxlarge {
 	------------- */
 
 /*! Base .btn styles */
+button,
 .btn {
 	/*! Button Base */
 	cursor: pointer;
 	display: inline-block;
 	#gradient > .vertical-three-colors(#ffffff, #ffffff, 25%, darken(#ffffff, 10%)); //* Don't use .gradientbar() here since it does a three-color gradient */
-	padding: 5px 14px 6px;
+	/*padding: 5px 14px 6px;*/
+	padding: 0.45em 2ex;
 	text-shadow: 0 1px 1px rgba(255,255,255,.75);
 	color: #333;
-	font-size: 13px;
+	/*font-size: 13px;*/
 	line-height: normal;
 	border: 1px solid #ccc;
 	border-bottom-color: #bbb;
@@ -234,13 +223,15 @@ textarea.xxlarge {
 }
 
 /*! Super jank hack for removing border-radius from IE9 so we can keep filter gradients on alerts and buttons */
+:root button,
 :root .alert-message,
 :root .btn {
 	border-radius: 0 \0;
 }
 
 /*! Help Firefox not be a jerk about adding extra padding to buttons */
-button.btn,
+button,
+.btn,
 input[type=submit].btn {
 	&::-moz-focus-inner {
 		padding: 0;
@@ -248,6 +239,17 @@ input[type=submit].btn {
 	}
 }
 
+a[href].btn {
+	text-decoration: none;
+}
+
+ul.unstyled,
+ol.unstyled {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: block;
+}
 
 /*! ERROR STYLES
     ------------ */

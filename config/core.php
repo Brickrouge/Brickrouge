@@ -10,6 +10,8 @@ return array
 	'autoload' => array
 	(
 		'BrickRouge\Element' => $element . 'element.php',
+		'BrickRouge\A' => $element . 'a.php',
+		'BrickRouge\Button' => $element . 'button.php',
 		'BrickRouge\Element\Date' => $element . 'date.php',
 		'BrickRouge\Element\DateRange' => $element . 'date-range.php',
 		'BrickRouge\Element\DateTime' => $element . 'date-time.php',
@@ -21,7 +23,7 @@ return array
 		'BrickRouge\Element\Ranger' => $element . 'ranger.php',
 		'BrickRouge\Element\Salutation' => $element . 'salutation.php',
 		'BrickRouge\Element\Searchbox' => $element . 'searchbox.php',
-		'BrickRouge\Element\Text' => $element . 'text.php',
+		'BrickRouge\Text' => $element . 'text.php',
 		'BrickRouge\Element\Templated' => $element . 'element.templated.php',
 		'BrickRouge\Document' => $document . 'document.php',
 		'BrickRouge\Document\Hooks' => $document . 'document.hooks.php',

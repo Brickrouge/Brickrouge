@@ -11,6 +11,8 @@
 
 namespace BrickRouge\Element;
 
+use BrickRouge\Button;
+
 use ICanBoogie\Event;
 use ICanBoogie\Exception;
 use ICanBoogie\Operation;
@@ -31,6 +33,7 @@ class Form extends Element
 	const T_NO_LOG = '#form-no-log';
 	const T_VALUES = '#form-values';
 	const T_RENDERER = '#form-renderer';
+	const T_ACTIONS = '#form-actions';
 
 	static protected $auto_name = 1;
 
@@ -169,7 +172,53 @@ class Form extends Element
 			$content = parent::render_inner_html();
 		}
 
+		#
+
+		$actions = $this->get(self::T_ACTIONS);
+
+		if ($actions)
+		{
+			$content .= $this->render_actions($actions);
+		}
+
 		return $rc . $content;
+	}
+
+	/**
+	 * Renders actions.
+	 *
+	 * @param boolean|array|string $actions Actions can be defined as a boolean, an array or a
+	 * string.
+	 *
+	 * If $actions is defined as `true` a submit button with the 'primary' classe is used
+	 * instead.
+	 *
+	 * If $actions is an array it is imploded with the `<span class="separator">&nbsp;</span>`
+	 * glue.
+	 *
+	 * If $actions is a string it is used as is.
+	 *
+	 * @return string return $actions stringified and wrapped in a `div.actions` element.
+	 */
+	protected function render_actions($actions)
+	{
+		if (is_array($actions))
+		{
+			$actions = implode('<span class="separator">&nbsp;</span>', $actions);
+		}
+		else if ($actions === true)
+		{
+			$actions = new Button
+			(
+				'Send', array
+				(
+					'type' => 'submit',
+					'class' => 'primary'
+				)
+			);
+		}
+
+		return '<div class="actions">' . $actions . '</div>';
 	}
 
 	/**
