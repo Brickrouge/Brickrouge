@@ -9,12 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge\Element\Form;
+namespace BrickRouge\Form;
 
 use BrickRouge\Element;
+use BrickRouge\Form;
 use ICanBoogie\Debug;
 
-class Templated extends Element\Form
+class Templated extends Form
 {
 	protected $template;
 

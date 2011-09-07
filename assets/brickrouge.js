@@ -7,21 +7,46 @@
  * file that was distributed with this source code.
  */
 
-(function() {
+var BrickRouge = {
 
-	var available_css;
-	var available_js;
+	Utils: {
 
-	Document.implement
-	({
+		Busy: new Class ({
 
-		/**
-		 * Update the document by adding missing CSS and JS assets.
-		 *
-		 * @param object assets
-		 * @param function done
-		 */
-		updateAssets: function (assets, done)
+			startBusy: function()
+			{
+				if (++this.busyNest == 1)
+				{
+					return;
+				}
+
+				this.element.addClass('busy');
+			},
+
+			finishBusy: function()
+			{
+				if (--this.busyNest)
+				{
+					return;
+				}
+
+				this.element.removeClass('busy');
+			}
+		})
+	},
+
+	/**
+	 * Update the document by adding missing CSS and JS assets.
+	 *
+	 * @param object assets
+	 * @param function done
+	 */
+	updateAssets: (function()
+	{
+		var available_css;
+		var available_js;
+
+		return function (assets, done)
 		{
 			if (available_css === undefined)
 			{
@@ -131,10 +156,10 @@
 					);
 				}
 			);
-		}
-	});
+		};
 
-}) ();
+	}) ()
+};
 
 /**
  * Extends Request.API to support the loading of single HTML elements.
@@ -154,7 +179,7 @@ Request.Element = new Class
 			return;
 		}
 
-		document.updateAssets
+		BrickRouge.updateAssets
 		(
 			response.assets, function()
 			{
@@ -186,35 +211,6 @@ Request.Widget = new Class
 	}
 });
 
-var BrickRouge = {
-
-	Utils: {
-
-		Busy: new Class ({
-
-			startBusy: function()
-			{
-				if (++this.busyNest == 1)
-				{
-					return;
-				}
-
-				this.element.addClass('busy');
-			},
-
-			finishBusy: function()
-			{
-				if (--this.busyNest)
-				{
-					return;
-				}
-
-				this.element.removeClass('busy');
-			}
-		})
-	}
-};
-
 /**
  * This is the namespace for all widgets constructors.
  */
@@ -230,17 +226,19 @@ Element.Properties.widget = {
 		{
 			var type = this.className.match(/widget(-\S+)/);
 
-			if (type.length)
+			if (type && type.length)
 			{
 				var constructorName = type[1].camelCase();
 				var constructor = Widget[constructorName];
 
-				if (constructor)
+				if (!constructor)
 				{
-					widget = new constructor(this, Dataset.get(this));
-
-					this.store('widget', widget);
+					throw "Constructor \"" + constructor + "\"is not defined to create widgets of type \"" + type + "\"";
 				}
+
+				widget = new constructor(this, Dataset.get(this));
+
+				this.store('widget', widget);
 			}
 		}
 
@@ -278,9 +276,9 @@ document.addEvent
 			(
 				function(constructor, key)
 				{
-					var wclass = '.widget' + key.hyphenate();
+					var cl = '.widget' + key.hyphenate();
 
-					$$(wclass).each
+					$$(cl).each
 					(
 						function(el)
 						{

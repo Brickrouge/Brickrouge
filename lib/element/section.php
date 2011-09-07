@@ -9,9 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge\Element\Form;
-
-use BrickRouge\Element;
+namespace BrickRouge;
 
 class Section extends Element
 {
@@ -41,7 +39,7 @@ class Section extends Element
 
 			if (is_object($element))
 			{
-				$label = t($element->get(Element\Form::T_LABEL));
+				$label = t($element->get(Form::T_LABEL));
 
 				if ($label)
 				{

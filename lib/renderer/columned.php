@@ -3,6 +3,7 @@
 namespace BrickRouge\Renderer;
 
 use BrickRouge\Element;
+use BrickRouge\Form;
 
 class Columned extends Element
 {
@@ -27,7 +28,7 @@ class Columned extends Element
 		parent::__construct($type, $tags);
 	}
 
-	public function __invoke(Element\Form $form)
+	public function __invoke(Form $form)
 	{
 		$this->children = $form->get_ordered_children();
 		$this->contents = null;
@@ -67,7 +68,7 @@ class Columned extends Element
 			{
 				$child_id = $child->id;
 
-				$text = $child->get(Element\Form::T_LABEL);
+				$text = $child->get(Form::T_LABEL);
 
 				if ($text)
 				{
@@ -97,7 +98,7 @@ class Columned extends Element
 					$label .= '<span class="separator">&nbsp;:</span>';
 					$label .= '</label>';
 
-					$complement = $child->get(Element\Form::T_LABEL_COMPLEMENT);
+					$complement = $child->get(Form::T_LABEL_COMPLEMENT);
 
 					if ($complement)
 					{

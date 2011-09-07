@@ -2,9 +2,9 @@
 
 namespace BrickRouge\Renderer;
 
-use BrickRouge\Element\Group;
-
 use BrickRouge\Element;
+use BrickRouge\Form;
+use BrickRouge\Group;
 
 class Simple extends Element
 {
@@ -15,7 +15,7 @@ class Simple extends Element
 
 	}
 
-	public function __invoke(Element\Form $form)
+	public function __invoke(Form $form)
 	{
 		$this->form = $form;
 		$this->children = $form->get_ordered_children();

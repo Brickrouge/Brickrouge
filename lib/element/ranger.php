@@ -9,9 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge\Element;
-
-use BrickRouge\Element;
+namespace BrickRouge;
 
 class Ranger extends Element
 {

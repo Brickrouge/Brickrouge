@@ -9,10 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge\Element;
-
-use BrickRouge;
-use BrickRouge\Element;
+namespace BrickRouge;
 
 class Date extends Element
 {
@@ -31,11 +28,11 @@ class Date extends Element
 
 		if (isset($document))
 		{
-			$document->js->add(BrickRouge\ASSETS . 'element/datepicker/datepicker.js');
-			$document->js->add(BrickRouge\ASSETS . 'element/datepicker/auto.js');
+			$document->js->add(ASSETS . 'element/datepicker/datepicker.js');
+			$document->js->add(ASSETS . 'element/datepicker/auto.js');
 
-			$document->css->add(BrickRouge\ASSETS . 'element/datepicker/calendar-eightysix-v1.1-default.css');
-			$document->css->add(BrickRouge\ASSETS . 'element/datepicker/calendar-eightysix-v1.1-osx-dashboard.css');
+			$document->css->add(ASSETS . 'element/datepicker/calendar-eightysix-v1.1-default.css');
+			$document->css->add(ASSETS . 'element/datepicker/calendar-eightysix-v1.1-osx-dashboard.css');
 		}
 	}
 

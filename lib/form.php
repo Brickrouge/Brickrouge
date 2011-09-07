@@ -9,14 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge\Element;
-
-use BrickRouge\Button;
+namespace BrickRouge;
 
 use ICanBoogie\Event;
 use ICanBoogie\Exception;
 use ICanBoogie\Operation;
-use BrickRouge\Element;
 use WdArray;
 
 /**
@@ -425,7 +422,7 @@ class Form extends Element
 	 * @param $key The key used to identify the form to load, or an array in which
 	 * the T_KEY tag defines the key.
 	 *
-	 * @return object A Element\Form object
+	 * @return object A BrickRouge\Form object
 	 */
 	static public function load($key)
 	{

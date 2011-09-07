@@ -11,8 +11,10 @@
 
 namespace BrickRouge\Element;
 
-use BrickRouge\Element;
 use ICanBoogie\Debug;
+
+use BrickRouge\Element;
+use BrickRouge\Form;
 
 class Templated extends Element
 {
@@ -50,7 +52,7 @@ class Templated extends Element
 			# label
 			#
 
-			$label = $child->get(Element\Form::T_LABEL);
+			$label = $child->get(Form::T_LABEL);
 
 			if ($label)
 			{

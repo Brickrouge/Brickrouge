@@ -9,9 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge\Element;
-
-use BrickRouge\Element;
+namespace BrickRouge;
 
 class Salutation extends Element
 {
@@ -33,7 +31,7 @@ class Salutation extends Element
 		(
 			$type, $tags + array
 			(
-				Element\Form::T_LABEL => '.Salutation',
+				Form::T_LABEL => '.Salutation',
 				Element::T_OPTIONS => $options
 			)
 		);

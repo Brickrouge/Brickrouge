@@ -13,14 +13,13 @@ namespace BrickRouge;
 
 class Text extends Element
 {
-	public function __construct($tags)
+	public function __construct($tags=array())
 	{
 		parent::__construct
 		(
 			'input', $tags + array
 			(
-				'type' => 'text',
-				'size' => 30
+				'type' => 'text'
 			)
 		);
 	}

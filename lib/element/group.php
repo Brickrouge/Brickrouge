@@ -9,9 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge\Element;
-
-use BrickRouge\Element;
+namespace BrickRouge;
 
 class Group extends Element
 {
@@ -31,7 +29,7 @@ class Group extends Element
 			$row_class .= ' field--' . wd_normalize($name);
 		}
 
-		$label = $child->get(Element\Form::T_LABEL);
+		$label = $child->get(Form::T_LABEL);
 
 		if ($label)
 		{

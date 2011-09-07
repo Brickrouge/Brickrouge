@@ -4,7 +4,7 @@ return array
 (
 	'events' => array
 	(
-		'ICanBoogie\Operation::get_form' => 'BrickRouge\Element\Form::on_operation_get_form',
+		'ICanBoogie\Operation::get_form' => 'BrickRouge\Form::on_operation_get_form',
 	),
 
 	'objects.methods' => array

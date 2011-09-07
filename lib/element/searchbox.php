@@ -9,10 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge\Element;
-
-use BrickRouge;
-use BrickRouge\Element;
+namespace BrickRouge;
 
 class Searchbox extends Element
 {
@@ -28,19 +25,13 @@ class Searchbox extends Element
 				(
 					self::T_CHILDREN => array
 					(
-						'q' => $this->elements['q'] = new Element
-						(
-							self::E_TEXT, array
-							(
+						'q' => $this->elements['q'] = new Text(),
 
-							)
-						),
-
-						$this->elements['trigger'] = new Element
+						$this->elements['trigger'] = new Button
 						(
-							self::E_SUBMIT, array
+							'Search', array
 							(
-								self::T_INNER_HTML => t('Search')
+								'type' => 'submit'
 							)
 						)
 					),

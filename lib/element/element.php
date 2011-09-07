@@ -11,12 +11,10 @@
 
 namespace BrickRouge;
 
-use ICanBoogie;
-
 /**
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
-class Element extends ICanBoogie\Object implements \ArrayAccess
+class Element extends \ICanBoogie\Object implements \ArrayAccess
 {
 	#
 	# special elements
@@ -1406,7 +1404,7 @@ class Element extends ICanBoogie\Object implements \ArrayAccess
 						(
 							$this->name, 'Le nombre de choix possible pour le champ %name est limité à :limit', array
 							(
-								'%name' => Element\Form::selectElementLabel($this),
+								'%name' => Form::selectElementLabel($this),
 								':limit' => $limit
 							)
 						);
