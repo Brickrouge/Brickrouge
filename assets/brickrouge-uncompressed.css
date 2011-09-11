@@ -1021,10 +1021,13 @@ div.field.error {
 div.field.error span.help-inline, div.field.error span.help-block {
   color: #9d261d;
 }
-div.field.error label.input-label {
+div.field.error label.input-label, div.field.error label.element-label {
   color: #9d261d;
 }
-div.field.error label.input-label sup, div.field.error label.input-label:after {
+div.field.error label.input-label sup,
+div.field.error label.element-label sup,
+div.field.error label.input-label:after,
+div.field.error label.element-label:after {
   color: #b9554d;
 }
 div.field.error input, div.field.error textarea {
@@ -1178,7 +1181,9 @@ form.stacked div.field {
 }
 form.stacked div.field.error {
   padding-left: 10px;
+  padding-right: 10px;
   margin-left: -10px;
+  margin-right: -10px;
 }
 form.stacked div.field > label {
   display: block;

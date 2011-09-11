@@ -136,7 +136,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 			case self::E_CHECKBOX_GROUP:
 			{
 				$this->tagName = 'div';
-				$this->addClass('checkbox-group');
+				$this->add_class('checkbox-group');
 			}
 			break;
 
@@ -153,7 +153,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 			case self::E_RADIO_GROUP:
 			{
 				$this->tagName = 'div';
-				$this->addClass('radio-group');
+				$this->add_class('radio-group');
 			}
 			break;
 
@@ -307,7 +307,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 	 * Add a CSS class to the element.
 	 * @param: $class
 	 */
-	public function addClass($class)
+	public function add_class($class)
 	{
 		$this->classes[$class] = true;
 	}
@@ -316,7 +316,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 	 * Remove a CSS class from the element.
 	 * @param $class
 	 */
-	public function removeClass($class)
+	public function remove_class($class)
 	{
 		unset($this->classes[$class]);
 	}
@@ -1366,10 +1366,10 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 	 * its value.
 	 *
 	 * @param $value
+	 *
 	 * @return boolean Return TRUE is the validation succeed.
 	 */
-
-	public function validate($value)
+	public function validate($values, \ICanBoogie\Errors $errors)
 	{
 		$validator = $this->get(self::T_VALIDATOR);
 		$options = $this->get(self::T_VALIDATOR_OPTIONS);
@@ -1400,14 +1400,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 
 					if (count($value) > $limit)
 					{
-						$this->form->log
+						$errors[$this->name] = t('Le nombre de choix possible pour le champ %name est limité à :limit', array
 						(
-							$this->name, 'Le nombre de choix possible pour le champ %name est limité à :limit', array
-							(
-								'%name' => Form::selectElementLabel($this),
-								':limit' => $limit
-							)
-						);
+							'%name' => Form::selectElementLabel($this),
+							':limit' => $limit
+						));
 
 						return false;
 					}
@@ -1431,7 +1428,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 	 * @param $userdata
 	 * @param $stop
 	 */
-
 	public function walk($callback, $userdata, $stop=null)
 	{
 		#

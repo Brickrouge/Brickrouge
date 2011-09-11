@@ -66,7 +66,8 @@ div.field {
 			color: @red;
 		}
 		
-		label.input-label {
+		label.input-label,
+		label.element-label {
 			color: @red;
 		
 			sup, &:after {
@@ -232,7 +233,9 @@ form.stacked
 	div.field {
 		&.error {
 			padding-left: @error-padding;
+			padding-right: @error-padding;
 			margin-left: -@error-padding;
+			margin-right: -@error-padding;
 		}
 		
 		/*!

@@ -11,6 +11,7 @@
 
 namespace BrickRouge;
 
+use ICanBoogie\Errors;
 use ICanBoogie\Event;
 use ICanBoogie\Exception;
 use ICanBoogie\Operation;
@@ -82,7 +83,7 @@ class Form extends Element
 		# Add the 'wdform' class to the element
 		#
 
-		$this->addClass('wdform');
+		$this->add_class('wdform');
 	}
 
 	/**
@@ -125,30 +126,11 @@ class Form extends Element
 
 			$name = $this->name;
 
-			if (!empty($core->session->wdform['logs'][$name]))
+			if (!empty($core->session->errors[$name]))
 			{
-				$rc .= '<div class="alert-message error">';
-				$rc .= '<a href="#close" class="close">×</a>';
+				$rc .= $this->render_errors($core->session->errors[$name]);
 
-				foreach ($core->session->wdform['logs'][$name] as $definition)
-				{
-					if ($definition === true)
-					{
-						continue;
-					}
-
-					list($message, $params) = $definition;
-
-					$rc .= '<p>' . t($message, $params) . '</p>';
-				}
-
-				$rc .= '</div>';
-
-				#
-				# we can now empty the messages
-				#
-
-				unset($core->session->wdform['logs'][$name]);
+				unset($core->session->errors[$name]);
 			}
 		}
 
@@ -179,6 +161,11 @@ class Form extends Element
 		}
 
 		return $rc . $content;
+	}
+
+	protected function render_errors($errors)
+	{
+		return (string) new AlertMessage($errors);
 	}
 
 	/**
@@ -227,6 +214,8 @@ class Form extends Element
 	 */
 	public function __toString()
 	{
+		global $core;
+
 		#
 		# walk children to set their values or disable them
 		#
@@ -241,31 +230,34 @@ class Form extends Element
 				$values = WdArray::flatten($values);
 			}
 
-			$this->walk(array($this, 'tweakElement_callback'), array($values, $disabled), 'name');
+			$name = $this->name;
+
+			if (isset($core->session->errors[$name]))
+			{
+				$errors = $core->session->errors[$name];
+			}
+			else
+			{
+				$errors = new Errors();
+			}
+
+			$this->walk(array($this, 'tweakElement_callback'), array($values, $disabled, $errors), 'name');
 		}
 
 		return parent::__toString();
 	}
 
-	public function isElementMissing($name)
-	{
-		global $core;
-
-		return isset($core->session->wdform['logs'][$this->name][$name]);
-	}
-
 	protected function tweakElement_callback($element, $userdata, $name)
 	{
-		list($values, $disabled) = $userdata;
+		list($values, $disabled, $errors) = $userdata;
 
 		#
-		# if the element is referenced in the error log, we had the class 'missing error'
+		# if the element is referenced in the errors, we had the class 'error'
 		#
 
-		if ($this->isElementMissing($name))
+		if (isset($errors[$name]))
 		{
-			$element->addClass('missing');
-			$element->addClass('error');
+			$element->add_class('error');
 		}
 
 		#
@@ -311,9 +303,9 @@ class Form extends Element
 	 * Return a string defining an hidden input element.
 	 * @param $name
 	 * @param $value
+	 *
 	 * @return string The HTML representation of the hidden input element.
 	 */
-
 	static public function makeHidden($name, $value)
 	{
 		if (is_array($value))
@@ -348,7 +340,6 @@ class Form extends Element
 	 *
 	 * @return string The MD5 key used to identify the form.
 	 */
-
 	public function save()
 	{
 		global $core;
@@ -359,18 +350,20 @@ class Form extends Element
 		# If the number of forms saved in session is bigger than this limit, the older forms are removed.
 		#
 
-		if (isset($core->session->wdform['saved']))
+		$session = $core->session;
+
+		if (isset($session->wdform['saved']))
 		{
 			if (1)
 			{
-				$n = count($core->session->wdform['saved']);
+				$n = count($session->wdform['saved']);
 			}
 			else
 			{
 				$n = 0;
 				$size = 0;
 
-				foreach ($core->session->wdform['saved'] as $serialized)
+				foreach ($session->wdform['saved'] as $serialized)
 				{
 					$n++;
 					$size += strlen($serialized);
@@ -381,7 +374,7 @@ class Form extends Element
 
 			if ($n > self::SAVED_LIMIT)
 			{
-				$core->session->wdform['saved'] = array_slice($core->session->wdform['saved'], $n - self::SAVED_LIMIT);
+				$session->wdform['saved'] = array_slice($session->wdform['saved'], $n - self::SAVED_LIMIT);
 			}
 		}
 
@@ -404,7 +397,7 @@ class Form extends Element
 
 		try
 		{
-			$core->session->wdform['saved'][$key] = serialize($this);
+			$session->wdform['saved'][$key] = serialize($this);
 		}
 		catch (\PDOException $e)
 		{
@@ -574,7 +567,7 @@ class Form extends Element
 	**
 	*/
 
-	public function validate($values)
+	public function validate($values, \ICanBoogie\Errors $errors)
 	{
 		#
 		# validation without prior save
@@ -641,7 +634,7 @@ class Form extends Element
 		{
 			if (count($missing) == 1)
 			{
-				$this->logMissing(key($missing), array_shift($missing));
+				$errors[key($missing)] = t('The field %field is required!', array('%field' => t(current($missing))));
 			}
 			else
 			{
@@ -649,12 +642,12 @@ class Form extends Element
 
 				foreach ($missing as $name => $label)
 				{
-					$core->session->wdform['logs'][$this->name][$name] = true;
+					$errors[$name] = true;
 				}
 
 				$last = array_pop($missing);
 
-				$this->log(null, 'The fields %list and %last are required!', array('%list' => implode(', ', $missing), '%last' => $last));
+				$errors[] = t('The fields %list and %last are required!', array('%list' => implode(', ', $missing), '%last' => $last));
 			}
 		}
 
@@ -674,11 +667,19 @@ class Form extends Element
 	    		continue;
 	    	}
 
-	    	if (!$element->validate($value))
+	    	if (!$element->validate($value, $errors))
 	    	{
 	    		$er = true;
 	    	}
 	    }
+
+	    #
+	    #
+	    #
+
+	    global $core;
+
+	    $core->session->errors[$this->name] = $errors;
 
 		if ($er)
 		{
@@ -688,6 +689,7 @@ class Form extends Element
 		return parent::validate($values);
 	}
 
+	/*
 	public function log($identifier, $message, array $args=array())
 	{
 		global $core;
@@ -718,6 +720,7 @@ class Form extends Element
 	{
 		$this->log($identifier, 'The field %field is required!', array('%field' => t($label)));
 	}
+	*/
 
 	/**
 	 * Fetches the log of the form.

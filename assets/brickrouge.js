@@ -295,6 +295,30 @@ document.addEvent
 				}
 			)
 		);
+
+		/*
+		 * Hide alert messages when the close button is pressed.
+		 */
+
+		$$('div.alert-message a.close').addEvent
+		(
+			'click', function(ev)
+			{
+				ev.stop();
+
+				var slide = new Fx.Slide(this.getParent(), { duration: 'short' });
+
+				slide.slideOut().chain
+				(
+					function()
+					{
+						this.wrapper.destroy();
+
+						delete slide;
+					}
+				);
+			}
+		);
 	}
 );
 

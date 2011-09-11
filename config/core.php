@@ -10,6 +10,7 @@ return array
 	'autoload' => array
 	(
 		'BrickRouge\A' => $element . 'a.php',
+		'BrickRouge\AlertMessage' => $element . 'alert-message.php',
 		'BrickRouge\Button' => $element . 'button.php',
 		'BrickRouge\Date' => $element . 'date.php',
 		'BrickRouge\DateRange' => $element . 'date-range.php',

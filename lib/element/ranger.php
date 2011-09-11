@@ -24,7 +24,7 @@ class Ranger extends Element
 	{
 		parent::__construct($type, $tags);
 
-		$this->addClass('wdranger');
+		$this->add_class('wdranger');
 	}
 
 	protected function render_inner_html()
