@@ -686,7 +686,7 @@ class Form extends Element
 			return;
 		}
 
-		return parent::validate($values);
+		return parent::validate($values, $errors);
 	}
 
 	/*

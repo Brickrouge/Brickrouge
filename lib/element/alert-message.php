@@ -16,20 +16,12 @@ use ICanBoogie\Errors;
 class AlertMessage extends Element
 {
 	protected $message;
-	protected $alter_type;
+	protected $alert_type;
 
 	public function __construct($message, $tags=array(), $type='')
 	{
 		$this->message = $message;
-
-		if ($message instanceof Errors)
-		{
-			$this->alter_type = 'error';
-		}
-		else
-		{
-			$this->alter_type = $type;
-		}
+		$this->alert_type = $message instanceof Errors ? 'error' : $type;
 
 		parent::__construct
 		(
@@ -42,7 +34,7 @@ class AlertMessage extends Element
 
 	public function compose_class()
 	{
-		return parent::compose_class() . ' ' . $this->alter_type;
+		return parent::compose_class() . ' ' . $this->alert_type;
 	}
 
 	public function render_inner_html()
@@ -51,24 +43,40 @@ class AlertMessage extends Element
 
 		if ($message instanceof Errors)
 		{
-			$rc = '';
+			$errors = $message;
+			$message = '';
 
-			foreach ($message as $m)
+			foreach ($errors as $error)
 			{
-				if ($m === true)
+				if ($error === true)
 				{
 					continue;
 				}
 
-				$rc .= '<p>' . $m . '</p>';
+				$message .= '<p>' . $error . '</p>';
 			}
-
-			$message = $rc;
 		}
 
 		return <<<EOT
 <a href="#close" class="close">×</a>
 $message
 EOT;
+	}
+
+	/**
+	 * An empty string is returned if there is no message.
+	 *
+	 * @see BrickRouge.Element::__toString()
+	 */
+	public function __toString()
+	{
+		$message = $this->message;
+
+		if ($message instanceof Errors && !count($message))
+		{
+			return '';
+		}
+
+		return parent::__toString();
 	}
 }

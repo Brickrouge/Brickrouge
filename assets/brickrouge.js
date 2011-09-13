@@ -236,7 +236,7 @@ Element.Properties.widget = {
 					throw "Constructor \"" + constructor + "\"is not defined to create widgets of type \"" + type + "\"";
 				}
 
-				widget = new constructor(this, Dataset.get(this));
+				widget = new constructor(this, this.get('dataset'));
 
 				this.store('widget', widget);
 			}
@@ -287,7 +287,7 @@ document.addEvent
 								return;
 							}
 
-							var widget = new constructor(el, Dataset.get(el));
+							var widget = new constructor(el, el.get('dataset'));
 
 							el.store('widget', widget);
 						}
