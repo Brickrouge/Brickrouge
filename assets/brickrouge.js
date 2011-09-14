@@ -35,6 +35,10 @@ var BrickRouge = {
 		})
 	},
 
+	Widget: {
+
+	},
+
 	/**
 	 * Update the document by adding missing CSS and JS assets.
 	 *
@@ -214,8 +218,6 @@ Request.Widget = new Class
 /**
  * This is the namespace for all widgets constructors.
  */
-var Widget = {};
-
 Element.Properties.widget = {
 
 	get: function()
@@ -229,7 +231,7 @@ Element.Properties.widget = {
 			if (type && type.length)
 			{
 				var constructorName = type[1].camelCase();
-				var constructor = Widget[constructorName];
+				var constructor = BrickRouge.Widget[constructorName];
 
 				if (!constructor)
 				{
@@ -246,7 +248,7 @@ Element.Properties.widget = {
 	}
 };
 
-Widget.Searchbox = new Class
+BrickRouge.Widget.Searchbox = new Class
 ({
 	Implements: BrickRouge.Utils.Busy,
 
@@ -272,7 +274,7 @@ document.addEvent
 	{
 		Object.each
 		(
-			Widget,
+			BrickRouge.Widget,
 			(
 				function(constructor, key)
 				{
@@ -333,3 +335,21 @@ window.addEvent
 		document.fireEvent('elementsready', { target: $(document.body) });
 	}
 );
+
+/**
+ * Destroy the alert message when its close icon is clicked. The "error" class is also removed from
+ * elements.
+ */
+$(document.body).addEvent('click:relay(div.alert-message a.close)', function(ev, target){
+
+	ev.stop();
+
+	var form = target.getParent('form');
+
+	if (form) {
+
+		form.getElements('.error').removeClass('error');
+	}
+
+	target.getParent('div.alert-message').destroy();
+});
