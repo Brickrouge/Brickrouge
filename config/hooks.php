@@ -22,6 +22,6 @@ return array
 		'document:title' => array
 		(
 			'BrickRouge\Document\Hooks::markup_document_title', array()
-		),
+		)
 	)
 );

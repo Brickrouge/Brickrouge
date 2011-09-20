@@ -408,7 +408,7 @@ class CSS extends \ICanBoogie\Collector
 			if ($this->use_cache)
 			{
 				$recent = 0;
-				$root = $_SERVER['DOCUMENT_ROOT'];
+				$root = \ICanBoogie\DOCUMENT_ROOT;
 
 				foreach ($collected as $file)
 				{
@@ -473,7 +473,7 @@ EOT;
 
 		foreach ($collected as $url)
 		{
-			$contents = file_get_contents($_SERVER['DOCUMENT_ROOT'] . $url);
+			$contents = file_get_contents(\ICanBoogie\DOCUMENT_ROOT . $url);
 			$contents = preg_replace('/url\(([^\)]+)/', 'url(' . dirname($url) . '/$1', $contents);
 
 			$rc .= $contents . PHP_EOL;
@@ -502,7 +502,7 @@ class JS extends \ICanBoogie\Collector
 
 		if (0)
 		{
-			$root = $_SERVER['DOCUMENT_ROOT'];
+			$root = \ICanBoogie\DOCUMENT_ROOT;
 			$repository = $core->config['repository.files'] . '/assets/minified/';
 
 			foreach ($collected as $file)
@@ -537,7 +537,7 @@ class JS extends \ICanBoogie\Collector
 			if ($this->use_cache)
 			{
 				$recent = 0;
-				$root = $_SERVER['DOCUMENT_ROOT'];
+				$root = \ICanBoogie\DOCUMENT_ROOT;
 
 				foreach ($collected as $file)
 				{

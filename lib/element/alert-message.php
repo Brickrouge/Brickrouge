@@ -56,6 +56,10 @@ class AlertMessage extends Element
 				$message .= '<p>' . $error . '</p>';
 			}
 		}
+		else if (is_array($message))
+		{
+			$message = '<p>' . implode('</p><p>', $message) . '</p>';
+		}
 
 		return <<<EOT
 <a href="#close" class="close">×</a>
@@ -72,7 +76,7 @@ EOT;
 	{
 		$message = $this->message;
 
-		if ($message instanceof Errors && !count($message))
+		if (($message instanceof Errors && !count($message)) || !$message)
 		{
 			return '';
 		}

@@ -128,10 +128,26 @@ figcaption, figure, footer, header, hgroup, nav
 /*!
  * Some additions
  */
+q:lang(en):before {
+  content: '"';
+}
+
+q:lang(en):after {
+  content: '"';
+}
+
+q:lang(en):before {
+  content: '\201C';
+}
+
+q:lang(en):after {
+  content: '\201D';
+}
+
 q:lang(fr):before {
-  content: '«\a';
+  content: '«\a0';
 }
 
 q:lang(fr):after {
-  content: '\a»';
+  content: '\a0»';
 }

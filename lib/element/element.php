@@ -814,7 +814,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 
 		//if ($position != 'above')
 		{
-			$label = '<span class="label">' . $label . '</span>';
+			$label = '<span class="text">' . $label . '</span>';
 		}
 
 		// TODO-20100714: T_LABEL_SEPARATOR is not used now, look out for consequences
@@ -1369,7 +1369,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 	 *
 	 * @return boolean Return TRUE is the validation succeed.
 	 */
-	public function validate($values, \ICanBoogie\Errors $errors)
+	public function validate($value, \ICanBoogie\Errors $errors)
 	{
 		$validator = $this->get(self::T_VALIDATOR);
 		$options = $this->get(self::T_VALIDATOR_OPTIONS);
@@ -1378,7 +1378,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 		{
 			list($callback, $params) = $validator + array(1 => array());
 
-			return call_user_func($callback, $this, $value, $params);
+			return call_user_func($callback, $errors, $this, $value, $params);
 		}
 
 		#

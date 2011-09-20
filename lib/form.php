@@ -759,19 +759,19 @@ class Form extends Element
 	**
 	*/
 
-	static public function validate_email($element, $value)
+	static public function validate_email(Errors $errors, $element, $value)
 	{
 		if (filter_var($value, FILTER_VALIDATE_EMAIL))
 		{
 			return true;
 		}
 
-		$element->form->log($element->name, '@wdform.errors.email', array('%value' => $value, '%label' => $element->label));
+		$errors[$element->name] = t('@wdform.errors.email', array('%value' => $value, '%label' => $element->label));
 
 		return false;
 	}
 
-	static public function validate_spam($element, $value)
+	static public function validate_spam(Errors $errors, $element, $value)
 	{
 		global $core;
 
@@ -781,7 +781,7 @@ class Form extends Element
 
 			if ($score < 1)
 			{
-				$element->form->log($element->name, '@wdform.errors.spam', array('%score' => $score));
+				$errors[$element->name] = t('@wdform.errors.spam', array('%score' => $score));
 
 				return false;
 			}
@@ -790,7 +790,7 @@ class Form extends Element
 		return true;
 	}
 
-	static public function validate_string($element, $value, $rules)
+	static public function validate_string(Errors $errors, $element, $value, $rules)
 	{
 		$messages = array();
 		$args = array();
@@ -835,13 +835,13 @@ class Form extends Element
 
 			$message .= t(' for the %label input element', array('%label' => $element->label));
 
-			$element->form->log($element->name, $message, $args);
+			$errors[$element->name] = t($message, $args);
 		}
 
 		return !$messages;
 	}
 
-	static public function validate_range($element, $value, $rules)
+	static public function validate_range(Errors $errors, $element, $value, $rules)
 	{
 		list($min, $max) = $rules;
 
@@ -849,9 +849,9 @@ class Form extends Element
 
 		if (!$rc)
 		{
-			$element->form->log
+			$errors[$element->name] = t
 			(
-				$element->name, '@wdform.errors.range', array
+				'@wdform.errors.range', array
 				(
 					'%label' => $element->label,
 					':min' => $min,
@@ -873,14 +873,14 @@ class Form extends Element
 	 */
 	public static function on_operation_get_form(Event $event, Operation $operation)
 	{
-		$params = $event->params;
+		$request = $event->request;
 
-		if (empty($params[self::T_KEY]))
+		if (!$request[self::T_KEY])
 		{
 			return;
 		}
 
-		$form = self::load($params);
+		$form = self::load($request->params);
 
 		if ($form)
 		{
