@@ -1,0 +1,186 @@
+.widget-file div.infos
+{
+	font-size: .8em;
+	margin: 1em 0;
+	background-color: white;
+	padding: 1em;
+	border: 1px solid #cfcfcf;
+	border-radius: 4px;
+}
+
+.widget-file:not(.has-info) div.infos
+{
+	display: none;
+}
+
+/*
+.widget-file.uploading div.infos
+{
+	opacity: .6;
+}
+*/
+
+.widget-file ul.details,
+.widget-file div.preview
+{
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 1em;
+}
+
+.widget-file ul.details
+{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+	
+.widget-file div.preview img
+{
+	padding: 2px;
+	border: 1px solid #CCC;
+	background-color: white;
+}
+
+.widget-file div.preview a img:hover
+{
+	border-color: #A3C0E5;
+}
+	
+.widget-file div.preview a.download
+{
+	background: url(download-big.png) top center no-repeat;
+	height: 0;
+	width: 48px;
+	padding-top: 48px;
+	display: block;
+	overflow: hidden;
+}
+
+.widget-file input.file-reminder
+{
+	margin: 1em 0;
+}
+
+.widget-file div.error
+{
+	max-width: 76ex;
+	font-size: .8em;
+	color: #D33;
+	background-color: #FEE;
+	padding: .5em;
+	border: 1px solid;
+	margin-top: 1em;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.widget-file:not(.has-error) div.error
+{
+	display: none;
+}
+
+
+
+
+
+
+
+
+.widget-file div.input .reminder,
+.widget-file div.input .trigger
+{
+	vertical-align: middle;
+}
+
+.widget-file .reminder:not([value])
+{
+	display: none;
+}
+
+
+
+
+
+
+
+
+.widget-file.uploading .input
+{
+	display: none;
+}
+
+.widget-file:not(.uploading) div.uploading
+{
+	display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+.widget-file span.trigger
+{
+	position: relative;
+	overflow: hidden;
+}
+
+.widget-file span.trigger input
+{
+	top: 0;
+	left: 0;
+	font-size: 200px;
+	opacity: 0;
+	position: absolute;
+}
+
+.widget-file span.progress
+{
+	display: inline-block;
+	height: 1.5em;
+	line-height: 1.5em;
+	width: 32ex;
+	position: relative;
+	border: 1px solid #CFCFCF;
+	background: white;
+	vertical-align: middle;
+}
+
+.widget-file span.progress,
+.widget-file span.progress span.position
+{
+	border-radius: 4px;
+}
+
+.widget-file span.progress span.position
+{
+	display: block;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	color: #808000;
+	background: #FFC;
+	position: absolute;
+	text-align: right;
+	font-size: .8em;
+	overflow: hidden;
+	width: 0;
+}
+
+.widget-file.reading span.progress span.position
+{
+	color: #A3C0E5;
+	background: #F2F8FF;
+}
+
+.widget-file span.progress span.position span.label
+{
+	padding-right: 1ex;
+}

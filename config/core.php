@@ -18,6 +18,7 @@ return array
 		'BrickRouge\Document' => $document . 'document.php',
 		'BrickRouge\Document\Hooks' => $document . 'document.hooks.php',
 		'BrickRouge\Element' => $element . 'element.php',
+		'BrickRouge\File' => $element . 'file.php',
 		'BrickRouge\Form' => $lib . 'form.php',
 		'BrickRouge\Form\Templated' => $element . 'form.templated.php',
 		'BrickRouge\Group' => $element . 'group.php',
