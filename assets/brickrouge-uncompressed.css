@@ -450,11 +450,23 @@ nav {
 /*!
  * Some additions
  */
+q:lang(en):before {
+  content: '"';
+}
+q:lang(en):after {
+  content: '"';
+}
+q:lang(en):before {
+  content: '\201C';
+}
+q:lang(en):after {
+  content: '\201D';
+}
 q:lang(fr):before {
-  content: '«\a';
+  content: '«\a0';
 }
 q:lang(fr):after {
-  content: '\a»';
+  content: '\a0»';
 }
 /* element.less */
 .hidden {
@@ -917,6 +929,10 @@ label.required sup, label.required:after {
 }
 .alert-message .close  + p {
   margin-top: 0;
+}
+.alert-message p a[href] {
+  color: inherit;
+  text-decoration: underline;
 }
 .alert-message p:last-child {
   margin-bottom: 0;
