@@ -11,29 +11,18 @@
 
 namespace BrickRouge;
 
-class Date extends Element
+class Date extends Text
 {
 	public function __construct($tags, $dummy=null)
 	{
-		global $document;
-
 		parent::__construct
 		(
-			Element::E_TEXT, $tags + array
+			$tags + array
 			(
 				'size' => 16,
 				'class' => 'date'
 			)
 		);
-
-		if (isset($document))
-		{
-			$document->js->add(ASSETS . 'element/datepicker/datepicker.js');
-			$document->js->add(ASSETS . 'element/datepicker/auto.js');
-
-			$document->css->add(ASSETS . 'element/datepicker/calendar-eightysix-v1.1-default.css');
-			$document->css->add(ASSETS . 'element/datepicker/calendar-eightysix-v1.1-osx-dashboard.css');
-		}
 	}
 
 	public function __toString()
@@ -46,5 +35,16 @@ class Date extends Element
 		}
 
 		return parent::__toString();
+	}
+
+	protected static function add_assets(\BrickRouge\Document $document)
+	{
+		parent::add_assets($document);
+
+		$document->js->add(ASSETS . 'element/datepicker/datepicker.js');
+		$document->js->add(ASSETS . 'element/datepicker/auto.js');
+
+		$document->css->add(ASSETS . 'element/datepicker/calendar-eightysix-v1.1-default.css');
+		$document->css->add(ASSETS . 'element/datepicker/calendar-eightysix-v1.1-osx-dashboard.css');
 	}
 }

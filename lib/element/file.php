@@ -20,8 +20,6 @@ class File extends Element
 
 	public function __construct($tags, $dummy=null)
 	{
-		global $core;
-
 		parent::__construct
 		(
 			'div', $tags + array
@@ -31,8 +29,11 @@ class File extends Element
 		);
 
 		$this->dataset += $this->options();
+	}
 
-		$document = $core->document;
+	protected static function add_assets(\BrickRouge\Document $document)
+	{
+		parent::add_assets($document);
 
 		$document->js->add('file.js');
 		$document->css->add('file.css');

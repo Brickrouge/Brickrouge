@@ -4,13 +4,6 @@
  */
 
 /*!
- * Parent element that clears floats and wraps labels and fields together
- */
-.clearfix {
-	margin-bottom: @baseline;
-}
-
-/*!
  * Groups of fields with labels on top (legends)
  */
 fieldset {
@@ -51,7 +44,7 @@ div.field {
 	}
 
 	+ div.field {
-		margin-top: 1em;
+		margin-top: @baseline;
 	}
 	
 	/*! Error styles */
@@ -94,13 +87,14 @@ div.field {
 			}
 		}
 	}
-}
-
-div.field > label {
-	float: left;
-	width: @label-width;
-	text-align: right;
-	color: @grayDark;
+	
+	> label {
+		float: left;
+		width: @label-width;
+		text-align: right;
+		color: @grayDark;
+		padding-top: 6px;
+	}
 }
 
 /*! Shift over the inside div to align all label's relevant content */
@@ -248,6 +242,7 @@ form.stacked
 			text-align: left;
 			width: auto;
 			margin-bottom: .5em;
+			padding-top: 0;
 		}
 	}
 	

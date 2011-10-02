@@ -98,6 +98,20 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 		$this->tags = $tags;
 
 		#
+		# children first
+		#
+
+		if (!empty($tags[self::T_CHILDREN]))
+		{
+// 			$this[self::T_CHILDREN]
+
+			$this->children = array();
+			$this->addChildren($tags[self::T_CHILDREN]);
+
+			unset($tags[self::T_CHILDREN]);
+		}
+
+		#
 		# prepare special elements
 		#
 
@@ -231,7 +245,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 		{
 			$id = self::auto_element_id();
 
-			$this->tags['id'] = $id;
+			$this['id'] = $id;
 		}
 
 		return $id;
@@ -252,7 +266,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 		}
 		else
 		{
-			$this->tags[$name] = $value;
+			$this[$name] = $value;
 		}
 
 		switch ($name)
@@ -305,7 +319,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 
 	/**
 	 * Add a CSS class to the element.
-	 * @param: $class
+	 *
+	 * @param $class
 	 */
 	public function add_class($class)
 	{
@@ -314,6 +329,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 
 	/**
 	 * Remove a CSS class from the element.
+	 *
 	 * @param $class
 	 */
 	public function remove_class($class)
@@ -392,7 +408,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 	{
 		if ($name)
 		{
-			if (is_object($child))
+			// TODO-20110926: I added the `&& empty($child->tags['name'])` part to avoid setting
+			// the name twice, so the name defined is preserved, we need to check is this is
+			// ok or not.
+
+			if (is_object($child) && empty($child->tags['name']))
 			{
 				$child->set('name', $name);
 			}
@@ -909,7 +929,33 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 		return $html . '<div class="element-description">' . $description . '</div>';
 	}
 
-	static private $classes_added_assets;
+	private static $assets_handled=array();
+
+	protected static function handle_assets()
+	{
+		global $core;
+
+		$class = get_called_class();
+
+		if (isset(self::$assets_handled[$class]))
+		{
+			return;
+		}
+
+		self::$assets_handled[$class] = true;
+
+		call_user_func($class . '::add_assets', $core->document);
+	}
+
+	/**
+	 * Adds assets to the document.
+	 *
+	 * @param Document $document
+	 */
+	protected static function add_assets(Document $document)
+	{
+
+	}
 
 	/**
 	 * Returns the HTML representation of the element, including external labels and such.
@@ -921,19 +967,15 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 	 */
 	public function __toString()
 	{
-		global $document;
-
-		if (isset($document))
+		if (get_class($this) != __CLASS__)
 		{
-			$class = get_class($this);
-
-			if (!isset(self::$classes_added_assets))
+			try
 			{
-				self::$classes_added_assets = true;
-
-				$assets = $this->assets;
-
-				$document->add_assets($assets);
+				static::handle_assets();
+			}
+			catch (\Exception $e)
+			{
+				echo $e;
 			}
 		}
 

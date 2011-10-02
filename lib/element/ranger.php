@@ -37,9 +37,9 @@ class Ranger extends Element
 
 		if ($this->get(self::T_EDITABLE) && $count > $limit)
 		{
-			$start_final = (string) new Element
+			$start_final = (string) new Text
 			(
-				self::E_TEXT, array
+				array
 				(
 					'name' => 'start',
 					'value' => $start,
