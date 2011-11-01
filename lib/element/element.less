@@ -59,13 +59,15 @@ input[type=text],
 input[type=password],
 textarea,
 .btn,
-.uneditable-input {
+.uneditable-input,
+.like-input {
 	border: 1px solid #CFCFCF;
 	.border-radius(4px);
 	display: inline-block;
 	padding: .2em .5ex;
 	font-size: .9em;
 	font-family: inherit;
+	background: white;
 }
 
 input[type=text][size],
@@ -82,7 +84,8 @@ input[type=password][size] {
 /*! inputs / focus states */
 input,
 select,
-textarea {
+textarea,
+.like-input {
 	@transition: border linear .2s, box-shadow linear .2s;
 	.transition(@transition);
 	.box-shadow(inset 0 1px 3px rgba(0,0,0,.1));
@@ -99,7 +102,8 @@ textarea.unstyled {
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+.like-input:focus {
 	outline: none;
 	border-color: rgba(82,168,236,.8);
 	@shadow: inset 0 1px 3px rgba(0,0,0,.1), 0 0 8px rgba(82,168,236,.6);
@@ -110,22 +114,24 @@ textarea:focus {
 input[readonly]:focus,
 textarea[readonly]:focus,
 input:disabled,
-input.disabled {
+input.disabled,
+.like-input.disabled {
 	background: #f5f5f5;
 	border-color: #ddd;
 	.box-shadow(none);
 }
 
 /*! Placeholder text gets special styles; can't be bundled together though for some reason */
-:-moz-placeholder {
+:-moz-placeholder,
+.like-input.placeholder
+{
 	color: @grayLight;
 }
 
-::-webkit-input-placeholder {
+::-webkit-input-placeholder
+{
 	color: @grayLight;
 }
-
-
 
 /*! Form element sizes */
 .input-mini,
@@ -181,7 +187,7 @@ textarea.xxlarge {
 button,
 .btn {
 	/*! Button Base */
-	cursor: pointer;
+	cursor: default;
 	display: inline-block;
 	#gradient > .vertical-three-colors(#ffffff, #ffffff, 25%, darken(#ffffff, 10%)); //* Don't use .gradientbar() here since it does a three-color gradient */
 	/*padding: 5px 14px 6px;*/

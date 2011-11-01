@@ -94,9 +94,7 @@ class Form extends Element
 	 */
 	protected function render_inner_html()
 	{
-		$rc = null;
-
-		//$rc .= '<!-- BEGIN::' . __CLASS__ . '::' . __FUNCTION__ . ' -->';
+		$rc = '';
 
 		#
 		# add hidden elements
@@ -113,7 +111,7 @@ class Form extends Element
 				continue;
 			}
 
-			$rc .= self::makeHidden($name, $value);
+			$rc .= '<input type="hidden" name="' . wd_entities($name) . '" value="' . wd_entities($value) . '" />';
 		}
 
 		#
@@ -134,7 +132,7 @@ class Form extends Element
 			}
 		}
 
-		$renderer = $this->get(self::T_RENDERER);
+		$renderer = $this[self::T_RENDERER];
 
 		if ($renderer)
 		{
@@ -144,23 +142,25 @@ class Form extends Element
 				$renderer = new $class();
 			}
 
-			$content = $renderer($this);
+			$rc .= $renderer($this);
 		}
 		else
 		{
-			$content = parent::render_inner_html();
+			$rc .= parent::render_inner_html();
 		}
 
 		#
+		# actions
+		#
 
-		$actions = $this->get(self::T_ACTIONS);
+		$actions = $this[self::T_ACTIONS];
 
 		if ($actions)
 		{
-			$content .= $this->render_actions($actions);
+			$rc .= $this->render_actions($actions);
 		}
 
-		return $rc . $content;
+		return $rc;
 	}
 
 	protected function render_errors($errors)
@@ -223,20 +223,22 @@ class Form extends Element
 		$values = $this->get(self::T_VALUES);
 		$disabled = $this->get(self::T_DISABLED);
 
-		if ($values || $disabled)
+		$errors = null;
+		$name = $this->name;
+
+		if (isset($core->session->errors[$name]))
+		{
+			$errors = $core->session->errors[$name];
+		}
+
+		if ($values || $disabled || $errors)
 		{
 			if ($values)
 			{
 				$values = WdArray::flatten($values);
 			}
 
-			$name = $this->name;
-
-			if (isset($core->session->errors[$name]))
-			{
-				$errors = $core->session->errors[$name];
-			}
-			else
+			if (!$errors)
 			{
 				$errors = new Errors();
 			}
@@ -268,23 +270,31 @@ class Form extends Element
 		{
 			if (array_key_exists($name, $values))
 			{
-				$type = $element->get('type');
+				$type = $element['type'];
 				$value = $values[$name];
 
 				#
 				# we don't override the `value` or `checked` attributes if they are already defined
 				#
 
-				if (($type == 'checkbox') || ($type == 'radio'))
+				if ($type == 'checkbox')
 				{
-					if ($element->get('checked') === null)
+					if ($element['checked'] === null)
 					{
-						$element->set('checked', !empty($value));
+						$element['checked'] = !empty($value);
 					}
 				}
-				else if ($element->get('value') === null)
+				else if ($type == 'radio')
 				{
-					$element->set('value', $value);
+					if ($element['checked'] === null)
+					{
+						$element_value = $element['value'];
+						$element['checked'] = $element_value == $value;
+					}
+				}
+				else if ($element['value'] === null)
+				{
+					$element['value'] = $value;
 				}
 			}
 		}
@@ -295,33 +305,8 @@ class Form extends Element
 
 		if ($disabled)
 		{
-			$element->set('disabled', true);
+			$element['disabled'] = true;
 		}
-	}
-
-	/**
-	 * Return a string defining an hidden input element.
-	 * @param $name
-	 * @param $value
-	 *
-	 * @return string The HTML representation of the hidden input element.
-	 */
-	static public function makeHidden($name, $value)
-	{
-		if (is_array($value))
-		{
-			$rc = '';
-			$name .= '[]';
-
-			foreach ($value as $v)
-			{
-				$rc .= self::makeHidden($name, $v) . PHP_EOL;
-			}
-
-			return $rc;
-		}
-
-		return '<input type="hidden" name="' . $name . '" value="' . wd_entities($value) . '" />';
 	}
 
 	/*
@@ -439,7 +424,7 @@ class Form extends Element
 
 			unset($core->session->wdform['saved'][$key]);
 
-			$form->set(self::T_VALIDATOR, $form->validator);
+			$form[self::T_VALIDATOR] = $form->validator;
 
 			return $form;
 		}
@@ -459,7 +444,7 @@ class Form extends Element
 	 * @return boolean Return TRUE if the form exists.
 	 */
 
-	static public function exists($key)
+	public static function exists($key)
 	{
 		global $core;
 
@@ -495,7 +480,7 @@ class Form extends Element
 		# form's validator
 		#
 
-		$this->validator = $this->get(self::T_VALIDATOR);
+		$this->validator = $this[self::T_VALIDATOR];
 
 		#
 		# we return the variable to serialize, we only export variables needed
@@ -507,21 +492,21 @@ class Form extends Element
 
 	static public function selectElementLabel($element)
 	{
-		$label = $element->get(self::T_LABEL_MISSING);
+		$label = $element[self::T_LABEL_MISSING];
 
 		if (!$label)
 		{
-			$label = $element->get(Form::T_LABEL);
+			$label = $element[Form::T_LABEL];
 		}
 
 		if (!$label)
 		{
-			$label = $element->get(Element::T_LABEL);
+			$label = $element[Element::T_LABEL];
 		}
 
 		if (!$label)
 		{
-			$label = $element->get(self::T_LEGEND, $label);
+			$label = $element[self::T_LEGEND] ?: $label;
 		}
 
 		#
@@ -547,7 +532,7 @@ class Form extends Element
 			return;
 		}
 
-		if ($element->get(self::T_REQUIRED))
+		if ($element[self::T_REQUIRED])
 		{
 			$this->mandatories[$name] = self::selectElementLabel($element);
 		}
@@ -577,12 +562,6 @@ class Form extends Element
 		{
 			$this->__sleep();
 		}
-
-		#
-		#
-		#
-
-		$er = false;
 
 		#
 		# we flatten the array so that we can easily get values
@@ -618,8 +597,6 @@ class Form extends Element
 			{
 				$missing[$name] = t($label);
 
-				$er = true;
-
 				#
 				# The value for this required element is missing.
 				# In order to avoid troubles, the element is removed
@@ -638,8 +615,6 @@ class Form extends Element
 			}
 			else
 			{
-				global $core;
-
 				foreach ($missing as $name => $label)
 				{
 					$errors[$name] = true;
@@ -667,88 +642,21 @@ class Form extends Element
 	    		continue;
 	    	}
 
-	    	if (!$element->validate($value, $errors))
-	    	{
-	    		$er = true;
-	    	}
+	    	$element->validate($value, $errors);
 	    }
 
-	    #
-	    #
-	    #
+	    // FIXME-20111013: ICanBoogie won't save the errors in the session, so we have to do it ourselves for now.
 
 	    global $core;
 
 	    $core->session->errors[$this->name] = $errors;
 
-		if ($er)
+		if (count($errors))
 		{
 			return;
 		}
 
 		return parent::validate($values, $errors);
-	}
-
-	/*
-	public function log($identifier, $message, array $args=array())
-	{
-		global $core;
-
-		$name = $this->name;
-		$session = &$core->session->wdform;
-
-		if ($identifier)
-		{
-			#
-			# we don't overwrite messages
-			#
-
-			if (!empty($session['logs'][$name][$identifier]))
-			{
-				return;
-			}
-
-			$session['logs'][$name][$identifier] = array($message, $args);
-		}
-		else
-		{
-			$session['logs'][$name][] = array($message, $args);
-		}
-	}
-
-	public function logMissing($identifier, $label)
-	{
-		$this->log($identifier, 'The field %field is required!', array('%field' => t($label)));
-	}
-	*/
-
-	/**
-	 * Fetches the log of the form.
-	 *
-	 * @return array
-	 */
-	public function fetch_log()
-	{
-		global $core;
-
-		$name = $this->name;
-		$session = $core->session;
-
-		if (empty($session->wdform['logs'][$name]))
-		{
-			return;
-		}
-
-		$log = array();
-
-		foreach ($session->wdform['logs'][$name] as $identifier => $args)
-		{
-			$log[$identifier] = $args === true ? '' : call_user_func_array('t', $args);
-		}
-
-		unset($session->wdform['logs'][$name]);
-
-		return $log;
 	}
 
 	/*
