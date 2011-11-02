@@ -80,7 +80,7 @@ class File extends Element
 
 		$rc[] = '<span title="Path: ' . $path . '">' . $file . '</span>';
 		$rc[] = Uploaded::getMIME(\ICanBoogie\DOCUMENT_ROOT . $path);
-		$rc[] = wd_format_size(filesize(\ICanBoogie\DOCUMENT_ROOT . $path));
+		$rc[] = format_size(filesize(\ICanBoogie\DOCUMENT_ROOT . $path));
 
 		return $rc;
 	}
@@ -155,7 +155,7 @@ class File extends Element
 				$limit = ini_get('upload_max_filesize') * 1024;
 			}
 
-			$limit = wd_format_size($limit * 1024);
+			$limit = format_size($limit * 1024);
 
 			$rc .= PHP_EOL . '<div class="file-size-limit small" style="margin-top: .5em">';
 			$rc .= t('The maximum file size must be less than :size.', array(':size' => $limit));

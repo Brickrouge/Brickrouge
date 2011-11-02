@@ -24,4 +24,25 @@ define('BrickRouge\ASSETS', ROOT . 'assets' . DIRECTORY_SEPARATOR);
 /**
  * @var string Version string of the BrickRouge framework.
  */
-define('BrickRouge\VERSION', '1.0.0-dev (2011-09-04)');
+define('BrickRouge\VERSION', '1.0.0-dev (2011-11-02)');
+
+/**
+ * @var string Charset used by the BrickRouge framework.
+ */
+if (!defined('BrickRouge\CHARSET'))
+{
+	define('BrickRouge\CHARSET', 'utf-8');
+}
+
+/*
+ * Helpers
+ */
+require_once ROOT . 'lib/helpers.php';
+
+/*
+ * If the ICanBoogie framework is available we patch some of our functions to use his.
+ */
+if (defined('ICanBoogie\VERSION'))
+{
+	Patchable::$callback_translate = '\ICanBoogie\I18n::translate';
+}

@@ -12,19 +12,17 @@
 namespace BrickRouge;
 
 use ICanBoogie;
-use ICanBoogie\Collector;
 use ICanBoogie\Debug;
 use ICanBoogie\FileCache;
-use ICanBoogie\Object;
 
 /**
  * @property $assets array Assets used by the document
  *
  * @todo: https://github.com/sstephenson/sprockets
  */
-class Document extends Object
+class Document extends \ICanBoogie\Object
 {
-	static protected function resolve_root()
+	protected static function resolve_root()
 	{
 		$stack = debug_backtrace();
 
@@ -291,8 +289,6 @@ class Document extends Object
 	}
 }
 
-namespace ICanBoogie;
-
 use BrickRouge\Document;
 
 /**
@@ -323,16 +319,6 @@ abstract class Collector
 
 		$this->use_cache = !empty($core->config['cache assets']);
 	}
-
-	/*
-	public static $assets_paths = array
-	(
-		'%icanboogie%' => '/home/olivier/Sites/weirdog/www/icybee/framework/ICanBoogie/assets',
-		'{icanboogie}' => '/home/olivier/Sites/weirdog/www/icybee/framework/ICanBoogie/assets',
-		'%icybee%' => '/home/olivier/Sites/weirdog/www/icybee/public',
-		'{icybee}' => '/home/olivier/Sites/weirdog/www/icybee/public'
-	);
-	*/
 
 	/**
 	 * Adds an asset to the collection.
@@ -388,14 +374,14 @@ abstract class Collector
 	abstract public function cache_construct(FileCache $cache, $key, array $userdata);
 }
 
-namespace ICanBoogie\Collector;
+namespace BrickRouge\Collector;
 
 use ICanBoogie\FileCache;
 
 /**
  * Collector for CSS assets.
  */
-class CSS extends \ICanBoogie\Collector
+class CSS extends \BrickRouge\Collector
 {
 	public function __toString()
 	{
@@ -457,7 +443,7 @@ EOT;
 
 		foreach ($collected as $url)
 		{
-			$rc .= '<link type="text/css" href="' . wd_entities($url) . '" rel="stylesheet" />' . PHP_EOL;
+			$rc .= '<link type="text/css" href="' . \BrickRouge\escape($url) . '" rel="stylesheet" />' . PHP_EOL;
 		}
 
 		return $rc;
@@ -488,7 +474,7 @@ EOT;
 /**
  * Collector for Javascript assets.
  */
-class JS extends \ICanBoogie\Collector
+class JS extends \BrickRouge\Collector
 {
 	public function __toString()
 	{
@@ -573,7 +559,7 @@ class JS extends \ICanBoogie\Collector
 
 		foreach ($collected as $url)
 		{
-			$rc .= '<script type="text/javascript" src="' . wd_entities($url) . '"></script>' . PHP_EOL;
+			$rc .= '<script type="text/javascript" src="' . \BrickRouge\escape($url) . '"></script>' . PHP_EOL;
 		}
 
 		return $rc;
@@ -589,7 +575,7 @@ class JS extends \ICanBoogie\Collector
 
 		foreach ($collected as $url)
 		{
-			$rc .= file_get_contents($_SERVER['DOCUMENT_ROOT'] . $url);
+			$rc .= file_get_contents(\ICanBoogie\DOCUMENT_ROOT . $url);
 		}
 
 		$list = json_encode($collected);

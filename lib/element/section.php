@@ -24,14 +24,12 @@ class Section extends Element
 
 		foreach ($children as $name => $element)
 		{
-			//wd_log('name: %name, element: %element', array('%name' => $name, '%element' => $element));
-
 			if (!$element)
 			{
 				continue;
 			}
 
-			$context_class = $name ? wd_normalize($name) : ++self::$auto_panelname;
+			$context_class = $name ? normalize($name) : ++self::$auto_panelname;
 
 			$class = 'panel panel-' . $context_class . ' ' . (is_object($element) ? $element->get(self::T_PANEL_CLASS) : '');
 

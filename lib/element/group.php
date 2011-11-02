@@ -26,7 +26,7 @@ class Group extends Element
 
 		if ($name)
 		{
-			$row_class .= ' field--' . wd_normalize($name);
+			$row_class .= ' field--' . normalize($name);
 		}
 
 		$label = $child->get(Form::T_LABEL);
@@ -43,7 +43,7 @@ class Group extends Element
 				$label_class .= ' required';
 			}
 
-			$label = '<label for="' . $child->id . '" class="' . $label_class . '">' . wd_entities($label) . '</label>';
+			$label = '<label for="' . $child->id . '" class="' . $label_class . '">' . escape($label) . '</label>';
 		}
 
 		if ($child->has_class('error'))
@@ -67,7 +67,7 @@ EOT;
 
 		if ($legend)
 		{
-			$rc .= '<legend>' . (is_object($legend) ? (string) $legend : wd_entities($legend)) . '</legend>';
+			$rc .= '<legend>' . (is_object($legend) ? (string) $legend : escape($legend)) . '</legend>';
 		}
 
 		return $rc . parent::render_inner_html();

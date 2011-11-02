@@ -494,7 +494,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 			{
 				list($target, $position) = explode(':', $child->get(self::T_WEIGHT)) + array(1 => 'after');
 
-				$rc = wd_array_insert($rc, $target, $child, $child->get('name'), $position == 'after');
+				$rc = array_insert($rc, $target, $child, $child->get('name'), $position == 'after');
 			}
 		}
 
@@ -664,7 +664,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 				$value = $attribute;
 			}
 
-			$rc .= ' ' . $attribute . '="' . (is_numeric($value) ? $value : wd_entities($value)) . '"';
+			$rc .= ' ' . $attribute . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
 		}
 
 		foreach ($this->dataset as $name => $value)
@@ -679,7 +679,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 				continue;
 			}
 
-			$rc .= ' data-' . $name . '="' . (is_numeric($value) ? $value : wd_entities($value)) . '"';
+			$rc .= ' data-' . $name . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
 		}
 
 		#
@@ -1164,7 +1164,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 						$limit = ini_get('upload_max_filesize') * 1024;
 					}
 
-					$limit = wd_format_size($limit * 1024);
+					$limit = format_size($limit * 1024);
 
 					$rc .= PHP_EOL;
 					$rc .= '<div class="limit">';
@@ -1346,7 +1346,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 							$label = t(substr($label, 1), array(), array('scope' => array('element', 'option')));
 						}
 
-						$label = wd_entities($label);
+						$label = escape($label);
 					}
 					else
 					{
@@ -1374,7 +1374,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 			{
 				$this->contextPush();
 
-				$this->innerHTML = wd_entities($this->get('value', ''));
+				$this->innerHTML = escape($this->get('value', ''));
 
 				$this->set('value', null);
 

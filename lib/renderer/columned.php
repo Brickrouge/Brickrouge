@@ -111,7 +111,7 @@ class Columned extends Element
 
 			if ($name)
 			{
-				$name = wd_normalize($name);
+				$name = normalize($name);
 			}
 
 			if ($is_table)

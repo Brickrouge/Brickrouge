@@ -19,27 +19,22 @@ class Searchbox extends Element
 	{
 		parent::__construct
 		(
-			'div', wd_array_merge_recursive
+			'div', $tags + array
 			(
-				array
+				self::T_CHILDREN => array
 				(
-					self::T_CHILDREN => array
+					'q' => $this->elements['q'] = new Text(),
+
+					$this->elements['trigger'] = new Button
 					(
-						'q' => $this->elements['q'] = new Text(),
-
-						$this->elements['trigger'] = new Button
+						'Search', array
 						(
-							'Search', array
-							(
-								'type' => 'submit'
-							)
+							'type' => 'submit'
 						)
-					),
-
-					'class' => 'widget-searchbox'
+					)
 				),
 
-				$tags
+				'class' => 'widget-searchbox'
 			)
 		);
 	}

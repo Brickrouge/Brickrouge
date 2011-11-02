@@ -21,7 +21,7 @@ class A extends Element
 			(
 				'href' => '#',
 
-				self::T_INNER_HTML => wd_entities(t($label, array(), array('scope' => 'a')))
+				self::T_INNER_HTML => escape(t($label, array(), array('scope' => 'a')))
 			)
 		);
 	}

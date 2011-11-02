@@ -111,7 +111,7 @@ class Form extends Element
 				continue;
 			}
 
-			$rc .= '<input type="hidden" name="' . wd_entities($name) . '" value="' . wd_entities($value) . '" />';
+			$rc .= '<input type="hidden" name="' . escape($name) . '" value="' . escape($value) . '" />';
 		}
 
 		#
@@ -389,8 +389,6 @@ class Form extends Element
 			throw new Exception('Unable to serialize form because of PDO SHIT: \1', array($this));
 		}
 
-//		wd_log('saved: \1', wd_entities($$core->session->wdform['saved'][$key]));
-
 		return $this;
 	}
 
@@ -401,6 +399,9 @@ class Form extends Element
 	 * the T_KEY tag defines the key.
 	 *
 	 * @return object A BrickRouge\Form object
+	 *
+	 * @todo-20111102 an Errors object should be provided so we can get rid of the wd_log_error()
+	 * function OR maybe we could throw some exceptions...
 	 */
 	static public function load($key)
 	{
@@ -467,7 +468,6 @@ class Form extends Element
 	 *
 	 * @return array
 	 */
-
 	public function __sleep()
 	{
 		#

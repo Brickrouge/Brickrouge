@@ -2,6 +2,7 @@
 
 namespace BrickRouge\Document;
 
+use BrickRouge;
 use ICanBoogie\Event;
 
 class Hooks
@@ -16,7 +17,7 @@ class Hooks
 
 		Event::fire('render_title:before', array('title' => &$title), $document);
 
-		$rc = '<title>' . wd_entities($title) . '</title>';
+		$rc = '<title>' . BrickRouge\escape($title) . '</title>';
 
 		Event::fire('render_title', array('rc' => &$rc), $document);
 
@@ -45,12 +46,12 @@ class Hooks
 
 		foreach ($http_equiv as $name => $content)
 		{
-			$rc .= '<meta http-equiv="' . wd_entities($name) . '" content="' . wd_entities($content) . '" />' . PHP_EOL;
+			$rc .= '<meta http-equiv="' . BrickRouge\escape($name) . '" content="' . BrickRouge\escape($content) . '" />' . PHP_EOL;
 		}
 
 		foreach ($metas as $name => $content)
 		{
-			$rc .= '<meta name="' . wd_entities($name) . '" content="' . wd_entities($content) . '" />' . PHP_EOL;
+			$rc .= '<meta name="' . BrickRouge\escape($name) . '" content="' . BrickRouge\escape($content) . '" />' . PHP_EOL;
 		}
 
 		Event::fire('render_metas', array('rc' => &$rc), $document);
