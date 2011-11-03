@@ -20,7 +20,7 @@ use ICanBoogie\FileCache;
  *
  * @todo: https://github.com/sstephenson/sprockets
  */
-class Document extends \ICanBoogie\Object
+class Document extends Object
 {
 	protected static function resolve_root()
 	{

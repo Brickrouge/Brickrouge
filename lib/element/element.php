@@ -11,10 +11,12 @@
 
 namespace BrickRouge;
 
+use ICanBoogie\Errors;
+
 /**
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
-class Element extends \ICanBoogie\Object implements \ArrayAccess
+class Element extends Object implements \ArrayAccess
 {
 	#
 	# special elements
@@ -54,9 +56,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 	const T_LABEL = '#element-label';
 	const T_LABEL_POSITION = '#element-label-position';
 	const T_LABEL_SEPARATOR = '#element-label-separator';
-	const T_LABEL_MISSING = '#element-label-missing'; // TODO: use this in validation
+	const T_LABEL_MISSING = '#element-label-missing';
 	const T_LEGEND = '#element-legend';
-	const T_REQUIRED = '#required';
+	const T_REQUIRED = 'required';
 	const T_OPTIONS = '#element-options';
 	const T_OPTIONS_DISABLED = '#element-options-disabled';
 
@@ -73,6 +75,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 
 	static $inputs = array('button', 'form', 'input', 'option', 'select', 'textarea');
 	static private $has_attribute_value = array('button', 'input', 'option');
+	static private $has_attribute_required = array('input', 'select', 'textarea');
 
 	#
 	#
@@ -103,8 +106,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 
 		if (!empty($tags[self::T_CHILDREN]))
 		{
-// 			$this[self::T_CHILDREN]
-
 			$this->children = array();
 			$this->addChildren($tags[self::T_CHILDREN]);
 
@@ -203,7 +204,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 	 */
 	public function offsetGet($offset)
 	{
-		return isset($this->tags[$offset]) ? $this->tags[$offset] : null;
+		return $this->offsetExists($offset) ? $this->tags[$offset] : null;
 	}
 
 	/**
@@ -433,19 +434,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 		}
 	}
 
-	/**
-	 * Returns the children of the element.
-	 *
-	 * The children are ordered according to their weight.
-	 */
-
-	public function getChildren()
-	{
-		Debug::trigger('Use the get_ordered_children() method');
-
-		return $this->get_ordered_children();
-	}
-
 	public function get_ordered_children()
 	{
 		if (!$this->children)
@@ -636,6 +624,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 			}
 
 			if ($attribute == 'value' && !in_array($this->tagName, self::$has_attribute_value))
+			{
+				continue;
+			}
+
+			if ($attribute == 'required' && !in_array($this->tagName, self::$has_attribute_required))
 			{
 				continue;
 			}
@@ -933,8 +926,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 
 	protected static function handle_assets()
 	{
-		global $core;
-
 		$class = get_called_class();
 
 		if (isset(self::$assets_handled[$class]))
@@ -944,7 +935,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 
 		self::$assets_handled[$class] = true;
 
-		call_user_func($class . '::add_assets', $core->document);
+		call_user_func($class . '::add_assets', get_document());
 	}
 
 	/**
@@ -1067,7 +1058,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 				#
 
 				$inner = null;
-				$disableds = $this->get(self::T_OPTIONS_DISABLED);
+				$disableds = $this[self::T_OPTIONS_DISABLED];
 
 				foreach ($tags[self::T_OPTIONS] as $option_name => $label)
 				{
@@ -1107,7 +1098,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 				# file element.
 				#
 
-				$reminder = $this->get(self::T_FILE_WITH_REMINDER);
+				$reminder = $this[self::T_FILE_WITH_REMINDER];
 
 				if ($reminder === true)
 				{
@@ -1118,9 +1109,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 				{
 					$rc .= '<div class="reminder">';
 
-					$rc .= new Element
+					$rc .= new Text
 					(
-						Element::E_TEXT, array
+						array
 						(
 							'value' => $reminder,
 							'disabled' => true,
@@ -1130,12 +1121,10 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 
 					$rc .= ' ';
 
-					$rc .= new Element
+					$rc .= new A
 					(
-						'a', array
+						'Télécharger', array
 						(
-							self::T_INNER_HTML => 'Télécharger',
-
 							'href' => $reminder,
 							'title' => $reminder,
 							'target' => '_blank'
@@ -1411,7 +1400,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess
 	 *
 	 * @return boolean Return TRUE is the validation succeed.
 	 */
-	public function validate($value, \ICanBoogie\Errors $errors)
+	public function validate($value, Errors $errors)
 	{
 		$validator = $this->get(self::T_VALIDATOR);
 		$options = $this->get(self::T_VALIDATOR_OPTIONS);

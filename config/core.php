@@ -19,17 +19,20 @@ return array
 		'BrickRouge\Document\Hooks' => $document . 'document.hooks.php',
 		'BrickRouge\Element' => $element . 'element.php',
 		'BrickRouge\File' => $element . 'file.php',
-		'BrickRouge\Form' => $lib . 'form.php',
+		'BrickRouge\Form' => $element . 'form.php',
 		'BrickRouge\Form\Templated' => $element . 'form.templated.php',
 		'BrickRouge\Group' => $element . 'group.php',
 		'BrickRouge\Pager' => $element . 'pager.php',
+		'BrickRouge\Object' => $lib . 'object.php',
 		'BrickRouge\Ranger' => $element . 'ranger.php',
 		'BrickRouge\Salutation' => $element . 'salutation.php',
 		'BrickRouge\Searchbox' => $element . 'searchbox.php',
 		'BrickRouge\Section' => $element . 'section.php',
 		'BrickRouge\Text' => $element . 'text.php',
 		'BrickRouge\Element\Templated' => $element . 'element.templated.php',
-		'BrickRouge\Renderer\Simple' => $renderer . 'simple.php'
+		'BrickRouge\Renderer\Simple' => $renderer . 'simple.php',
+
+		'ICanBoogie\Errors' => $lib . 'errors.php'
 	),
 
 	'cache assets' => false

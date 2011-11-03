@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * This package uses parts of the bootstrap package (c) 2011 Twitter.
+ * This package uses parts of the bootstrap package (c) Twitter.
  *
  * https://github.com/twitter/bootstrap
  */
@@ -597,7 +597,7 @@ textarea,
   border-radius: 4px;
   display: inline-block;
   padding: .2em .5ex;
-  font-size: .9em;
+  font-size: inherit;
   font-family: inherit;
   background: white;
 }
@@ -722,7 +722,7 @@ button, .btn {
   color: #333;
   /*font-size: 13px;*/
 
-  line-height: normal;
+  line-height: 1em;
   border: 1px solid #ccc;
   border-bottom-color: #bbb;
   -webkit-border-radius: 4px;
@@ -1084,6 +1084,7 @@ div.field.error .input-prepend span.add-on, div.field.error .input-append span.a
 }
 div.field > label {
   float: left;
+  line-height: 1em;
   width: 130px;
   text-align: right;
   color: #404040;

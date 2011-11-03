@@ -15,7 +15,6 @@ use ICanBoogie\Errors;
 use ICanBoogie\Event;
 use ICanBoogie\Exception;
 use ICanBoogie\Operation;
-use WdArray;
 
 /**
  * This is the base class to create forms.
@@ -235,7 +234,7 @@ class Form extends Element
 		{
 			if ($values)
 			{
-				$values = WdArray::flatten($values);
+				$values = array_flatten($values);
 			}
 
 			if (!$errors)
@@ -552,7 +551,7 @@ class Form extends Element
 	**
 	*/
 
-	public function validate($values, \ICanBoogie\Errors $errors)
+	public function validate($values, Errors $errors)
 	{
 		#
 		# validation without prior save
@@ -568,7 +567,7 @@ class Form extends Element
 		# for keys such as `cars[1][color]`
 		#
 
-		$values = WdArray::flatten($values);
+		$values = array_flatten($values);
 
 		$this->values = $values;
 

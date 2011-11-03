@@ -61,10 +61,7 @@ class AlertMessage extends Element
 			$message = '<p>' . implode('</p><p>', $message) . '</p>';
 		}
 
-		return <<<EOT
-<a href="#close" class="close">×</a>
-$message
-EOT;
+		return '<a href="#close" class="close">×</a>' . $message;
 	}
 
 	/**

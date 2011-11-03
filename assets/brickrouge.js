@@ -234,14 +234,14 @@ var BrickRouge = {
 	 */
 	updateAssets: (function()
 	{
-		var available_css;
-		var available_js;
+		var available_css=null;
+		var available_js=null;
 
 		return function (assets, done)
 		{
-			if (available_css === undefined)
+			if (available_css === null)
 			{
-				available_css = [];
+				available_css = new Array();
 
 				if (typeof(document_cached_css_assets) !== 'undefined')
 				{
@@ -257,9 +257,9 @@ var BrickRouge = {
 				);
 			}
 
-			if (available_js === undefined)
+			if (available_js === null)
 			{
-				available_js = [];
+				available_js = new Array();
 
 				if (typeof(document_cached_js_assets) !== 'undefined')
 				{
@@ -277,7 +277,7 @@ var BrickRouge = {
 				);
 			}
 
-			var css = [];
+			var css = new Array();
 
 			assets.css.each
 			(
@@ -302,7 +302,7 @@ var BrickRouge = {
 				}
 			);
 
-			var js = [];
+			var js = new Array();
 
 			assets.js.each
 			(
@@ -352,55 +352,74 @@ var BrickRouge = {
 	}) ()
 };
 
-/**
- * Extends Request.API to support the loading of single HTML elements.
- */
-Request.Element = new Class
-({
-	Extends: Request.API,
+BrickRouge.Widget.Searchbox = new Class({
 
-	onSuccess: function(response, text)
+	Implements: BrickRouge.Utils.Busy,
+
+	initialize: function(el, options)
 	{
-		var el = Elements.from(response.rc).shift();
+		this.element = $(el);
+	}
+});
 
-		if (!response.assets)
+/*
+ * The Request.Element class required the Request.API class provided by the ICanBoogie framework,
+ * maybe we should move the Request.Element and Request.Widget clases to the Icybee CMS.
+ */
+if (Request.API)
+{
+
+	/**
+	 * Extends Request.API to support the loading of single HTML elements.
+	 */
+	Request.Element = new Class
+	({
+		Extends: Request.API,
+
+		onSuccess: function(response, text)
 		{
-			this.parent(el, response, text);
+			var el = Elements.from(response.rc).shift();
 
-			return;
-		}
-
-		BrickRouge.updateAssets
-		(
-			response.assets, function()
+			if (!response.assets)
 			{
-				this.fireEvent('complete', [ response, text ]).fireEvent('success', [ el, response, text ]).callChain();
+				this.parent(el, response, text);
+
+				return;
 			}
-			.bind(this)
-		);
-	}
-});
 
-/**
- * Extends Request.Element to support loading of single widgets.
- */
-Request.Widget = new Class
-({
-	Extends: Request.Element,
-
-	initialize: function(cl, onSuccess, options)
-	{
-		if (options == undefined)
-		{
-			options = {};
+			BrickRouge.updateAssets
+			(
+				response.assets, function()
+				{
+					this.fireEvent('complete', [ response, text ]).fireEvent('success', [ el, response, text ]).callChain();
+				}
+				.bind(this)
+			);
 		}
+	});
 
-		options.url = 'widgets/' + cl;
-		options.onSuccess = onSuccess;
+	/**
+	 * Extends Request.Element to support loading of single widgets.
+	 */
+	Request.Widget = new Class
+	({
+		Extends: Request.Element,
 
-		this.parent(options);
-	}
-});
+		initialize: function(cl, onSuccess, options)
+		{
+			if (options == undefined)
+			{
+				options = {};
+			}
+
+			options.url = 'widgets/' + cl;
+			options.onSuccess = onSuccess;
+
+			this.parent(options);
+		}
+	});
+
+}
 
 /**
  * This is the namespace for all widgets constructors.
@@ -434,16 +453,6 @@ Element.Properties.widget = {
 		return widget;
 	}
 };
-
-BrickRouge.Widget.Searchbox = new Class
-({
-	Implements: BrickRouge.Utils.Busy,
-
-	initialize: function(el, options)
-	{
-		this.element = $(el);
-	}
-});
 
 /**
  * Widgets auto-constructor.

@@ -48,6 +48,67 @@ function array_insert($array, $relative, $value, $key=null, $after=false)
 	return array_merge($array, $spliced);
 }
 
+function array_flatten(array $array)
+{
+	$result = $array;
+
+	foreach ($array as $key => &$value)
+	{
+		_array_flatten_callback($result, '', $key, $value);
+	}
+
+	return $result;
+}
+
+function _array_flatten_callback(&$result, $pre, $key, &$value)
+{
+	if (is_array($value))
+	{
+		foreach ($value as $vk => &$vv)
+		{
+			_array_flatten_callback($result, $pre ? ($pre . '[' . $key . ']') : $key, $vk, $vv);
+		}
+	}
+	else if (is_object($value))
+	{
+		// FIXME: throw new Exception('Don\'t know what to do with objects: \1', $value);
+	}
+	else
+	{
+		/* FIXME-20100520: this has been disabled because sometime empty values (e.g. '') are
+		 * correct values. The function was first used with BrickRouge\Form which made sense at the time
+		 * but now changing values would be a rather strange behaviour.
+		#
+		# a trick to create undefined values
+		#
+
+		if (!strlen($value))
+		{
+			$value = null;
+		}
+		*/
+
+		if ($pre)
+		{
+			#
+			# only arrays are flattened
+			#
+
+			$pre .= '[' . $key . ']';
+
+			$result[$pre] = $value;
+		}
+		else
+		{
+			#
+			# simple values are kept intact
+			#
+
+			$result[$key] = $value;
+		}
+	}
+}
+
 /**
  * Convert special characters to HTML entities.
  *
@@ -86,7 +147,7 @@ function dump($value)
 }
 
 /**
- * @see Patchable::fallback_format
+ * @see Patchable::fallback_format()
  */
 function format($str, array $args=array())
 {
@@ -94,7 +155,7 @@ function format($str, array $args=array())
 }
 
 /**
- * @see Patchable::fallback_format_size
+ * @see Patchable::fallback_format_size()
  */
 function format_size($size)
 {
@@ -102,7 +163,7 @@ function format_size($size)
 }
 
 /**
- * @see Patchable::fallback_normalize
+ * @see Patchable::fallback_normalize()
  */
 function normalize($str, $separator='-', $charset=CHARSET)
 {
@@ -110,11 +171,21 @@ function normalize($str, $separator='-', $charset=CHARSET)
 }
 
 /**
- * @see Patchable::fallback_translate
+ * @see Patchable::fallback_translate()
  */
 function t($str, array $args=array(), array $options=array())
 {
 	return call_user_func(Patchable::$callback_translate, $str, $args, $options);
+}
+
+/**
+ * @return Document
+ *
+ * @see Patchable::fallback_get_document()
+ */
+function get_document()
+{
+	return call_user_func(Patchable::$callback_get_document);
 }
 
 class Patchable
@@ -123,6 +194,7 @@ class Patchable
 	static $callback_format_size = array(__CLASS__, 'fallback_format_size');
 	static $callback_normalize = array(__CLASS__, 'fallback_normalize');
 	static $callback_translate = array(__CLASS__, 'fallback_translate');
+	static $callback_get_document = array(__CLASS__, 'fallback_get_document');
 
 	/**
 	 * Formats the given string by replacing placeholders with the given values.
@@ -255,5 +327,17 @@ class Patchable
 	static public function fallback_translate($str, array $args=array(), array $options=array())
 	{
 		return format($str, $args);
+	}
+
+	private static $document;
+
+	static public function fallback_get_document()
+	{
+		if (self::$document === null)
+		{
+			self::$document = new Document();
+		}
+
+		return self::$document;
 	}
 }

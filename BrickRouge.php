@@ -45,4 +45,10 @@ require_once ROOT . 'lib/helpers.php';
 if (defined('ICanBoogie\VERSION'))
 {
 	Patchable::$callback_translate = '\ICanBoogie\I18n::translate';
+	Patchable::$callback_get_document = function()
+	{
+		global $core;
+
+		return $core->document;
+	};
 }
