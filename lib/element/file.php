@@ -11,7 +11,6 @@
 
 namespace BrickRouge;
 
-use BrickRouge\Element;
 use ICanBoogie\Uploaded;
 
 class File extends Element
@@ -31,7 +30,7 @@ class File extends Element
 		$this->dataset += $this->options();
 	}
 
-	protected static function add_assets(\BrickRouge\Document $document)
+	protected static function add_assets(Document $document)
 	{
 		parent::add_assets($document);
 
@@ -79,8 +78,8 @@ class File extends Element
 		}
 
 		$rc[] = '<span title="Path: ' . $path . '">' . $file . '</span>';
-		$rc[] = Uploaded::getMIME(\ICanBoogie\DOCUMENT_ROOT . $path);
-		$rc[] = format_size(filesize(\ICanBoogie\DOCUMENT_ROOT . $path));
+		$rc[] = Uploaded::getMIME(DOCUMENT_ROOT . $path);
+		$rc[] = format_size(filesize(DOCUMENT_ROOT . $path));
 
 		return $rc;
 	}
@@ -96,7 +95,7 @@ class File extends Element
 	{
 		global $document;
 
-		$limit = $this->get(self::T_FILE_WITH_LIMIT, 2 * 1024);
+		$limit = $this->get(self::FILE_WITH_LIMIT, 2 * 1024);
 
 		if ($limit === true)
 		{
@@ -142,11 +141,11 @@ class File extends Element
 		$rc .= '</div>';
 
 		#
-		# the T_FILE_WITH_LIMIT tag can be used to add a little text after the element
+		# the FILE_WITH_LIMIT tag can be used to add a little text after the element
 		# reminding the maximum file size allowed for the upload
 		#
 
-		$limit = $this->get(self::T_FILE_WITH_LIMIT);
+		$limit = $this->get(self::FILE_WITH_LIMIT);
 
 		if ($limit)
 		{
@@ -170,7 +169,7 @@ class File extends Element
 
 		if ($path)
 		{
-			if (!is_file(\ICanBoogie\DOCUMENT_ROOT . $path))
+			if (!is_file(DOCUMENT_ROOT . $path))
 			{
 				$infos = '<span class="warn">' . t('The file %file is missing !', array('%file' => basename($path))) . '</span>';
 			}

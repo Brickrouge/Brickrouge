@@ -113,8 +113,8 @@ function _array_flatten_callback(&$result, $pre, $key, &$value)
  * Convert special characters to HTML entities.
  *
  * @param string $str The string being converted.
- * @param string $charset Defines character set used in conversion. The default character set is
- * BrickRoute\CHARSET (utf-8).
+ * @param string $charset Defines character set used in conversion. The default charset is
+ * {@link BrickRoute\CHARSET} (utf-8).
  *
  * @return string
  */
@@ -147,7 +147,45 @@ function dump($value)
 }
 
 /**
- * @see Patchable::fallback_format()
+ * Returns a web accessible path to a web inaccessible file.
+ *
+ * If the accessible file does not exists it is created.
+ *
+ * @param string $path Absolute path to the web inaccessible file.
+ * @param string $suffix Optional suffix for the web accessible filename.
+ */
+function get_accessible_file($path, $suffix=null)
+{
+	$key = sprintf('%s-%04x%s.%s', md5($path), strlen($path), ($suffix ? '-' . $suffix : ''), pathinfo($path, PATHINFO_EXTENSION));
+	$replacement = DOCUMENT_ROOT . 'public/brickrouge/assets/' . $key;
+
+	if (!file_exists($replacement) || filemtime($path) > filemtime($replacement))
+	{
+		file_put_contents($replacement, file_get_contents($path));
+	}
+
+	return $replacement;
+}
+
+/**
+ * Formats the given string by replacing placeholders with the given values.
+ *
+ * The function is patchable by overriding the
+ * {@link BrickRouge\Patchable:$callback_format property}.
+ *
+ * @param string $str The string to format.
+ * @param array $args An array of replacement for the plaecholders. Occurences in $str of any
+ * key in $args are replaced with the corresponding sanitized value. The sanitization function
+ * depends on the first character of the key:
+ *
+ * * :key: Replace as is. Use this for text that has already been sanitized.
+ * * !key: Sanitize using the `escape()` function.
+ * * %key: Sanitize using the `escape()` function and wrap inside a "EM" markup.
+ *
+ * Numeric indexes can also be used e.g '\2' or "{2}" are replaced by the value of the index
+ * "2".
+ *
+ * @return string
  */
 function format($str, array $args=array())
 {
@@ -155,7 +193,16 @@ function format($str, array $args=array())
 }
 
 /**
- * @see Patchable::fallback_format_size()
+ * Formats a number into a size with unit (o, Ko, Mo, Go).
+ *
+ * The formatted string is localized using the {@link BrickRouge\t()} function.
+ *
+ * The function is patchable by overriding the
+ * {@link BrickRouge\Patchable:$callback_format_size property}.
+ *
+ * @param int $size
+ *
+ * @return string
  */
 function format_size($size)
 {
@@ -163,7 +210,14 @@ function format_size($size)
 }
 
 /**
- * @see Patchable::fallback_normalize()
+ * Normalizes the input provided and returns the normalized string.
+ *
+ * @param string $str The string to normalize.
+ * @param string $separator Whitespaces replacement.
+ * @param string $charset The charset of the input string, defaults to {@link BrickRouge\CHARSET}
+ * (utf-8).
+ *
+ * @return string
  */
 function normalize($str, $separator='-', $charset=CHARSET)
 {
@@ -171,7 +225,24 @@ function normalize($str, $separator='-', $charset=CHARSET)
 }
 
 /**
- * @see Patchable::fallback_translate()
+ * Translates a string to the current language or to a given language.
+ *
+ * The native string language is supposed to be english (en).
+ *
+ * The function is patchable by overriding the {@link BrickRouge\Patchable:$callback_translate}
+ * property and is patched to use the ICanBoogie translation features if the framework is available
+ * (see BrickRouge.php).
+ *
+ * @param string $str The native string to translate.
+ * @param array $args An array of replacements to make after the translation. The replacement is
+ * handled by the {@link BrickRouge\format()} function.
+ * @param array $options An array of additionnal options, with the following elements:
+ * - 'default': The default string to use if the translation failed.
+ * - 'scope': The scope of the translation.
+ *
+ * @return mixed
+ *
+ * @see ICanBoogie\I18n\Translator
  */
 function t($str, array $args=array(), array $options=array())
 {
@@ -179,13 +250,54 @@ function t($str, array $args=array(), array $options=array())
 }
 
 /**
- * @return Document
+ * Returns the global document object.
  *
- * @see Patchable::fallback_get_document()
+ * This document is used by classes when they need to add assets. Once assets are collected one can
+ * simple echo the assets while building the response HTML.
+ *
+ * The function is patchable by overriding the {@link BrickRouge\Patchable:$callback_get_document}
+ * property.
+ *
+ * Example:
+ *
+ * <?php
+ *
+ * namespace BrickRouge;
+ *
+ * $document = get_document();
+ * $document->css->add(BrickRouge\ASSETS . 'brickrouge.css');
+ * $document->js->add(BrickRouge\ASSETS . 'brickrouge.js');
+ *
+ * ?><!DOCTYPE html>
+ * <html>
+ * <head>
+ * <?php echo $document->css ?>
+ * </head>
+ * <body>
+ * <?php echo $document->js ?>
+ * </body>
+ * </html>
+ *
+ * @return Document
  */
 function get_document()
 {
 	return call_user_func(Patchable::$callback_get_document);
+}
+
+/**
+ * Checks if the session is started, and start it otherwise.
+ *
+ * The session is used by the {@link BrickRouge\Form} class to store validation errors and store
+ * its forms for later validation. Take a look at the {@link BrickRouge\Form::validate()} and
+ * {@link BrickRouge\Form::save()} methods.
+ *
+ * The function is patchable by overriding the {@link BrickRouge\Patchable:$callback_check_session}
+ * property and is patched to use the BrickRouge session features if the framework is available.
+ */
+function check_session()
+{
+	call_user_func(Patchable::$callback_check_session);
 }
 
 class Patchable
@@ -195,26 +307,12 @@ class Patchable
 	static $callback_normalize = array(__CLASS__, 'fallback_normalize');
 	static $callback_translate = array(__CLASS__, 'fallback_translate');
 	static $callback_get_document = array(__CLASS__, 'fallback_get_document');
+	static $callback_check_session = array(__CLASS__, 'fallback_check_session');
 
 	/**
-	 * Formats the given string by replacing placeholders with the given values.
+	 * This method is the fallback for the {@link BrickRouge\format()} function.
 	 *
-	 * This function is a copy of the format function provided by the ICanBoogie framework and is
-	 * the fallback for the format() function.
-	 *
-	 * @param string $str The string to format.
-	 * @param array $args An array of replacement for the plaecholders. Occurences in $str of any
-	 * key in $args are replaced with the corresponding sanitized value. The sanitization function
-	 * depends on the first character of the key:
-	 *
-	 * * :key: Replace as is. Use this for text that has already been sanitized.
-	 * * !key: Sanitize using the `escape()` function.
-	 * * %key: Sanitize using the `escape()` function and wrap inside a "EM" markup.
-	 *
-	 * Numeric indexes can also be used e.g '\2' or "{2}" are replaced by the value of the index
-	 * "2".
-	 *
-	 * @return string
+	 * @see BrickRouge\format()
 	 */
 	public static function fallback_format($str, array $args=array())
 	{
@@ -274,6 +372,11 @@ class Patchable
 		return strtr($str, $holders);
 	}
 
+	/**
+	 * This method is the fallback for the {@link BrickRouge\format_size()} function.
+	 *
+	 * @see BrickRouge\format_size()
+	 */
 	static public function fallback_format_size($size)
 	{
 		if ($size < 1024)
@@ -299,6 +402,11 @@ class Patchable
 		return t($str, array(':size' => round($size)));
 	}
 
+	/**
+	 * This method is the fallback for the {@link BrickRouge\normalize()} function.
+	 *
+	 * @see BrickRouge\normalize()
+	 */
 	static public function fallback_normalize($str, $separator='-', $charset=CHARSET)
 	{
 		$str = str_replace('\'', '', $str);
@@ -316,21 +424,23 @@ class Patchable
 	}
 
 	/**
-	 * Fallback for the translating function "t".
+	 * This method is the fallback for the {@link BrickRouge\t()} function.
 	 *
-	 * @param string $str
-	 * @param array $args
-	 * @param array $options
+	 * We usualy realy on the ICanBoogie framework I18n features to translate our string, if it is
+	 * not available we simply format the string using the {@link BrickRouge\format()} function.
 	 *
-	 * @return string
+	 * @see BrickRouge\t()
 	 */
 	static public function fallback_translate($str, array $args=array(), array $options=array())
 	{
 		return format($str, $args);
 	}
 
-	private static $document;
-
+	/**
+	 * This method is the fallback for the {@link BrickRouge\get_document()} function.
+	 *
+	 * @see BrickRouge\get_document()
+	 */
 	static public function fallback_get_document()
 	{
 		if (self::$document === null)
@@ -339,5 +449,22 @@ class Patchable
 		}
 
 		return self::$document;
+	}
+
+	private static $document;
+
+	/**
+	 * This method is the fallback for the {@link BrickRouge\check_session()} function.
+	 *
+	 * @see BrickRouge\check_session()
+	 */
+	static public function fallback_check_session()
+	{
+		if (session_id())
+		{
+			return;
+		}
+
+		session_start();
 	}
 }

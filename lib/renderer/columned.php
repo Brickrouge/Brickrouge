@@ -44,7 +44,7 @@ class Columned extends Element
 
 		$rc = null;
 
-		$is_table = ($this->tagName == 'table');
+		$is_table = ($this->tag_name == 'table');
 		$has_wrappers = !$this->get(self::T_NO_WRAPPERS);
 
 		foreach ($this->get_ordered_children() as $child)
@@ -68,11 +68,11 @@ class Columned extends Element
 			{
 				$child_id = $child->id;
 
-				$text = $child->get(Form::T_LABEL);
+				$text = $child->get(Form::LABEL);
 
 				if ($text)
 				{
-					$is_required = $child->get(self::T_REQUIRED);
+					$is_required = $child->get(self::REQUIRED);
 
 					$label .= '<label';
 
@@ -88,7 +88,7 @@ class Columned extends Element
 
 					$label .= '>';
 
-					$label .= self::translate_label($text);
+					$label .= t($text, array(), array('scope' => 'element.label'));
 
 					if ($is_required)
 					{
@@ -98,7 +98,7 @@ class Columned extends Element
 					$label .= '<span class="separator">&nbsp;:</span>';
 					$label .= '</label>';
 
-					$complement = $child->get(Form::T_LABEL_COMPLEMENT);
+					$complement = $child->get(Form::LABEL_COMPLEMENT);
 
 					if ($complement)
 					{

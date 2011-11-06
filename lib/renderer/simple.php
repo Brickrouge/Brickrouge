@@ -31,7 +31,7 @@ class Simple extends Element
 
 		foreach ($groups as $group)
 		{
-			if (empty($group[self::T_CHILDREN]))
+			if (empty($group[self::CHILDREN]))
 			{
 				continue;
 			}
@@ -52,7 +52,7 @@ class Simple extends Element
 			)
 		)
 
-		+ $this->form->get(self::T_GROUPS, array());
+		+ $this->form->get(self::GROUPS, array());
 
 // 		self::sort_by($groups, 'weight');
 
@@ -62,9 +62,9 @@ class Simple extends Element
 
 		foreach ($this->children as $name => $element)
 		{
-			$group = is_object($element) ? $element->get(self::T_GROUP, 'primary') : 'primary';
+			$group = is_object($element) ? $element->get(self::GROUP, 'primary') : 'primary';
 
-			$groups[$group][self::T_CHILDREN][$name] = $element;
+			$groups[$group][self::CHILDREN][$name] = $element;
 		}
 
 		return $groups;
@@ -76,8 +76,8 @@ class Simple extends Element
 		(
 			array
 			(
-				self::T_LEGEND => $group['title'],
-				self::T_CHILDREN => $group[self::T_CHILDREN]
+				self::LEGEND => $group['title'],
+				self::CHILDREN => $group[self::CHILDREN]
 			)
 		);
 

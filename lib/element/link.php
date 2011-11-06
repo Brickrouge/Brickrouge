@@ -11,8 +11,24 @@
 
 namespace BrickRouge;
 
+/**
+ * Creates a BUTTON element.
+ */
 class Button extends Element
 {
+	/**
+	 * Constructor.
+	 *
+	 * The object is created with the "button" type and an union of the provided tags and the
+	 * following values:
+	 *
+	 * - 'type': "button"
+	 * - INNER_HTML: The translated and escaped label. The label is translated with the "button"
+	 * scope.
+	 *
+	 * @param string $label Label of the button (inner text).
+	 * @param array $tags Optional tags used to create the object.
+	 */
 	public function __construct($label, $tags=array())
 	{
 		parent::__construct
@@ -21,7 +37,7 @@ class Button extends Element
 			(
 				'type' => 'button',
 
-				self::T_INNER_HTML => escape(t($label, array(), array('scope' => 'button')))
+				self::INNER_HTML => escape(t($label, array(), array('scope' => 'button')))
 			)
 		);
 	}

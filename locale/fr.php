@@ -47,8 +47,8 @@ return array
 	'@wdform.errors.email' => "L'adresse e-mail %value est invalide pour l'élément %label",
 
 	'Invalid E-Mail address: %email' => 'Adresse E-Mail invalide : %email',
-	'Invalid E-Mail address: %value for the %label input element'
-	=> 'Adresse E-Mail invalide pour le champ de saisie %label : %value',
+	'Invalid email address %value for the %label element.'
+	=> 'Adresse e-mail invalide pour le champ de saisie %label : %value',
 
 	'The field %field is required!' => 'Le champ %field est requis !',
 	'The fields %list and %last are required!' => 'Les champs %list et %last sont requis !',

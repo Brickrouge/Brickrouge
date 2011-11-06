@@ -51,7 +51,7 @@ class Templated extends Form
 			# label
 			#
 
-			$label = $child->get(self::T_LABEL);
+			$label = $child->get(self::LABEL);
 
 			if ($label)
 			{
@@ -64,7 +64,7 @@ class Templated extends Form
 					$label = t($label);
 				}
 
-				$is_required = $child->get(self::T_REQUIRED);
+				$is_required = $child->get(self::REQUIRED);
 
 				$child_id = $child->id;
 
@@ -82,7 +82,7 @@ class Templated extends Form
 				$start =  $is_required ? $markup_start . $label . '&nbsp;<sup>*</sup>' : $markup_start . $label;
 				$finish = '</label>';
 
-				$complement = $child->get(self::T_LABEL_COMPLEMENT);
+				$complement = $child->get(self::LABEL_COMPLEMENT);
 
 				if ($complement)
 				{

@@ -14,53 +14,51 @@ namespace BrickRouge;
 use ICanBoogie\Errors;
 
 /**
+ *
+ * @property string $class Value of the "class" attributes.
+ *
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
-class Element extends Object implements \ArrayAccess
+class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIterator
 {
 	#
 	# special elements
 	#
 
-	const E_CHECKBOX = '#checkbox';
-	const E_CHECKBOX_GROUP = '#checkbox-group';
-	const E_FILE = '#file';
-	const E_HIDDEN = '#hidden';
-	const E_PASSWORD = '#password';
-	const E_RADIO = '#radio';
-	const E_RADIO_GROUP = '#radio-group';
-	const E_SUBMIT = '#submit';
-	const E_TEXT = '#text';
+	const TYPE_CHECKBOX = '#checkbox';
+	const TYPE_CHECKBOX_GROUP = '#checkbox-group';
+	const TYPE_FILE = '#file';
+	const TYPE_RADIO = '#radio';
+	const TYPE_RADIO_GROUP = '#radio-group';
 
 	#
 	# special tags
 	#
 
-	const T_CHILDREN = '#children';
-	const T_DATASET = '#dataset';
-	const T_DEFAULT = '#default';
-	const T_DESCRIPTION = '#description';
-	const T_FILE_WITH_LIMIT = '#element-file-with-limit';
-	const T_FILE_WITH_REMINDER = '#element-file-with-reminder';
-	const T_GROUP = '#group';
-	const T_GROUPS = '#groups';
-	const T_INLINE_HELP = '#inline-help';
-	const T_TYPE = '#type';
+	const CHILDREN = '#children';
+	const DATASET = '#dataset';
+	const DEFAULT_VALUE = '#default-value';
+	const DESCRIPTION = '#description';
+	const FILE_WITH_LIMIT = '#element-file-with-limit';
+	const FILE_WITH_REMINDER = '#element-file-with-reminder';
+	const GROUP = '#group';
+	const GROUPS = '#groups';
+	const INLINE_HELP = '#inline-help';
 
 	/**
-	 * The T_INNER_HTML tag is used to define the inner HTML of an element.
+	 * The INNER_HTML tag is used to define the inner HTML of an element.
 	 * If the value of the tag is NULL, the markup will be self-closing.
 	 */
 
-	const T_INNER_HTML = '#innerHTML';
-	const T_LABEL = '#element-label';
-	const T_LABEL_POSITION = '#element-label-position';
-	const T_LABEL_SEPARATOR = '#element-label-separator';
-	const T_LABEL_MISSING = '#element-label-missing';
-	const T_LEGEND = '#element-legend';
-	const T_REQUIRED = 'required';
-	const T_OPTIONS = '#element-options';
-	const T_OPTIONS_DISABLED = '#element-options-disabled';
+	const INNER_HTML = '#inner-html';
+	const LABEL = '#element-label';
+	const LABEL_POSITION = '#element-label-position';
+	const LABEL_SEPARATOR = '#element-label-separator';
+	const LABEL_MISSING = '#element-label-missing';
+	const LEGEND = '#element-legend';
+	const REQUIRED = 'required';
+	const OPTIONS = '#element-options';
+	const OPTIONS_DISABLED = '#element-options-disabled';
 
 	/**
 	 * Define a validator for the object. The validator is defined using an
@@ -68,12 +66,11 @@ class Element extends Object implements \ArrayAccess
 	 *
 	 */
 
-	const T_VALIDATOR = '#validator';
-	const T_VALIDATOR_OPTIONS = '#validator-options';
-	const T_VERIFY = '#element-verify';
-	const T_WEIGHT = '#weight';
+	const VALIDATOR = '#validator';
+	const VALIDATOR_OPTIONS = '#validator-options';
+	const WEIGHT = '#weight';
 
-	static $inputs = array('button', 'form', 'input', 'option', 'select', 'textarea');
+	static private $inputs = array('button', 'form', 'input', 'option', 'select', 'textarea');
 	static private $has_attribute_value = array('button', 'input', 'option');
 	static private $has_attribute_required = array('input', 'select', 'textarea');
 
@@ -82,13 +79,12 @@ class Element extends Object implements \ArrayAccess
 	#
 
 	public $type;
-	public $tagName;
+	protected $tag_name;
 	public $children = array();
 	public $dataset = array();
 
 	protected $tags = array();
-	protected $classes = array();
-	protected $innerHTML = null;
+	protected $inner_html = null;
 
 	public function __construct($type, $tags=array())
 	{
@@ -104,12 +100,12 @@ class Element extends Object implements \ArrayAccess
 		# children first
 		#
 
-		if (!empty($tags[self::T_CHILDREN]))
+		if (!empty($tags[self::CHILDREN]))
 		{
 			$this->children = array();
-			$this->addChildren($tags[self::T_CHILDREN]);
+			$this->add_children($tags[self::CHILDREN]);
 
-			unset($tags[self::T_CHILDREN]);
+			unset($tags[self::CHILDREN]);
 		}
 
 		#
@@ -118,46 +114,29 @@ class Element extends Object implements \ArrayAccess
 
 		switch ((string) $type)
 		{
-			case self::E_CHECKBOX:
-			case self::E_RADIO:
-			case self::E_SUBMIT:
-			case self::E_TEXT:
-			case self::E_HIDDEN:
-			case self::E_PASSWORD:
+			case self::TYPE_CHECKBOX:
+			case self::TYPE_RADIO:
 			{
 				static $translate = array
 				(
-					self::E_CHECKBOX => array('input', 'checkbox'),
-					self::E_RADIO => array('input', 'radio'),
-					self::E_SUBMIT => array('button', 'submit'),
-					self::E_TEXT => array('input', 'text'),
-					self::E_HIDDEN => array('input', 'hidden'),
-					self::E_PASSWORD => array('input', 'password')
+					self::TYPE_CHECKBOX => array('input', 'checkbox'),
+					self::TYPE_RADIO => array('input', 'radio'),
 				);
 
-				$this->tagName = $translate[$type][0];
+				$this->tag_name = $translate[$type][0];
 				$tags['type'] = $translate[$type][1];
-
-				if ($type == self::E_SUBMIT)
-				{
-					$tags += array
-					(
-						self::T_INNER_HTML => t('Send')
-					);
-				}
 			}
 			break;
 
-			case self::E_CHECKBOX_GROUP:
+			case self::TYPE_CHECKBOX_GROUP:
 			{
-				$this->tagName = 'div';
-				$this->add_class('checkbox-group');
+				$this->tag_name = 'div';
 			}
 			break;
 
-			case self::E_FILE:
+			case self::TYPE_FILE:
 			{
-				$this->tagName = 'input';
+				$this->tag_name = 'input';
 
 				$tags['type'] = 'file';
 
@@ -165,17 +144,16 @@ class Element extends Object implements \ArrayAccess
 			}
 			break;
 
-			case self::E_RADIO_GROUP:
+			case self::TYPE_RADIO_GROUP:
 			{
-				$this->tagName = 'div';
-				$this->add_class('radio-group');
+				$this->tag_name = 'div';
 			}
 			break;
 
 			case 'textarea':
 			{
-				$this->tagName = 'textarea';
-				$this->innerHTML = '';
+				$this->tag_name = 'textarea';
+				$this->inner_html = '';
 
 				$tags += array('rows' => 10, 'cols' => 76);
 			}
@@ -183,13 +161,26 @@ class Element extends Object implements \ArrayAccess
 
 			default:
 			{
-				$this->tagName = $type;
+				$this->tag_name = $type;
 			}
 			break;
 		}
 
 		$this->set($tags);
+
+		if ((string) $type == self::TYPE_CHECKBOX_GROUP)
+		{
+			$this->add_class('checkbox-group');
+		}
+		else if ((string) $type == self::TYPE_RADIO_GROUP)
+		{
+			$this->add_class('radio-group');
+		}
 	}
+
+	/*
+	 * ArrayAccess implement.
+	 */
 
 	/**
 	 * @param offset
@@ -213,6 +204,40 @@ class Element extends Object implements \ArrayAccess
 	 */
 	public function offsetSet($offset, $value)
 	{
+		switch ($offset)
+		{
+			case self::CHILDREN:
+			{
+				$this->children = array();
+				$this->add_children($value);
+			}
+			break;
+
+			case self::DATASET:
+			{
+				$this->dataset = $value;
+			}
+			break;
+
+			case self::INNER_HTML:
+			{
+				$this->inner_html = $value;
+			}
+			break;
+
+			case 'class':
+			{
+				$this->class = $value;
+			}
+			break;
+
+			case 'id':
+			{
+				unset($this->id);
+			}
+			break;
+		}
+
 		$this->tags[$offset] = $value;
 	}
 
@@ -224,12 +249,64 @@ class Element extends Object implements \ArrayAccess
 		unset($this->tags[$offset]);
 	}
 
-	static protected $auto_element_id = 1;
+	/*
+	 * RecursiveIterator implement.
+	 */
 
+	protected $recursive_iterator_position;
+	protected $recursive_iterator_keys;
+
+	public function current()
+	{
+		return $this->children[$this->recursive_iterator_keys[$this->recursive_iterator_position]];
+	}
+
+	public function key()
+	{
+		return $this->recursive_iterator_keys[$this->recursive_iterator_position];
+	}
+
+	public function next()
+	{
+		return $this->recursive_iterator_position++;
+	}
+
+	public function rewind()
+	{
+		$this->recursive_iterator_keys = array_keys($this->children);
+		$this->recursive_iterator_position = 0;
+	}
+
+	public function valid()
+	{
+		return isset($this->recursive_iterator_keys[$this->recursive_iterator_position]);
+	}
+
+	public function getChildren()
+	{
+		return $this->current();
+	}
+
+	public function hasChildren()
+	{
+		return $this->getChildren() instanceof self;
+	}
+
+	/*
+	 * End of the RecursiveIterator implement
+	 */
+
+	/**
+	 * Returns a unique element id string.
+	 *
+	 * @return string
+	 */
 	static public function auto_element_id()
 	{
 		return 'element-autoid-' . self::$auto_element_id++;
 	}
+
+	static protected $auto_element_id = 1;
 
 	/**
 	 * Returns the element's id.
@@ -255,6 +332,8 @@ class Element extends Object implements \ArrayAccess
 	/**
 	 * The set() method is used to set, unset (nullify) and modify a tag
 	 * of an element.
+	 *
+	 * TODO-20111106: this is a legacy method, it will be removed as soon as possible.
 	 */
 	public function set($name, $value=null)
 	{
@@ -269,49 +348,14 @@ class Element extends Object implements \ArrayAccess
 		{
 			$this[$name] = $value;
 		}
-
-		switch ($name)
-		{
-			case self::T_CHILDREN:
-			{
-				$this->children = array();
-				$this->addChildren($value);
-			}
-			break;
-
-			case self::T_DATASET:
-			{
-				$this->dataset = $value;
-			}
-			break;
-
-			case self::T_INNER_HTML:
-			{
-				$this->innerHTML = $value;
-			}
-			break;
-
-			case 'class':
-			{
-				$classes = explode(' ', $value);
-				$classes = array_map('trim', $classes);
-
-				$this->classes += array_flip($classes);
-			}
-			break;
-
-			case 'id':
-			{
-				unset($this->$name);
-			}
-			break;
-		}
 	}
 
 	/**
 	 * The get() method is used to get to value of a tag. If the tag is not
 	 * set, `null` is returned. You can provide a default value which is returned
 	 * instead of `null` if the tag is not set.
+	 *
+	 * TODO-20111106: this is a legacy method, it will be removed as soon as possible.
 	 */
 	public function get($name, $default=null)
 	{
@@ -319,27 +363,55 @@ class Element extends Object implements \ArrayAccess
 	}
 
 	/**
-	 * Add a CSS class to the element.
+	 * @var array Class names used to compose the value of the "class" attribute.
+	 */
+	private $class_names=array();
+
+	/**
+	 * Returns the value of the "class" attribute.
+	 *
+	 * @return string
+	 */
+	protected function __volatile_get_class()
+	{
+		return implode(' ', array_keys($this->class_names));
+	}
+
+	/**
+	 * Sets the value of the "class" attribute.
+	 *
+	 * @param string $class
+	 */
+	protected function __volatile_set_class($class)
+	{
+		$names = explode(' ', $class);
+		$names = array_map('trim', $names);
+
+		$this->class_names = array_combine($names, array_fill(0, count($names), true));
+	}
+
+	/**
+	 * Adds a class name to the "class" attribute.
 	 *
 	 * @param $class
 	 */
 	public function add_class($class)
 	{
-		$this->classes[$class] = true;
+		$this->class_names[$class] = true;
 	}
 
 	/**
-	 * Remove a CSS class from the element.
+	 * Removes class name from the "class" attribute.
 	 *
 	 * @param $class
 	 */
 	public function remove_class($class)
 	{
-		unset($this->classes[$class]);
+		unset($this->class_names[$class]);
 	}
 
 	/**
-	 * Tests the element to see if it has the specified class name.
+	 * Checks a class name in the class attribute.
 	 *
 	 * @param string $class_name
 	 *
@@ -347,44 +419,20 @@ class Element extends Object implements \ArrayAccess
 	 */
 	public function has_class($class_name)
 	{
-		return isset($this->classes[$class_name]);
-	}
-
-	/**
-	 * Collect the CSS classes of the element.
-	 *
-	 * The method returns a single string made of the classes joined together.
-	 *
-	 * @return string
-	 */
-
-	protected function compose_class()
-	{
-		$value = $this->get('class');
-		$classes = $this->classes;
-
-		if ($value)
-		{
-			$add = explode(' ', $value);
-			$add = array_map('trim', $add);
-
-			$classes = array_flip($add) + $classes;
-		}
-
-		return implode(' ', array_keys($classes));
+		return isset($this->class_names[$class_name]);
 	}
 
 	protected function handleValue(&$tags)
 	{
-		$value = $this->get('value');
+		$value = $this['value'];
 
 		if ($value === null)
 		{
-			$default = $this->get(self::T_DEFAULT);
+			$default = $this[self::DEFAULT_VALUE];
 
 			if ($default)
 			{
-				if ($this->type == self::E_CHECKBOX)
+				if ($this->type == self::TYPE_CHECKBOX)
 				{
 					// TODO-20100108: we need to check this situation further more
 
@@ -392,7 +440,7 @@ class Element extends Object implements \ArrayAccess
 				}
 				else
 				{
-					$this->set('value', $default);
+					$this['value'] = $default;
 				}
 			}
 		}
@@ -405,7 +453,7 @@ class Element extends Object implements \ArrayAccess
 	 *
 	 * @param $name Optional, the name of the child element
 	 */
-	public function addChild($child, $name=null)
+	public function add_child($child, $name=null)
 	{
 		if ($name)
 		{
@@ -426,14 +474,17 @@ class Element extends Object implements \ArrayAccess
 		}
 	}
 
-	public function addChildren(array $children)
+	public function add_children(array $children)
 	{
 		foreach ($children as $name => $child)
 		{
-			$this->addChild($child, is_numeric($name) ? null : $name);
+			$this->add_child($child, is_numeric($name) ? null : $name);
 		}
 	}
 
+	/**
+	 * @return array[int]Element|string
+	 */
 	public function get_ordered_children()
 	{
 		if (!$this->children)
@@ -446,7 +497,7 @@ class Element extends Object implements \ArrayAccess
 
 		foreach ($this->children as $name => $child)
 		{
-			$weight = is_object($child) ? $child->get(self::T_WEIGHT, 0) : 0;
+			$weight = is_object($child) ? (int) $child[self::WEIGHT] : 0;
 
 			if (is_string($weight))
 			{
@@ -480,27 +531,13 @@ class Element extends Object implements \ArrayAccess
 		{
 			foreach ($with_relative_positions as $child)
 			{
-				list($target, $position) = explode(':', $child->get(self::T_WEIGHT)) + array(1 => 'after');
+				list($target, $position) = explode(':', $child[self::WEIGHT]) + array(1 => 'after');
 
-				$rc = array_insert($rc, $target, $child, $child->get('name'), $position == 'after');
+				$rc = array_insert($rc, $target, $child, $child['name'], $position == 'after');
 			}
 		}
 
 		return $rc;
-	}
-
-	public function get_named_elements()
-	{
-		$rc = array();
-
-		$this->walk(array($this, 'get_named_elements_callback'), array(&$rc), 'name');
-
-		return $rc;
-	}
-
-	private function get_named_elements_callback(Element $element, $userdata, $stop_value)
-	{
-		$userdata[0][$stop_value] = $element;
 	}
 
 	/*
@@ -513,20 +550,20 @@ class Element extends Object implements \ArrayAccess
 
 	protected $pushed_tags = array();
 	protected $pushed_children = array();
-	protected $pushed_innerHTML = array();
+	protected $pushed_inner_html = array();
 
 	public function contextPush()
 	{
 		array_push($this->pushed_tags, $this->tags);
 		array_push($this->pushed_children, $this->children);
-		array_push($this->pushed_innerHTML, $this->innerHTML);
+		array_push($this->pushed_inner_html, $this->inner_html);
 	}
 
 	public function contextPop()
 	{
 		$this->tags = array_pop($this->pushed_tags);
 		$this->children = array_pop($this->pushed_children);
-		$this->innerHTML = array_pop($this->pushed_innerHTML);
+		$this->inner_html = array_pop($this->pushed_inner_html);
 	}
 
 	/**
@@ -542,9 +579,9 @@ class Element extends Object implements \ArrayAccess
 	}
 
 	/**
-	* Returns the HTML representation of the element's contents.
+	* Returns the HTML representation of the element's content.
 	*
-	* Remember that if the element has a null content it is considered as self closing.
+	* If the element has a null content it is considered as self closing.
 	*
 	* @return string The content of the element.
 	*/
@@ -563,7 +600,7 @@ class Element extends Object implements \ArrayAccess
 		}
 		else
 		{
-			$rc = $this->innerHTML;
+			$rc = $this->inner_html;
 		}
 
 		return $rc;
@@ -594,13 +631,13 @@ class Element extends Object implements \ArrayAccess
 		#
 		#
 
-		$rc = '<' . $this->tagName;
+		$rc = '<' . $this->tag_name;
 
 		#
 		# class
 		#
 
-		$class = $this->compose_class();
+		$class = $this->class;
 
 		if ($class)
 		{
@@ -623,12 +660,12 @@ class Element extends Object implements \ArrayAccess
 				continue;
 			}
 
-			if ($attribute == 'value' && !in_array($this->tagName, self::$has_attribute_value))
+			if ($attribute == 'value' && !in_array($this->tag_name, self::$has_attribute_value))
 			{
 				continue;
 			}
 
-			if ($attribute == 'required' && !in_array($this->tagName, self::$has_attribute_required))
+			if ($attribute == 'required' && !in_array($this->tag_name, self::$has_attribute_required))
 			{
 				continue;
 			}
@@ -637,7 +674,7 @@ class Element extends Object implements \ArrayAccess
 			# We discard the `disabled`, `name` and `value` attributes for non input type elements
 			#
 
-			if (($attribute == 'disabled' || $attribute == 'name') && !in_array($this->tagName, self::$inputs))
+			if (($attribute == 'disabled' || $attribute == 'name') && !in_array($this->tag_name, self::$inputs))
 			{
 				continue;
 			}
@@ -676,7 +713,7 @@ class Element extends Object implements \ArrayAccess
 		}
 
 		#
-		# if the inner HTML of the element is null, the element is self closing
+		# if the inner HTML of the element is null, the element is self closing.
 		#
 
 		if ($inner === null)
@@ -685,7 +722,7 @@ class Element extends Object implements \ArrayAccess
 		}
 		else
 		{
-			$rc .= '>' . $inner . '</' . $this->tagName . '>';
+			$rc .= '>' . $inner . '</' . $this->tag_name . '>';
 		}
 
 		return $rc;
@@ -726,19 +763,18 @@ class Element extends Object implements \ArrayAccess
 		# add label
 		#
 
-		$label = $this->get(self::T_LABEL);
+		$label = $this[self::LABEL];
 
 		if ($label)
 		{
+			// TODO-20111106: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
+
 			if ($label{0} == '.')
 			{
-				$label = t(substr($label, 1), array(), array('scope' => array('element', 'label')));
-			}
-			else
-			{
-				$label = t($label);
+				$label = substr($label, 1);
 			}
 
+			$label = t($label, array(), array('scope' => 'element.label'));
 			$html = $this->decorate_with_label($html, $label);
 		}
 
@@ -746,15 +782,18 @@ class Element extends Object implements \ArrayAccess
 		# add inline help
 		#
 
-		$help = $this->get(self::T_INLINE_HELP);
+		$help = $this[self::INLINE_HELP];
 
 		if ($help)
 		{
+			// TODO-20111106: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
+
 			if ($help{0} == '.')
 			{
-				$help = t(substr($help, 1), array(), array('scope' => array('element', 'help')));
+				$help = substr($help, 1);
 			}
 
+			$help = t($help, array(), array('scope' => 'element.help'));
 			$html = $this->decorate_with_inline_help($html, $help);
 		}
 
@@ -762,15 +801,18 @@ class Element extends Object implements \ArrayAccess
 		# add description
 		#
 
-		$description = $this->get(self::T_DESCRIPTION);
+		$description = $this[self::DESCRIPTION];
 
 		if ($description)
 		{
+			// TODO-20111106: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
+
 			if ($description{0} == '.')
 			{
-				$description = t(substr($description, 1), array(), array('scope' => array('element', 'description')));
+				$description = substr($description, 1);
 			}
 
+			$description = t($description, array(), array('scope' => 'element.description'));
 			$html = $this->decorate_with_description($html, $description);
 		}
 
@@ -778,10 +820,11 @@ class Element extends Object implements \ArrayAccess
 		# add legend
 		#
 
-		$legend = $this->get(self::T_LEGEND);
+		$legend = $this[self::LEGEND];
 
 		if ($legend)
 		{
+			$legend = t($legend, array(), array('scope' => 'element.legend'));
 			$html = $this->decorate_with_legend($html, $legend);
 		}
 
@@ -809,9 +852,9 @@ class Element extends Object implements \ArrayAccess
 	 */
 	protected function decorate_with_label($html, $label)
 	{
-		$is_required = $this->get(self::T_REQUIRED);
-		$position = $this->get(self::T_LABEL_POSITION, 'after');
-		$separator = $this->get(self::T_LABEL_SEPARATOR, true);
+		$is_required = $this->get(self::REQUIRED);
+		$position = $this->get(self::LABEL_POSITION, 'after');
+		$separator = $this->get(self::LABEL_SEPARATOR, true);
 
 		/*
 		if ($is_required)
@@ -983,7 +1026,7 @@ class Element extends Object implements \ArrayAccess
 			'input', 'select', 'button', 'textarea'
 		);
 
-		if (in_array($this->tagName, $valued_elements))
+		if (in_array($this->tag_name, $valued_elements))
 		{
 			$this->handleValue($tags);
 		}
@@ -994,13 +1037,13 @@ class Element extends Object implements \ArrayAccess
 
 		switch ($this->type)
 		{
-			case self::E_CHECKBOX:
+			case self::TYPE_CHECKBOX:
 			{
 				$this->contextPush();
 
-				if ($this->get(self::T_DEFAULT) && $this->get('checked') === null)
+				if ($this[self::DEFAULT_VALUE] && $this['checked'] === null)
 				{
-					$this->set('checked', true);
+					$this['checked'] = true;
 				}
 
 				$rc = $this->render_outer_html();
@@ -1009,7 +1052,7 @@ class Element extends Object implements \ArrayAccess
 			}
 			break;
 
-			case self::E_CHECKBOX_GROUP:
+			case self::TYPE_CHECKBOX_GROUP:
 			{
 				$this->contextPush();
 
@@ -1019,11 +1062,12 @@ class Element extends Object implements \ArrayAccess
 				# get the name and selected value for our children
 				#
 
-				$name = $this->get('name');
-				$selected = $this->get('value', array());
-				$disabled = $this->get('disabled', false);
-				$readonly = $this->get('readonly', false);
+				$name = $this['name'];
+				$selected = $this['value'] ?: array();
+				$disabled = $this['disabled'] ?: false;
+				$readonly = $this['readonly'] ?: false;
 
+				/*
 				#
 				# and remove them from our attribute list
 				#
@@ -1038,6 +1082,7 @@ class Element extends Object implements \ArrayAccess
 						'readonly' => null
 					)
 				);
+				*/
 
 				#
 				# this is the 'template' child
@@ -1048,7 +1093,6 @@ class Element extends Object implements \ArrayAccess
 					'input', array
 					(
 						'type' => 'checkbox',
-						'disabled' => $disabled,
 						'readonly' => $readonly
 					)
 				);
@@ -1058,25 +1102,19 @@ class Element extends Object implements \ArrayAccess
 				#
 
 				$inner = null;
-				$disableds = $this[self::T_OPTIONS_DISABLED];
+				$disableds = $this[self::OPTIONS_DISABLED];
 
-				foreach ($tags[self::T_OPTIONS] as $option_name => $label)
+				foreach ($tags[self::OPTIONS] as $option_name => $label)
 				{
-					$child->set
-					(
-						array
-						(
-							self::T_LABEL => $label,
-							'name' => $name . '[' . $option_name . ']',
-							'checked' => !empty($selected[$option_name]),
-							'disabled' => !empty($disableds[$option_name])
-						)
-					);
+					$child[self::LABEL] = $label;
+					$child['name'] = $name . '[' . $option_name . ']';
+					$child['checked'] = !empty($selected[$option_name]);
+					$child['disabled'] = $disabled || !empty($disableds[$option_name]);
 
 					$inner .= $child;
 				}
 
-				$this->innerHTML .= $inner;
+				$this->inner_html .= $inner;
 
 				#
 				# make our element
@@ -1088,21 +1126,21 @@ class Element extends Object implements \ArrayAccess
 			}
 			break;
 
-			case self::E_FILE:
+			case self::TYPE_FILE:
 			{
 				$rc .= '<div class="wd-file">';
 
 				#
-				# the T_FILE_WITH_REMINDER tag can be used to add a disabled text input before
+				# the FILE_WITH_REMINDER tag can be used to add a disabled text input before
 				# the file element. this text input is used to display the current value of the
 				# file element.
 				#
 
-				$reminder = $this[self::T_FILE_WITH_REMINDER];
+				$reminder = $this[self::FILE_WITH_REMINDER];
 
 				if ($reminder === true)
 				{
-					$reminder = $this->get('value');
+					$reminder = $this['value'];
 				}
 
 				if ($reminder)
@@ -1115,7 +1153,7 @@ class Element extends Object implements \ArrayAccess
 						(
 							'value' => $reminder,
 							'disabled' => true,
-							'size' => $this->get('size', 40)
+							'size' => $this['size'] ?: 40
 						)
 					);
 
@@ -1123,9 +1161,8 @@ class Element extends Object implements \ArrayAccess
 
 					$rc .= new A
 					(
-						'Télécharger', array
+						'Download', $reminder, array
 						(
-							'href' => $reminder,
 							'title' => $reminder,
 							'target' => '_blank'
 						)
@@ -1140,11 +1177,11 @@ class Element extends Object implements \ArrayAccess
 				$rc .= $this->render_outer_html();
 
 				#
-				# the T_FILE_WITH_LIMIT tag can be used to add a little text after the element
+				# the FILE_WITH_LIMIT tag can be used to add a little text after the element
 				# reminding the maximum file size allowed for the upload
 				#
 
-				$limit = $this->get(self::T_FILE_WITH_LIMIT);
+				$limit = $this->get(self::FILE_WITH_LIMIT);
 
 				if ($limit)
 				{
@@ -1165,7 +1202,7 @@ class Element extends Object implements \ArrayAccess
 			}
 			break;
 
-			case self::E_RADIO_GROUP:
+			case self::TYPE_RADIO_GROUP:
 			{
 				$this->contextPush();
 
@@ -1175,25 +1212,10 @@ class Element extends Object implements \ArrayAccess
 				# get the name and selected value for our children
 				#
 
-				$name = $this->get('name');
-				$selected = $this->get('value');
-				$disabled = $this->get('disabled', false);
-				$readonly = $this->get('readonly', false);
-
-				#
-				# and remove them from our attribute list
-				#
-
-				$this->set
-				(
-					array
-					(
-						'name' => null,
-						'value' => null,
-						'disabled' => null,
-						'readonly' => null
-					)
-				);
+				$name = $this['name'];
+				$selected = $this['value'];
+				$disabled = $this['disabled'] ?: false;
+				$readonly = $this['readonly'] ?: false;
 
 				#
 				# this is the 'template' child
@@ -1205,38 +1227,31 @@ class Element extends Object implements \ArrayAccess
 					(
 						'type' => 'radio',
 						'name' => $name,
-						'disabled' => $disabled,
 						'readonly' => $readonly
 					)
 				);
 
 				#
-				# --create the inner content of our element
+				# create the inner content of our element
 				#
 				# add our options as children
 				#
 
-				$disableds = $this->get(self::T_OPTIONS_DISABLED);
+				$disableds = $this->get(self::OPTIONS_DISABLED);
 
-				foreach ($tags[self::T_OPTIONS] as $value => $label)
+				foreach ($tags[self::OPTIONS] as $value => $label)
 				{
 					if ($label && $label{0} == '.')
 					{
 						$label = t(substr($label, 1), array(), array('scope' => array('element', 'option')));
 					}
 
-					$child->set
-					(
-						array
-						(
-							self::T_LABEL => $label,
-							'value' => $value,
-							'checked' => (string) $value === (string) $selected,
-							'disabled' => !empty($disableds[$value])
-						)
-					);
+					$child[self::LABEL] = $label;
+					$child['value'] = $value;
+					$child['checked'] = (string) $value === (string) $selected;
+					$child['disabled'] = $disabled || !empty($disableds[$value]);
 
-					$this->children[] = clone $child;
+					$this->inner_html .= $child;
 				}
 
 				#
@@ -1244,44 +1259,6 @@ class Element extends Object implements \ArrayAccess
 				#
 
 				$rc = $this->render_outer_html();
-
-				$this->contextPop();
-			}
-			break;
-
-			case self::E_PASSWORD:
-			{
-				$this->contextPush();
-
-				#
-				# for security reason, the value of the password is emptied
-				#
-
-				$this->set('value', '');
-
-				$rc = $this->render_outer_html();
-
-				// FIXME: That's so lame !
-
-				if (isset($tags[self::T_VERIFY]))
-				{
-
-					$name = $this->get('name');
-					$label = t('confirm');
-
-					if ($this->get(self::T_REQUIRED))
-					{
-						$label = '<sup>*</sup> ' . $label;
-					}
-
-					$this->set('name', $name . '-confirm');
-
-					$rc .= ' <label>';
-					$rc .= $label;
-					$rc .= '&nbsp;:';
-					$rc .= ' ' . $this->render_outer_html();
-					$rc .= '</label>';
-				}
 
 				$this->contextPop();
 			}
@@ -1295,7 +1272,7 @@ class Element extends Object implements \ArrayAccess
 				# get the name and selected value for our children
 				#
 
-				$selected = $this->get('value');
+				$selected = $this['value'];
 
 				#
 				# this is the 'template' child
@@ -1309,8 +1286,8 @@ class Element extends Object implements \ArrayAccess
 
 				$inner = '';
 
-				$options = $this->get(self::T_OPTIONS, array());
-				$disabled = $this->get(self::T_OPTIONS_DISABLED);
+				$options = $this[self::OPTIONS] ?: array();
+				$disabled = $this[self::OPTIONS_DISABLED];
 
 				foreach ($options as $value => $label)
 				{
@@ -1318,23 +1295,20 @@ class Element extends Object implements \ArrayAccess
 					# value is casted to a string so that we can handle null value and compare '0' with 0
 					#
 
-					$child->set
-					(
-						array
-						(
-							'value' => $value,
-							'selected' => (string) $value === (string) $selected,
-							'disabled' => !empty($disabled[$value])
-						)
-					);
+					$child['value'] = $value;
+					$child['selected'] = (string) $value === (string) $selected;
+					$child['disabled'] = !empty($disabled[$value]);
 
 					if ($label)
 					{
+						// TODO-20111106: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
+
 						if ($label{0} == '.')
 						{
-							$label = t(substr($label, 1), array(), array('scope' => array('element', 'option')));
+							$label = substr($label, 1);
 						}
 
+						$label = t($label, array(), array('scope' => 'element.option'));
 						$label = escape($label);
 					}
 					else
@@ -1342,12 +1316,12 @@ class Element extends Object implements \ArrayAccess
 						$label = '&nbsp;';
 					}
 
-					$child->innerHTML = $label;
+					$child->inner_html = $label;
 
 					$inner .= $child;
 				}
 
-				$this->innerHTML .= $inner;
+				$this->inner_html .= $inner;
 
 				#
 				# make our element
@@ -1363,7 +1337,7 @@ class Element extends Object implements \ArrayAccess
 			{
 				$this->contextPush();
 
-				$this->innerHTML = escape($this->get('value', ''));
+				$this->inner_html = escape($this['value'] ?: '');
 
 				$this->set('value', null);
 
@@ -1393,7 +1367,7 @@ class Element extends Object implements \ArrayAccess
 	/**
 	 * Validate the value of the object.
 	 *
-	 * This function uses the validator defined using the T_VALIDATOR tag to validate
+	 * This function uses the validator defined using the VALIDATOR tag to validate
 	 * its value.
 	 *
 	 * @param $value
@@ -1402,8 +1376,8 @@ class Element extends Object implements \ArrayAccess
 	 */
 	public function validate($value, Errors $errors)
 	{
-		$validator = $this->get(self::T_VALIDATOR);
-		$options = $this->get(self::T_VALIDATOR_OPTIONS);
+		$validator = $this[self::VALIDATOR];
+		$options = $this[self::VALIDATOR_OPTIONS];
 
 		if ($validator)
 		{
@@ -1423,7 +1397,7 @@ class Element extends Object implements \ArrayAccess
 
 		switch ($this->type)
 		{
-			case self::E_CHECKBOX_GROUP:
+			case self::TYPE_CHECKBOX_GROUP:
 			{
 				if (isset($options['max-checked']))
 				{
@@ -1433,8 +1407,8 @@ class Element extends Object implements \ArrayAccess
 					{
 						$errors[$this->name] = t('Le nombre de choix possible pour le champ %name est limité à :limit', array
 						(
-							'%name' => Form::selectElementLabel($this),
-							':limit' => $limit
+							'name' => Form::select_element_label($this),
+							'limit' => $limit
 						));
 
 						return false;
@@ -1445,78 +1419,5 @@ class Element extends Object implements \ArrayAccess
 		}
 
 		return true;
-	}
-
-	/**
-	 * Walk thought the elements of the element's tree applying a function to each one of them.
-	 *
-	 * The callback is called with the element, the userdata and the stop value for the
-	 * element (which is null if @stop is null).
-	 *
-	 * If @stop is defined, only element having a non-null @stop attribute are called.
-	 *
-	 * @param $callback
-	 * @param $userdata
-	 * @param $stop
-	 */
-	public function walk($callback, $userdata, $stop=null)
-	{
-		#
-		# if the element has children, we walk them first, the walktrought is bubbling.
-		#
-
-		foreach ($this->children as $child)
-		{
-			#
-			# Only instances of the Element class are walkable.
-			#
-
-			if (!($child instanceof Element))
-			{
-				continue;
-			}
-
-			$child->walk($callback, $userdata, $stop);
-		}
-
-		#
-		# the callback is not called for the element, if its 'stop' attribute is null
-		#
-
-		$stop_value = null;
-
-		if ($stop)
-		{
-			$stop_value = $this->get($stop);
-
-			if ($stop_value === null)
-			{
-				return;
-			}
-		}
-
-		call_user_func($callback, $this, $userdata, $stop_value);
-	}
-
-	protected function __get_assets()
-	{
-		return array('css' => array(), 'js' => array());
-	}
-
-	// FIXME-20110204: hou que c'est vilain !
-
-	static protected function translate_label($label)
-	{
-		if (is_string($label) && $label{0} == '.')
-		{
-			return t(substr($label, 1), array(), array('scope' => array('element', 'label')));
-		}
-
-		if (!is_array($label))
-		{
-			return t($label, array(), array('scope' => array('element', 'label')));
-		}
-
-		return t($label[0], array(), array('scope' => $label[1]));
 	}
 }

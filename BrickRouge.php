@@ -24,7 +24,7 @@ define('BrickRouge\ASSETS', ROOT . 'assets' . DIRECTORY_SEPARATOR);
 /**
  * @var string Version string of the BrickRouge framework.
  */
-define('BrickRouge\VERSION', '1.0.0-dev (2011-11-02)');
+define('BrickRouge\VERSION', '1.0.0-dev (2011-11-06)');
 
 /**
  * @var string Charset used by the BrickRouge framework.
@@ -32,6 +32,21 @@ define('BrickRouge\VERSION', '1.0.0-dev (2011-11-02)');
 if (!defined('BrickRouge\CHARSET'))
 {
 	define('BrickRouge\CHARSET', 'utf-8');
+}
+
+/**
+ * @var string The DOCUMENT_ROOT directory used by the BrickRouge framework.
+ */
+if (!defined('BrickRouge\DOCUMENT_ROOT'))
+{
+	if (defined('ICanBoogie\DOCUMENT_ROOT'))
+	{
+		define('BrickRouge\DOCUMENT_ROOT', \ICanBoogie\DOCUMENT_ROOT);
+	}
+	else
+	{
+		define('BrickRouge\DOCUMENT_ROOT', rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
+	}
 }
 
 /*
@@ -44,11 +59,19 @@ require_once ROOT . 'lib/helpers.php';
  */
 if (defined('ICanBoogie\VERSION'))
 {
-	Patchable::$callback_translate = '\ICanBoogie\I18n::translate';
+	Patchable::$callback_translate = 'ICanBoogie\I18n::translate';
+
 	Patchable::$callback_get_document = function()
 	{
 		global $core;
 
 		return $core->document;
+	};
+
+	Patchable::$callback_check_session = function()
+	{
+		global $core;
+
+		return $core->session;
 	};
 }

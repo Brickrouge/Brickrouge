@@ -21,7 +21,7 @@ class Searchbox extends Element
 		(
 			'div', $tags + array
 			(
-				self::T_CHILDREN => array
+				self::CHILDREN => array
 				(
 					'q' => $this->elements['q'] = new Text(),
 

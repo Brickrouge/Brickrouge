@@ -13,11 +13,34 @@ namespace BrickRouge;
 
 use ICanBoogie\Errors;
 
+/**
+ * Creates alert message blocks.
+ */
 class AlertMessage extends Element
 {
 	protected $message;
 	protected $alert_type;
 
+	/**
+	 * Constructor.
+	 *
+	 * The element is created with the class "alert-message".
+	 *
+	 * @param string|array|ICanBoogie\Errors $message The alert message is provided as a string,
+	 * an array of strings or an ICanBoogie\Errors object.
+	 *
+	 * If the message is provided as a string it is used as is. If the message is provided as an
+	 * array each value of the array is considered as a message. If the message is provided as
+	 * an ICanBoogie\Errors object each entry of the object is considered as a message.
+	 *
+	 * Each message is wrapped in a P element and they are concatenated to create the final
+	 * message.
+	 *
+	 * @param array $tags Additional tags.
+	 *
+	 * @param string $type Defines an additionnal class for the element. If the message is an
+	 * ICanBoogie\Errors object $type is set to "errors".
+	 */
 	public function __construct($message, $tags=array(), $type='')
 	{
 		$this->message = $message;
@@ -32,9 +55,14 @@ class AlertMessage extends Element
 		);
 	}
 
-	public function compose_class()
+	/**
+	 * Add the alert type to the class string.
+	 *
+	 * @see BrickRouge.Element::__volatile_get_class()
+	 */
+	protected function __volatile_get_class()
 	{
-		return parent::compose_class() . ' ' . $this->alert_type;
+		return parent::__volatile_get_class() . ' ' . $this->alert_type;
 	}
 
 	public function render_inner_html()

@@ -25,14 +25,14 @@ class DateRange extends Element
 		(
 			'div', $tags + array
 			(
-				self::T_CHILDREN => array
+				self::CHILDREN => array
 				(
 					new Date
 					(
 						$start_tags + array
 						(
-							self::T_LABEL => 'Début',
-							self::T_LABEL_POSITION => 'before',
+							self::LABEL => 'Début',
+							self::LABEL_POSITION => 'before',
 
 							'name' => 'start'
 						)
@@ -44,8 +44,8 @@ class DateRange extends Element
 					(
 						$finish_tags + array
 						(
-							self::T_LABEL => 'Fin',
-							self::T_LABEL_POSITION => 'before',
+							self::LABEL => 'Fin',
+							self::LABEL_POSITION => 'before',
 
 							'name' => 'finish'
 						)

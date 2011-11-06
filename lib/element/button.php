@@ -21,7 +21,7 @@ class Button extends Element
 			(
 				'type' => 'button',
 
-				self::T_INNER_HTML => escape(t($label, array(), array('scope' => 'button')))
+				self::INNER_HTML => escape(t($label, array(), array('scope' => 'button')))
 			)
 		);
 	}

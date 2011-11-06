@@ -13,47 +13,105 @@ namespace BrickRouge;
 
 use ICanBoogie\Errors;
 use ICanBoogie\Event;
-use ICanBoogie\Exception;
 use ICanBoogie\Operation;
 
 /**
- * This is the base class to create forms.
- *
- * @todo: https://github.com/formasfunction/remotipart
+ * Creates a "FORM" element.
  */
-class Form extends Element
+class Form extends Element implements Validator
 {
-	const T_DISABLED = '#form-disabled';
-	const T_HIDDENS = '#form-hiddens';
-	const T_LABEL = '#form-label';
-	const T_LABEL_COMPLEMENT = '#form-label-complement';
-	const T_NO_LOG = '#form-no-log';
-	const T_VALUES = '#form-values';
-	const T_RENDERER = '#form-renderer';
-	const T_ACTIONS = '#form-actions';
+	/**
+	 * @var bool Set to true to disable all the elements of the form.
+	 */
+	const DISABLED = '#form-disabled';
 
-	static protected $auto_name = 1;
+	/**
+	 * @var array The HIDDENS tag can be used to provide hidden values. Each key/value pair of the
+	 * array is used to create an hidden input element with key as "name" attribute and value as
+	 * "value" attribute.
+	 */
+	const HIDDENS = '#form-hiddens';
 
-	static protected function getAutoName()
+	/**
+	 * @var string Used by elements to define a form label, this is different from the
+	 * Element::LABEL, which wraps the element in a "LABEL" element, the form label is associated
+	 * with the element but its layout depend on the form renderer.
+	 */
+	const LABEL = '#form-label';
+
+	/**
+	 * @var string Complement to the LABEL tag. Its layout depends on the form renderer.
+	 */
+	const LABEL_COMPLEMENT = '#form-label-complement';
+
+	/**
+	 * @var bool If true possible alert messages are not displayed.
+	 */
+	const NO_LOG = '#form-no-log';
+
+	/**
+	 * @var array Values for the elements of the form. The form recursively iterates through its
+	 * children to set their values, if their values it not already set (e.g. non null).
+	 */
+	const VALUES = '#form-values';
+
+	/**
+	 * @var string The class name of the renderer to use to render the children of the form. If no
+	 * renderer is defined, children are simply concatened.
+	 */
+	const RENDERER = '#form-renderer';
+
+	/**
+	 * @var bool|array|string Defines the actions of the form.
+	 * @see render_actions()
+	 */
+	const ACTIONS = '#form-actions';
+
+	/**
+	 * Returns a unique form name.
+	 *
+	 * @return string
+	 */
+	static protected function get_auto_name()
 	{
-		return 'form-autoname-' . self::$auto_name++;
+		return 'form-autoname-' . self::$auto_name_index++;
 	}
 
-	public $hiddens = array();
+	static protected $auto_name_index=1;
+
+	/**
+	 * @var array[string]string Hidden values, initialized with the {@link HIDDENS} tag.
+	 */
+	public $hiddens=array();
+
+	/**
+	 * @var string Name of the form.
+	 */
 	protected $name;
 
+	/**
+	 * Constructor.
+	 *
+	 * Default tags are added to the provided tags by a union:
+	 *
+	 * - 'action': If the "id" tag is provided, 'action' is set to '#<id>'.
+	 * - 'method': "post"
+	 * - 'enctype': "multipart/form-data"
+	 * - 'name': The value of the "id" tag or a name generated with the {@link get_auto_name()}
+	 * method
+	 *
+	 * If the 'method' is different than "post" the 'enctype' attribute is unset.
+	 *
+	 * @param array $tags Tags used to create the element.
+	 */
 	public function __construct(array $tags)
 	{
-		#
-		# we merge the provided tags with the default tags for the form element
-		#
-
 		$tags += array
 		(
 			'action' => isset($tags['id']) ? '#' . $tags['id'] : '',
 			'method' => 'post',
 			'enctype' => 'multipart/form-data',
-			'name' => isset($tags['id']) ? $tags['id'] : self::getAutoName()
+			'name' => isset($tags['id']) ? $tags['id'] : self::get_auto_name()
 		);
 
 		if ($tags['method'] != 'post')
@@ -61,35 +119,134 @@ class Form extends Element
 			unset($tags['enctype']);
 		}
 
-		#
-		# get form's name from tags
-		#
-
 		$this->name = $tags['name'];
 
-		#
-		# save hidden
-		#
+		parent::__construct('form', $tags);
+	}
 
-		if (isset($tags[self::T_HIDDENS]))
+	/**
+	 * Renders the object into an HTML string.
+	 *
+	 * Before rendering the object form elements are altered according to the {@link VALUES} and
+	 * {@link DISABLED} tags and previous validation errors.
+	 *
+	 * @see BrickRouge.Element::__toString()
+	 */
+	public function __toString()
+	{
+		$values = $this[self::VALUES];
+		$disabled = $this[self::DISABLED];
+
+		check_session();
+
+		$name = $this->name;
+		$errors = null;
+
+		if ($name && isset($_SESSION['brickrouge.forms_errors'][$name]))
 		{
-			$this->hiddens = $tags[self::T_HIDDENS];
+			$errors = $_SESSION['brickrouge.forms_errors'][$name];
 		}
 
-		parent::__construct('form', $tags);
+		if ($values || $disabled || $errors)
+		{
+			if ($values)
+			{
+				$values = array_flatten($values);
+			}
+
+			if (!$errors)
+			{
+				$errors = new Errors();
+			}
+
+			$this->alter_elements($values, $disabled, $errors);
+		}
+
+		return parent::__toString();
+	}
+
+	/**
+	 * @var array[string]Element The required elements of the form.
+	 */
+	protected $required=array();
+
+	/**
+	 * @var array[string]Element Elements of the form with a validator.
+	 */
+	protected $validators=array();
+
+	/**
+	 * @var callable Validator callback of the form.
+	 */
+	protected $validator;
+
+	/**
+	 * The method alters the {@link $required}, {@link $validators} and {@link $validator}
+	 * properties required for the serialization.
+	 *
+	 * The following properties are exported: name, required, validators and validator.
+	 *
+	 * @return array
+	 */
+	public function __sleep()
+	{
+		$required = array();
+		$validators = array();
+
+		$iterator = new \RecursiveIteratorIterator($this, \RecursiveIteratorIterator::SELF_FIRST);
+
+		foreach ($iterator as $element)
+		{
+			$name = $element['name'];
+
+			if (!$name)
+			{
+				continue;
+			}
+
+			if ($element[Element::REQUIRED])
+			{
+				$required[$name] = self::select_element_label($element);
+			}
+
+			if ($element[self::VALIDATOR] || $element[self::VALIDATOR_OPTIONS] || $element instanceof Validator)
+			{
+				$validators[$name] = $element;
+			}
+		}
+
+		$this->required = $required;
+		$this->validators = $validators;
+		$this->validator = $this[self::VALIDATOR];
 
 		#
-		# Add the 'wdform' class to the element
+		# we return the variables to serialize, we only export variables needed for later
+		# validation.
 		#
 
-		$this->add_class('wdform');
+		return array('name', 'required', 'validators', 'validator');
+	}
+
+	/**
+	 * Override the method to map the {@link HIDDENS} tag to the {@link $hiddens} property.
+	 *
+	 * @see BrickRouge.Element::offsetSet()
+	 */
+	public function offsetSet($offset, $value)
+	{
+		parent::offsetSet($offset, $value);
+
+		if ($offset == self::HIDDENS)
+		{
+			$this->hiddens = $value;
+		}
 	}
 
 	/**
 	 * Add hidden input elements and log messages to the inner HTML of the element
 	 * being converted to a string.
 	 *
-	 * @see ICanBoogie.Element::render_inner_html()
+	 * @see BrickRouge.Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -114,24 +271,28 @@ class Form extends Element
 		}
 
 		#
-		# get the log messages
+		# alert message
 		#
 
-		if (!$this->get(self::T_NO_LOG))
+		if (!$this[self::NO_LOG])
 		{
-			global $core;
+			check_session();
 
 			$name = $this->name;
 
-			if (!empty($core->session->errors[$name]))
+			if (!empty($_SESSION['brickrouge.forms_errors'][$name]))
 			{
-				$rc .= $this->render_errors($core->session->errors[$name]);
+				$rc .= $this->render_errors($_SESSION['brickrouge.forms_errors'][$name]);
 
-				unset($core->session->errors[$name]);
+				unset($_SESSION['brickrouge.forms_errors'][$name]);
 			}
 		}
 
-		$renderer = $this[self::T_RENDERER];
+		#
+		# render children
+		#
+
+		$renderer = $this[self::RENDERER];
 
 		if ($renderer)
 		{
@@ -152,16 +313,31 @@ class Form extends Element
 		# actions
 		#
 
-		$actions = $this[self::T_ACTIONS];
+		$actions = $this[self::ACTIONS];
 
 		if ($actions)
 		{
+			$this->add_class('has-actions');
+
 			$rc .= $this->render_actions($actions);
+		}
+		else
+		{
+			$this->remove_class('has-actions');
 		}
 
 		return $rc;
 	}
 
+	/**
+	 * Renders errors as an HTML element.
+	 *
+	 * An {@link AlertMessage} object is used to render the provided errors.
+	 *
+	 * @param string|ICanBoogie\Errors $errors.
+	 *
+	 * @return string
+	 */
 	protected function render_errors($errors)
 	{
 		return (string) new AlertMessage($errors);
@@ -171,17 +347,18 @@ class Form extends Element
 	 * Renders actions.
 	 *
 	 * @param boolean|array|string $actions Actions can be defined as a boolean, an array or a
-	 * string.
 	 *
-	 * If $actions is defined as `true` a submit button with the 'primary' classe is used
-	 * instead.
+	 * If actions are defined as a boolean, they are replaced by a "button[type=submit].primary"
+	 * element with the label "Send".
 	 *
-	 * If $actions is an array it is imploded with the `<span class="separator">&nbsp;</span>`
-	 * glue.
+	 * If actions are defined as an array, the array is concatened with the glue
+	 * "<span class="separator">&nbsp;</span>".
 	 *
-	 * If $actions is a string it is used as is.
+	 * Otherwise actions are used as is.
 	 *
-	 * @return string return $actions stringified and wrapped in a `div.actions` element.
+	 * The actions are then wrapped in a "DIV.actions".
+	 *
+	 * @return string Return the actions block.
 	 */
 	protected function render_actions($actions)
 	{
@@ -204,70 +381,42 @@ class Form extends Element
 		return '<div class="actions">' . $actions . '</div>';
 	}
 
-	/**
-	 *
-	 * Walk through children and modify their value and "disable" attribute according to
-	 * the T_VALUES and T_DISABLED tags.
-	 *
-	 * @see ICanBoogie.Element::__toString()
-	 */
-	public function __toString()
+	protected function alter_elements($values, $disabled, $errors)
 	{
-		global $core;
+		$iterator = new \RecursiveIteratorIterator($this, \RecursiveIteratorIterator::SELF_FIRST);
 
-		#
-		# walk children to set their values or disable them
-		#
-
-		$values = $this->get(self::T_VALUES);
-		$disabled = $this->get(self::T_DISABLED);
-
-		$errors = null;
-		$name = $this->name;
-
-		if (isset($core->session->errors[$name]))
+		foreach ($iterator as $element)
 		{
-			$errors = $core->session->errors[$name];
-		}
+			#
+			# disable the element is the form is disabled.
+			#
 
-		if ($values || $disabled || $errors)
-		{
-			if ($values)
+			if ($disabled)
 			{
-				$values = array_flatten($values);
+				$element['disabled'] = true;
 			}
 
-			if (!$errors)
+			$name = $element['name'];
+
+			if (!$name)
 			{
-				$errors = new Errors();
+				continue;
 			}
 
-			$this->walk(array($this, 'tweakElement_callback'), array($values, $disabled, $errors), 'name');
-		}
+			#
+			# if the element is referenced in the errors, we had the class 'error'
+			#
 
-		return parent::__toString();
-	}
+			if (isset($errors[$name]))
+			{
+				$element->add_class('error');
+			}
 
-	protected function tweakElement_callback($element, $userdata, $name)
-	{
-		list($values, $disabled, $errors) = $userdata;
+			#
+			# set value
+			#
 
-		#
-		# if the element is referenced in the errors, we had the class 'error'
-		#
-
-		if (isset($errors[$name]))
-		{
-			$element->add_class('error');
-		}
-
-		#
-		# set values
-		#
-
-		if ($values)
-		{
-			if (array_key_exists($name, $values))
+			if ($values && array_key_exists($name, $values))
 			{
 				$type = $element['type'];
 				$value = $values[$name];
@@ -297,57 +446,42 @@ class Form extends Element
 				}
 			}
 		}
-
-		#
-		# If the form is disabled, all of its input elements should be disabled too.
-		#
-
-		if ($disabled)
-		{
-			$element['disabled'] = true;
-		}
 	}
 
 	/*
-	**
+	 * Save and restore.
+	 */
 
-	SAVE & RESTORE
-
-	**
-	*/
-
-	const T_KEY = '#form-key';
+	const SAVED_KEY = '_brickrouge_form_key';
 	const SAVED_LIMIT = 10;
 
 	/**
 	 * Save the form in the session for future validation.
 	 *
-	 * @return string The MD5 key used to identify the form.
+	 * @return string The key used to identify the form save in the session.
 	 */
 	public function save()
 	{
-		global $core;
-
 		#
 		# before we save anything, we might want to do some cleanup. in order to avoid sessions
 		# filled with forms, we only maintain a few. The limit is set using the SAVED_LIMIT constant.
 		# If the number of forms saved in session is bigger than this limit, the older forms are removed.
 		#
 
-		$session = $core->session;
+		check_session();
 
-		if (isset($session->wdform['saved']))
+		if (isset($_SESSION['brickrouge.saved_forms']))
 		{
 			if (1)
 			{
-				$n = count($session->wdform['saved']);
+				$n = count($_SESSION['brickrouge.saved_forms']);
 			}
 			else
 			{
 				$n = 0;
 				$size = 0;
 
-				foreach ($session->wdform['saved'] as $serialized)
+				foreach ($_SESSION['brickrouge.saved_forms'] as $serialized)
 				{
 					$n++;
 					$size += strlen($serialized);
@@ -358,7 +492,7 @@ class Form extends Element
 
 			if ($n > self::SAVED_LIMIT)
 			{
-				$session->wdform['saved'] = array_slice($session->wdform['saved'], $n - self::SAVED_LIMIT);
+				$_SESSION['brickrouge.saved_forms'] = array_slice($_SESSION['brickrouge.saved_forms'], $n - self::SAVED_LIMIT);
 			}
 		}
 
@@ -373,29 +507,22 @@ class Form extends Element
 		# as a hidden input element
 		#
 
-		$this->hiddens[self::T_KEY] = $key;
+		$this->hiddens[self::SAVED_KEY] = $key;
 
 		#
 		# now we can serialize our form and save it in the user's session
 		#
 
-		try
-		{
-			$session->wdform['saved'][$key] = serialize($this);
-		}
-		catch (\PDOException $e)
-		{
-			throw new Exception('Unable to serialize form because of PDO SHIT: \1', array($this));
-		}
+		$_SESSION['brickrouge.saved_forms'][$key] = serialize($this);
 
 		return $this;
 	}
 
 	/**
-	 * Load a form previously saved for validation.
+	 * Load a form previously saved in session.
 	 *
 	 * @param $key The key used to identify the form to load, or an array in which
-	 * the T_KEY tag defines the key.
+	 * the SAVED_KEY tag defines the key.
 	 *
 	 * @return object A BrickRouge\Form object
 	 *
@@ -406,34 +533,28 @@ class Form extends Element
 	{
 		if (is_array($key))
 		{
-			if (empty($key[self::T_KEY]))
+			if (empty($key[self::SAVED_KEY]))
 			{
-				wd_log_error('Missing form\'s key to retrieve form');
-
-				return false;
+				throw new \Exception('The key to retrieve the form is missing.');
 			}
 
-			$key = $key[self::T_KEY];
+			$key = $key[self::SAVED_KEY];
 		}
 
-		if (self::exists($key))
+		if (!self::exists($key))
 		{
-			global $core;
-
-			$form = unserialize($core->session->wdform['saved'][$key]);
-
-			unset($core->session->wdform['saved'][$key]);
-
-			$form[self::T_VALIDATOR] = $form->validator;
-
-			return $form;
-		}
-		else
-		{
-			wd_log_error('The form has expired');
+			throw new \Exception('The form has expired.');
 		}
 
-		return false;
+		check_session();
+
+		$form = unserialize($_SESSION['brickrouge.saved_forms'][$key]);
+
+		unset($_SESSION['brickrouge.saved_forms'][$key]);
+
+		$form[self::VALIDATOR] = $form->validator;
+
+		return $form;
 	}
 
 	/**
@@ -443,121 +564,54 @@ class Form extends Element
 	 *
 	 * @return boolean Return TRUE if the form exists.
 	 */
-
 	public static function exists($key)
 	{
-		global $core;
+		check_session();
 
-		return !empty($core->session->wdform['saved'][$key]);
+		return !empty($_SESSION['brickrouge.saved_forms'][$key]);
 	}
 
-	protected $mandatories = array();
-	protected $validators = array();
-	protected $validator = null;
-
-	/**
-	 * Export only the necessary variables for future validation.
-	 *
-	 * There are two arrays exported : 'mandatories' and 'validators', as well as the validator
-	 * for the form itself and its name.
-	 *
-	 * 'mandatories' is an array of identifier/label pairs.
-	 *
-	 * 'validators' is an array of identifier/element pairs.
-	 *
-	 * @return array
-	 */
-	public function __sleep()
+	static public function select_element_label($element)
 	{
-		#
-		# mandatories and validators
-		#
-
-		$this->walk(array($this, 'exportElements_callback'), null, 'name');
-
-		#
-		# form's validator
-		#
-
-		$this->validator = $this[self::T_VALIDATOR];
-
-		#
-		# we return the variable to serialize, we only export variables needed
-		# for later validation.
-		#
-
-		return array('name', 'validator', 'mandatories', 'validators');
-	}
-
-	static public function selectElementLabel($element)
-	{
-		$label = $element[self::T_LABEL_MISSING];
+		$label = $element[self::LABEL_MISSING];
 
 		if (!$label)
 		{
-			$label = $element[Form::T_LABEL];
+			$label = $element[Form::LABEL];
 		}
 
 		if (!$label)
 		{
-			$label = $element[Element::T_LABEL];
+			$label = $element[Element::LABEL];
 		}
 
 		if (!$label)
 		{
-			$label = $element[self::T_LEGEND] ?: $label;
+			$label = $element[self::LEGEND] ?: $label;
 		}
 
 		#
 		# remove HTML markups from the label
 		#
 
-		$label = self::translate_label($label);
+		$label = t($label, array(), array('scope' => 'element.label'));
 		$label = strip_tags($label);
 
 		return $label;
 	}
 
-	protected function exportElements_callback($element, $userdata, $name)
-	{
-		#
-		# we don't include the validator for the form itself, as it will cause
-		# some serious infinite loop trouble during validation. The 'validator' variable
-		# is used instead.
-		#
-
-		if ($element == $this)
-		{
-			return;
-		}
-
-		if ($element[self::T_REQUIRED])
-		{
-			$this->mandatories[$name] = self::selectElementLabel($element);
-		}
-
-		//if ($element->get(self::T_VALIDATOR))
-		{
-			$this->validators[$name] = $element;
-		}
-	}
-
-
-	/*
-	**
-
-	VALIDATION
-
-	**
-	*/
-
+	/**
+	 * Validates the form using the provided values.
+	 *
+	 * @see BrickRouge.Element::validate()
+	 */
 	public function validate($values, Errors $errors)
 	{
 		#
 		# validation without prior save
 		#
 
-		if (empty($values[self::T_KEY]))
+		if (empty($values[self::SAVED_KEY]))
 		{
 			$this->__sleep();
 		}
@@ -581,7 +635,7 @@ class Form extends Element
 		{
 			$element->form = $this;
 			$element->name = $identifier;
-			$element->label = self::selectElementLabel($element);
+			$element->label = self::select_element_label($element);
 		}
 
 		#
@@ -590,7 +644,7 @@ class Form extends Element
 
 		$missing = array();
 
-		foreach ($this->mandatories as $name => $label)
+		foreach ($this->required as $name => $label)
 		{
 			if (!isset($values[$name]) || (isset($values[$name]) && is_string($values[$name]) && !strlen(trim($values[$name]))))
 			{
@@ -632,23 +686,23 @@ class Form extends Element
 		# validator is *not* called.
 		#
 
-	    foreach ($validators as $name => $element)
-	    {
-	    	$value = isset($values[$name]) ? $values[$name] : null;
+		foreach ($validators as $name => $element)
+		{
+			$value = isset($values[$name]) ? $values[$name] : null;
 
-	    	if ($value === null && empty($this->mandatories[$name]))
-	    	{
-	    		continue;
-	    	}
+			if (($value === null || $value === '') && empty($this->required[$name]))
+			{
+				continue;
+			}
 
-	    	$element->validate($value, $errors);
-	    }
+			$element->validate($value, $errors);
+		}
 
-	    // FIXME-20111013: ICanBoogie won't save the errors in the session, so we have to do it ourselves for now.
+		// FIXME-20111013: ICanBoogie won't save the errors in the session, so we have to do it ourselves for now.
 
-	    global $core;
+		check_session();
 
-	    $core->session->errors[$this->name] = $errors;
+		$_SESSION['brickrouge.forms_errors'][$this->name] = $errors;
 
 		if (count($errors))
 		{
@@ -659,12 +713,8 @@ class Form extends Element
 	}
 
 	/*
-	**
-
-	VALIDATORS
-
-	**
-	*/
+	 * Validators
+	 */
 
 	static public function validate_email(Errors $errors, $element, $value)
 	{
@@ -673,28 +723,21 @@ class Form extends Element
 			return true;
 		}
 
-		$errors[$element->name] = t('@wdform.errors.email', array('%value' => $value, '%label' => $element->label));
+		$errors[$element->name] = t('Invalid email address %value for the %label element.', array('value' => $value, 'label' => $element->label));
 
 		return false;
 	}
 
-	static public function validate_spam(Errors $errors, $element, $value)
+	static public function validate_url(Errors $errors, $element, $value)
 	{
-		global $core;
-
-		if ($core->user->is_guest)
+		if (filter_var($value, FILTER_VALIDATE_URL))
 		{
-			$score = wd_spamScore($value, null, null);
-
-			if ($score < 1)
-			{
-				$errors[$element->name] = t('@wdform.errors.spam', array('%score' => $score));
-
-				return false;
-			}
+			return true;
 		}
 
-		return true;
+		$errors[$element->name] = t('Invalid URL %value for the %label element.', array('value' => $value, 'label' => $element->label));
+
+		return false;
 	}
 
 	static public function validate_string(Errors $errors, $element, $value, $rules)
@@ -706,7 +749,7 @@ class Form extends Element
 		{
 			switch ($rule)
 			{
-				case 'minlength':
+				case 'length-min':
 				{
 					if (strlen($value) < $params)
 					{
@@ -722,14 +765,27 @@ class Form extends Element
 				}
 				break;
 
+				case 'length-max':
+				{
+					if (strlen($value) > $params)
+					{
+						$messages[] = t
+						(
+							'The string %string is too long (maximum size is :size characters)', array
+							(
+								'%string' => $value,
+								':size' => $params
+							)
+						);
+					}
+				}
+				break;
+
 				case 'regex':
 				{
 					if (!preg_match($params, $value))
 					{
-						$messages[] = t
-						(
-							'Invalid format of value %value', array('%value' => $value)
-						);
+						$messages[] = t('Invalid format of value %value', array('%value' => $value));
 					}
 				}
 				break;
@@ -745,7 +801,7 @@ class Form extends Element
 			$errors[$element->name] = t($message, $args);
 		}
 
-		return !$messages;
+		return empty($messages);
 	}
 
 	static public function validate_range(Errors $errors, $element, $value, $rules)
@@ -782,7 +838,7 @@ class Form extends Element
 	{
 		$request = $event->request;
 
-		if (!$request[self::T_KEY])
+		if (!$request[self::SAVED_KEY])
 		{
 			return;
 		}

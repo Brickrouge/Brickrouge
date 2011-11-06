@@ -13,7 +13,7 @@ namespace BrickRouge;
 
 class Salutation extends Element
 {
-	public function __construct($tags, $type=self::E_RADIO_GROUP)
+	public function __construct($tags, $type=self::TYPE_RADIO_GROUP)
 	{
 		$options = array
 		(
@@ -22,7 +22,7 @@ class Salutation extends Element
 			'.Mister'
 		);
 
-		if ($type == 'select' && !empty($tags[self::T_REQUIRED]))
+		if ($type == 'select' && !empty($tags[self::REQUIRED]))
 		{
 			$options = array(null => '') + $options;
 		}
@@ -31,8 +31,8 @@ class Salutation extends Element
 		(
 			$type, $tags + array
 			(
-				Form::T_LABEL => '.Salutation',
-				Element::T_OPTIONS => $options
+				Form::LABEL => '.Salutation',
+				Element::OPTIONS => $options
 			)
 		);
 	}
