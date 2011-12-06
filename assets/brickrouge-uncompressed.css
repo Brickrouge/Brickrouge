@@ -949,15 +949,15 @@ label.required sup, label.required:after {
   -moz-opacity: 0.4;
   opacity: 0.4;
 }
-.alert-message .close  + p {
-  margin-top: 0;
+.alert-message p {
+  margin: 0;
+}
+.alert-message p  + p {
+  margin-top: .2em;
 }
 .alert-message p a[href] {
   color: inherit;
   text-decoration: underline;
-}
-.alert-message p:last-child {
-  margin-bottom: 0;
 }
 .alert-message div {
   margin-top: 5px;
@@ -1023,11 +1023,11 @@ fieldset + fieldset {
 }
 fieldset legend {
   display: block;
-  font-size: 1.25em;
+  font-size: 1.4em;
   line-height: normal;
   color: #404040;
   margin-bottom: 0.665em;
-  padding: 0;
+  padding: 0 0 0 150px;
 }
 /*!
  * A field is a container for an input and its label.
@@ -1214,6 +1214,9 @@ form.stacked {
 }
 form.stacked div.alert-message {
   margin-bottom: .8em;
+}
+form.stacked fieldset legend {
+  padding-left: 0;
 }
 form.stacked div.field {
   /*!

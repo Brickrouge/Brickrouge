@@ -17,11 +17,11 @@ fieldset {
 	
 	legend {
 		display: block;
-		font-size: 1.25em;
+		font-size: 1.4em;
 		line-height: normal;
 		color: @grayDark;
 		margin-bottom: @baseline / 2;
-		padding: 0;
+		padding: 0 0 0 @label-width + @label-margin;
 	}
 }
 
@@ -223,6 +223,10 @@ form.stacked
 {
 	div.alert-message {
 		margin-bottom: .8em;
+	}
+	
+	fieldset legend {
+		padding-left: 0;
 	}
 	
 	div.field {
