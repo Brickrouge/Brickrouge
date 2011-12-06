@@ -75,3 +75,31 @@ if (defined('ICanBoogie\VERSION'))
 		return $core->session;
 	};
 }
+
+/*
+ * A simple autoloaded is used to autoload BrickRouge classes if the `BrickRouge\AUTOLOAD` constant
+ * is defined.
+ */
+
+if (defined('BrickRouge\AUTOLOAD'))
+{
+	spl_autoload_register
+	(
+		function($name)
+		{
+			static $index;
+
+			if ($index === null)
+			{
+				$path = ROOT; // the $path variable is used within the config file
+				$config = require $path . 'config/core.php';
+				$index = $config['autoload'];
+			}
+
+			if (isset($index[$name]))
+			{
+				require_once $index[$name];
+			}
+		}
+	);
+}
