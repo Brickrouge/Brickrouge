@@ -14,6 +14,7 @@ namespace BrickRouge;
 use ICanBoogie\Errors;
 
 /**
+ * An object that can be rendered into an HTML element.
  *
  * @property string $class Value of the "class" attributes.
  *
@@ -25,67 +26,239 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	# special elements
 	#
 
+	/**
+	 * Custom type used to create checkbox elements.
+	 *
+	 * @var string
+	 */
 	const TYPE_CHECKBOX = '#checkbox';
+
+	/**
+	 * Custom type used to create checkbox group elements.
+	 *
+	 * @var string
+	 */
 	const TYPE_CHECKBOX_GROUP = '#checkbox-group';
+
+	/**
+	 * Custom type used to create file elements.
+	 *
+	 * @var string
+	 */
 	const TYPE_FILE = '#file';
+
+	/**
+	 * Custom type used to create radio elements.
+	 *
+	 * @var string
+	 */
 	const TYPE_RADIO = '#radio';
+
+	/**
+	 * Custom type used to create radio group elements.
+	 *
+	 * @var string
+	 */
 	const TYPE_RADIO_GROUP = '#radio-group';
 
 	#
 	# special tags
 	#
 
+	/**
+	 * Used to define the children of an element.
+	 *
+	 * @var string
+	 */
 	const CHILDREN = '#children';
+
+	/**
+	 * Used to define the dataset of an element.
+	 *
+	 * @var string
+	 *
+	 * @see http://www.w3.org/TR/html5/elements.html#embedding-custom-non-visible-data-with-the-data-attributes
+	 */
 	const DATASET = '#dataset';
+
+	/**
+	 * Used to define the default value of an element.
+	 *
+	 * @var string
+	 */
 	const DEFAULT_VALUE = '#default-value';
+
+	/**
+	 * Used to define the description block of an element.
+	 *
+	 * @var string
+	 *
+	 * @see Element::decorate_with_description()
+	 */
 	const DESCRIPTION = '#description';
 	const FILE_WITH_LIMIT = '#element-file-with-limit';
 	const FILE_WITH_REMINDER = '#element-file-with-reminder';
+
+	/**
+	 * Used to define the group of an element.
+	 *
+	 * @var string
+	 */
 	const GROUP = '#group';
+
+	/**
+	 * Used to define the groups that can be used by children elements.
+	 *
+	 * @var string
+	 */
 	const GROUPS = '#groups';
+
+	/**
+	 * Used to define the inline help of an element.
+	 *
+	 * @var string
+	 *
+	 * @see Element::decorate_with_inline_help()
+	 */
 	const INLINE_HELP = '#inline-help';
 
 	/**
-	 * The INNER_HTML tag is used to define the inner HTML of an element.
-	 * If the value of the tag is NULL, the markup will be self-closing.
+	 * Used to define the inner HTML of an element. If the value of the tag is null, the markup
+	 * will be self-closing.
+	 *
+	 * @var string
 	 */
-
 	const INNER_HTML = '#inner-html';
+
+	/**
+	 * Used to define the label of an element.
+	 *
+	 * @var string
+	 *
+	 * @see Element::decorate_with_label()
+	 */
 	const LABEL = '#element-label';
+
+	/**
+	 * Used to define the position of the label. Possible positions are "before", "after" and
+	 * "above". Defaults to "after".
+	 *
+	 * @var string
+	 */
 	const LABEL_POSITION = '#element-label-position';
 	const LABEL_SEPARATOR = '#element-label-separator';
 	const LABEL_MISSING = '#element-label-missing';
+
+	/**
+	 * Used to define the legend of an element. If the legend is defined the element is wrapped
+	 * into a fieldset when it is rendered.
+	 *
+	 * @var string
+	 *
+	 * @see Element::decorate_with_legend()
+	 */
 	const LEGEND = '#element-legend';
+
+	/**
+	 * Used to define the required state of an element.
+	 *
+	 * @var string
+	 *
+	 * @see Form::validate()
+	 * @see http://dev.w3.org/html5/spec/Overview.html#the-required-attribute
+	 */
 	const REQUIRED = 'required';
+
+	/**
+	 * Used to define the options of the following element types: "select", TYPE_RADIO_GROUP
+	 * and TYPE_CHECKBOX_GROUP.
+	 *
+	 * @var string
+	 */
 	const OPTIONS = '#element-options';
+
+	/**
+	 * Used to define which options are disabled.
+	 *
+	 * @var string
+	 */
 	const OPTIONS_DISABLED = '#element-options-disabled';
 
 	/**
-	 * Define a validator for the object. The validator is defined using an
-	 * array made of a callback and a possible userdata array.
+	 * Used to define the validator of an element. The validator is defined using an array made of
+	 * a callback and a possible userdata array.
 	 *
+	 * @var string
 	 */
-
 	const VALIDATOR = '#validator';
 	const VALIDATOR_OPTIONS = '#validator-options';
+
+	/**
+	 * Use to define the weight of an element. This attribute can be used to reorder children when
+	 * a parent element is rendered.
+	 *
+	 * @var string
+	 *
+	 * @see Element::get_ordered_children()
+	 */
 	const WEIGHT = '#weight';
 
 	static private $inputs = array('button', 'form', 'input', 'option', 'select', 'textarea');
 	static private $has_attribute_value = array('button', 'input', 'option');
 	static private $has_attribute_required = array('input', 'select', 'textarea');
 
-	#
-	#
-	#
-
+	/**
+	 * Type if the element, as provided during __construct().
+	 *
+	 * @var string
+	 */
 	public $type;
+
+	/**
+	 * Tag name of the rendered HTML element.
+	 *
+	 * @var string
+	 */
 	protected $tag_name;
+
+	/**
+	 * An array containing the children of the element.
+	 *
+	 * @var array
+	 */
 	public $children = array();
+
+	/**
+	 * Dataset of the element.
+	 *
+	 * @var array[]string
+	 */
 	public $dataset = array();
 
+	/**
+	 * Tags of the element, including HTML attributes and custom tags.
+	 *
+	 * @var array[string]mixed
+	 */
 	protected $tags = array();
-	protected $inner_html = null;
 
+	/**
+	 * Inner HTML of the element.
+	 *
+	 * @var string|null
+	 *
+	 * @see Element::render_inner_html()
+	 */
+	protected $inner_html;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $type Type of the element, it can be one of the custom types (TYPE_*) or any
+	 * HTML type.
+	 *
+	 * @param array $tags HTML attributes and custom tags.
+	 */
 	public function __construct($type, $tags=array())
 	{
 		if ($tags === null)
