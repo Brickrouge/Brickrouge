@@ -670,16 +670,16 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 
 		foreach ($this->children as $name => $child)
 		{
-			$weight = is_object($child) ? (int) $child[self::WEIGHT] : 0;
+			$weight = is_object($child) ? $child[self::WEIGHT] : 0;
 
-			if (is_string($weight))
+			if (is_string($weight) && !is_numeric($weight))
 			{
 				$with_relative_positions[] = $child;
 
 				continue;
 			}
 
-			$by_weight[$weight][$name] = $child;
+			$by_weight[(int) $weight][$name] = $child;
 		}
 
 		if (count($by_weight) == 1 && !$with_relative_positions)
