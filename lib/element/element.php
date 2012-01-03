@@ -1090,38 +1090,27 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		{
 			case 'above':
 			{
-				$html = '';
-// 				$html  = '<div class="element-label">';
-				$html .= '<label class="' . $class . ' above">' . $label . '</label>';
-// 				$html .= '</div>';
-
-// 				$html .= '<div class="element-element">';
-				$html .= $content;
-// 				$html .= '</div>';
+				$html = <<<EOT
+<label class="$class above">$label</label>
+$content
+EOT;
 			}
 			break;
 
 			case 'before':
 			{
-				$html  = '<label class="' . $class . '">';
-				$html .= $label;
-
-				/*
-				if ($separator)
-				{
-					$html .= '&nbsp;:';
-				}
-				*/
-
-				$html .= ' ' . $content;
-				$html .= '</label>';
+				$html = <<<EOT
+<label class="$class">$label $content</label>
+EOT;
 			}
 			break;
 
 			case 'after':
 			default:
 			{
-				$html  = '<label class="' . $class . '">' . $content . ' ' . $label . '</label>';
+				$html = <<<EOT
+<label class="$class">$content $label</label>
+EOT;
 			}
 			break;
 		}
