@@ -204,6 +204,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	const WEIGHT = '#weight';
 
 	static private $inputs = array('button', 'form', 'input', 'option', 'select', 'textarea');
+	static private $has_attribute_disabled = array('button', 'input', 'optgroup', 'option', 'select', 'textarea');
 	static private $has_attribute_value = array('button', 'input', 'option');
 	static private $has_attribute_required = array('input', 'select', 'textarea');
 
@@ -840,6 +841,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 				continue;
 			}
 
+			#
+			# The `value`, `required`, `disabled` and `name` attributes are discarted if they are
+			# not supported by the element's type.
+			#
+
 			if ($attribute == 'value' && !in_array($this->tag_name, self::$has_attribute_value))
 			{
 				continue;
@@ -850,11 +856,12 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 				continue;
 			}
 
-			#
-			# We discard the `disabled`, `name` and `value` attributes for non input type elements
-			#
+			if ($attribute == 'disabled' && !in_array($this->tag_name, self::$has_attribute_disabled))
+			{
+				continue;
+			}
 
-			if (($attribute == 'disabled' || $attribute == 'name') && !in_array($this->tag_name, self::$inputs))
+			if ($attribute == 'name' && !in_array($this->tag_name, self::$inputs))
 			{
 				continue;
 			}
