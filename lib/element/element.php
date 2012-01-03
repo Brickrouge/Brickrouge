@@ -367,9 +367,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	/**
 	 * @param offset
 	 */
-	public function offsetGet($offset)
+	public function offsetGet($offset, $default=null)
 	{
-		return $this->offsetExists($offset) ? $this->tags[$offset] : null;
+		return $this->offsetExists($offset) ? $this->tags[$offset] : $default;
 	}
 
 	/**
@@ -1039,9 +1039,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	protected function decorate_with_label($html, $label)
 	{
-		$is_required = $this->get(self::REQUIRED);
-		$position = $this->get(self::LABEL_POSITION, 'after');
-		$separator = $this->get(self::LABEL_SEPARATOR, true);
+		$is_required = $this[self::REQUIRED];
+		$position = $this->offsetGet(self::LABEL_POSITION, 'after');
+		$separator = $this->offsetGet(self::LABEL_SEPARATOR, true);
 
 		/*
 		if ($is_required)
