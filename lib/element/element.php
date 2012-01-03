@@ -445,9 +445,25 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		return $this->recursive_iterator_position++;
 	}
 
+	/**
+	 * Creates an array with instanced from the class, descarting children provided as
+	 * strings.
+	 *
+	 * @see RecursiveIterator::rewind()
+	 */
 	public function rewind()
 	{
-		$this->recursive_iterator_keys = array_keys($this->children);
+		$keys = array();
+
+		foreach ($this->children as $key => $child)
+		{
+			if ($child instanceof self)
+			{
+				$keys[] = $key;
+			}
+		}
+
+		$this->recursive_iterator_keys = $keys;
 		$this->recursive_iterator_position = 0;
 	}
 
