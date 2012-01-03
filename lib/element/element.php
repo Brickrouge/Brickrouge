@@ -882,9 +882,20 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 				continue;
 			}
 
-			if ($attribute == 'title' && is_string($value) && $value{0} == '.')
+			#
+			# The 'title' attribute is translated within the 'element.title' scope.
+			#
+
+			if ($attribute == 'title')
 			{
-				$value = t(substr($value, 1), array(), array('scope' => array('element', 'title')));
+				// TODO-20111229: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
+
+				if ($value{0} == '.')
+				{
+					$value = substr($value, 1);
+				}
+
+				$value = t($value, array(), array('scope' => 'element.title'));
 			}
 
 			#
