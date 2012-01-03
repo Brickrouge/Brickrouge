@@ -3,6 +3,7 @@
 $lib = $path . 'lib' . DIRECTORY_SEPARATOR;
 $element = $lib . 'element' . DIRECTORY_SEPARATOR;
 $renderer = $lib . 'renderer' . DIRECTORY_SEPARATOR;
+$widget = $lib . 'widget' . DIRECTORY_SEPARATOR;
 
 return array
 (
@@ -23,7 +24,7 @@ return array
 		'BrickRouge\Pager' => $element . 'pager.php',
 		'BrickRouge\Ranger' => $element . 'ranger.php',
 		'BrickRouge\Salutation' => $element . 'salutation.php',
-		'BrickRouge\Searchbox' => $element . 'searchbox.php',
+		'BrickRouge\Searchbox' => $widget . 'searchbox.php',
 		'BrickRouge\Text' => $element . 'text.php',
 		'BrickRouge\Element\Templated' => $element . 'element.templated.php',
 		'BrickRouge\Renderer\Simple' => $renderer . 'simple.php',

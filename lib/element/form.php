@@ -16,7 +16,7 @@ use ICanBoogie\Event;
 use ICanBoogie\Operation;
 
 /**
- * Creates a "FORM" element.
+ * A FORM element.
  */
 class Form extends Element implements Validator
 {
@@ -80,12 +80,16 @@ class Form extends Element implements Validator
 	static protected $auto_name_index=1;
 
 	/**
-	 * @var array[string]string Hidden values, initialized with the {@link HIDDENS} tag.
+	 * Hidden values, initialized with the {@link HIDDENS} tag.
+	 *
+	 * @var array[string]string
 	 */
 	public $hiddens=array();
 
 	/**
-	 * @var string Name of the form.
+	 * Name of the form.
+	 *
+	 * @var string
 	 */
 	protected $name;
 

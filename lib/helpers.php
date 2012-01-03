@@ -377,7 +377,7 @@ class Patchable
 	 *
 	 * @see BrickRouge\format_size()
 	 */
-	static public function fallback_format_size($size)
+	public static function fallback_format_size($size)
 	{
 		if ($size < 1024)
 		{
@@ -407,7 +407,7 @@ class Patchable
 	 *
 	 * @see BrickRouge\normalize()
 	 */
-	static public function fallback_normalize($str, $separator='-', $charset=CHARSET)
+	public static function fallback_normalize($str, $separator='-', $charset=CHARSET)
 	{
 		$str = str_replace('\'', '', $str);
 
@@ -431,7 +431,7 @@ class Patchable
 	 *
 	 * @see BrickRouge\t()
 	 */
-	static public function fallback_translate($str, array $args=array(), array $options=array())
+	public static function fallback_translate($str, array $args=array(), array $options=array())
 	{
 		return format($str, $args);
 	}
@@ -441,7 +441,7 @@ class Patchable
 	 *
 	 * @see BrickRouge\get_document()
 	 */
-	static public function fallback_get_document()
+	public static function fallback_get_document()
 	{
 		if (self::$document === null)
 		{
@@ -458,7 +458,7 @@ class Patchable
 	 *
 	 * @see BrickRouge\check_session()
 	 */
-	static public function fallback_check_session()
+	public static function fallback_check_session()
 	{
 		if (session_id())
 		{

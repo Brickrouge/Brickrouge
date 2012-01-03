@@ -14,7 +14,7 @@ namespace BrickRouge;
 use ICanBoogie\Errors;
 
 /**
- * An object that can be rendered into an HTML element.
+ * An HTML element.
  *
  * @property string $class Value of the "class" attributes.
  *
@@ -423,7 +423,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/*
-	 * RecursiveIterator implement.
+	 * RecursiveIterator implementation.
 	 */
 
 	protected $recursive_iterator_position;
@@ -466,7 +466,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/*
-	 * End of the RecursiveIterator implement
+	 * End of the RecursiveIterator implementation.
 	 */
 
 	/**
@@ -782,15 +782,22 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	/**
 	 * Returns the HTML representation of the element and its contents.
 	 *
+	 * The final element's attributes are filtered when the element is rendered. All custom
+	 * attributes, those starting with the hash sign "#", are discarted. The `value`, `required`,
+	 * `disabled` and `name` attributes are discarted if they are not supported by the element's
+	 * type.
+	 *
+	 * If the element has a dataset each of its keys are mapped to a "data-+" attribute.
+	 *
+	 * Note: The inner HTML is rendered before the outer HTML in a try/catch block. If an
+	 * exception is caught, it is converted into a string and used as inner HTML.
+	 *
+	 * If the inner HTML is null the element is self-closing.
+	 *
 	 * @return string
 	 */
 	protected function render_outer_html()
 	{
-		#
-		# In order to allow further customization, the contents of the element is created before
-		# its markup.
-		#
-
 		try
 		{
 			$inner = $this->render_inner_html();
@@ -1046,7 +1053,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			$label = '<span class="text">' . $label . '</span>';
 		}
 
-		// TODO-20100714: T_LABEL_SEPARATOR is not used now, look out for consequences
+		// TODO-20100714: T_LABEL_SEPARATOR is no longer used, watch out for consequences
 
 		$content = $html;
 		$class = 'element-label';
@@ -1239,23 +1246,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 				$selected = $this['value'] ?: array();
 				$disabled = $this['disabled'] ?: false;
 				$readonly = $this['readonly'] ?: false;
-
-				/*
-				#
-				# and remove them from our attribute list
-				#
-
-				$this->set
-				(
-					array
-					(
-						'name' => null,
-						'value' => null,
-						'disabled' => null,
-						'readonly' => null
-					)
-				);
-				*/
 
 				#
 				# this is the 'template' child
@@ -1538,7 +1528,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
-	 * Validate the value of the object.
+	 * Validates the value of the element.
 	 *
 	 * This function uses the validator defined using the VALIDATOR tag to validate
 	 * its value.
