@@ -141,14 +141,12 @@ class Form extends Element implements Validator
 		$values = $this[self::VALUES];
 		$disabled = $this[self::DISABLED];
 
-		check_session();
-
 		$name = $this->name;
 		$errors = null;
 
-		if ($name && isset($_SESSION['brickrouge.forms_errors'][$name]))
+		if ($name)
 		{
-			$errors = $_SESSION['brickrouge.forms_errors'][$name];
+			$errors = retrieve_form_errors($name);
 		}
 
 		if ($values || $disabled || $errors)
@@ -280,15 +278,14 @@ class Form extends Element implements Validator
 
 		if (!$this[self::NO_LOG])
 		{
-			check_session();
-
 			$name = $this->name;
+			$errors = retrieve_form_errors($name);
 
-			if (!empty($_SESSION['brickrouge.forms_errors'][$name]))
+			if ($errors)
 			{
-				$rc .= $this->render_errors($_SESSION['brickrouge.forms_errors'][$name]);
+				$rc .= $this->render_errors($errors);
 
-				unset($_SESSION['brickrouge.forms_errors'][$name]);
+				store_form_errors($name, array()); // reset form errors.
 			}
 		}
 
@@ -456,8 +453,7 @@ class Form extends Element implements Validator
 	 * Save and restore.
 	 */
 
-	const SAVED_KEY = '_brickrouge_form_key';
-	const SAVED_LIMIT = 10;
+	const STORED_KEY_NAME = '_brickrouge_form_key';
 
 	/**
 	 * Save the form in the session for future validation.
@@ -466,58 +462,9 @@ class Form extends Element implements Validator
 	 */
 	public function save()
 	{
-		#
-		# before we save anything, we might want to do some cleanup. in order to avoid sessions
-		# filled with forms, we only maintain a few. The limit is set using the SAVED_LIMIT constant.
-		# If the number of forms saved in session is bigger than this limit, the older forms are removed.
-		#
+		$key = store_form($this);
 
-		check_session();
-
-		if (isset($_SESSION['brickrouge.saved_forms']))
-		{
-			if (1)
-			{
-				$n = count($_SESSION['brickrouge.saved_forms']);
-			}
-			else
-			{
-				$n = 0;
-				$size = 0;
-
-				foreach ($_SESSION['brickrouge.saved_forms'] as $serialized)
-				{
-					$n++;
-					$size += strlen($serialized);
-				}
-
-				wd_log('already \1 forms in session, using \2 ko', $n, round($size / 1024, 2));
-			}
-
-			if ($n > self::SAVED_LIMIT)
-			{
-				$_SESSION['brickrouge.saved_forms'] = array_slice($_SESSION['brickrouge.saved_forms'], $n - self::SAVED_LIMIT);
-			}
-		}
-
-		#
-		# we create a unique key for our form
-		#
-
-		$key = md5(uniqid(mt_rand(), true));
-
-		#
-		# in order to be able to recognize our form later, we add the key
-		# as a hidden input element
-		#
-
-		$this->hiddens[self::SAVED_KEY] = $key;
-
-		#
-		# now we can serialize our form and save it in the user's session
-		#
-
-		$_SESSION['brickrouge.saved_forms'][$key] = serialize($this);
+		$this->hiddens[self::STORED_KEY_NAME] = $key;
 
 		return $this;
 	}
@@ -526,35 +473,28 @@ class Form extends Element implements Validator
 	 * Load a form previously saved in session.
 	 *
 	 * @param $key The key used to identify the form to load, or an array in which
-	 * the SAVED_KEY tag defines the key.
+	 * STORED_KEY_NAME defines the key.
 	 *
 	 * @return object A BrickRouge\Form object
-	 *
-	 * @todo-20111102 an Errors object should be provided so we can get rid of the wd_log_error()
-	 * function OR maybe we could throw some exceptions...
 	 */
 	static public function load($key)
 	{
 		if (is_array($key))
 		{
-			if (empty($key[self::SAVED_KEY]))
+			if (empty($key[self::STORED_KEY_NAME]))
 			{
 				throw new \Exception('The key to retrieve the form is missing.');
 			}
 
-			$key = $key[self::SAVED_KEY];
+			$key = $key[self::STORED_KEY_NAME];
 		}
 
-		if (!self::exists($key))
+		$form = retrieve_form($key);
+
+		if (!$form)
 		{
 			throw new \Exception('The form has expired.');
 		}
-
-		check_session();
-
-		$form = unserialize($_SESSION['brickrouge.saved_forms'][$key]);
-
-		unset($_SESSION['brickrouge.saved_forms'][$key]);
 
 		$form[self::VALIDATOR] = $form->validator;
 
@@ -615,7 +555,7 @@ class Form extends Element implements Validator
 		# validation without prior save
 		#
 
-		if (empty($values[self::SAVED_KEY]))
+		if (empty($values[self::STORED_KEY_NAME]))
 		{
 			$this->__sleep();
 		}
@@ -704,9 +644,7 @@ class Form extends Element implements Validator
 
 		// FIXME-20111013: ICanBoogie won't save the errors in the session, so we have to do it ourselves for now.
 
-		check_session();
-
-		$_SESSION['brickrouge.forms_errors'][$this->name] = $errors;
+		store_form_errors($this->name, $errors);
 
 		if (count($errors))
 		{
@@ -842,7 +780,7 @@ class Form extends Element implements Validator
 	{
 		$request = $event->request;
 
-		if (!$request[self::SAVED_KEY])
+		if (!$request[self::STORED_KEY_NAME])
 		{
 			return;
 		}

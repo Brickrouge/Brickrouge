@@ -300,6 +300,53 @@ function check_session()
 	call_user_func(Patchable::$callback_check_session);
 }
 
+/**
+ * Stores of form for later validation.
+ *
+ * @param Form $form The form to store.
+ *
+ * @return string A key that must be used to retrieve the form.
+ */
+function store_form(Form $form)
+{
+	return call_user_func(Patchable::$callback_store_form, $form);
+}
+
+/**
+ * Retrieve a stored form.
+ *
+ * @param string $key Key of the form to retrieve.
+ *
+ * @return Form|null The retrieved form or null if none where found for the specified key.
+ */
+function retrieve_form($key)
+{
+	return call_user_func(Patchable::$callback_retrieve_form, $key);
+}
+
+/**
+ * Stores the validation errors of a form.
+ *
+ * @param string $name The name of the form.
+ * @param array $errors The validation errors of the form.
+ */
+function store_form_errors($name, $errors)
+{
+	call_user_func(Patchable::$callback_store_form_errors, $name, $errors);
+}
+
+/**
+ * Retrieves the validation errors of a form.
+ *
+ * @param string $name The name if the form.
+ *
+ * @return array
+ */
+function retrieve_form_errors($name)
+{
+	return call_user_func(Patchable::$callback_retrieve_form_errors, $name);
+}
+
 class Patchable
 {
 	static $callback_format = array(__CLASS__, 'fallback_format');
@@ -308,6 +355,10 @@ class Patchable
 	static $callback_translate = array(__CLASS__, 'fallback_translate');
 	static $callback_get_document = array(__CLASS__, 'fallback_get_document');
 	static $callback_check_session = array(__CLASS__, 'fallback_check_session');
+	static $callback_store_form = array(__CLASS__, 'fallback_store_form');
+	static $callback_retrieve_form = array(__CLASS__, 'fallback_retrieve_form');
+	static $callback_store_form_errors = array(__CLASS__, 'fallback_store_form_errors');
+	static $callback_retrieve_form_errors = array(__CLASS__, 'fallback_retrieve_form_errors');
 
 	/**
 	 * This method is the fallback for the {@link BrickRouge\format()} function.
@@ -466,5 +517,88 @@ class Patchable
 		}
 
 		session_start();
+	}
+
+	const STORE_KEY = 'brickrouge.stored_forms';
+	const STORE_MAX = 10;
+
+	/**
+	 * Fallback for the {@link BrickRouge\store_form()} function.
+	 *
+	 * The form is saved in the session in the STORE_KEY array.
+	 *
+	 * @param Form $form
+	 *
+	 * @return string The key to use to retrieve the form.
+	 */
+	public static function fallback_store_form(Form $form)
+	{
+		check_session();
+
+		#
+		# before we store anything, we do some cleanup. in order to avoid sessions filled with
+		# used forms. We only maintain a few. The limit is set using the STORE_MAX constant.
+		#
+
+		if (isset($_SESSION[self::STORE_KEY]))
+		{
+			$n = count($_SESSION[self::STORE_KEY]);
+
+			if ($n > self::STORE_MAX)
+			{
+				$_SESSION[self::STORE_KEY] = array_slice($_SESSION[self::STORE_KEY], $n - self::STORE_MAX);
+			}
+		}
+
+		$key = md5(uniqid(mt_rand(), true));
+
+		$_SESSION[self::STORE_KEY][$key] = serialize($form);
+
+		return $key;
+	}
+
+	/**
+	 * Fallback for the {@link BrickRouge\retrieve_form()} function.
+	 *
+	 * @param string $key
+	 *
+	 * @return void|Form The retrieved form or null if the key matched none.
+	 */
+	public static function fallback_retrieve_form($key)
+	{
+		check_session();
+
+		if (empty($_SESSION[self::STORE_KEY][$key]))
+		{
+			return;
+		}
+
+		$form = unserialize($_SESSION[self::STORE_KEY][$key]);
+
+		unset($_SESSION[self::STORE_KEY][$key]);
+
+		return $form;
+	}
+
+	private static $errors;
+
+	/**
+	 * This method is the fallback for the {@link BrickRouge\store_form_errors()} function.
+	 *
+	 * @see BrickRouge\store_form_errors()
+	 */
+	public static function fallback_store_form_errors($name, $errors)
+	{
+		self::$errors[$name] = $errors;
+	}
+
+	/**
+	 * This method is the fallback for the {@link BrickRouge\retrieve_form_errors()} function.
+	 *
+	 * @see BrickRouge\retrieve_form_errors()
+	 */
+	public static function fallback_retrieve_form_errors($name)
+	{
+		return isset(self::$errors[$name]) ? self::$errors[$name] : array();
 	}
 }
