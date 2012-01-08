@@ -673,6 +673,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
+	 * Returns the children of the element ordered according to their weight.
+	 *
 	 * @return array[int]Element|string
 	 */
 	public function get_ordered_children()
@@ -769,15 +771,20 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
-	* Returns the HTML representation of the element's content.
-	*
-	* If the element has a null content it is considered as self closing.
-	*
-	* @return string The content of the element.
-	*/
+	 * Returns the HTML representation of the element's content.
+	 *
+	 * If the element has a null content it is considered as self closing.
+	 *
+	 * @return string The content of the element.
+	 */
 	protected function render_inner_html()
 	{
 		$rc = null;
+
+		if ($this->type === 'select')
+		{
+			$rc = $this->render_inner_html_for_select();
+		}
 
 		$children = $this->get_ordered_children();
 
@@ -788,12 +795,84 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 				$rc .= $this->render_child($child);
 			}
 		}
-		else
+		else if ($this->inner_html !== null)
 		{
 			$rc = $this->inner_html;
 		}
 
 		return $rc;
+	}
+
+	/**
+	 * Renders inner HTML of SELECT elements.
+	 *
+	 * @return string
+	 */
+	protected function render_inner_html_for_select()
+	{
+		$this->contextPush();
+
+		#
+		# get the name and selected value for our children
+		#
+
+		$selected = $this['value'];
+
+		#
+		# this is the 'template' child
+		#
+
+		$option = new Element('option');
+
+		#
+		# create the inner content of our element
+		#
+
+		$rc = '';
+
+		$options = $this[self::OPTIONS] ?: array();
+		$disabled = $this[self::OPTIONS_DISABLED];
+
+		foreach ($options as $value => $label)
+		{
+			#
+			# value is casted to a string so that we can handle null value and compare '0' with 0
+			#
+
+			$option['value'] = $value;
+			$option['selected'] = (string) $value === (string) $selected;
+			$option['disabled'] = !empty($disabled[$value]);
+
+			if ($label)
+			{
+				// TODO-20111106: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
+
+				if ($label{0} == '.')
+				{
+					$label = substr($label, 1);
+				}
+
+				$label = t($label, array(), array('scope' => 'element.option'));
+				$label = escape($label);
+			}
+			else
+			{
+				$label = '&nbsp;';
+			}
+
+			$option->inner_html = $label;
+
+			$rc .= $option;
+		}
+
+		$this->contextPop();
+
+		return $rc;
+	}
+
+	protected function getMarkup()
+	{
+		return $this->render_outer_html();
 	}
 
 	/**
@@ -1432,75 +1511,6 @@ EOT;
 
 					$this->inner_html .= $child;
 				}
-
-				#
-				# make our element
-				#
-
-				$rc = $this->render_outer_html();
-
-				$this->contextPop();
-			}
-			break;
-
-			case 'select':
-			{
-				$this->contextPush();
-
-				#
-				# get the name and selected value for our children
-				#
-
-				$selected = $this['value'];
-
-				#
-				# this is the 'template' child
-				#
-
-				$child = new Element('option');
-
-				#
-				# create the inner content of our element
-				#
-
-				$inner = '';
-
-				$options = $this[self::OPTIONS] ?: array();
-				$disabled = $this[self::OPTIONS_DISABLED];
-
-				foreach ($options as $value => $label)
-				{
-					#
-					# value is casted to a string so that we can handle null value and compare '0' with 0
-					#
-
-					$child['value'] = $value;
-					$child['selected'] = (string) $value === (string) $selected;
-					$child['disabled'] = !empty($disabled[$value]);
-
-					if ($label)
-					{
-						// TODO-20111106: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
-
-						if ($label{0} == '.')
-						{
-							$label = substr($label, 1);
-						}
-
-						$label = t($label, array(), array('scope' => 'element.option'));
-						$label = escape($label);
-					}
-					else
-					{
-						$label = '&nbsp;';
-					}
-
-					$child->inner_html = $label;
-
-					$inner .= $child;
-				}
-
-				$this->inner_html .= $inner;
 
 				#
 				# make our element
