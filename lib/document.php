@@ -450,7 +450,7 @@ EOT;
 				}
 			}
 		}
-		catch (\Exception $e) { echo $e; }
+		catch (\Exception $e) { echo render_exception($e); }
 
 		#
 		# default ouput
@@ -565,7 +565,7 @@ class JS extends \BrickRouge\Collector
 				}
 			}
 		}
-		catch (\Exception $e) { echo $e; }
+		catch (\Exception $e) { echo render_exception($e); }
 
 		#
 		# default ouput

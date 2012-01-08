@@ -347,6 +347,16 @@ function retrieve_form_errors($name)
 	return call_user_func(Patchable::$callback_retrieve_form_errors, $name);
 }
 
+/**
+ * Renders an exception into a string.
+ *
+ * @param \Exception $exception
+ */
+function render_exception(\Exception $exception)
+{
+	return call_user_func(Patchable::$callback_render_exception, $exception);
+}
+
 class Patchable
 {
 	static $callback_format = array(__CLASS__, 'fallback_format');
@@ -359,6 +369,7 @@ class Patchable
 	static $callback_retrieve_form = array(__CLASS__, 'fallback_retrieve_form');
 	static $callback_store_form_errors = array(__CLASS__, 'fallback_store_form_errors');
 	static $callback_retrieve_form_errors = array(__CLASS__, 'fallback_retrieve_form_errors');
+	static $callback_render_exception = array(__CLASS__, 'fallback_render_exception');
 
 	/**
 	 * This method is the fallback for the {@link BrickRouge\format()} function.
@@ -600,5 +611,17 @@ class Patchable
 	public static function fallback_retrieve_form_errors($name)
 	{
 		return isset(self::$errors[$name]) ? self::$errors[$name] : array();
+	}
+
+	/**
+	 * This method is the fallback for the {@link BrickRouge\render_exception()} function.
+	 *
+	 * @param \Exception $exception
+	 *
+	 * @return string
+	 */
+	public static function fallback_render_exception(\Exception $exception)
+	{
+		return (string) $exception;
 	}
 }

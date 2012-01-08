@@ -821,7 +821,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		}
 		catch (\Exception $e)
 		{
-			$inner = (string) $e;
+			$inner = render_exception($e);
 		}
 
 		#
@@ -1206,14 +1206,7 @@ EOT;
 	{
 		if (get_class($this) != __CLASS__)
 		{
-			try
-			{
-				static::handle_assets();
-			}
-			catch (\Exception $e)
-			{
-				echo $e;
-			}
+			static::handle_assets();
 		}
 
 		$rc = '';
@@ -1541,7 +1534,7 @@ EOT;
 				}
 				catch (\Exception $e)
 				{
-					$rc = (string) $e;
+					$rc = render_exception($e);
 				}
 			}
 			break;
