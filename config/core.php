@@ -22,6 +22,8 @@ return array
 		'BrickRouge\Form\Templated' => $element . 'form.templated.php',
 		'BrickRouge\Group' => $element . 'group.php',
 		'BrickRouge\Pager' => $element . 'pager.php',
+		'BrickRouge\Popover' => $element . 'popover.php',
+		'BrickRouge\PopoverWidget' => $element . 'popover.php',
 		'BrickRouge\Ranger' => $element . 'ranger.php',
 		'BrickRouge\Salutation' => $element . 'salutation.php',
 		'BrickRouge\Searchbox' => $widget . 'searchbox.php',
