@@ -60,6 +60,7 @@ require_once ROOT . 'lib/helpers.php';
 if (defined('ICanBoogie\VERSION'))
 {
 	Patchable::$callback_translate = 'ICanBoogie\I18n::translate';
+	Patchable::$callback_render_exception = 'ICanBoogie\Debug::format_alert';
 
 	Patchable::$callback_get_document = function()
 	{
