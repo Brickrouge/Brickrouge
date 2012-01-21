@@ -870,9 +870,41 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		return $rc;
 	}
 
-	protected function getMarkup()
+	/**
+	 * Renders dataset.
+	 *
+	 * The dataset is rendered as a series of "data-*" attributes. Values of type array are
+	 * encoded using the {@link json_encode()} function. Attributes with null values are skipped.
+	 *
+	 * @param array $dataset
+	 *
+	 * @return string
+	 */
+	protected function render_dataset(array $dataset)
 	{
-		return $this->render_outer_html();
+		if (!$dataset)
+		{
+			return '';
+		}
+
+		$rc = '';
+
+		foreach ($dataset as $name => $value)
+		{
+			if (is_array($value))
+			{
+				$value = json_encode($value);
+			}
+
+			if ($value === null)
+			{
+				continue;
+			}
+
+			$rc .= ' data-' . $name . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
+		}
+
+		return $rc;
 	}
 
 	/**
@@ -990,20 +1022,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			$rc .= ' ' . $attribute . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
 		}
 
-		foreach ($this->dataset as $name => $value)
-		{
-			if (is_array($value))
-			{
-				$value = json_encode($value);
-			}
-
-			if ($value === null)
-			{
-				continue;
-			}
-
-			$rc .= ' data-' . $name . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
-		}
+		$rc .= $this->render_dataset($this->dataset);
 
 		#
 		# if the inner HTML of the element is null, the element is self closing.
