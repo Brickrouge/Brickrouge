@@ -25,20 +25,18 @@ class Pager extends Element
 
 	public function __construct($type, $tags)
 	{
-		$tags = array_merge
+		parent::__construct
 		(
-			array
+			$type, $tags + array
 			(
 				self::T_LIMIT => 5,
-				self::T_SEPARATOR => '<span class="separator">,</span>',
+// 				self::T_SEPARATOR => '<span class="separator">,</span>',
 				self::T_GAP => '<span class="gap"> ... </span>',
-				self::T_USING => 'page'
-			),
+				self::T_USING => 'page',
 
-			$tags
+				'class' => 'pagination'
+			)
 		);
-
-		parent::__construct($type, $tags);
 	}
 
 	protected $urlbase;
@@ -142,12 +140,20 @@ class Pager extends Element
 			# add next (>) link
 			#
 
+			$next_text = t('Next&nbsp;→', array(), array('scope' => 'pagination.label'));
+			$previous_text = t('←&nbsp;Previous', array(), array('scope' => 'pagination.label'));
+
 //			if ($this->reverse_arrows ? ($on_page > 1) : ($on_page < $pages))
 			if ($on_page < $pages)
 			{
-				$rc .= $this->getLink($on_page, '<span class="label">' . t('next', array(), array('scope' => array('pager', 'label'), 'default' => 'Next')) . '&nbsp;</span>&gt;', 'next');
+				$rc .= $this->getLink($on_page, $next_text, 'next');
 //				$rc .= $this->getLink($this->reverse_arrows ? $on_page - 2 : $on_page, '&gt;', 'next');
 			}
+			else
+			{
+				$rc .= '<li class="next disabled"><a href="#">' . $next_text . '</a></li>';
+			}
+
 
 			#
 			# add prev (<) link
@@ -156,12 +162,16 @@ class Pager extends Element
 //			if ($this->reverse_arrows ? ($on_page < $pages) : ($on_page > 1))
 			if ($on_page > 1)
 			{
-				$rc = $this->getLink($on_page - 2, '&lt;<span class="label">&nbsp;' . t('previous', array(), array('scope' => array('pager', 'label'), 'default' => 'Prev.')) . '</span>', 'previous') . $rc;
+				$rc = $this->getLink($on_page - 2, $previous_text, 'previous') . $rc;
 //				$rc = $this->getLink($this->reverse_arrows ? $on_page : $on_page - 2, '&lt;', 'previous') . $rc;
+			}
+			else
+			{
+				$rc = '<li class="prev disabled"><a href="#">' . $previous_text . '</a></li>' . $rc;
 			}
 		}
 
-		return $rc;
+		return '<ul>' . $rc . '</ul>';
 	}
 
 	public function __toString()
@@ -250,7 +260,7 @@ class Pager extends Element
 
 	protected function getLink($n, $label=null, $class=null)
 	{
-		$rc = '<a href="' . $this->getURL($n) . '"';
+		$rc = '<li><a href="' . $this->getURL($n) . '"';
 
 		if ($class)
 		{
@@ -261,13 +271,13 @@ class Pager extends Element
 
 		$rc .= $label ? $label : ($n + 1);
 
-		$rc .= '</a>';
+		$rc .= '</a></li>';
 
 		return $rc;
 	}
 
 	protected function getPosition($n)
 	{
-		return '<strong>' . $n . '</strong>';
+		return '<li class="active"><a href="#">' . $n . '</a></li>';
 	}
 }
