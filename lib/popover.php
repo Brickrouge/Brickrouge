@@ -22,9 +22,34 @@ namespace BrickRouge;
  */
 class Popover extends Element
 {
+	/**
+	 * Popover actions.
+	 *
+	 * @var string|array
+	 */
 	const ACTIONS = '#actions';
+
+	/**
+	 * Anchor ID or CSS selector.
+	 *
+	 * @var string
+	 */
 	const ANCHOR = '#anchor';
-	const POSITION = '#position';
+
+	/**
+	 * Placement of the popover relative to its anchor, one of `before`, `after`, `above`,
+	 * `below`, `vertical`, `horizontal` or `auto`.
+	 *
+	 * @var string
+	 */
+	const PLACEMENT = '#placement';
+
+	/**
+	 * Optional title of the popover.
+	 *
+	 * @var string
+	 */
+	const TITLE = '#title';
 
 	/**
 	 * Constructor.
@@ -49,26 +74,7 @@ class Popover extends Element
 	}
 
 	/**
-	 * Adds the position defined using the {@link POSITION} attribute to the composed class.
-	 *
-	 * @see BrickRouge.Element::__volatile_get_class()
-	 */
-	protected function __volatile_get_class()
-	{
-		$class = parent::__volatile_get_class();
-
-		$position = $this[self::POSITION];
-
-		if ($position)
-		{
-			$class .= ' ' . $position;
-		}
-
-		return $class;
-	}
-
-	/**
-	 * The inner HTML is wrapped in a number of DIV elements, and the legend is used a the popover
+	 * The inner HTML is wrapped in a number of DIV elements, and the title is used a the popover
 	 * title.
 	 *
 	 * @see BrickRouge.Element::render_inner_html()
@@ -77,11 +83,11 @@ class Popover extends Element
 	{
 		$content = parent::render_inner_html();
 
-		$legend = $this[self::LEGEND];
+		$title = $this[self::TITLE];
 
-		if ($legend)
+		if ($title)
 		{
-			$legend = '<h3 class="title">' . escape($legend) . '</h3>';
+			$title = '<h3 class="title">' . escape($title) . '</h3>';
 		}
 
 		$actions = $this[self::ACTIONS];
@@ -93,7 +99,7 @@ class Popover extends Element
 
 		return <<<EOT
 <div class="arrow"></div>
-<div class="inner">$legend<div class="content">$content</div>$actions</div>
+<div class="inner">$title<div class="content">$content</div>$actions</div>
 EOT;
 	}
 
@@ -132,7 +138,7 @@ EOT;
 	}
 
 	/**
-	 * Adds the anchor specified using the {@linkk ANCHOR} special attribute to the dataset before
+	 * Adds the anchor specified using the {@link ANCHOR} special attribute to the dataset before
 	 * it is rendered.
 	 *
 	 * @see BrickRouge.Element::render_dataset()
@@ -144,20 +150,9 @@ EOT;
 			$dataset + array
 			(
 				'anchor' => $this[self::ANCHOR],
-				'position' => $this[self::POSITION]
+				'placement' => $this[self::PLACEMENT]
 			)
 		);
-	}
-
-	/**
-	 * The legend decoration is disabled because the {@link LEGEND} tag is already used by the
-	 * {@link render_inner_html()} method for the popover title.
-	 *
-	 * @see BrickRouge.Element::decorate_with_legend()
-	 */
-	protected function decorate_with_legend($html, $legend)
-	{
-		return $html;
 	}
 }
 
@@ -166,6 +161,13 @@ EOT;
  */
 class PopoverWidget extends Popover
 {
+	/**
+	 * Whether the widget should be made visible once the document is ready.
+	 *
+	 * @var bool
+	 */
+	const VISIBLE = '#visible';
+
 	/**
 	 * Overrides the {@link Popover} initial attribute `class` with the value
 	 * "widget-popover popover". The "widget-popover" class is used to automatically attach
@@ -183,6 +185,22 @@ class PopoverWidget extends Popover
 			$tags + array
 			(
 				'class' => 'widget-popover popover'
+			)
+		);
+	}
+
+	/**
+	 * Adds the `visible` property to the dataset.
+	 *
+	 * @see BrickRouge.Popover::render_dataset()
+	 */
+	protected function render_dataset(array $dataset)
+	{
+		return parent::render_dataset
+		(
+			$dataset + array
+			(
+				'visible' => $this[self::VISIBLE]
 			)
 		);
 	}

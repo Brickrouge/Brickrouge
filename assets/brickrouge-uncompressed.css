@@ -1228,19 +1228,20 @@ form.stacked div.actions {
   top: 0;
   left: 0;
   z-index: 1010;
+  display: none;
   padding: 5px;
 }
 .popover.above {
-  margin-top: -5px;
+  margin-top: -20px;
 }
 .popover.after {
-  margin-left: 5px;
+  margin-left: 20px;
 }
 .popover.below {
-  margin-top: 5px;
+  margin-top: 20px;
 }
 .popover.before {
-  margin-left: -5px;
+  margin-left: -20px;
 }
 .popover.above .arrow {
   bottom: 0;
@@ -1292,19 +1293,22 @@ form.stacked div.actions {
   -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
 }
+.popover .inner  > :first-child {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
 .popover .inner  > :last-child {
-  -webkit-border-radius: 0 0 3px 3px;
-  -moz-border-radius: 0 0 3px 3px;
-  border-radius: 0 0 3px 3px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+.popover.fit-content .inner {
+  width: auto;
 }
 .popover .title {
   padding: 9px 15px;
   line-height: 1;
   background-color: #f5f5f5;
   border-bottom: 1px solid #eee;
-  -webkit-border-radius: 3px 3px 0 0;
-  -moz-border-radius: 3px 3px 0 0;
-  border-radius: 3px 3px 0 0;
   margin: 0;
 }
 .popover .content {
@@ -1317,11 +1321,16 @@ form.stacked div.actions {
 .popover .content p, .popover .content ul, .popover .content ol {
   margin-bottom: 0;
 }
+.popover .content  > :first-child {
+  margin-top: 0;
+}
+.popover .content  > :last-child {
+  margin-bottom: 0;
+}
 .popover .actions {
   text-align: center;
   background-color: #f5f5f5;
   border-top: 1px solid #bfbfbf;
-  border-radius: 0 0 3px 3px;
 }
 .popover .actions button {
   margin: .6em 1ex;

@@ -35,197 +35,6 @@ var BrickRouge = {
 		})
 	},
 
-	Widget: {
-
-	},
-
-	Form: new Class({
-
-		Implements: [ Options, Events ],
-
-		options:
-		{
-			url: null,
-			useXHR: false
-		},
-
-		initialize: function(el, options)
-		{
-			this.element = document.id(el);
-			this.setOptions(options);
-
-			if (this.options.useXHR || (options && (options.onRequest || options.onComplete || options.onFailure || options.onSuccess)))
-			{
-				this.element.addEvent
-				(
-					'submit', function(ev)
-					{
-						ev.stop();
-
-						this.submit();
-					}
-					.bind(this)
-				);
-			}
-		},
-
-		alert: function(messages, type)
-		{
-			var original, alert = this.element.getElement('div.alert-message.' + type) || new Element('div.alert-message.' + type, { html: '<a href="#close" class="close">×</a>'});
-
-			if (typeOf(messages) == 'string')
-			{
-				messages = [ messages ];
-			}
-			else if (typeOf(messages) == 'object')
-			{
-				original = messages;
-
-				messages = [];
-
-				Object.each
-				(
-					original, function(message, id)
-					{
-						if (typeOf(id) == 'string' && id != '_base')
-						{
-							var parent, field, el = this.element.elements[id], i;
-
-							if (typeOf(el) == 'collection')
-							{
-								parent = el[0].getParent('div.radio-group');
-								field = parent.getParent('.field');
-
-								if (parent)
-								{
-									parent.addClass('error');
-								}
-								else
-								{
-									for (i = 0, j = el.length ; i < j ; i++)
-									{
-										el[i].addClass('error');
-									}
-								}
-							}
-							else
-							{
-								el.addClass('error');
-								field = el.getParent('.field');
-							}
-
-							if (field)
-							{
-								field.addClass('error');
-							}
-						}
-
-						if (!message || message === true)
-						{
-							return;
-						}
-
-						messages.push(message);
-					},
-
-					this
-				);
-			}
-
-			if (!messages.length)
-			{
-				return;
-			}
-
-			messages.each
-			(
-				function(message)
-				{
-					alert.adopt(new Element('p', { html: message }));
-				}
-			);
-
-			if (!alert.parentNode)
-			{
-				alert.inject(this.element, 'top');
-			}
-		},
-
-		clearAlert: function()
-		{
-			var alerts = this.element.getElements('div.alert-message');
-
-			if (alerts)
-			{
-				alerts.destroy();
-			}
-
-			this.element.getElements('.error').removeClass('error');
-		},
-
-		submit: function()
-		{
-			this.fireEvent('submit', {});
-			this.getOperation().send(this.element);
-		},
-
-		getOperation: function()
-		{
-			if (this.operation)
-			{
-				return this.operation;
-			}
-
-			return this.operation = new Request.JSON
-			({
-				url: this.options.url || this.element.action,
-
-				onRequest: this.request.bind(this),
-				onComplete: this.complete.bind(this),
-				onSuccess: this.success.bind(this),
-				onFailure: this.failure.bind(this)
-			});
-		},
-
-		request: function()
-		{
-			this.clearAlert();
-			this.fireEvent('request', arguments);
-		},
-
-		complete: function()
-		{
-			this.fireEvent('complete', arguments);
-		},
-
-		success: function(response)
-		{
-			if (response.success)
-			{
-				this.alert(response.success, 'success');
-			}
-
-			this.onSuccess(response);
-		},
-
-		onSuccess: function(response)
-		{
-			this.fireEvent('complete', arguments).fireEvent('success', arguments).callChain();
-		},
-
-		failure: function(xhr)
-		{
-			var response = JSON.decode(xhr.responseText);
-
-			if (response && response.errors)
-			{
-				this.alert(response.errors, 'error');
-			}
-
-			this.fireEvent('failure', arguments);
-		}
-	}),
-
 	/**
 	 * Update the document by adding missing CSS and JS assets.
 	 *
@@ -349,10 +158,18 @@ var BrickRouge = {
 	}) (),
 
 	/**
+	 * The `BrickRouge.Widget` namespace is used to store widgets constructors.
+	 */
+	Widget: {
+
+	},
+
+	/**
 	 * Awakes sleeping widgets.
 	 *
-	 * Constructors defined under the `Widget` namespace are traversed and for each one of them
-	 * matching widgets are searched in the DOM a new widget is created using the constructor.
+	 * Constructors defined under the `BrickRouge.Widget` namespace are traversed and for each one
+	 * of them matching widgets are searched in the DOM a new widget is created using the
+	 * constructor.
 	 *
 	 * Widgets are matched against a constructor based on the following naming convention: for a
 	 * "AdjustNode" constructor, the elements matching the ".widget-adjust-node" selector are
@@ -397,7 +214,7 @@ var BrickRouge = {
 };
 
 /*
- * The Request.Element class required the Request.API class provided by the ICanBoogie framework,
+ * The Request.Element class requires the Request.API class provided by the ICanBoogie framework,
  * maybe we should move the Request.Element and Request.Widget clases to the Icybee CMS.
  */
 if (Request.API)
@@ -452,7 +269,6 @@ if (Request.API)
 			this.parent(options);
 		}
 	});
-
 }
 
 /**
@@ -568,6 +384,203 @@ document.id(document.body).addEvent('click:relay(div.alert-message a.close)', fu
  */
 
 /**
+ * Support for asynchronous forms.
+ */
+BrickRouge.Form = new Class({
+
+	Implements: [ Options, Events ],
+
+	options:
+	{
+		url: null,
+		useXHR: false
+	},
+
+	initialize: function(el, options)
+	{
+		this.element = document.id(el);
+		this.setOptions(options);
+
+		if (this.options.useXHR || (options && (options.onRequest || options.onComplete || options.onFailure || options.onSuccess)))
+		{
+			this.element.addEvent
+			(
+				'submit', function(ev)
+				{
+					ev.stop();
+
+					this.submit();
+				}
+				.bind(this)
+			);
+		}
+	},
+
+	alert: function(messages, type)
+	{
+		var original, alert = this.element.getElement('div.alert-message.' + type) || new Element('div.alert-message.' + type, { html: '<a href="#close" class="close">×</a>'});
+
+		if (typeOf(messages) == 'string')
+		{
+			messages = [ messages ];
+		}
+		else if (typeOf(messages) == 'object')
+		{
+			original = messages;
+
+			messages = [];
+
+			Object.each
+			(
+				original, function(message, id)
+				{
+					if (typeOf(id) == 'string' && id != '_base')
+					{
+						var parent, field, el = this.element.elements[id], i;
+
+						if (typeOf(el) == 'collection')
+						{
+							parent = el[0].getParent('div.radio-group');
+							field = parent.getParent('.field');
+
+							if (parent)
+							{
+								parent.addClass('error');
+							}
+							else
+							{
+								for (i = 0, j = el.length ; i < j ; i++)
+								{
+									el[i].addClass('error');
+								}
+							}
+						}
+						else
+						{
+							el.addClass('error');
+							field = el.getParent('.field');
+						}
+
+						if (field)
+						{
+							field.addClass('error');
+						}
+					}
+
+					if (!message || message === true)
+					{
+						return;
+					}
+
+					messages.push(message);
+				},
+
+				this
+			);
+		}
+
+		if (!messages.length)
+		{
+			return;
+		}
+
+		messages.each
+		(
+			function(message)
+			{
+				alert.adopt(new Element('p', { html: message }));
+			}
+		);
+
+		if (!alert.parentNode)
+		{
+			alert.inject(this.element, 'top');
+		}
+	},
+
+	clearAlert: function()
+	{
+		var alerts = this.element.getElements('div.alert-message');
+
+		if (alerts)
+		{
+			alerts.destroy();
+		}
+
+		this.element.getElements('.error').removeClass('error');
+	},
+
+	submit: function()
+	{
+		this.fireEvent('submit', {});
+		this.getOperation().send(this.element);
+	},
+
+	getOperation: function()
+	{
+		if (this.operation)
+		{
+			return this.operation;
+		}
+
+		return this.operation = new Request.JSON
+		({
+			url: this.options.url || this.element.action,
+
+			onRequest: this.request.bind(this),
+			onComplete: this.complete.bind(this),
+			onSuccess: this.success.bind(this),
+			onFailure: this.failure.bind(this)
+		});
+	},
+
+	request: function()
+	{
+		this.clearAlert();
+		this.fireEvent('request', arguments);
+	},
+
+	complete: function()
+	{
+		this.fireEvent('complete', arguments);
+	},
+
+	success: function(response)
+	{
+		if (response.success)
+		{
+			this.alert(response.success, 'success');
+		}
+
+		this.onSuccess(response);
+	},
+
+	onSuccess: function(response)
+	{
+		this.fireEvent('complete', arguments).fireEvent('success', arguments).callChain();
+	},
+
+	failure: function(xhr)
+	{
+		var response = JSON.decode(xhr.responseText);
+
+		if (response && response.errors)
+		{
+			this.alert(response.errors, 'error');
+		}
+
+		this.fireEvent('failure', arguments);
+	}
+});/*
+ * This file is part of the BrickRouge package.
+ *
+ * (c) Olivier Laviale <olivier.laviale@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
  * Destroy the alert message when its close icon is clicked.
  *
  * If the alert message is in a FORM element the "error" class is removed from its elements.
@@ -588,6 +601,21 @@ document.id(document.body).addEvent
 		target.getParent('div.alert-message').destroy();
 	}
 );
+/*
+ * This file is part of the BrickRouge package.
+ *
+ * (c) Olivier Laviale <olivier.laviale@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ * A subtextual information attached to an anchor.
+ *
+ * The popover element is a floating element attached to an anchor. It repositions itself to
+ * follow its anchor, and may change its placement according to the available space around it.
+ */
 BrickRouge.Popover = new Class({
 
 	Implements: [ Events, Options ],
@@ -595,7 +623,8 @@ BrickRouge.Popover = new Class({
 	options:
 	{
 		anchor: null,
-		position: null
+		placement: null,
+		visible: false
 	},
 
 	initialize: function(el, options)
@@ -607,10 +636,6 @@ BrickRouge.Popover = new Class({
 		this.repositionCallback = this.reposition.bind(this, false);
 		this.quickRepositionCallback = this.reposition.bind(this, true);
 
-		var visible = !this.element.hasClass('invisible');
-
-		this.element.addClass('invisible');
-
 		this.iframe = null;
 
 		if (this.options.anchor)
@@ -618,11 +643,18 @@ BrickRouge.Popover = new Class({
 			this.attachAnchor(this.options.anchor);
 		}
 
+		this.tween = null;
+
+		if (this.options.animate)
+		{
+			this.tween = new Fx.Tween(this.element, { property: 'opacity', link: 'cancel', duration: 'short' });
+		}
+
 		this.element.addEvent('click', this.onClick.bind(this));
 
-		if (visible)
+		if (this.options.visible)
 		{
-			this.open();
+			this.show();
 		}
 	},
 
@@ -651,19 +683,19 @@ BrickRouge.Popover = new Class({
 		this.fireEvent('action', arguments);
 	},
 
-	changePositionClass: function(position)
+	changePlacement: function(placement)
 	{
 		this.element.removeClass('before');
 		this.element.removeClass('after');
 		this.element.removeClass('above');
 		this.element.removeClass('below');
 
-		this.element.addClass(position);
+		this.element.addClass(placement);
 	},
 
-	open: function()
+	show: function()
 	{
-		this.element.addClass('invisible');
+		this.element.setStyles({ display: 'block', visibility: 'hidden' });
 
 		window.addEvents
 		({
@@ -684,14 +716,20 @@ BrickRouge.Popover = new Class({
 
 		this.reposition(true);
 
-		this.element.removeClass('invisible');
+		if (this.options.animate)
+		{
+			this.tween.set(0);
+			this.element.setStyle('visibility', 'visible');
+			this.tween.start(1);
+		}
+		else
+		{
+			this.element.setStyle('visibility', 'visible');
+		}
 	},
 
-	close: function()
+	hide: function()
 	{
-		this.element.addClass('invisible');
-		this.element.dispose();
-
 		window.removeEvent('load', this.quickRepositionCallback);
 		window.removeEvent('resize', this.quickRepositionCallback);
 		window.removeEvent('scroll', this.repositionCallback);
@@ -703,6 +741,21 @@ BrickRouge.Popover = new Class({
 			contentWindow.removeEvent('load', this.quickRepositionCallback);
 			contentWindow.removeEvent('resize', this.quickRepositionCallback);
 			contentWindow.removeEvent('scroll', this.repositionCallback);
+		}
+
+		if (this.options.animate)
+		{
+			this.tween.start(0).chain
+			(
+				function()
+				{
+					this.element.setStyle('display', '');
+				}
+			);
+		}
+		else
+		{
+			this.element.setStyle('display', '');
 		}
 	},
 
@@ -763,43 +816,66 @@ BrickRouge.Popover = new Class({
 		return { x: aX, y: aY, w: aW, h: aH };
 	},
 
-	computeBestPosition: function(anchorBox, w, h)
+	/**
+	 * Compute best placement of the popover relative to its anchor.
+	 *
+	 * If the placement is defined in the option it is used unless there is not enough available
+	 * space for the popover.
+	 *
+	 * Emplacements are tried in the following order: 'after', 'before', 'above' and fallback to
+	 * 'below'.
+	 */
+	computeBestPlacement: function(anchorBox, w, h)
 	{
 		var html = document.body.parentNode,
-		bodyCompleteH = html.scrollHeight,
 		bodyCompleteW = html.scrollWidth,
 		aX = anchorBox.x,
 		aY = anchorBox.y,
 		aW = anchorBox.w,
-		aH = anchorBox.h,
-		max = aX + 1,
-		position = 'before',
-		size;
+		placement,
+		pad = 20;
 
-		size = bodyCompleteW - aX - aW + 1;
-
-		if (size > max)
+		function fitBefore()
 		{
-			position = 'after';
-			max = size;
+			return aX + 1 > w + pad * 2;
 		}
 
-		size = aY + 1;
-
-		if (size > max)
+		function fitAfter()
 		{
-			position = 'above';
-			max = size;
+			return bodyCompleteW - (aX + 1 + aW) > w + pad * 2;
 		}
 
-		size = bodyCompleteH - aY - aH + 1;
-
-		if (size > max)
+		function fitAbove()
 		{
-			position = 'below';
+			return aY + 1 > h + pad * 2;
 		}
 
-		return position;
+		placement = this.options.placement;
+
+		switch (placement)
+		{
+			case 'after': if (fitAfter()) return placement; break;
+			case 'before': if (fitBefore()) return placement; break;
+			case 'above': if (fitAbove()) return placement; break;
+			case 'below': return placement;
+		}
+
+		if (fitAfter())
+		{
+			return 'after';
+		}
+
+		if (fitBefore())
+		{
+			return 'before';
+		}
+
+		if (fitAbove())
+		{
+			return 'above';
+		}
+
+		return 'below';
 	},
 
 	reposition: function(quick)
@@ -809,10 +885,15 @@ BrickRouge.Popover = new Class({
 			return;
 		}
 
+		if (quick === undefined)
+		{
+			quick = this.element.getStyle('visibility') != 'visible';
+		}
+
 		var pad = 20, actions = this.actions,
 		anchorBox, aX, aY, aW, aH, anchorMiddleX, anchorMiddleY,
 		size = this.element.getSize(), w = size.x , h = size.y, x, y,
-		position,
+		placement,
 		body = document.id(document.body),
 		bodySize = body.getSize(),
 		bodyScroll = body.getScroll(),
@@ -822,11 +903,6 @@ BrickRouge.Popover = new Class({
 		bodyH = bodySize.y,
 		arrowTransform = { top: null, left: null }, arX, arY;
 
-		if (quick === undefined)
-		{
-			quick = this.element.getStyle('visibility') != 'visible';
-		}
-
 		anchorBox = this.computeAnchorBox();
 		aX = anchorBox.x;
 		aY = anchorBox.y;
@@ -835,14 +911,14 @@ BrickRouge.Popover = new Class({
 		anchorMiddleX = aX + aW / 2 - 1;
 		anchorMiddleY = aY + aH / 2 - 1;
 
-		position = this.options.position || this.computeBestPosition(anchorBox, w, h);
+		placement = this.computeBestPlacement(anchorBox, w, h);
 
-		this.changePositionClass(position);
+		this.changePlacement(placement);
 
-		if (position == 'before' || position == 'after')
+		if (placement == 'before' || placement == 'after')
 		{
 			y = Math.round(aY + (aH - h) / 2 - 1);
-			x = (position == 'before') ? aX - w + 1 : aX + aW - 1;
+			x = (placement == 'before') ? aX - w + 1 : aX + aW - 1;
 
 			//
 			// limit 'x' and 'y' to the limits of the document incuding a padding value.
@@ -850,29 +926,11 @@ BrickRouge.Popover = new Class({
 
 			x = x.limit(bodyX + pad - 1, bodyX + bodyW - (w + pad) - 1);
 			y = y.limit(bodyY + pad - 1, bodyY + bodyH - (h + pad) - 1);
-
-			//
-			// adjust arrow
-			//
-
-			arY = (aY + aH / 2 - 1) - y;
-
-			arY = Math.min(h - (actions ? actions.getSize().y : 20) - 10, arY);
-			arY = Math.max(50, arY);
-
-			// adjust element Y so that the arrow is always centered on the anchor visible height
-
-			if (arY + y - 1 != anchorMiddleY)
-			{
-				y -= (y + arY) - anchorMiddleY;
-			}
-
-			arrowTransform.top = arY;
 		}
 		else
 		{
 			x = Math.round(aX + (aW - w) / 2 - 1);
-			y = (position == 'above') ? aY - h + 1 : aY + aH - 1;
+			y = (placement == 'above') ? aY - h + 1 : aY + aH - 1;
 
 			//
 			// limit 'x' and 'y' to the limits of the document incuding a padding value.
@@ -880,21 +938,41 @@ BrickRouge.Popover = new Class({
 
 			x = x.limit(bodyX + pad - 1, bodyX + bodyW - (w + pad) - 1);
 			//y = y.limit(bodyY + pad, bodyY + bodyH - (h + pad));
+		}
 
-			//
-			// adjust arrow
-			//
+		// adjust arrow
 
-			arX = ((aX + aW / 2 - 1) - x).limit(pad, w - pad);
-
-			// adjust element X so that the arrow is always centered on the anchor visible width
-
-			if (arX + w - 1 != anchorMiddleX)
+		if (h > pad * 2)
+		{
+			if (placement == 'before' || placement == 'after')
 			{
-				x -= (x + arX) - anchorMiddleX;
-			}
+				arY = (aY + aH / 2 - 1) - y;
 
-			arrowTransform.left = arX;
+				arY = Math.min(h - (actions ? actions.getSize().y : pad) - 10, arY);
+				arY = Math.max(pad, arY);
+
+				// adjust element Y so that the arrow is always centered on the anchor visible height
+
+				if (arY + y - 1 != anchorMiddleY)
+				{
+					y -= (y + arY) - anchorMiddleY;
+				}
+
+				arrowTransform.top = arY;
+			}
+			else
+			{
+				arX = ((aX + aW / 2 - 1) - x).limit(pad, w - pad);
+
+				// adjust element X so that the arrow is always centered on the anchor visible width
+
+				if (arX + w - 1 != anchorMiddleX)
+				{
+					x -= (x + arX) - anchorMiddleX;
+				}
+
+				arrowTransform.left = arX;
+			}
 		}
 
 		if (quick)
@@ -919,19 +997,24 @@ BrickRouge.Popover = new Class({
  */
 BrickRouge.Popover.from = function(options)
 {
-	var title = options.title,
+	var popover, title = options.title,
 	content = options.content,
-	direction = options.direction || 'auto',
 	actions = options.actions,
-	inner = new Element('div.inner'),
-	popover;
+	inner = new Element('div.inner');
 
 	if (title)
 	{
 		inner.adopt(new Element('h3.title', { 'html': title }));
 	}
 
-	inner.adopt(new Element('div.content').adopt(content));
+	if (typeOf(content) == 'object')
+	{
+		inner.adopt(new Element('div.content').adopt(content));
+	}
+	else
+	{
+		inner.adopt(new Element('div.content', { 'html': content }));
+	}
 
 	if (actions == 'boolean')
 	{
@@ -943,12 +1026,51 @@ BrickRouge.Popover.from = function(options)
 		inner.adopt(new Element('div.actions').adopt(actions));
 	}
 
-	popover = new Element('div.popover.' + direction).adopt([ new Element('div.arrow'), inner ]);
+	popover = new Element('div.popover').adopt([ new Element('div.arrow'), inner ]);
 
 	return new BrickRouge.Popover(popover, options);
 };
 
-BrickRouge.Widget.Popover = BrickRouge.Popover;/*
+/**
+ * Popover widget constructor.
+ */
+BrickRouge.Widget.Popover = BrickRouge.Popover;
+
+/**
+ * Event delegation for A elements with a `rel="popover"` attribute.
+ */
+document.id(document.body).addEvents
+({
+	'mouseenter:relay([rel="popover"])': function(ev, target)
+	{
+		var popover, options;
+
+		popover = target.retrieve('popover');
+
+		if (!popover)
+		{
+			options = target.get('dataset');
+
+			options.anchor = target;
+			popover = BrickRouge.Popover.from(options);
+
+			document.body.appendChild(popover.element);
+
+			target.store('popover', popover);
+		}
+
+		popover.show();
+	},
+
+	'mouseleave:relay([rel="popover"])': function(ev, target)
+	{
+		var popover = target.retrieve('popover');
+
+		if (!popover) return;
+
+		popover.hide();
+	}
+});/*
  * This file is part of the BrickRouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
