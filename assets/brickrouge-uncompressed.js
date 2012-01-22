@@ -1013,7 +1013,7 @@ BrickRouge.Popover.from = function(options)
 		inner.adopt(new Element('h3.title', { 'html': title }));
 	}
 
-	if (typeOf(content) == 'object')
+	if (typeOf(content) == 'element')
 	{
 		inner.adopt(new Element('div.content').adopt(content));
 	}

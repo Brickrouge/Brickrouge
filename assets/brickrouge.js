@@ -88,7 +88,7 @@ q=Math.min(B-(k?k.getSize().y:C)-10,q);q=Math.max(C,q);if(q+g-1!=e){g-=(g+q)-e;}
 }else{r=((c+d/2-1)-i).limit(C,l-C);if(r+l-1!=f){i-=(i+r)-f;}o.left=r;}}if(A){this.element.setStyles({left:i,top:g});
 this.arrow.setStyles(o);}else{this.element.morph({left:i,top:g});this.arrow.morph(o);
 }}});BrickRouge.Popover.from=function(b){var d,f=b.title,c=b.content,e=b.actions,a=new Element("div.inner");
-if(f){a.adopt(new Element("h3.title",{html:f}));}if(typeOf(c)=="object"){a.adopt(new Element("div.content").adopt(c));
+if(f){a.adopt(new Element("h3.title",{html:f}));}if(typeOf(c)=="element"){a.adopt(new Element("div.content").adopt(c));
 }else{a.adopt(new Element("div.content",{html:c}));}if(e=="boolean"){e=[new Element('button.cancel[data-action="cancel"]',{html:"Cancel"}),new Element('button.primary[data-action="ok"]',{html:"Ok"})];
 }if(e){a.adopt(new Element("div.actions").adopt(e));}d=new Element("div.popover").adopt([new Element("div.arrow"),a]);
 return new BrickRouge.Popover(d,b);};BrickRouge.Widget.Popover=BrickRouge.Popover;
