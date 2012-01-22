@@ -37,6 +37,16 @@ class Popover extends Element
 	const ANCHOR = '#anchor';
 
 	/**
+	 * Whether the popover element should fit the content.
+	 *
+	 * By default the popover element have a width of 280px. Setting this attribute to true adds
+	 * the 'fit-content' class to the element which remove the width constraint.
+	 *
+	 * @var bool
+	 */
+	const FIT_CONTENT = '#fit-content';
+
+	/**
 	 * Placement of the popover relative to its anchor, one of `before`, `after`, `above`,
 	 * `below`, `vertical`, `horizontal` or `auto`.
 	 *
@@ -71,6 +81,23 @@ class Popover extends Element
 				'class' => 'popover'
 			)
 		);
+	}
+
+	/**
+	 * Adds the 'fit-content' class name if the {@link FIT_CONTENT} attribute is truthy.
+	 *
+	 * @see BrickRouge.Element::__volatile_get_class()
+	 */
+	protected function __volatile_get_class()
+	{
+		$rc = parent::__volatile_get_class();
+
+		if ($this[self::FIT_CONTENT])
+		{
+			$rc .= ' fit-content';
+		}
+
+		return $rc;
 	}
 
 	/**

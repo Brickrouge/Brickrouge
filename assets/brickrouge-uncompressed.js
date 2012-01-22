@@ -624,7 +624,8 @@ BrickRouge.Popover = new Class({
 	{
 		anchor: null,
 		placement: null,
-		visible: false
+		visible: false,
+		fitContent: false
 	},
 
 	initialize: function(el, options)
@@ -648,6 +649,11 @@ BrickRouge.Popover = new Class({
 		if (this.options.animate)
 		{
 			this.tween = new Fx.Tween(this.element, { property: 'opacity', link: 'cancel', duration: 'short' });
+		}
+
+		if (this.options.fitContent)
+		{
+			this.element.addClass('fit-content');
 		}
 
 		this.element.addEvent('click', this.onClick.bind(this));
