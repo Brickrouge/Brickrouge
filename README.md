@@ -18,7 +18,7 @@ BrickRouge is compatible with
 beautiful and clean webapps.
 
 *Website*: <http://brickrouge.org>  
-*Author*: Olivier Laviale <olivier.laviale@gmail.com>
+*Author*: Olivier Laviale <olivier.laviale@gmail.com>, <http://weirdog.com>
 
 
 Usage
