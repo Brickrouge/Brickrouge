@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 /**
  * Creates a FIELDSET element with an optional LEGEND element.
@@ -39,7 +39,7 @@ class Group extends Element
 	 *     <div class="input">{child}</div>
 	 * </div>
 	 *
-	 * @see BrickRouge.Element::render_child()
+	 * @see Brickrouge.Element::render_child()
 	 */
 	protected function render_child($child)
 	{
@@ -69,9 +69,11 @@ class Group extends Element
 			$label = '<label for="' . $child->id . '" class="' . $label_class . '">' . escape($label) . '</label>' . PHP_EOL;
 		}
 
-		if ($child->has_class('error'))
+		$state = $child[Element::STATE];
+
+		if ($state)
 		{
-			$field_class .= ' error';
+			$field_class .= ' ' . $state;
 		}
 
 		return <<<EOT
@@ -86,7 +88,7 @@ EOT;
 	 *
 	 * The legend is translated with the "element.legend" scope.
 	 *
-	 * @see BrickRouge.Element::render_inner_html()
+	 * @see Brickrouge.Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -107,7 +109,7 @@ EOT;
 	 * The legend decoration is disabled because the {@link LEGEND} tag is already used by the
 	 * {@link render_inner_html()} method to prepend the inner HTML.
 	 *
-	 * @see BrickRouge.Element::decorate_with_legend()
+	 * @see Brickrouge.Element::decorate_with_legend()
 	 */
 	protected function decorate_with_legend($html, $legend)
 	{

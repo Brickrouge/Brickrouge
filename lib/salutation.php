@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 class Salutation extends Element
 {
@@ -32,7 +32,9 @@ class Salutation extends Element
 			$type, $tags + array
 			(
 				Form::LABEL => 'Salutation',
-				Element::OPTIONS => $options
+				Element::OPTIONS => $options,
+
+				'class' => 'inline-inputs'
 			)
 		);
 	}

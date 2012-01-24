@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge\Form;
+namespace Brickrouge\Form;
 
-use BrickRouge\Element;
-use BrickRouge\Form;
+use Brickrouge\Element;
+use Brickrouge\Form;
 use ICanBoogie\Debug;
 
 class Templated extends Form

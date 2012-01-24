@@ -1,6 +1,6 @@
 <?php
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 use ICanBoogie\Errors;
 

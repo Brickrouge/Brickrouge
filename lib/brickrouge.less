@@ -1,5 +1,5 @@
 /*!
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -10,11 +10,30 @@
  *
  * https://github.com/twitter/bootstrap
  */
-@import "vars";
-@import "macros";
+
+// Core variables and mixins
+@import "variables"; // Modify this for custom colors, font-sizes, etc
+@import "mixins";
+
+// CSS Reset
 @import "reset";
+
+// Grid system and page structure
+@import "scaffolding";
+
+// Base CSS
+@import "forms";
+
+// Components: common
+@import "close";
+
 @import "element";
-@import "alert-message";
-@import "form";
 @import "popover";
 @import "searchbox";
+
+// Components: Buttons & Alerts
+@import "buttons";
+@import "alerts";
+
+// Utility classes
+@import "utilities"; // Has to be last to override when necessary

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,14 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 use ICanBoogie\Errors;
 
 /**
  * An HTML element.
  *
- * @property string $class Value of the "class" attributes.
+ * @property string $class Assigns a class name or set of class names to an element. Any number of
+ * elements may be assigned the same class name or names. Multiple class names must be separated
+ * by white space characters.
+ * @property string $id Assigns a name to an element. This name mush be unique in a document.
  *
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
@@ -73,7 +76,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	const CHILDREN = '#children';
 
 	/**
-	 * Used to define the dataset of an element.
+	 * Custom data attributes are intended to store custom data private to the page or application,
+	 * for which there are no more appropriate attributes or elements. The dataset property
+	 * provides convenient accessors for all the data-* attributes on an element.
 	 *
 	 * @var string
 	 *
@@ -183,6 +188,13 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 * @var string
 	 */
 	const OPTIONS_DISABLED = '#element-options-disabled';
+
+	/**
+	 * Used to define the state of the element: 'success', 'warning', 'error'.
+	 *
+	 * @var string
+	 */
+	const STATE = '#state';
 
 	/**
 	 * Used to define the validator of an element. The validator is defined using an array made of
@@ -564,7 +576,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	protected function __volatile_get_class()
 	{
-		return implode(' ', array_keys($this->class_names));
+		return $this->render_class($this->class_names);
 	}
 
 	/**
@@ -610,6 +622,18 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	public function has_class($class_name)
 	{
 		return isset($this->class_names[$class_name]);
+	}
+
+	/**
+	 * Renders the `class` attribute value.
+	 *
+	 * @param array $class_names
+	 *
+	 * @return string
+	 */
+	protected function render_class(array $class_names)
+	{
+		return implode(' ', array_keys($class_names));
 	}
 
 	protected function handleValue(&$tags)
@@ -1263,7 +1287,7 @@ EOT;
 	 */
 	protected function decorate_with_description($html, $description)
 	{
-		return $html . '<div class="element-description">' . $description . '</div>';
+		return $html . '<div class="element-description help-block">' . $description . '</div>';
 	}
 
 	private static $assets_handled=array();

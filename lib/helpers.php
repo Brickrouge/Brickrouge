@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 /**
  * Inserts a value in a array before, or after, at given key.
@@ -76,7 +76,7 @@ function _array_flatten_callback(&$result, $pre, $key, &$value)
 	else
 	{
 		/* FIXME-20100520: this has been disabled because sometime empty values (e.g. '') are
-		 * correct values. The function was first used with BrickRouge\Form which made sense at the time
+		 * correct values. The function was first used with Brickrouge\Form which made sense at the time
 		 * but now changing values would be a rather strange behaviour.
 		#
 		# a trick to create undefined values
@@ -171,7 +171,7 @@ function get_accessible_file($path, $suffix=null)
  * Formats the given string by replacing placeholders with the given values.
  *
  * The function is patchable by overriding the
- * {@link BrickRouge\Patchable:$callback_format property}.
+ * {@link Brickrouge\Patchable:$callback_format property}.
  *
  * @param string $str The string to format.
  * @param array $args An array of replacement for the plaecholders. Occurences in $str of any
@@ -195,10 +195,10 @@ function format($str, array $args=array())
 /**
  * Formats a number into a size with unit (o, Ko, Mo, Go).
  *
- * The formatted string is localized using the {@link BrickRouge\t()} function.
+ * The formatted string is localized using the {@link Brickrouge\t()} function.
  *
  * The function is patchable by overriding the
- * {@link BrickRouge\Patchable:$callback_format_size property}.
+ * {@link Brickrouge\Patchable:$callback_format_size property}.
  *
  * @param int $size
  *
@@ -214,7 +214,7 @@ function format_size($size)
  *
  * @param string $str The string to normalize.
  * @param string $separator Whitespaces replacement.
- * @param string $charset The charset of the input string, defaults to {@link BrickRouge\CHARSET}
+ * @param string $charset The charset of the input string, defaults to {@link Brickrouge\CHARSET}
  * (utf-8).
  *
  * @return string
@@ -229,13 +229,13 @@ function normalize($str, $separator='-', $charset=CHARSET)
  *
  * The native string language is supposed to be english (en).
  *
- * The function is patchable by overriding the {@link BrickRouge\Patchable:$callback_translate}
+ * The function is patchable by overriding the {@link Brickrouge\Patchable:$callback_translate}
  * property and is patched to use the ICanBoogie translation features if the framework is available
- * (see BrickRouge.php).
+ * (see Brickrouge.php).
  *
  * @param string $str The native string to translate.
  * @param array $args An array of replacements to make after the translation. The replacement is
- * handled by the {@link BrickRouge\format()} function.
+ * handled by the {@link Brickrouge\format()} function.
  * @param array $options An array of additionnal options, with the following elements:
  * - 'default': The default string to use if the translation failed.
  * - 'scope': The scope of the translation.
@@ -255,18 +255,18 @@ function t($str, array $args=array(), array $options=array())
  * This document is used by classes when they need to add assets. Once assets are collected one can
  * simple echo the assets while building the response HTML.
  *
- * The function is patchable by overriding the {@link BrickRouge\Patchable:$callback_get_document}
+ * The function is patchable by overriding the {@link Brickrouge\Patchable:$callback_get_document}
  * property.
  *
  * Example:
  *
  * <?php
  *
- * namespace BrickRouge;
+ * namespace Brickrouge;
  *
  * $document = get_document();
- * $document->css->add(BrickRouge\ASSETS . 'brickrouge.css');
- * $document->js->add(BrickRouge\ASSETS . 'brickrouge.js');
+ * $document->css->add(Brickrouge\ASSETS . 'brickrouge.css');
+ * $document->js->add(Brickrouge\ASSETS . 'brickrouge.js');
  *
  * ?><!DOCTYPE html>
  * <html>
@@ -288,12 +288,12 @@ function get_document()
 /**
  * Checks if the session is started, and start it otherwise.
  *
- * The session is used by the {@link BrickRouge\Form} class to store validation errors and store
- * its forms for later validation. Take a look at the {@link BrickRouge\Form::validate()} and
- * {@link BrickRouge\Form::save()} methods.
+ * The session is used by the {@link Brickrouge\Form} class to store validation errors and store
+ * its forms for later validation. Take a look at the {@link Brickrouge\Form::validate()} and
+ * {@link Brickrouge\Form::save()} methods.
  *
- * The function is patchable by overriding the {@link BrickRouge\Patchable:$callback_check_session}
- * property and is patched to use the BrickRouge session features if the framework is available.
+ * The function is patchable by overriding the {@link Brickrouge\Patchable:$callback_check_session}
+ * property and is patched to use the Brickrouge session features if the framework is available.
  */
 function check_session()
 {
@@ -372,9 +372,9 @@ class Patchable
 	static $callback_render_exception = array(__CLASS__, 'fallback_render_exception');
 
 	/**
-	 * This method is the fallback for the {@link BrickRouge\format()} function.
+	 * This method is the fallback for the {@link Brickrouge\format()} function.
 	 *
-	 * @see BrickRouge\format()
+	 * @see Brickrouge\format()
 	 */
 	public static function fallback_format($str, array $args=array())
 	{
@@ -435,9 +435,9 @@ class Patchable
 	}
 
 	/**
-	 * This method is the fallback for the {@link BrickRouge\format_size()} function.
+	 * This method is the fallback for the {@link Brickrouge\format_size()} function.
 	 *
-	 * @see BrickRouge\format_size()
+	 * @see Brickrouge\format_size()
 	 */
 	public static function fallback_format_size($size)
 	{
@@ -465,9 +465,9 @@ class Patchable
 	}
 
 	/**
-	 * This method is the fallback for the {@link BrickRouge\normalize()} function.
+	 * This method is the fallback for the {@link Brickrouge\normalize()} function.
 	 *
-	 * @see BrickRouge\normalize()
+	 * @see Brickrouge\normalize()
 	 */
 	public static function fallback_normalize($str, $separator='-', $charset=CHARSET)
 	{
@@ -486,12 +486,12 @@ class Patchable
 	}
 
 	/**
-	 * This method is the fallback for the {@link BrickRouge\t()} function.
+	 * This method is the fallback for the {@link Brickrouge\t()} function.
 	 *
 	 * We usualy realy on the ICanBoogie framework I18n features to translate our string, if it is
-	 * not available we simply format the string using the {@link BrickRouge\format()} function.
+	 * not available we simply format the string using the {@link Brickrouge\format()} function.
 	 *
-	 * @see BrickRouge\t()
+	 * @see Brickrouge\t()
 	 */
 	public static function fallback_translate($str, array $args=array(), array $options=array())
 	{
@@ -499,9 +499,9 @@ class Patchable
 	}
 
 	/**
-	 * This method is the fallback for the {@link BrickRouge\get_document()} function.
+	 * This method is the fallback for the {@link Brickrouge\get_document()} function.
 	 *
-	 * @see BrickRouge\get_document()
+	 * @see Brickrouge\get_document()
 	 */
 	public static function fallback_get_document()
 	{
@@ -516,9 +516,9 @@ class Patchable
 	private static $document;
 
 	/**
-	 * This method is the fallback for the {@link BrickRouge\check_session()} function.
+	 * This method is the fallback for the {@link Brickrouge\check_session()} function.
 	 *
-	 * @see BrickRouge\check_session()
+	 * @see Brickrouge\check_session()
 	 */
 	public static function fallback_check_session()
 	{
@@ -534,7 +534,7 @@ class Patchable
 	const STORE_MAX = 10;
 
 	/**
-	 * Fallback for the {@link BrickRouge\store_form()} function.
+	 * Fallback for the {@link Brickrouge\store_form()} function.
 	 *
 	 * The form is saved in the session in the STORE_KEY array.
 	 *
@@ -569,7 +569,7 @@ class Patchable
 	}
 
 	/**
-	 * Fallback for the {@link BrickRouge\retrieve_form()} function.
+	 * Fallback for the {@link Brickrouge\retrieve_form()} function.
 	 *
 	 * @param string $key
 	 *
@@ -594,9 +594,9 @@ class Patchable
 	private static $errors;
 
 	/**
-	 * This method is the fallback for the {@link BrickRouge\store_form_errors()} function.
+	 * This method is the fallback for the {@link Brickrouge\store_form_errors()} function.
 	 *
-	 * @see BrickRouge\store_form_errors()
+	 * @see Brickrouge\store_form_errors()
 	 */
 	public static function fallback_store_form_errors($name, $errors)
 	{
@@ -604,9 +604,9 @@ class Patchable
 	}
 
 	/**
-	 * This method is the fallback for the {@link BrickRouge\retrieve_form_errors()} function.
+	 * This method is the fallback for the {@link Brickrouge\retrieve_form_errors()} function.
 	 *
-	 * @see BrickRouge\retrieve_form_errors()
+	 * @see Brickrouge\retrieve_form_errors()
 	 */
 	public static function fallback_retrieve_form_errors($name)
 	{
@@ -614,7 +614,7 @@ class Patchable
 	}
 
 	/**
-	 * This method is the fallback for the {@link BrickRouge\render_exception()} function.
+	 * This method is the fallback for the {@link Brickrouge\render_exception()} function.
 	 *
 	 * @param \Exception $exception
 	 *

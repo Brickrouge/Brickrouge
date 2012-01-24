@@ -1,10 +1,10 @@
 <?php
 
-namespace BrickRouge\Renderer;
+namespace Brickrouge\Renderer;
 
-use BrickRouge\Element;
-use BrickRouge\Form;
-use BrickRouge\Group;
+use Brickrouge\Element;
+use Brickrouge\Form;
+use Brickrouge\Group;
 
 class Simple extends Element
 {

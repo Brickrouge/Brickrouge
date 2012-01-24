@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,43 +9,43 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 /**
- * @var string The ROOT directory of the BrickRouge framework.
+ * @var string The ROOT directory of the Brickrouge framework.
  */
-define('BrickRouge\ROOT', rtrim(__DIR__, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
+defined('Brickrouge\ROOT') or define('Brickrouge\ROOT', rtrim(__DIR__, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
 
 /**
- * @var string Path to the BrickRouge's assets directory.
+ * @var string Path to the Brickrouge's assets directory.
  */
-define('BrickRouge\ASSETS', ROOT . 'assets' . DIRECTORY_SEPARATOR);
+define('Brickrouge\ASSETS', ROOT . 'assets' . DIRECTORY_SEPARATOR);
 
 /**
- * @var string Version string of the BrickRouge framework.
+ * @var string Version string of the Brickrouge framework.
  */
-define('BrickRouge\VERSION', '1.0.0-dev (2011-11-06)');
+define('Brickrouge\VERSION', '1.0.0-dev (2011-11-06)');
 
 /**
- * @var string Charset used by the BrickRouge framework.
+ * @var string Charset used by the Brickrouge framework.
  */
-if (!defined('BrickRouge\CHARSET'))
+if (!defined('Brickrouge\CHARSET'))
 {
-	define('BrickRouge\CHARSET', 'utf-8');
+	define('Brickrouge\CHARSET', 'utf-8');
 }
 
 /**
- * @var string The DOCUMENT_ROOT directory used by the BrickRouge framework.
+ * @var string The DOCUMENT_ROOT directory used by the Brickrouge framework.
  */
-if (!defined('BrickRouge\DOCUMENT_ROOT'))
+if (!defined('Brickrouge\DOCUMENT_ROOT'))
 {
 	if (defined('ICanBoogie\DOCUMENT_ROOT'))
 	{
-		define('BrickRouge\DOCUMENT_ROOT', \ICanBoogie\DOCUMENT_ROOT);
+		define('Brickrouge\DOCUMENT_ROOT', \ICanBoogie\DOCUMENT_ROOT);
 	}
 	else
 	{
-		define('BrickRouge\DOCUMENT_ROOT', rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
+		define('Brickrouge\DOCUMENT_ROOT', rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
 	}
 }
 
@@ -78,11 +78,11 @@ if (defined('ICanBoogie\VERSION'))
 }
 
 /*
- * A simple autoloaded is used to autoload BrickRouge classes if the `BrickRouge\AUTOLOAD` constant
+ * A simple autoloaded is used to autoload Brickrouge classes if the `Brickrouge\AUTOLOAD` constant
  * is defined.
  */
 
-if (defined('BrickRouge\AUTOLOAD'))
+if (defined('Brickrouge\AUTOLOAD'))
 {
 	spl_autoload_register
 	(

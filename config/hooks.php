@@ -4,6 +4,6 @@ return array
 (
 	'events' => array
 	(
-		'ICanBoogie\Operation::get_form' => 'BrickRouge\Form::on_operation_get_form',
+		'ICanBoogie\Operation::get_form' => 'Brickrouge\Form::on_operation_get_form',
 	)
 );

@@ -1,5 +1,5 @@
 /*!
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-var BrickRouge = {
+var Brickrouge = {
 
 	Utils: {
 
@@ -158,7 +158,7 @@ var BrickRouge = {
 	}) (),
 
 	/**
-	 * The `BrickRouge.Widget` namespace is used to store widgets constructors.
+	 * The `Brickrouge.Widget` namespace is used to store widgets constructors.
 	 */
 	Widget: {
 
@@ -167,7 +167,7 @@ var BrickRouge = {
 	/**
 	 * Awakes sleeping widgets.
 	 *
-	 * Constructors defined under the `BrickRouge.Widget` namespace are traversed and for each one
+	 * Constructors defined under the `Brickrouge.Widget` namespace are traversed and for each one
 	 * of them matching widgets are searched in the DOM a new widget is created using the
 	 * constructor.
 	 *
@@ -187,7 +187,7 @@ var BrickRouge = {
 
 		Object.each
 		(
-			BrickRouge.Widget,
+			Brickrouge.Widget,
 			(
 				function(constructor, key)
 				{
@@ -238,7 +238,7 @@ if (Request.API)
 				return;
 			}
 
-			BrickRouge.updateAssets
+			Brickrouge.updateAssets
 			(
 				response.assets, function()
 				{
@@ -290,7 +290,7 @@ Element.Properties.widget = {
 			if (type && type.length)
 			{
 				constructorName = type[1].camelCase();
-				constructor = BrickRouge.Widget[constructorName];
+				constructor = Brickrouge.Widget[constructorName];
 
 				if (!constructor)
 				{
@@ -335,13 +335,13 @@ Element.Properties.dataset = {
 };
 
 /**
- * Calls the BrickRouge.awakeWidgets when the `elementsready` event is fired on the document.
+ * Calls the Brickrouge.awakeWidgets when the `elementsready` event is fired on the document.
  */
 document.addEvent
 (
 	'elementsready', function(ev)
 	{
-		BrickRouge.awakeWidgets(ev.target);
+		Brickrouge.awakeWidgets(ev.target);
 	}
 );
 
@@ -375,7 +375,7 @@ document.id(document.body).addEvent('click:relay(div.alert-message a.close)', fu
 	target.getParent('div.alert-message').destroy();
 });
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -386,7 +386,7 @@ document.id(document.body).addEvent('click:relay(div.alert-message a.close)', fu
 /**
  * Support for asynchronous forms.
  */
-BrickRouge.Form = new Class({
+Brickrouge.Form = new Class({
 
 	Implements: [ Options, Events ],
 
@@ -572,7 +572,7 @@ BrickRouge.Form = new Class({
 		this.fireEvent('failure', arguments);
 	}
 });/*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -587,7 +587,7 @@ BrickRouge.Form = new Class({
  */
 document.id(document.body).addEvent
 (
-	'click:relay(div.alert-message a.close)', function(ev, target)
+	'click:relay(.alert a.close)', function(ev, target)
 	{
 		ev.stop();
 
@@ -598,11 +598,11 @@ document.id(document.body).addEvent
 			form.getElements('.error').removeClass('error');
 		}
 
-		target.getParent('div.alert-message').destroy();
+		target.getParent('.alert').destroy();
 	}
 );
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -616,7 +616,7 @@ document.id(document.body).addEvent
  * The popover element is a floating element attached to an anchor. It repositions itself to
  * follow its anchor, and may change its placement according to the available space around it.
  */
-BrickRouge.Popover = new Class({
+Brickrouge.Popover = new Class({
 
 	Implements: [ Events, Options ],
 
@@ -999,9 +999,9 @@ BrickRouge.Popover = new Class({
  *
  * @param options
  *
- * @returns {BrickRouge.Popover}
+ * @returns {Brickrouge.Popover}
  */
-BrickRouge.Popover.from = function(options)
+Brickrouge.Popover.from = function(options)
 {
 	var popover, title = options.title,
 	content = options.content,
@@ -1034,13 +1034,13 @@ BrickRouge.Popover.from = function(options)
 
 	popover = new Element('div.popover').adopt([ new Element('div.arrow'), inner ]);
 
-	return new BrickRouge.Popover(popover, options);
+	return new Brickrouge.Popover(popover, options);
 };
 
 /**
  * Popover widget constructor.
  */
-BrickRouge.Widget.Popover = BrickRouge.Popover;
+Brickrouge.Widget.Popover = Brickrouge.Popover;
 
 /**
  * Event delegation for A elements with a `rel="popover"` attribute.
@@ -1058,7 +1058,7 @@ document.id(document.body).addEvents
 			options = target.get('dataset');
 
 			options.anchor = target;
-			popover = BrickRouge.Popover.from(options);
+			popover = Brickrouge.Popover.from(options);
 
 			document.body.appendChild(popover.element);
 
@@ -1077,7 +1077,7 @@ document.id(document.body).addEvents
 		popover.hide();
 	}
 });/*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -1085,9 +1085,9 @@ document.id(document.body).addEvents
  * file that was distributed with this source code.
  */
 
-BrickRouge.Widget.Searchbox = new Class({
+Brickrouge.Widget.Searchbox = new Class({
 
-	Implements: BrickRouge.Utils.Busy,
+	Implements: Brickrouge.Utils.Busy,
 
 	initialize: function(el, options)
 	{

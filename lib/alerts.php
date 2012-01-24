@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,15 +9,29 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 use ICanBoogie\Errors;
 
 /**
- * Creates alert message blocks.
+ * An alert message.
  */
-class AlertMessage extends Element
+class Alert extends Element
 {
+	/**
+	 * The context of the alert, one of 'error', 'success' or 'info'.
+	 *
+	 * @var string
+	 */
+	const CONTEXT = '#alert-context';
+
+	/**
+	 * The heading of the alert.
+	 *
+	 * @var string
+	 */
+	const HEADING = '#alert-heading';
+
 	protected $message;
 	protected $alert_type;
 
@@ -36,37 +50,69 @@ class AlertMessage extends Element
 	 * Each message is wrapped in a P element and they are concatenated to create the final
 	 * message.
 	 *
+	 * If the message is an instance of \ICanBoogie\Errors the {@link CONTEXT} attribute is set to
+	 * 'error' in the initial tags.
+	 *
 	 * @param array $tags Additional tags.
 	 *
 	 * @param string $type Defines an additionnal class for the element. If the message is an
 	 * ICanBoogie\Errors object $type is set to "errors".
 	 */
-	public function __construct($message, $tags=array(), $type='')
+	public function __construct($message, $tags=array())
 	{
 		$this->message = $message;
-		$this->alert_type = $message instanceof Errors ? 'error' : $type;
 
 		parent::__construct
 		(
 			'div', $tags + array
 			(
-				'class' => 'alert-message'
+				self::CONTEXT => $message instanceof Errors ? 'error' : null,
+
+				'class' => 'alert'
 			)
 		);
 	}
 
 	/**
-	 * Add the alert type to the class string.
+	 * Add the alert context to the class names.
 	 *
-	 * @see BrickRouge.Element::__volatile_get_class()
+	 * @see Brickrouge.Element::render_class()
 	 */
-	protected function __volatile_get_class()
+	protected function render_class(array $class_names)
 	{
-		return parent::__volatile_get_class() . ' ' . $this->alert_type;
+		$context = $this[self::CONTEXT];
+
+		if ($context)
+		{
+			$class_names['alert-' . $context] = true;
+		}
+
+		if ($this[self::HEADING])
+		{
+			$class_names['alert-block'] = true;
+		}
+
+		return parent::render_class($class_names);
 	}
 
+	/**
+	 * Renders the inner HTML of the element with the following template:
+	 *
+	 * <a href="javascript://" class="close">×</a>
+	 * [<h4>$heading</h4>]
+	 * <div class="content">$message</div>
+	 *
+	 * @see Brickrouge.Element::render_inner_html()
+	 */
 	public function render_inner_html()
 	{
+		$heading = $this[self::HEADING];
+
+		if ($heading)
+		{
+			$heading = '<h4 class="alert-heading">' . escape($heading) . '</h4>';
+		}
+
 		$message = $this->message;
 
 		if ($message instanceof Errors)
@@ -89,13 +135,13 @@ class AlertMessage extends Element
 			$message = '<p>' . implode('</p><p>', $message) . '</p>';
 		}
 
-		return '<a href="#close" class="close">×</a>' . $message;
+		return '<a href="javascript://" class="close">×</a>' . $heading . '<div class="content">' . $message . '</div>';
 	}
 
 	/**
 	 * An empty string is returned if there is no message.
 	 *
-	 * @see BrickRouge.Element::__toString()
+	 * @see Brickrouge.Element::__toString()
 	 */
 	public function __toString()
 	{

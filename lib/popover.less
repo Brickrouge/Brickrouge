@@ -79,16 +79,15 @@
 	}
 }
 
-.popover.contrast,
-.popover.contrast input[type="text"],
-.popover.contrast input[type="password"],
-.popover.contrast select,
-.popover.contrast textarea,
-.popover.contrast div.field > label {
-	color: @white;
-}
-
 .popover.contrast {
+	
+	&, input[type="text"], input[type="password"], select, textarea, .field > label {
+		color: @white;
+	}
+	
+	label {
+		color: darken(@white, 20%);
+	}
 	
 	.inner {
 		background: @black;

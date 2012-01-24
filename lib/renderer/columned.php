@@ -1,9 +1,9 @@
 <?php
 
-namespace BrickRouge\Renderer;
+namespace Brickrouge\Renderer;
 
-use BrickRouge\Element;
-use BrickRouge\Form;
+use Brickrouge\Element;
+use Brickrouge\Form;
 
 class Columned extends Element
 {

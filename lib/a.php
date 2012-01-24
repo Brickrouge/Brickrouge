@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 /**
  * Creates a "A" element.
@@ -26,7 +26,7 @@ class A extends Element
 	 *
 	 * Example:
 	 *
-	 * echo new A('BrickRouge', 'http://brickrouge.org');
+	 * echo new A('Brickrouge', 'http://brickrouge.org');
 	 */
 	public function __construct($label, $href='#', array $tags=array())
 	{

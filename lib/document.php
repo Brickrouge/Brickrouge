@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 /**
  * @property $assets array Assets used by the document
@@ -34,12 +34,12 @@ class Document extends \ICanBoogie\Object
 	}
 
 	/**
-	 * @var BrickRouge\Collector\JS Collector for Javascript assets.
+	 * @var Brickrouge\Collector\JS Collector for Javascript assets.
 	 */
 	public $js;
 
 	/**
-	 * @var BrickRouge\Collector\CSS Collector for CSS assets.
+	 * @var Brickrouge\Collector\CSS Collector for CSS assets.
 	 */
 	public $css;
 
@@ -306,7 +306,7 @@ class Document extends \ICanBoogie\Object
 	}
 }
 
-use BrickRouge\Document;
+use Brickrouge\Document;
 use ICanBoogie\FileCache;
 
 /**
@@ -343,7 +343,7 @@ abstract class Collector
 	 * @param int $weight Weight of the asset in the collection.
 	 * @param string|null $root Root used to resolve the asset path into a URL.
 	 *
-	 * @return BrickRouge\Collector Return the object itself for chainable calls.
+	 * @return Brickrouge\Collector Return the object itself for chainable calls.
 	 */
 	public function add($path, $weight=0, $root=null)
 	{
@@ -391,14 +391,14 @@ abstract class Collector
 	abstract public function cache_construct(FileCache $cache, $key, array $userdata);
 }
 
-namespace BrickRouge\Collector;
+namespace Brickrouge\Collector;
 
 use ICanBoogie\FileCache;
 
 /**
  * Collector for CSS assets.
  */
-class CSS extends \BrickRouge\Collector
+class CSS extends \Brickrouge\Collector
 {
 	public function __toString()
 	{
@@ -411,7 +411,7 @@ class CSS extends \BrickRouge\Collector
 			if ($this->use_cache)
 			{
 				$recent = 0;
-				$root = \BrickRouge\DOCUMENT_ROOT;
+				$root = \Brickrouge\DOCUMENT_ROOT;
 
 				foreach ($collected as $file)
 				{
@@ -460,7 +460,7 @@ EOT;
 
 		foreach ($collected as $url)
 		{
-			$rc .= '<link type="text/css" href="' . \BrickRouge\escape($url) . '" rel="stylesheet" />' . PHP_EOL;
+			$rc .= '<link type="text/css" href="' . \Brickrouge\escape($url) . '" rel="stylesheet" />' . PHP_EOL;
 		}
 
 		return $rc;
@@ -476,7 +476,7 @@ EOT;
 
 		foreach ($collected as $url)
 		{
-			$contents = file_get_contents(\BrickRouge\DOCUMENT_ROOT . $url);
+			$contents = file_get_contents(\Brickrouge\DOCUMENT_ROOT . $url);
 			$contents = preg_replace('/url\(([^\)]+)/', 'url(' . dirname($url) . '/$1', $contents);
 
 			$rc .= $contents . PHP_EOL;
@@ -491,7 +491,7 @@ EOT;
 /**
  * Collector for Javascript assets.
  */
-class JS extends \BrickRouge\Collector
+class JS extends \Brickrouge\Collector
 {
 	public function __toString()
 	{
@@ -505,7 +505,7 @@ class JS extends \BrickRouge\Collector
 
 		if (0)
 		{
-			$root = \BrickRouge\DOCUMENT_ROOT;
+			$root = \Brickrouge\DOCUMENT_ROOT;
 			$repository = $core->config['repository.files'] . '/assets/minified/';
 
 			foreach ($collected as $file)
@@ -539,7 +539,7 @@ class JS extends \BrickRouge\Collector
 			if ($this->use_cache)
 			{
 				$recent = 0;
-				$root = \BrickRouge\DOCUMENT_ROOT;
+				$root = \Brickrouge\DOCUMENT_ROOT;
 
 				foreach ($collected as $file)
 				{
@@ -575,7 +575,7 @@ class JS extends \BrickRouge\Collector
 
 		foreach ($collected as $url)
 		{
-			$rc .= '<script type="text/javascript" src="' . \BrickRouge\escape($url) . '"></script>' . PHP_EOL;
+			$rc .= '<script type="text/javascript" src="' . \Brickrouge\escape($url) . '"></script>' . PHP_EOL;
 		}
 
 		return $rc;
@@ -602,7 +602,7 @@ EOT;
 
 		foreach ($collected as $url)
 		{
-			$content .= file_get_contents(\BrickRouge\DOCUMENT_ROOT . $url) . PHP_EOL;
+			$content .= file_get_contents(\Brickrouge\DOCUMENT_ROOT . $url) . PHP_EOL;
 		}
 
 		file_put_contents(getcwd() . '/' . $key, $content);

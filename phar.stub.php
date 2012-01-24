@@ -1,7 +1,7 @@
 <?php
 
-define('BrickRouge\ROOT', 'phar://' . __FILE__ . DIRECTORY_SEPARATOR);
+define('Brickrouge\ROOT', 'phar://' . __FILE__ . DIRECTORY_SEPARATOR);
 
-require_once BrickRouge\ROOT . 'startup.php';
+require_once Brickrouge\ROOT . 'startup.php';
 
 __HALT_COMPILER();

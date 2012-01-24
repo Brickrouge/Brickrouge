@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 use ICanBoogie\Errors;
 use ICanBoogie\Event;
@@ -134,7 +134,7 @@ class Form extends Element implements Validator
 	 * Before rendering the object form elements are altered according to the {@link VALUES} and
 	 * {@link DISABLED} tags and previous validation errors.
 	 *
-	 * @see BrickRouge.Element::__toString()
+	 * @see Brickrouge.Element::__toString()
 	 */
 	public function __toString()
 	{
@@ -232,7 +232,7 @@ class Form extends Element implements Validator
 	/**
 	 * Override the method to map the {@link HIDDENS} tag to the {@link $hiddens} property.
 	 *
-	 * @see BrickRouge.Element::offsetSet()
+	 * @see Brickrouge.Element::offsetSet()
 	 */
 	public function offsetSet($offset, $value)
 	{
@@ -248,7 +248,7 @@ class Form extends Element implements Validator
 	 * Add hidden input elements and log messages to the inner HTML of the element
 	 * being converted to a string.
 	 *
-	 * @see BrickRouge.Element::render_inner_html()
+	 * @see Brickrouge.Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -299,7 +299,7 @@ class Form extends Element implements Validator
 		{
 			if (is_string($renderer))
 			{
-				$class = 'BrickRouge\Renderer\\' . $renderer;
+				$class = 'Brickrouge\Renderer\\' . $renderer;
 				$renderer = new $class();
 			}
 
@@ -333,7 +333,7 @@ class Form extends Element implements Validator
 	/**
 	 * Renders errors as an HTML element.
 	 *
-	 * An {@link AlertMessage} object is used to render the provided errors.
+	 * An {@link Alert} object is used to render the provided errors.
 	 *
 	 * @param string|ICanBoogie\Errors $errors.
 	 *
@@ -341,7 +341,7 @@ class Form extends Element implements Validator
 	 */
 	protected function render_errors($errors)
 	{
-		return (string) new AlertMessage($errors);
+		return (string) new Alert($errors);
 	}
 
 	/**
@@ -379,7 +379,7 @@ class Form extends Element implements Validator
 			);
 		}
 
-		return '<div class="actions">' . $actions . '</div>';
+		return '<div class="form-actions">' . $actions . '</div>';
 	}
 
 	protected function alter_elements($values, $disabled, $errors)
@@ -405,12 +405,12 @@ class Form extends Element implements Validator
 			}
 
 			#
-			# if the element is referenced in the errors, we had the class 'error'
+			# if the element is referenced in the errors, we set its state to 'error'
 			#
 
 			if (isset($errors[$name]))
 			{
-				$element->add_class('error');
+				$element[Element::STATE] = 'error';
 			}
 
 			#
@@ -475,7 +475,7 @@ class Form extends Element implements Validator
 	 * @param $key The key used to identify the form to load, or an array in which
 	 * STORED_KEY_NAME defines the key.
 	 *
-	 * @return object A BrickRouge\Form object
+	 * @return object A Brickrouge\Form object
 	 */
 	static public function load($key)
 	{
@@ -547,7 +547,7 @@ class Form extends Element implements Validator
 	/**
 	 * Validates the form using the provided values.
 	 *
-	 * @see BrickRouge.Element::validate()
+	 * @see Brickrouge.Element::validate()
 	 */
 	public function validate($values, Errors $errors)
 	{

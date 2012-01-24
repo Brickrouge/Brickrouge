@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the BrickRouge package.
+ * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
  *
@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace BrickRouge;
+namespace Brickrouge;
 
 /**
  * Creates a popover element.
  *
- * BrickRouge provides the BrickRouge.Popover Javascript class that can be used to give behaviour
+ * Brickrouge provides the Brickrouge.Popover Javascript class that can be used to give behaviour
  * to the element, but because the element is not a widget this is not automatic and left up to
  * you.
  *
- * Use the BrickRouge\PopoverWidget to create elements with automatically attached behaviour.
+ * Use the Brickrouge\PopoverWidget to create elements with automatically attached behaviour.
  */
 class Popover extends Element
 {
@@ -86,7 +86,7 @@ class Popover extends Element
 	/**
 	 * Adds the 'fit-content' class name if the {@link FIT_CONTENT} attribute is truthy.
 	 *
-	 * @see BrickRouge.Element::__volatile_get_class()
+	 * @see Brickrouge.Element::__volatile_get_class()
 	 */
 	protected function __volatile_get_class()
 	{
@@ -104,7 +104,7 @@ class Popover extends Element
 	 * The inner HTML is wrapped in a number of DIV elements, and the title is used a the popover
 	 * title.
 	 *
-	 * @see BrickRouge.Element::render_inner_html()
+	 * @see Brickrouge.Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -168,7 +168,7 @@ EOT;
 	 * Adds the anchor specified using the {@link ANCHOR} special attribute to the dataset before
 	 * it is rendered.
 	 *
-	 * @see BrickRouge.Element::render_dataset()
+	 * @see Brickrouge.Element::render_dataset()
 	 */
 	protected function render_dataset(array $dataset)
 	{
@@ -219,7 +219,7 @@ class PopoverWidget extends Popover
 	/**
 	 * Adds the `visible` property to the dataset.
 	 *
-	 * @see BrickRouge.Popover::render_dataset()
+	 * @see Brickrouge.Popover::render_dataset()
 	 */
 	protected function render_dataset(array $dataset)
 	{
