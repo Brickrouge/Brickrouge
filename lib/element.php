@@ -633,7 +633,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	protected function render_class(array $class_names)
 	{
-		return implode(' ', array_keys($class_names));
+		return implode(' ', array_keys(array_filter($class_names)));
 	}
 
 	protected function handleValue(&$tags)
