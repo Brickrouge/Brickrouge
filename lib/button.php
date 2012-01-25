@@ -27,13 +27,13 @@ class Button extends Element
 	 * scope.
 	 *
 	 * @param string $label Label of the button (inner text).
-	 * @param array $tags Optional tags used to create the object.
+	 * @param array $attributes Optional attributes used to create the element.
 	 */
-	public function __construct($label, $tags=array())
+	public function __construct($label, array $attributes=array())
 	{
 		parent::__construct
 		(
-			'button', $tags + array
+			'button', $attributes + array
 			(
 				'type' => 'button',
 
