@@ -49,7 +49,10 @@ this.getOperation().send(this.element);},getOperation:function(){if(this.operati
 },failure:function(b){var a=JSON.decode(b.responseText);if(a&&a.errors){this.alert(a.errors,"error");
 }this.fireEvent("failure",arguments);}});document.id(document.body).addEvent("click:relay(.alert a.close)",function(b,c){b.stop();
 var a=c.getParent("form");if(a){a.getElements(".error").removeClass("error");}c.getParent(".alert").destroy();
-});Brickrouge.Popover=new Class({Implements:[Events,Options],options:{anchor:null,placement:null,visible:false,fitContent:false},initialize:function(b,a){this.element=$(b);
+});!function(){var c='[data-toggle="dropdown"]';function b(){$$(c).getParent().removeClass("open");
+}function a(){var d=this.get("data-target")||this.get("href"),f=document.id(d)||this.getParent(),e;
+e=f.hasClass("open");b();!e&&f.toggleClass("open");return false;}window.addEvent("click",b);
+window.addEvent("click:relay("+c+")",function(e,d){e.stop();a.bind(d)();});}();Brickrouge.Popover=new Class({Implements:[Events,Options],options:{anchor:null,placement:null,visible:false,fitContent:false},initialize:function(b,a){this.element=$(b);
 this.setOptions(a);this.arrow=this.element.getElement(".arrow");this.actions=this.element.getElement("div.actions");
 this.repositionCallback=this.reposition.bind(this,false);this.quickRepositionCallback=this.reposition.bind(this,true);
 this.iframe=null;if(this.options.anchor){this.attachAnchor(this.options.anchor);}this.tween=null;
