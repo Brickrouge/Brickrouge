@@ -29,13 +29,12 @@
 }
 .alert,
 .alert-heading {
-  color: #c09853;
+  color: @warningText;
   margin-top: 0;
 }
 
 // Adjust close link position
 .alert .close {
-  *margin-top: 3px; /* IE7 spacing */
   position: relative;
   right: -21px;
   text-decoration: none;
@@ -45,31 +44,31 @@
 // ----------------
 
 .alert-success {
-  background-color: #dff0d8;
-  border-color: #cfe8c4;  
+  background-color: @successBackground;
+  border-color: @successBorder;  
 }
 .alert-success,
 .alert-success .alert-heading {
-  color: #468847;
+  color: @successText;
 }
 .alert-danger,
 .alert-error {
-  background-color: #f2dede;
-  border-color: #e9c7c7;
+  background-color: @errorBackground;
+  border-color: @errorBorder;
 }
 .alert-danger,
 .alert-error,
 .alert-danger .alert-heading,
 .alert-error .alert-heading {
-  color: #B94A48;
+  color: @errorText;
 }
 .alert-info {
-  background-color: #d9edf7;
-  border-color: #bfe1f2;
+  background-color: @infoBackground;
+  border-color: @infoBorder;
 }
 .alert-info,
 .alert-info .alert-heading {
-  color: #3a87ad;
+  color: @infoText;
 }
 
 

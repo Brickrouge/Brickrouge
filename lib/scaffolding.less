@@ -52,11 +52,12 @@
 // -----------
 // To customize the grid system, bring up the variables.less file and change the column count, size, and gutter there
 .row {
-  margin-left: -@gridGutterWidth;
+  margin-left: @gridGutterWidth * -1;
   .clearfix();
 }
 
-// Find all .span# classes within .row and give them the necessary properties for grid columns (supported by all browsers back to IE7)
+// Find all .span# classes within .row and give them the necessary properties for grid columns 
+// (supported by all browsers back to IE7)
 // Credit to @dhg for the idea
 [class*="span"] {
   .gridColumn();

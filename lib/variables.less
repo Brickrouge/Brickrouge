@@ -9,19 +9,20 @@
 
 // Links
 @linkColor:             #08c;
-@linkColorHover:        darken(@linkColor, 15);
+@linkColorHover:        darken(@linkColor, 15%);
 
 // Grays
 @black:                 #000;
 @white:                 #fff;
+@grayDarker:			lighten(@black, 12.5%);
 @grayDark:              lighten(@black, 25%);
 @gray:                  lighten(@black, 50%);
 @grayLight:             darken(@white, 25%);
 @grayLighter:           darken(@white, 10%);
 
 // Accent colors
-@blue:                  #049CDB;
-@blueDark:              #0064CD;
+@blue:                  #049cdb;
+@blueDark:              #0064cd;
 @green:                 #46a546;
 @red:                   #9d261d;
 @yellow:                #ffc40d;
@@ -72,11 +73,9 @@
 // COMPONENT VARIABLES
 // --------------------------------------------------
 
-// Input placeholder text color
-@placeHolderText:       @grayLight;
-
 // Z-index master list
 // Used for a bird's eye view of components dependent on the z-axis
+// Try to avoid customizing these :)
 @zindexDropdown:        1000;
 @zindexPopover:         1010;
 @zindexTooltip:         1020;
@@ -84,7 +83,29 @@
 @zindexModalBackdrop:   1040;
 @zindexModal:           1050;
 
+// Input placeholder text color
+@placeholderText:       @grayLight;
+
 // Navbar
-@navBarHeight:                    40px;
-@navbarBackground:                #222;
-@navbarBackgroundHighlight:       #333;
+@navbarHeight:                    40px;
+@navbarBackground:                @grayDarker;
+@navbarBackgroundHighlight:       @grayDark;
+
+// Form states and alerts
+@warningText:             #c09853;
+@warningBackground:       #fcf8e3;
+@warningBorder:           #f3edd2;
+
+@errorText:               #b94a48;
+@errorBackground:         #f2dede;
+@errorBorder:             #e9c7c7;
+
+@successText:             #468847;
+@successBackground:       #dff0d8;
+@successBorder:           #cfe8c4;
+
+@infoText:                #3a87ad;
+@infoBackground:          #d9edf7;
+@infoBorder:              #bfe1f2;
+
+
