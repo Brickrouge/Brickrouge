@@ -76,7 +76,7 @@ class Simple extends Element
 		(
 			array
 			(
-				self::LEGEND => $group['title'],
+				self::LEGEND => isset($group['title']) ? $group['title'] : null,
 				self::CHILDREN => $group[self::CHILDREN]
 			)
 		);
