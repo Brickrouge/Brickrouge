@@ -9,19 +9,82 @@
  * file that was distributed with this source code.
  */
 
-$file = dirname(__DIR__) . '/Brickrouge.phar';
-$phar = new Phar($file);
+function strip_comments($source)
+{
+	if (!function_exists('token_get_all')) {
+		return $source;
+	}
 
-$phar->buildFromDirectory(__DIR__);
+	$output = '';
+	foreach (token_get_all($source) as $token) {
+		if (is_string($token)) {
+			$output .= $token;
+		} elseif ($token[0] == T_COMMENT || $token[0] == T_DOC_COMMENT) {
+			$output .= str_repeat("\n", substr_count($token[1], "\n"));
+		} else {
+			$output .= $token[1];
+		}
+	}
+
+	return $output;
+}
+
+$phar_pathname = dirname(__DIR__) . '/Brickrouge.phar';
+
+if (file_exists($phar_pathname))
+{
+	unlink($phar_pathname);
+}
+
+$do_not_compress = array('gif' => true, 'jpg' => true, 'jpeg' => true, 'png' => true);
+$skip = array
+(
+	__DIR__ . DIRECTORY_SEPARATOR . 'Markfile' => true,
+	__DIR__ . DIRECTORY_SEPARATOR . 'phar.make.php' => true,
+	__DIR__ . DIRECTORY_SEPARATOR . 'phar.stub.php' => true,
+	__DIR__ . DIRECTORY_SEPARATOR . 'README.md' => true
+);
+
+$phar = new Phar($phar_pathname);
+$phar->setSignatureAlgorithm(\Phar::SHA1);
 $phar->setStub(file_get_contents('phar.stub.php', true));
 
-if (Phar::canCompress(Phar::GZ))
+$phar->startBuffering();
+
+$rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__, FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::SKIP_DOTS | FilesystemIterator::UNIX_PATHS));
+
+$n = 0;
+$root_length = strlen(__DIR__ . DIRECTORY_SEPARATOR);
+
+foreach ($rii as $pathname => $file)
 {
-	$phar->compressFiles(Phar::GZ);
-}
-else if (Phar::canCompress(Phar::BZ2))
-{
-	$phar->compressFiles(Phar::BZ2);
+	echo $pathname . PHP_EOL;
+
+	if (isset($skip[$pathname]))
+	{
+		continue;
+	}
+
+	$extension = $file->getExtension();
+	$contents = file_get_contents($pathname);
+
+	if ($extension == 'php')
+	{
+		$contents = strip_comments(file_get_contents($pathname));
+	}
+
+	$pathname = substr($pathname, $root_length);
+
+	$phar[$pathname] = $contents;
+
+	if (empty($do_not_compress[$extension]))
+	{
+		$phar[$pathname]->compress(Phar::GZ);
+	}
+
+	$n++;
 }
 
-echo "Phar created: $file" . PHP_EOL;
+$phar->stopBuffering();
+
+echo "Phar created: $phar_pathname ($n files, " . round((filesize($phar_pathname) / 1024)) . ' Ko)' . PHP_EOL;
