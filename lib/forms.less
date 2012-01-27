@@ -54,7 +54,6 @@ legend {
   color: @grayDark;
   border: 0;
   border-bottom: 1px solid #eee;
-  -webkit-margin-collapse: separate;
 }
 
 // Set font for forms
@@ -91,6 +90,19 @@ select,
   border: 1px solid #ccc;
   .border-radius(3px);
 }
+.uneditable-textarea {
+  width: auto;
+  height: auto;
+}
+
+/* @brickrouge: we don't want that
+// Inputs within a label
+label input,
+label textarea,
+label select {
+  display: block;
+}
+*/
 
 // Mini reset for unique input types
 input[type=image],
@@ -104,6 +116,7 @@ input[type=radio] {
   line-height: normal;
   border: none;
   cursor: pointer;
+  .border-radius(0);
 }
 
 // Reset the file input to browser defaults
@@ -135,14 +148,13 @@ input[type=file] {
 // Chrome on Linux and Mobile Safari need background-color
 select {
   width: 220px; // default input width + 10px of padding that doesn't get applied
-  vertical-align: middle;
   background-color: @white;
 }
 
 // Make multiple select elements height not fixed
 select[multiple],
 select[size] {
-  height: inherit;
+  height: auto;
 }
 
 // Remove shadow from image inputs
@@ -150,15 +162,21 @@ input[type=image] {
   .box-shadow(none);
 }
 
+// Make textarea height behave
 textarea {
   height: auto;
 }
 
+// Hidden inputs
+input[type=hidden] {
+  display: none;
+}
 
-// @brickrouge: right align inputs with measure
+// @brickrouge: right align inputs with the '.measure' class
 input.measure {
 	text-align: right;
 }
+
 
 
 // CHECKBOXES & RADIOS
@@ -178,7 +196,7 @@ input.measure {
 // Move the options list down to align with labels
 .controls > .radio:first-child,
 .controls > .checkbox:first-child {
-  padding-top: 6px; // has to be padding because margin collaspes
+  padding-top: 5px; // has to be padding because margin collaspes
 }
 
 // Radios and checkboxes on same line
@@ -216,6 +234,7 @@ textarea:focus {
   @shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
   .box-shadow(@shadow);
   outline: 0;
+  outline: 1px dotted #666 \9; /* IE6-8 */
 }
 input[type=file]:focus,
 input[type=checkbox]:focus,
@@ -342,7 +361,7 @@ textarea[readonly] {
 }
 // Error
 .control-group.error, .field.error { // @brickrouge: we use ".field" instead of ".control-group"
-  .formFieldState(errorText, @errorText, @errorBackground);
+  .formFieldState(@errorText, @errorText, @errorBackground);
 }
 // Success
 .control-group.success, .field.success { // @brickrouge: we use ".field" instead of ".control-group"
@@ -399,9 +418,9 @@ select:focus:required:invalid {
 }
 
 .help-inline {
-  *position: relative; /* IE6-7 */
-  *top: -5px; /* IE6-7 */
-  display: inline;
+  display: inline-block;
+  margin-bottom: 9px;
+  vertical-align: middle;
   padding-left: 5px;
 }
 
@@ -463,6 +482,15 @@ select:focus:required:invalid {
     margin-left: -1px;
     .border-radius(0 3px 3px 0);
   }
+  input:first-child {
+    // In IE7, having a hasLayout container (from clearfix's zoom:1) can make the first input
+    // inherit the sum of its ancestors' margins.
+    *margin-left: -160px;
+
+    &+.add-on {
+      *margin-left: -21px;
+    }
+  }
 }
 
 
@@ -491,6 +519,7 @@ select:focus:required:invalid {
   input,
   textarea,
   select,
+  .help-inline,
   .uneditable-input {
     display: inline-block;
     margin-bottom: 0;
@@ -507,12 +536,17 @@ select:focus:required:invalid {
 // --------------------------
 
 .form-horizontal {
+  // Legend collapses margin, so we're relegated to padding
+  legend + .control-group {
+    margin-top: @baseLineHeight;
+    -webkit-margin-top-collapse: separate;
+  }
   // Increase spacing between groups
   .control-group {
     margin-bottom: @baseLineHeight;
   }
   // Float the labels left
-  .control-group, .field > label { // @brickrouge: we use ".field" instead of ".control-group"
+  .control-group > label, .field > label { // @brickrouge: we use ".field" instead of ".control-group"
     float: left;
     width: 140px;
     padding-top: 5px;

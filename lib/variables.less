@@ -47,27 +47,11 @@
 @baseLineHeight:        18px;
 
 // Buttons
-@primaryButtonColor:    @blue;
+@primaryButtonBackground:    @linkColor;
 
 // Form
 @label-width: 130px;
 @label-margin: 20px;
-@error-padding: 10px;
-
-
-
-// Color Scheme
-@baseColor: @blue;
-@complement: spin(@baseColor, 180); // Determine a complementary color
-@split1: spin(@baseColor, 158); // Split complements
-@split2: spin(@baseColor, -158);
-@triad1: spin(@baseColor, 135); // Triads colors
-@triad2: spin(@baseColor, -135);
-@tetra1: spin(@baseColor, 90); // Tetra colors
-@tetra2: spin(@baseColor, -90);
-@analog1: spin(@baseColor, 22); // Analogs colors
-@analog2: spin(@baseColor, -22);
-
 
 
 // COMPONENT VARIABLES
@@ -91,21 +75,25 @@
 @navbarBackground:                @grayDarker;
 @navbarBackgroundHighlight:       @grayDark;
 
+@navbarText:                      @grayLight;
+@navbarLinkColor:                 @grayLight;
+@navbarLinkColorHover:            @white;
+
 // Form states and alerts
 @warningText:             #c09853;
 @warningBackground:       #fcf8e3;
-@warningBorder:           #f3edd2;
+@warningBorder:           darken(spin(@warningBackground, -10), 3%);
 
 @errorText:               #b94a48;
 @errorBackground:         #f2dede;
-@errorBorder:             #e9c7c7;
+@errorBorder:             darken(spin(@errorBackground, -10), 3%);
 
 @successText:             #468847;
 @successBackground:       #dff0d8;
-@successBorder:           #cfe8c4;
+@successBorder:           darken(spin(@successBackground, -10), 5%);
 
 @infoText:                #3a87ad;
 @infoBackground:          #d9edf7;
-@infoBorder:              #bfe1f2;
+@infoBorder:              darken(spin(@infoBackground, -10), 7%);
 
 

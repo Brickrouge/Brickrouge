@@ -6,8 +6,8 @@
   padding: 8px 35px 8px 14px;
   margin-bottom: @baseLineHeight;
   text-shadow: 0 1px 0 rgba(255,255,255,.5);
-  background-color: #fcf8e3;
-  border: 1px solid #f3edd2;
+  background-color: @warningBackground;
+  border: 1px solid @warningBorder;
   .border-radius(4px);
   
   .content {
@@ -37,6 +37,7 @@
 .alert .close {
   position: relative;
   right: -21px;
+  line-height: 18px;
   text-decoration: none;
 }
 
@@ -86,6 +87,6 @@
   margin-top: 5px;
 }
 
-pre.alert {
+pre.alert { // @brickrouge
 	white-space: pre-wrap;
 }
