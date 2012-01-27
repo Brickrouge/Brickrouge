@@ -183,18 +183,6 @@ class Document extends \ICanBoogie\Object
 		{
 			if (file_exists($path))
 			{
-				/*
-				$key = sprintf('phar-%s-%04x.%s', md5($path), strlen($path), pathinfo($path, PATHINFO_EXTENSION));
-				$replacement = DOCUMENT_ROOT . 'repository/files/assets/' . $key;
-
-				if (!file_exists($replacement) || filemtime($path) > filemtime($replacement))
-				{
-					file_put_contents($replacement, file_get_contents($path));
-				}
-
-				$path = $replacement;
-				*/
-
 				$path = get_accessible_file($path, 'phar');
 			}
 			else

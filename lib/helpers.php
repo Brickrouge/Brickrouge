@@ -157,7 +157,13 @@ function dump($value)
 function get_accessible_file($path, $suffix=null)
 {
 	$key = sprintf('%s-%04x%s.%s', md5($path), strlen($path), ($suffix ? '-' . $suffix : ''), pathinfo($path, PATHINFO_EXTENSION));
-	$replacement = DOCUMENT_ROOT . 'public/brickrouge/assets/' . $key;
+	$replacement_path = DOCUMENT_ROOT . 'public/brickrouge/';
+	$replacement = $replacement_path . $key;
+
+	if (!is_writable($replacement_path))
+	{
+		throw new \Exception(format('Unable to make the file %path web accessible, the destination directory %replacement_path is not writtable.', array('path' => $path, 'replacement_path' => $replacement_path)));
+	}
 
 	if (!file_exists($replacement) || filemtime($path) > filemtime($replacement))
 	{
