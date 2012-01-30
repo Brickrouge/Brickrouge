@@ -58,12 +58,12 @@ $root_length = strlen(__DIR__ . DIRECTORY_SEPARATOR);
 
 foreach ($rii as $pathname => $file)
 {
-	echo $pathname . PHP_EOL;
-
-	if (isset($skip[$pathname]))
+	if (isset($skip[$pathname]) || strpos($pathname, 'uncompressed') !== false || strpos($pathname, '.less') !== false || preg_match('#/lib/[^.]+\.js$#', $pathname))
 	{
 		continue;
 	}
+
+	echo $pathname . PHP_EOL;
 
 	$extension = $file->getExtension();
 	$contents = file_get_contents($pathname);
