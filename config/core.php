@@ -8,6 +8,7 @@ return array
 	'autoload' => array
 	(
 		'Brickrouge\A' => $lib . 'a.php',
+		'Brickrouge\Actions' => $lib . 'actions.php',
 		'Brickrouge\Alert' => $lib . 'alerts.php',
 		'Brickrouge\Button' => $lib . 'button.php',
 		'Brickrouge\Date' => $lib . 'date.php',

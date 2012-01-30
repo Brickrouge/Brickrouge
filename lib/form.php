@@ -345,41 +345,15 @@ class Form extends Element implements Validator
 	}
 
 	/**
-	 * Renders actions.
+	 * Renders actions using an {@link Actions} element.
 	 *
-	 * @param boolean|array|string $actions Actions can be defined as a boolean, an array or a
-	 *
-	 * If actions are defined as a boolean, they are replaced by a "button[type=submit].primary"
-	 * element with the label "Send".
-	 *
-	 * If actions are defined as an array, the array is concatened with the glue
-	 * "<span class="separator">&nbsp;</span>".
-	 *
-	 * Otherwise actions are used as is.
-	 *
-	 * The actions are then wrapped in a "DIV.actions".
+	 * @param mixed $actions
 	 *
 	 * @return string Return the actions block.
 	 */
 	protected function render_actions($actions)
 	{
-		if (is_array($actions))
-		{
-			$actions = implode('<span class="separator">&nbsp;</span>', $actions);
-		}
-		else if ($actions === true)
-		{
-			$actions = new Button
-			(
-				'Send', array
-				(
-					'type' => 'submit',
-					'class' => 'primary'
-				)
-			);
-		}
-
-		return '<div class="form-actions">' . $actions . '</div>';
+		return (string) new Actions($actions, array('class' => 'form-actions'));
 	}
 
 	protected function alter_elements($values, $disabled, $errors)

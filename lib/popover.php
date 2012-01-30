@@ -133,12 +133,9 @@ EOT;
 	/**
 	 * Renders actions.
 	 *
-	 * Actions can be provided as a special value, an array of button elements or a string.
+	 * Actions are rendering using a {@link Actions} element.
 	 *
-	 * If actions are provided as the special value "boolean", an array of buttons is created. The
-	 * array contains two buttons: a _cancel_ and a _ok_ button.
-	 *
-	 * Buttons should provide a `data-action` attribute with the value of the action to use
+	 * Actions buttons should provide a `data-action` attribute with the value of the action to use
 	 * when the `action` event is fired by Javascript.
 	 *
 	 * @param mixed $actions
@@ -147,21 +144,7 @@ EOT;
 	 */
 	protected function render_actions($actions)
 	{
-		if ($actions == 'boolean')
-		{
-			$actions = array
-			(
-				new Button('Cancel', array('data-action' => 'cancel')),
-				new Button('Ok', array('class' => 'primary', 'data-action' => 'ok'))
-			);
-		}
-
-		if (is_array($actions))
-		{
-			$actions = implode($actions);
-		}
-
-		return '<div class="actions">' . $actions . '</div>';
+		return '<div class="actions">' . new Actions($actions) . '</div>';
 	}
 
 	/**
