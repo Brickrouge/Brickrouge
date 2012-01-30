@@ -295,6 +295,15 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		}
 
 		#
+		# DATASET before "data-*"
+		#
+
+		if (!empty($tags[self::DATASET]))
+		{
+			$this[self::DATASET] = $tags[self::DATASET];
+		}
+
+		#
 		# prepare special elements
 		#
 
@@ -373,6 +382,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	public function offsetExists($offset)
 	{
+		if (strpos($offset, 'data-') === 0)
+		{
+			return isset($this->dataset[substr($offset, 5)]);
+		}
+
 		return isset($this->tags[$offset]);
 	}
 
@@ -381,6 +395,13 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	public function offsetGet($offset, $default=null)
 	{
+		if (strpos($offset, 'data-') === 0)
+		{
+			$offset = substr($offset, 5);
+
+			return isset($this->dataset[$offset]) ? $this->dataset[$offset] : $default;
+		}
+
 		return $this->offsetExists($offset) ? $this->tags[$offset] : $default;
 	}
 
@@ -390,6 +411,13 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	public function offsetSet($offset, $value)
 	{
+		if (strpos($offset, 'data-') === 0)
+		{
+			$this->dataset[substr($offset, 5)] = $value;
+
+			return;
+		}
+
 		switch ($offset)
 		{
 			case self::CHILDREN:
@@ -432,6 +460,13 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	public function offsetUnset($offset)
 	{
+		if (strpos($offset, 'data-') === 0)
+		{
+			unset($this->dataset[substr($offset, 5)]);
+
+			return;
+		}
+
 		unset($this->tags[$offset]);
 	}
 
