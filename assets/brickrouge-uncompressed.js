@@ -680,7 +680,7 @@ Brickrouge.Popover = new Class({
 		this.element = $(el);
 		this.setOptions(options);
 		this.arrow = this.element.getElement('.arrow');
-		this.actions = this.element.getElement('div.actions');
+		this.actions = this.element.getElement('.popover-actions');
 		this.repositionCallback = this.reposition.bind(this, false);
 		this.quickRepositionCallback = this.reposition.bind(this, true);
 
@@ -725,7 +725,7 @@ Brickrouge.Popover = new Class({
 	{
 		var target = ev.target;
 
-		if (target.tagName == 'BUTTON' && target.getParent('div.actions'))
+		if (target.tagName == 'BUTTON' && target.getParent('.popover-actions'))
 		{
 			this.fireAction({ action: target.get('data-action'), popover: this, ev: ev });
 		}
@@ -1053,20 +1053,20 @@ Brickrouge.Popover.from = function(options)
 	var popover, title = options.title,
 	content = options.content,
 	actions = options.actions,
-	inner = new Element('div.inner');
+	inner = new Element('div.popover-inner');
 
 	if (title)
 	{
-		inner.adopt(new Element('h3.title', { 'html': title }));
+		inner.adopt(new Element('h3.popover-title', { 'html': title }));
 	}
 
 	if (typeOf(content) == 'element')
 	{
-		inner.adopt(new Element('div.content').adopt(content));
+		inner.adopt(new Element('div.popover-content').adopt(content));
 	}
 	else
 	{
-		inner.adopt(new Element('div.content', { 'html': content }));
+		inner.adopt(new Element('div.popover-content', { 'html': content }));
 	}
 
 	if (actions == 'boolean')
@@ -1076,7 +1076,7 @@ Brickrouge.Popover.from = function(options)
 
 	if (actions)
 	{
-		inner.adopt(new Element('div.actions').adopt(actions));
+		inner.adopt(new Element('div.popover-actions').adopt(actions));
 	}
 
 	popover = new Element('div.popover').adopt([ new Element('div.arrow'), inner ]);

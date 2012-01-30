@@ -21,60 +21,63 @@
     width: 0;
     height: 0;
   }
-  .inner {
-    padding: 3px;
-    width: 280px;
-    overflow: hidden;
-    background: @black; // has to be full background declaration for IE fallback
-    background: rgba(0,0,0,.8);
-    .border-radius(6px);
-    .box-shadow(0 3px 7px rgba(0,0,0,0.3));
 
-    & > :first-child { // @brickrouge: because the number of elements is variable
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
-    }
-
-    & > :last-child { // @brickrouge: because the number of elements is variable
-      border-bottom-left-radius: 3px;
-      border-bottom-right-radius: 3px;
-    }
-  }
-  &.fit-content .inner { // @brickrouge: because sometimes the content is no simple text
+  &.fit-content .popover-inner { // @brickrouge: because sometimes the content is no simple text
     width: auto;
   }
-  .title {
-    padding: 9px 15px;
-    line-height: 1;
-    background-color: #f5f5f5;
-    border-bottom:1px solid #eee;
-    margin: 0; // @brickrouge: because we use margins around h3
-  }
-  .content {
-    padding: 14px;
-    background-color: @white;
-    .background-clip(padding-box);
-    p, ul, ol {
-      margin-bottom: 0;
-    }
+}
+.popover-inner {
+  padding: 3px;
+  width: 280px;
+  overflow: hidden;
+  background: @black; // has to be full background declaration for IE fallback
+  background: rgba(0,0,0,.8);
+  .border-radius(6px);
+  .box-shadow(0 3px 7px rgba(0,0,0,0.3));
 
-    & > :first-child { // @brickrouge
-      margin-top: 0;
-    }
-
-    & > :last-child { // @brickrouge
-      margin-bottom: 0;
-    }
+  & > :first-child { // @brickrouge: because the number of elements is variable
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
   }
-	.actions { // @brickrouge: our popovers can have actions
-		text-align: center;
-		background-color: darken(@white, 4%);
-		border-top: 1px solid @grayLight;
+
+  & > :last-child { // @brickrouge: because the number of elements is variable
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
+}
+.popover-title {
+  padding: 9px 15px;
+  line-height: 1;
+  background-color: #f5f5f5;
+  border-bottom:1px solid #eee;
+  //.border-radius(3px 3px 0 0); @brickrouge: see .popover-inner > :first-child
+  margin: 0; // @brickrouge: because we use margins around h3
+}
+.popover-content {
+  padding: 14px;
+  background-color: @white;
+  //.border-radius(0 0 3px 3px); @brickrouge: see .popover-inner > :first-child
+  .background-clip(padding-box);
+  p, ul, ol {
+    margin-bottom: 0;
+  }
+
+  & > :first-child { // @brickrouge
+    margin-top: 0;
+  }
+
+  & > :last-child { // @brickrouge
+    margin-bottom: 0;
+  }
+}
+.popover-actions { // @brickrouge: our popovers can have actions
+  text-align: center;
+  background-color: darken(@white, 4%);
+  border-top: 1px solid @grayLight;
 		
-		button {
-			margin: .6em 1ex;	
-		}
-	}
+  button {
+    margin: .6em 1ex;	
+  }
 }
 
 .popover.contrast { // @brickrouge: our popovers can have a contrasted color scheme
@@ -87,7 +90,7 @@
 		color: darken(@white, 20%);
 	}
 	
-	.inner {
+	.popover-inner {
 		background: @black;
 		background: rgba(0, 0, 0, 0.8);
 		background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.8), @black);
@@ -97,7 +100,7 @@
 		padding: 0;
 	}
 
-	.title {
+	.popover-title {
 		background: lighten(@black, 13%);
 		background: -moz-linear-gradient(top, transparent, @black);
 		background: -webkit-linear-gradient(top, transparent, @black);
@@ -105,11 +108,11 @@
 		border-bottom-color: @black;
 	}
 
-	.content {
+	.popover-content {
 		background: transparent;
 	}
 
-	.actions {
+	.popover-actions {
 		background: lighten(@black, 13%);
 		background: -moz-linear-gradient(top, lighten(@black, 13%), transparent);
 		background: -webkit-linear-gradient(top, lighten(@black, 13%), transparent);

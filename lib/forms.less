@@ -6,6 +6,13 @@
 // GENERAL STYLES
 // --------------
 
+/* @brickrouge: we define this in our reset
+// Make all forms have space below them
+form {
+  margin: 0 0 @baseLineHeight;
+}
+*/
+
 fieldset {
   padding: 0;
   margin: 0;
@@ -62,8 +69,8 @@ input,
 button,
 select,
 textarea {
-  font-weight: normal;
-  line-height: @baseLineHeight;
+  font-weight: normal; // @brickrouge: we don't want to define font family
+  line-height: @baseLineHeight; // @brickrouge: we don't want to define font family
 }
 
 // Identify controls by their labels
@@ -105,22 +112,22 @@ label select {
 */
 
 // Mini reset for unique input types
-input[type=image],
-input[type=checkbox],
-input[type=radio] {
+input[type="image"],
+input[type="checkbox"],
+input[type="radio"] {
   width: auto;
   height: auto;
   padding: 0;
   margin: 3px 0;
   *margin-top: 0; /* IE7 */
   line-height: normal;
-  border: none;
+  border: 0;
   cursor: pointer;
-  .border-radius(0);
+  border-radius: 0 e("\0/"); // Nuke border-radius for IE9 only
 }
 
 // Reset the file input to browser defaults
-input[type=file] {
+input[type="file"] {
   padding: initial;
   line-height: initial;
   border: initial;
@@ -130,19 +137,19 @@ input[type=file] {
 }
 
 // Help out input buttons
-input[type=button],
-input[type=reset],
-input[type=submit] {
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
   width: auto;
   height: auto;
 }
 
 // Set the height of select and file controls to match text inputs
 select,
-input[type=file] {
-  height: @baseLineHeight * 1.5; /* In IE7, the height of the select element cannot be changed by height, only font-size */
+input[type="file"] {
+  height: 28px; /* In IE7, the height of the select element cannot be changed by height, only font-size */
   *margin-top: 4px; /* For IE7, add top margin to align select with labels */
-  line-height: @baseLineHeight * 1.5;
+  line-height: 28px;
 }
 
 // Chrome on Linux and Mobile Safari need background-color
@@ -158,7 +165,7 @@ select[size] {
 }
 
 // Remove shadow from image inputs
-input[type=image] {
+input[type="image"] {
   .box-shadow(none);
 }
 
@@ -168,7 +175,7 @@ textarea {
 }
 
 // Hidden inputs
-input[type=hidden] {
+input[type="hidden"] {
   display: none;
 }
 
@@ -187,8 +194,8 @@ input.measure {
 .checkbox {
   padding-left: 18px;
 }
-.radio input[type=radio],
-.checkbox input[type=checkbox] {
+.radio input[type="radio"],
+.checkbox input[type="checkbox"] {
   float: left;
   margin-left: -18px;
 }
@@ -204,10 +211,16 @@ input.measure {
 .checkbox.inline {
   display: inline-block;
   margin-bottom: 0;
+  vertical-align: middle;
 }
 .radio.inline + .radio.inline,
 .checkbox.inline + .checkbox.inline {
   margin-left: 10px; // space out consecutive inline controls
+}
+// But don't forget to remove their padding on first-child
+.controls > .radio.inline:first-child,
+.controls > .checkbox.inline:first-child {
+  padding-top: 0;
 }
 
 .inline-inputs > label { // @brickrouge
@@ -234,13 +247,13 @@ textarea:focus {
   @shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
   .box-shadow(@shadow);
   outline: 0;
-  outline: 1px dotted #666 \9; /* IE6-8 */
+  outline: thin dotted \9; /* IE6-8 */
 }
-input[type=file]:focus,
-input[type=checkbox]:focus,
+input[type="file"]:focus,
+input[type="checkbox"]:focus,
 select:focus {
   .box-shadow(none); // override for file inputs
-  outline: 1px dotted #666; // Selet elements don't get box-shadow styles, so instead we do outline
+  .tab-focus();
 }
 
 
@@ -265,45 +278,13 @@ textarea[class*="span"],
   margin-left: 0;
 }
 
-// This is a duplication of the main grid .columns() mixin, but subtracts 10px to account for input padding and border
-.inputColumns(@columnSpan: 1) {
-  width: ((@gridColumnWidth) * @columnSpan) + (@gridGutterWidth * (@columnSpan - 1)) - 10;
-}
-input,
-textarea,
-.uneditable-input {
-  // Default columns
-  &.span1     { .inputColumns(1); }
-  &.span2     { .inputColumns(2); }
-  &.span3     { .inputColumns(3); }
-  &.span4     { .inputColumns(4); }
-  &.span5     { .inputColumns(5); }
-  &.span6     { .inputColumns(6); }
-  &.span7     { .inputColumns(7); }
-  &.span8     { .inputColumns(8); }
-  &.span9     { .inputColumns(9); }
-  &.span10    { .inputColumns(10); }
-  &.span11    { .inputColumns(11); }
-  &.span12    { .inputColumns(12); }
-}
 
-.selectColumns(@columnSpan: 1) {
-  width: ((@gridColumnWidth) * @columnSpan) + (@gridGutterWidth * (@columnSpan - 1)) + 10;
-}
-select {
-  &.span1     { .selectColumns(1); }
-  &.span2     { .selectColumns(2); }
-  &.span3     { .selectColumns(3); }
-  &.span4     { .selectColumns(4); }
-  &.span5     { .selectColumns(5); }
-  &.span6     { .selectColumns(6); }
-  &.span7     { .selectColumns(7); }
-  &.span8     { .selectColumns(8); }
-  &.span9     { .selectColumns(9); }
-  &.span10    { .selectColumns(10); }
-  &.span11    { .selectColumns(11); }
-  &.span12    { .selectColumns(12); }
-}
+
+// GRID SIZING FOR INPUTS
+// ----------------------
+
+#inputGridSystem > .generate(@gridColumns, @gridColumnWidth, @gridGutterWidth);
+
 
 
 
@@ -419,6 +400,7 @@ select:focus:required:invalid {
 
 .help-inline {
   display: inline-block;
+  .ie7-inline-block();
   margin-bottom: 9px;
   vertical-align: middle;
   padding-left: 5px;
@@ -437,6 +419,10 @@ select:focus:required:invalid {
   input,
   .uneditable-input {
     .border-radius(0 3px 3px 0);
+    &:focus {
+      position: relative;
+      z-index: 2;
+    }
   }
   .uneditable-input {
     border-left-color: #ccc;
@@ -448,7 +434,7 @@ select:focus:required:invalid {
     min-width: 16px;
     height: @baseLineHeight;
     margin-right: -1px;
-    padding: 4px 4px 4px 5px;
+    padding: 4px 5px;
     font-weight: normal;
     line-height: @baseLineHeight;
     color: @grayLight;
@@ -526,11 +512,27 @@ select:focus:required:invalid {
   }
 }
 .form-search label,
-.form-inline label {
+.form-inline label,
+.form-search .input-append,
+.form-inline .input-append,
+.form-search .input-prepend,
+.form-inline .input-prepend {
   display: inline-block;
 }
+// Make the prepend and append add-on vertical-align: middle;
+.form-search .input-append .add-on,
+.form-inline .input-prepend .add-on,
+.form-search .input-append .add-on,
+.form-inline .input-prepend .add-on {
+  vertical-align: middle;
+}
 
-// @brickrouge: we use ".field + .field" to control margins.
+/* @brickrouge: we use ".field + .field" to control margins.
+// Margin to space out fieldsets
+.control-group {
+  margin-bottom: @baseLineHeight / 2;
+}
+*/
 
 // Horizontal-specific styles
 // --------------------------
@@ -544,6 +546,7 @@ select:focus:required:invalid {
   // Increase spacing between groups
   .control-group {
     margin-bottom: @baseLineHeight;
+    .clearfix();
   }
   // Float the labels left
   .control-group > label, .field > label { // @brickrouge: we use ".field" instead of ".control-group"

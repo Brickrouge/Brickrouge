@@ -356,6 +356,13 @@ class Form extends Element implements Validator
 		return (string) new Actions($actions, array('class' => 'form-actions'));
 	}
 
+	/**
+	 * Alters the elements according to the state of the form.
+	 *
+	 * @param array $values
+	 * @param bool $disabled true if the form is disabled, false otherwise.
+	 * @param array|ICanBoogie\Errors $errors The validation errors.
+	 */
 	protected function alter_elements($values, $disabled, $errors)
 	{
 		$iterator = new \RecursiveIteratorIterator($this, \RecursiveIteratorIterator::SELF_FIRST);

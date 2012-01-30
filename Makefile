@@ -1,14 +1,19 @@
 BRICKROUGE = ./assets/brickrouge
 BRICKROUGE_UNCOMPRESSED = ./assets/brickrouge-uncompressed
 BRICKROUGE_LESS = ./lib/brickrouge.less
-LESS_COMPRESSOR ?= `which lessc`
+BRICKROUGE_RESPONSIVE = ./assets/responsive
+BRICKROUGE_RESPONSIVE_UNCOMPRESSED = ./assets/responsive-uncompressed
+BRICKROUGE_RESPONSIVE_LESS = ./lib/responsive.less
+LESS_COMPILER ?= `which lessc`
 WATCHR ?= `which watchr`
 YUI_JAR=/usr/share/yui-compressor/yui-compressor.jar
 
 build:
-	@@if test ! -z ${LESS_COMPRESSOR}; then \
+	@@if test ! -z ${LESS_COMPILER}; then \
 		lessc ${BRICKROUGE_LESS} > ${BRICKROUGE_UNCOMPRESSED}.css; \
 		lessc -x ${BRICKROUGE_LESS} > ${BRICKROUGE}.css; \
+		lessc ${BRICKROUGE_RESPONSIVE_LESS} > ${BRICKROUGE_RESPONSIVE_UNCOMPRESSED}.css; \
+		lessc -x ${BRICKROUGE_RESPONSIVE_LESS} > ${BRICKROUGE_RESPONSIVE}.css; \
 		echo "Brickrouge successfully built! - `date`"; \
 	else \
 		echo "You must have the LESS compiler installed in order to build Brickrouge."; \

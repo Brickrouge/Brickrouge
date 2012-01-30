@@ -30,15 +30,19 @@
 .alert,
 .alert-heading {
   color: @warningText;
+}
+
+.alert-heading { // @brickrouge: because our headers have margins
   margin-top: 0;
 }
 
 // Adjust close link position
 .alert .close {
   position: relative;
+  top: -2px;
   right: -21px;
   line-height: 18px;
-  text-decoration: none;
+  text-decoration: none; // @brickrouge: because we don't remove text-decoration on links
 }
 
 // Alternate styles

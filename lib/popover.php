@@ -114,7 +114,7 @@ class Popover extends Element
 
 		if ($title)
 		{
-			$title = '<h3 class="title">' . escape($title) . '</h3>';
+			$title = '<h3 class="popover-title">' . escape($title) . '</h3>';
 		}
 
 		$actions = $this[self::ACTIONS];
@@ -126,7 +126,7 @@ class Popover extends Element
 
 		return <<<EOT
 <div class="arrow"></div>
-<div class="inner">$title<div class="content">$content</div>$actions</div>
+<div class="popover-inner">$title<div class="popover-content">$content</div>$actions</div>
 EOT;
 	}
 
@@ -144,7 +144,7 @@ EOT;
 	 */
 	protected function render_actions($actions)
 	{
-		return '<div class="actions">' . new Actions($actions) . '</div>';
+		return '<div class="actions">' . new Actions($actions, array('class' => 'popover-actions')) . '</div>';
 	}
 
 	/**
