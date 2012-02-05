@@ -60,11 +60,11 @@ class Object
 		{
 			$reflexion_property = $reflexion_class->getProperty($property);
 
-			trigger_error(format('The property %property is not readable for object of class %class.', array('property' => $property, 'class' => get_class($this))));
+			trigger_error(\Brickrouge\format('The property %property is not readable for object of class %class.', array('property' => $property, 'class' => get_class($this))));
 		}
 		catch (\ReflectionException $e) { }
 
-		trigger_error(format('Unknown or inaccessible property %property for object of class %class.', array('property' => $property, 'class' => get_class($this))));
+		trigger_error(\Brickrouge\format('Unknown or inaccessible property %property for object of class %class.', array('property' => $property, 'class' => get_class($this))));
 	}
 
 	/**
@@ -101,7 +101,7 @@ class Object
 
 		if (array_key_exists($property, $properties))
 		{
-			trigger_error(format('The property %property is not writable for object of class %class.', array('property' => $property, 'class' => get_class($this))));
+			trigger_error(\Brickrouge\format('The property %property is not writable for object of class %class.', array('property' => $property, 'class' => get_class($this))));
 
 			return;
 		}
