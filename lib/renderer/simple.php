@@ -10,6 +10,9 @@ class Simple extends Element
 {
 	protected $form;
 
+	/**
+	 * Circumvent Element constructor.
+	 */
 	public function __construct()
 	{
 
@@ -29,14 +32,14 @@ class Simple extends Element
 		$rc = '';
 		$groups = $this->group_children();
 
-		foreach ($groups as $group)
+		foreach ($groups as $key => $group)
 		{
 			if (empty($group[self::CHILDREN]))
 			{
 				continue;
 			}
 
-			$rc .= PHP_EOL . $this->render_group($group) . PHP_EOL;
+			$rc .= PHP_EOL . $this->render_group($group, $key) . PHP_EOL;
 		}
 
 		return $rc;
@@ -44,17 +47,9 @@ class Simple extends Element
 
 	protected function group_children()
 	{
-		$groups = array
-		(
-			'primary' => array
-			(
-				'title' => ''
-			)
-		)
+		$groups = $this->form[self::GROUPS] ?: array();
 
-		+ $this->form->get(self::GROUPS, array());
-
-// 		self::sort_by($groups, 'weight');
+		\Brickrouge\stable_sort($groups, function($v) { return isset($v['weight']) ? $v['weight'] : 0; });
 
 		#
 		# dispatch children into groups
@@ -62,7 +57,9 @@ class Simple extends Element
 
 		foreach ($this->children as $name => $element)
 		{
-			$group = is_object($element) ? $element->get(self::GROUP, 'primary') : 'primary';
+			if (!$element) continue;
+
+			$group = is_object($element) ? ($element[self::GROUP] ?: 'primary') : 'primary';
 
 			$groups[$group][self::CHILDREN][$name] = $element;
 		}
@@ -70,14 +67,23 @@ class Simple extends Element
 		return $groups;
 	}
 
-	protected function render_group(array $group)
+	protected function render_group(array $group, $key)
 	{
+		$class = isset($group['class']) ? $group['class'] : null;
+
+		if ($key && !is_numeric($key))
+		{
+			$class .= ' group--' . \Brickrouge\normalize($key);
+		}
+
 		$group = new Group
 		(
 			array
 			(
 				self::LEGEND => isset($group['title']) ? $group['title'] : null,
-				self::CHILDREN => $group[self::CHILDREN]
+				self::CHILDREN => $group[self::CHILDREN],
+
+				'class' => $class
 			)
 		);
 

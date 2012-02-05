@@ -110,6 +110,55 @@ function _array_flatten_callback(&$result, $pre, $key, &$value)
 }
 
 /**
+ * Sorts an array using a stable sorting algorithm while preserving its keys.
+ *
+ * A stable sorting algorithm maintains the relative order of values with equal keys.
+ *
+ * The array is always sorted in ascending order but one can use the array_reverse() function to
+ * reverse the array. Also keys are preserved, even numeric ones, use the array_values() function
+ * to create an array with an ascending index.
+ *
+ * @param array &$array
+ * @param callable $picker
+ */
+function stable_sort(&$array, $picker=null)
+{
+	static $transform, $restore;
+
+	if (!$transform)
+	{
+		$transform = function(&$v, $k)
+		{
+			$v = array($v, $k, $v);
+		};
+
+		$restore = function(&$v, $k)
+		{
+			$v = $v[2];
+		};
+	}
+
+	if ($picker)
+	{
+		array_walk
+		(
+			$array, function(&$v, $k) use ($picker)
+			{
+				$v = array($picker($v), $k, $v);
+			}
+		);
+	}
+	else
+	{
+		array_walk($array, $transform);
+	}
+
+	asort($array);
+
+	array_walk($array, $restore);
+}
+
+/**
  * Convert special characters to HTML entities.
  *
  * @param string $str The string being converted.
