@@ -27,10 +27,10 @@ class Actions extends Element
 	 *
 	 * If actions are defined as the string "boolean" they are replaced by an array with the
 	 * buttons "button[data-action="cancel"]" and
-	 * "button[data-action="ok"][type=submit][class=primary]".
+	 * "button[data-action="ok"][type=submit].btn-primary".
 	 *
 	 * If actions are defined as a boolean, they are replaced by a
-	 * "button[type=submit][data-action="ok"].primary" element with the label "Send".
+	 * "button[type=submit][data-action="ok"].btn-primary" element with the label "Send".
 	 *
 	 * If actions are defined as an array, the array is concatened with the glue
 	 * "<span class="separator">&nbsp;</span>".
@@ -56,7 +56,7 @@ class Actions extends Element
 			$actions = array
 			(
 				new Button('Cancel', array('data-action' => 'cancel')),
-				new Button('Ok', array('data-action' => 'ok', 'type' => 'submit', 'class' => 'primary')),
+				new Button('Ok', array('data-action' => 'ok', 'type' => 'submit', 'class' => 'btn-primary')),
 			);
 		}
 
@@ -66,7 +66,7 @@ class Actions extends Element
 		}
 		else if ($actions === true)
 		{
-			$actions = new Button('Ok', array('dataset' => array('action' => 'ok'), 'type' => 'submit', 'class' => 'primary'));
+			$actions = new Button('Ok', array('dataset' => array('action' => 'ok'), 'type' => 'submit', 'class' => 'btn-primary'));
 		}
 
 		return $html . $actions;

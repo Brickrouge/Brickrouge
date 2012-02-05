@@ -602,7 +602,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	/**
 	 * @var array Class names used to compose the value of the "class" attribute.
 	 */
-	private $class_names=array();
+	protected $class_names=array();
 
 	/**
 	 * Returns the value of the "class" attribute.

@@ -75,9 +75,9 @@
 .btn-group .btn:focus,
 .btn-group .btn:active,
 .btn-group .btn.active,
-.btn-group button:hover,
-.btn-group button:focus,
-.btn-group button:active {
+.btn-group button:hover, //@brickrouge: we use button
+.btn-group button:focus, //@brickrouge: we use button
+.btn-group button:active { //@brickrouge: we use button
   z-index: 2;
 }
 
@@ -133,10 +133,10 @@
 
 
 // Account for other colors
-.primary,
-.danger,
-.info,
-.success {
+.btn-primary,
+.btn-danger,
+.btn-info,
+.btn-success {
   .caret {
     border-top-color: @white;
     .opacity(75);
@@ -144,7 +144,7 @@
 }
 
 // Small button dropdowns
-.btn.small .caret {
+.btn-small .caret {
   margin-top: 4px;
 }
 
