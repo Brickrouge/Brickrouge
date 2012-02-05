@@ -172,7 +172,7 @@ EOT;
 class PopoverWidget extends Popover
 {
 	/**
-	 * Whether the widget should be made visible once the document is ready.
+	 * Whether the widget should be made visible once elements are ready.
 	 *
 	 * @var bool
 	 */
