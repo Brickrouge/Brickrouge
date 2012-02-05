@@ -12,30 +12,50 @@
 namespace Brickrouge;
 
 /**
- * Creates a FIELDSET element with an optional LEGEND element.
+ * A <FIELDSET> element with an optional <LEGEND> element.
  *
  * The direct children of the element are wrapped in a DIV.field element, see the
  * {@link render_child()} method for more information.
+ *
+ * Localization:
+ *
+ * - Labels defined using the {@link Form::LABEL} attribute are translated within the 'label' scope.
+ * - Legends defined using the {@link LEGEND} attribute are translated within the 'legend' scope.
  */
 class Group extends Element
 {
 	/**
 	 * Constructor.
 	 *
-	 * Create an element with the type "fieldset".
+	 * Create an element of type "fieldset".
 	 *
-	 * @param array $tags
+	 * @param array $attributes
 	 */
-	public function __construct(array $tags=array())
+	public function __construct(array $attributes=array())
 	{
-		parent::__construct('fieldset', $tags);
+		parent::__construct('fieldset', $attributes);
+	}
+
+	/**
+	 * Adds the 'no-legend' class name if the group has no legend.
+	 *
+	 * @see Brickrouge.Element::render_class()
+	 */
+	protected function render_class(array $class_names)
+	{
+		if ($this[self::LEGEND])
+		{
+			$class_names['no-legend'] = true;
+		}
+
+		return parent::render_class($class_names);
 	}
 
 	/**
 	 * Override the method to render the child in a DIV.field wrapper.
 	 *
-	 * <div class="field [{normalized_field_name}][{required}]">
-	 *     [<label for="{element_id}" class="input-label {required}">{element_form_label}</label>]
+	 * <div class="field [{normalized_field_name}][required]">
+	 *     [<label for="{element_id}" class="input-label [required]">{element_form_label}</label>]
 	 *     <div class="input">{child}</div>
 	 * </div>
 	 *
@@ -43,42 +63,42 @@ class Group extends Element
 	 */
 	protected function render_child($child)
 	{
-		$field_class = 'field';
+		$control_group_class = 'control-group';
 
 		$name = $child['name'];
 
 		if ($name)
 		{
-			$field_class .= ' field--' . normalize($name);
+			$control_group_class .= ' control-group--' . normalize($name);
 		}
 
-		$label = $child[Form::LABEL];
-
-		if ($label)
+		if ($child[self::REQUIRED])
 		{
-			$label = t($label, array(), array('scope' => array('element.label')));
-
-			$label_class = 'input-label';
-
-			if ($child[self::REQUIRED])
-			{
-				$field_class .= ' required';
-				$label_class .= ' required';
-			}
-
-			$label = '<label for="' . $child->id . '" class="' . $label_class . '">' . escape($label) . '</label>' . PHP_EOL;
+			$control_group_class .= ' required';
 		}
 
 		$state = $child[Element::STATE];
 
 		if ($state)
 		{
-			$field_class .= ' ' . $state;
+			$control_group_class .= ' ' . $state;
+		}
+
+		$label = $child[Form::LABEL];
+
+		if ($label)
+		{
+			if (!($label instanceof Element))
+			{
+				$label = escape(t($label, array(), array('scope' => 'label')));
+			}
+
+			$label = '<label for="' . $child->id . '" class="controls-label">' . $label . '</label>' . PHP_EOL;
 		}
 
 		return <<<EOT
-<div class="$field_class">
-	$label<div class="input">$child</div>
+<div class="$control_group_class">
+	$label<div class="controls">$child</div>
 </div>
 EOT;
 	}
@@ -86,7 +106,7 @@ EOT;
 	/**
 	 * Prepend the inner HTML with a LEGEND element if the {@link LEGEND} tag is not empty.
 	 *
-	 * The legend is translated with the "element.legend" scope.
+	 * The legend is translated within the "legend" scope.
 	 *
 	 * @see Brickrouge.Element::render_inner_html()
 	 */
@@ -98,7 +118,7 @@ EOT;
 
 		if ($legend)
 		{
-			$legend = t($legend, array(), array('scope' => 'element.legend'));
+			$legend = t($legend, array(), array('scope' => 'legend'));
 			$rc .= '<legend>' . (is_object($legend) ? (string) $legend : escape($legend)) . '</legend>';
 		}
 

@@ -23,33 +23,6 @@ fieldset {
   }
 }
 
-// @brickrouge: A field is a container for an input and its label.
-// ---------------------------------------------------------------
-div.field {	
-  margin-top: 0;
-  margin-bottom: 0;
-  zoom: 1;
-
-  &:before,
-  &:after {
-    display: table;
-    content: "";
-  }
-
-  &:after {
-    clear: both;
-  }
-
-  + div.field {
-    margin-top: @baseline;
-  }
-		
-  > label {
-    line-height: 1em;
-    color: @grayDark;
-  }
-}
-
 // Groups of fields with labels on top (legends)
 legend {
   display: block;
@@ -337,15 +310,15 @@ textarea[readonly] {
   }
 }
 // Warning
-.control-group.warning, .field.warning { // @brickrouge: we use ".field" instead of ".control-group"
+.control-group.warning {
   .formFieldState(@warningText, @warningText, @warningBackground);
 }
 // Error
-.control-group.error, .field.error { // @brickrouge: we use ".field" instead of ".control-group"
+.control-group.error {
   .formFieldState(@errorText, @errorText, @errorBackground);
 }
 // Success
-.control-group.success, .field.success { // @brickrouge: we use ".field" instead of ".control-group"
+.control-group.success {
   .formFieldState(@successText, @successText, @successBackground);
 }
 
@@ -527,12 +500,10 @@ select:focus:required:invalid {
   vertical-align: middle;
 }
 
-/* @brickrouge: we use ".field + .field" to control margins.
 // Margin to space out fieldsets
-.control-group {
-  margin-bottom: @baseLineHeight / 2;
+.control-group + .control-group { //@brickrouge: we use ".control-group + .control-group" to control margins.
+  margin-top: @baseLineHeight / 2;
 }
-*/
 
 // Horizontal-specific styles
 // --------------------------
@@ -545,18 +516,20 @@ select:focus:required:invalid {
   }
   // Increase spacing between groups
   .control-group {
-    margin-bottom: @baseLineHeight;
+    & + .control-group { //@brickrouge: we prefer ".control-group + .control-group"
+      margin-top: @baseLineHeight;
+    }
     .clearfix();
   }
   // Float the labels left
-  .control-group > label, .field > label { // @brickrouge: we use ".field" instead of ".control-group"
+  .control-group > label {
     float: left;
     width: 140px;
     padding-top: 5px;
     text-align: right;
   }
   // Move over all input controls and content
-  .controls, div.input { // @brickrouge: we use "div.input" instead of ".controls"
+  .controls {
     margin-left: 160px; // FIXME: @label-width + @label-margin
   }
   // Move over buttons in .form-actions to align with .controls
