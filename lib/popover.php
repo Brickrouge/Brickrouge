@@ -144,7 +144,7 @@ EOT;
 	 */
 	protected function render_actions($actions)
 	{
-		return '<div class="actions">' . new Actions($actions, array('class' => 'popover-actions')) . '</div>';
+		return new Actions($actions, array('class' => 'popover-actions'));
 	}
 
 	/**
