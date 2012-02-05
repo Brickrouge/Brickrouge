@@ -125,16 +125,18 @@ function stable_sort(&$array, $picker=null)
 {
 	static $transform, $restore;
 
+	$i = 0;
+
 	if (!$transform)
 	{
-		$transform = function(&$v, $k)
+		$transform = function(&$v, $k) use (&$i)
 		{
-			$v = array($v, $k, $v);
+			$v = array($v, ++$i, $k, $v);
 		};
 
 		$restore = function(&$v, $k)
 		{
-			$v = $v[2];
+			$v = $v[3];
 		};
 	}
 
@@ -142,9 +144,9 @@ function stable_sort(&$array, $picker=null)
 	{
 		array_walk
 		(
-			$array, function(&$v, $k) use ($picker)
+			$array, function(&$v, $k) use (&$i, $picker)
 			{
-				$v = array($picker($v), $k, $v);
+				$v = array($picker($v), ++$i, $k, $v);
 			}
 		);
 	}
