@@ -80,8 +80,9 @@ class Simple extends Element
 		(
 			array
 			(
-				self::LEGEND => isset($group['title']) ? $group['title'] : null,
 				self::CHILDREN => $group[self::CHILDREN],
+				self::DESCRIPTION => isset($group['description']) ? $group['description'] : null,
+				self::LEGEND => isset($group['title']) ? $group['title'] : null,
 
 				'class' => $class
 			)

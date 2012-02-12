@@ -43,7 +43,7 @@ class Group extends Element
 	 */
 	protected function render_class(array $class_names)
 	{
-		if ($this[self::LEGEND])
+		if (!$this[self::LEGEND])
 		{
 			$class_names['no-legend'] = true;
 		}
@@ -90,7 +90,17 @@ class Group extends Element
 		{
 			if (!($label instanceof Element))
 			{
-				$label = escape(t($label, array(), array('scope' => 'label')));
+				$label = escape(t
+				(
+					$label, array(), array
+					(
+						'scope' => 'group.label',
+						'default' => function($label)
+						{
+							return t($label, array(), array('scope' => 'element.label'));
+						}
+					)
+				));
 			}
 
 			$label = '<label for="' . $child->id . '" class="controls-label">' . $label . '</label>' . PHP_EOL;
@@ -112,17 +122,44 @@ EOT;
 	 */
 	protected function render_inner_html()
 	{
-		$rc = '';
+		$html = parent::render_inner_html();
+
+		$description = $this[self::DESCRIPTION];
+
+		if ($description)
+		{
+			$description = t($description, array(), array('scope' => 'group.description'));
+			$html = '<div class="group-description">' . $description . '</div>' . $html;
+		}
 
 		$legend = $this[self::LEGEND];
 
 		if ($legend)
 		{
-			$legend = t($legend, array(), array('scope' => 'legend'));
-			$rc .= '<legend>' . (is_object($legend) ? (string) $legend : escape($legend)) . '</legend>';
+			if (is_object($legend))
+			{
+				$legend = (string) $legend;
+			}
+			else
+			{
+				$legend = escape(t($legend, array(), array('scope' => 'group.legend')));
+			}
+
+			$html = '<legend>' . $legend . '</legend>' . $html;
 		}
 
-		return $rc . parent::render_inner_html();
+		return $html;
+	}
+
+	/**
+	 * The legend decoration is disabled because the {@link LEGEND} tag is already used by the
+	 * {@link render_inner_html()} method to prepend the inner HTML.
+	 *
+	 * @see Brickrouge.Element::decorate_with_legend()
+	 */
+	protected function decorate_with_description($html, $description)
+	{
+		return $html;
 	}
 
 	/**
