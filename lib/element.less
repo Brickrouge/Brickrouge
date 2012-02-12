@@ -1,7 +1,18 @@
 /* element.less */
 
-/*! inputs */
+.clearfix { // @brickrouge: we use it
+  *zoom: 1;
+  &:before,
+  &:after {
+    display: table;
+    content: "";
+  }
+  &:after {
+    clear: both;
+  }
+}
 
+// inputs
 
 input[type=text][size],
 input[type=password][size] {
@@ -26,7 +37,7 @@ ol.unstyled {
 	display: block;
 }
 
-/*!
+/*
  * Labels
  *
  * Altough one can easily generate a label element, the task is usually left to the Brickrouge
@@ -34,7 +45,7 @@ ol.unstyled {
  * element labels or decoration when the value of the element is required or invalid.  
  */
 label {
-	/*!
+	/*
 	 * The "above" class is added to label when elements are genereated with the T_LABEL_POSITION
 	 * tag set to "above".
 	 */
@@ -42,7 +53,7 @@ label {
 		display: block;
 		margin-bottom: .2em;
 	}
-	/*!
+	/*
 	 * The "required" class is added to elements and their label when the T_REQUIRED tag
 	 * (or "required") is set to true.
 	 */

@@ -431,6 +431,14 @@ q:lang(fr):after {
 .row {
   margin-left: -20px;
   *zoom: 1;
+  *zoom: 1;
+}
+.row:before, .row:after {
+  display: table;
+  content: "";
+}
+.row:after {
+  clear: both;
 }
 .row:before, .row:after {
   display: table;
@@ -515,6 +523,14 @@ q:lang(fr):after {
 .row-fluid {
   width: 100%;
   *zoom: 1;
+  *zoom: 1;
+}
+.row-fluid:before, .row-fluid:after {
+  display: table;
+  content: "";
+}
+.row-fluid:after {
+  clear: both;
 }
 .row-fluid:before, .row-fluid:after {
   display: table;
@@ -571,6 +587,14 @@ q:lang(fr):after {
   margin-left: auto;
   margin-right: auto;
   *zoom: 1;
+  *zoom: 1;
+}
+.container:before, .container:after {
+  display: table;
+  content: "";
+}
+.container:after {
+  clear: both;
 }
 .container:before, .container:after {
   display: table;
@@ -583,6 +607,14 @@ q:lang(fr):after {
   padding-left: 20px;
   padding-right: 20px;
   *zoom: 1;
+  *zoom: 1;
+}
+.container-fluid:before, .container-fluid:after {
+  display: table;
+  content: "";
+}
+.container-fluid:after {
+  clear: both;
 }
 .container-fluid:before, .container-fluid:after {
   display: table;
@@ -949,6 +981,17 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
 .input-prepend, .input-append {
   margin-bottom: 5px;
   *zoom: 1;
+  *zoom: 1;
+}
+.input-prepend:before,
+.input-append:before,
+.input-prepend:after,
+.input-append:after {
+  display: table;
+  content: "";
+}
+.input-prepend:after, .input-append:after {
+  clear: both;
 }
 .input-prepend:before,
 .input-append:before,
@@ -1077,9 +1120,17 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
 }
 .form-horizontal .control-group {
   *zoom: 1;
+  *zoom: 1;
 }
 .form-horizontal .control-group  + .control-group {
   margin-top: 18px;
+}
+.form-horizontal .control-group:before, .form-horizontal .control-group:after {
+  display: table;
+  content: "";
+}
+.form-horizontal .control-group:after {
+  clear: both;
 }
 .form-horizontal .control-group:before, .form-horizontal .control-group:after {
   display: table;
@@ -1225,7 +1276,16 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
   cursor: pointer;
 }
 /* element.less */
-/*! inputs */
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before, .clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
 input[type=text][size], input[type=password][size] {
   width: auto;
 }
@@ -1244,7 +1304,7 @@ ul.unstyled, ol.unstyled {
   list-style: none;
   display: block;
 }
-/*!
+/*
  * Labels
  *
  * Altough one can easily generate a label element, the task is usually left to the Brickrouge
@@ -1252,12 +1312,12 @@ ul.unstyled, ol.unstyled {
  * element labels or decoration when the value of the element is required or invalid.  
  */
 label {
-  /*!
+  /*
 	 * The "above" class is added to label when elements are genereated with the T_LABEL_POSITION
 	 * tag set to "above".
 	 */
 
-  /*!
+  /*
 	 * The "required" class is added to elements and their label when the T_REQUIRED tag
 	 * (or "required") is set to true.
 	 */
@@ -1275,9 +1335,6 @@ label.required:after {
 label.required sup, label.required:after {
   color: #339BB9;
   vertical-align: text-top;
-}
-.field.error > label.required:after {
-  color: #9d261d;
 }
 .popover {
   position: absolute;
@@ -1742,7 +1799,15 @@ a[href].btn {
 .btn-group {
   position: relative;
   *zoom: 1;
+  *zoom: 1;
   *margin-left: .3em;
+}
+.btn-group:before, .btn-group:after {
+  display: table;
+  content: "";
+}
+.btn-group:after {
+  clear: both;
 }
 .btn-group:before, .btn-group:after {
   display: table;
