@@ -89,6 +89,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	/**
 	 * Used to define the default value of an element.
 	 *
+	 * The default value is added to the dataset as 'default-value'.
+	 *
 	 * @var string
 	 */
 	const DEFAULT_VALUE = '#default-value';
@@ -630,7 +632,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	protected function __volatile_set_class($class)
 	{
-		$names = explode(' ', $class);
+		$names = explode(' ', trim($class));
 		$names = array_map('trim', $names);
 
 		$this->class_names = array_combine($names, array_fill(0, count($names), true));
@@ -1180,7 +1182,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 				$help = substr($help, 1);
 			}
 
-			$help = t($help, array(), array('scope' => 'element.help'));
+			$help = t($help, array(), array('scope' => 'element.inline_help'));
 			$html = $this->decorate_with_inline_help($html, $help);
 		}
 
@@ -1192,13 +1194,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 
 		if ($description)
 		{
-			// TODO-20111106: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
-
-			if ($description{0} == '.')
-			{
-				$description = substr($description, 1);
-			}
-
 			$description = t($description, array(), array('scope' => 'element.description'));
 			$html = $this->decorate_with_description($html, $description);
 		}
@@ -1595,7 +1590,7 @@ EOT;
 				{
 					if ($label && $label{0} == '.')
 					{
-						$label = t(substr($label, 1), array(), array('scope' => array('element', 'option')));
+						$label = t(substr($label, 1), array(), array('scope' => 'element.option'));
 					}
 
 					$child[self::LABEL] = $label;
