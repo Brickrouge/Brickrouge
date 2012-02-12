@@ -538,9 +538,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 *
 	 * @return string
 	 */
-	static public function auto_element_id()
+	public static function auto_element_id()
 	{
-		return 'element-autoid-' . self::$auto_element_id++;
+		return 'autoid--' . self::$auto_element_id++;
 	}
 
 	static protected $auto_element_id = 1;
@@ -554,11 +554,20 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	protected function __get_id()
 	{
-		$id = $this->get('id');
+		$id = $this['id'];
 
 		if (!$id)
 		{
-			$id = self::auto_element_id();
+			$name = $this['name'];
+
+			if ($name)
+			{
+				$id = 'autoid--' . wd_normalize($name);
+			}
+			else
+			{
+				$id = self::auto_element_id();
+			}
 
 			$this['id'] = $id;
 		}
