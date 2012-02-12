@@ -58,13 +58,13 @@ class Alert extends Element
 	 * @param string $type Defines an additionnal class for the element. If the message is an
 	 * ICanBoogie\Errors object $type is set to "errors".
 	 */
-	public function __construct($message, $tags=array())
+	public function __construct($message, $attributes=array())
 	{
 		$this->message = $message;
 
 		parent::__construct
 		(
-			'div', $tags + array
+			'div', $attributes + array
 			(
 				self::CONTEXT => $message instanceof Errors ? 'error' : null,
 
