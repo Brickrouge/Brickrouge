@@ -1090,7 +1090,14 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			$rc .= ' ' . $attribute . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
 		}
 
-		$rc .= $this->render_dataset($this->dataset);
+		$dataset = $this->dataset;
+
+		if (in_array($this->tag_name, self::$has_attribute_value) || $this->tag_name == 'textarea')
+		{
+			$dataset['default-value'] = $this[self::DEFAULT_VALUE];
+		}
+
+		$rc .= $this->render_dataset($dataset);
 
 		#
 		# if the inner HTML of the element is null, the element is self closing.
