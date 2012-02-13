@@ -29,7 +29,11 @@ function strip_comments($source)
 	return $output;
 }
 
-$phar_pathname = dirname(__DIR__) . '/Brickrouge.phar';
+$dir = dirname(__DIR__);
+
+chdir($dir);
+
+$phar_pathname = dirname($dir) . '/Brickrouge.phar';
 
 if (file_exists($phar_pathname))
 {
@@ -37,33 +41,41 @@ if (file_exists($phar_pathname))
 }
 
 $do_not_compress = array('gif' => true, 'jpg' => true, 'jpeg' => true, 'png' => true);
-$skip = array
-(
-	__DIR__ . DIRECTORY_SEPARATOR . 'Markfile' => true,
-	__DIR__ . DIRECTORY_SEPARATOR . 'phar.make.php' => true,
-	__DIR__ . DIRECTORY_SEPARATOR . 'phar.stub.php' => true,
-	__DIR__ . DIRECTORY_SEPARATOR . 'README.md' => true
-);
 
 $phar = new Phar($phar_pathname);
 $phar->setSignatureAlgorithm(\Phar::SHA1);
-$phar->setStub(file_get_contents('phar.stub.php', true));
+$phar->setStub(<<<EOT
+<?php
+
+define('Brickrouge\ROOT', 'phar://' . __FILE__ . DIRECTORY_SEPARATOR);
+
+require_once Brickrouge\ROOT . 'startup.php';
+
+__HALT_COMPILER();
+EOT
+);
 
 $phar->startBuffering();
 
-$rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__, FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::SKIP_DOTS | FilesystemIterator::UNIX_PATHS));
+$rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::SKIP_DOTS | FilesystemIterator::UNIX_PATHS));
 
 $n = 0;
-$root_length = strlen(__DIR__ . DIRECTORY_SEPARATOR);
+$root_length = strlen($dir . DIRECTORY_SEPARATOR);
 
 foreach ($rii as $pathname => $file)
 {
-	if (isset($skip[$pathname]) || strpos($pathname, 'uncompressed') !== false || strpos($pathname, '.less') !== false || preg_match('#/lib/[^.]+\.js$#', $pathname))
+	$relative_pathname = substr($pathname, $root_length);
+
+	if ($relative_pathname === 'README.md'
+	|| strpos($relative_pathname, 'build/') === 0
+	|| strpos($pathname, 'uncompressed') !== false
+	|| strpos($relative_pathname, '.less') !== false
+	|| preg_match('#lib/[^.]+\.js$#', $relative_pathname))
 	{
 		continue;
 	}
 
-	echo $pathname . PHP_EOL;
+	echo $relative_pathname . PHP_EOL;
 
 	$extension = $file->getExtension();
 	$contents = file_get_contents($pathname);

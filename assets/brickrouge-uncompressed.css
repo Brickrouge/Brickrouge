@@ -931,6 +931,17 @@ textarea[readonly] {
   background-color: #dff0d8;
   border-color: #468847;
 }
+.control-group.required > label::after {
+  content: '\000a0*';
+  vertical-align: top;
+  color: #3a87ad;
+}
+.control-group.required.error > label::after {
+  color: #b94a48;
+}
+.control-group.required.warning > label::after {
+  color: #c09853;
+}
 input:focus:required:invalid, textarea:focus:required:invalid, select:focus:required:invalid {
   color: #b94a48;
   border-color: #ee5f5b;

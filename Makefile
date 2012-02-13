@@ -6,7 +6,6 @@ BRICKROUGE_RESPONSIVE_UNCOMPRESSED = ./assets/responsive-uncompressed
 BRICKROUGE_RESPONSIVE_LESS = ./lib/responsive.less
 LESS_COMPILER ?= `which lessc`
 WATCHR ?= `which watchr`
-YUI_JAR=/usr/share/yui-compressor/yui-compressor.jar
 
 build:
 	@@if test ! -z ${LESS_COMPILER}; then \
@@ -21,10 +20,10 @@ build:
 	fi
 	
 	@cat ./lib/brickrouge.js ./lib/form.js ./lib/alerts.js ./lib/dropdowns.js ./lib/popover.js ./lib/searchbox.js > ${BRICKROUGE_UNCOMPRESSED}.js
-	@java -jar ${YUI_JAR} -v --line-break 80 --preserve-semi -o ${BRICKROUGE}.js ${BRICKROUGE_UNCOMPRESSED}.js
+	php ./build/compress.php ${BRICKROUGE_UNCOMPRESSED}.js ${BRICKROUGE}.js;
 
 phar:
-	@php -d phar.readonly=0 phar.make.php;
+	@php -d phar.readonly=0 ./build/phar.php;
 
 watch:
 	echo "Watching less files..."

@@ -418,7 +418,7 @@ Brickrouge.Form = new Class({
 
 	alert: function(messages, type)
 	{
-		var original, alert = this.element.getElement('div.alert-message.' + type) || new Element('div.alert-message.' + type, { html: '<a href="#close" class="close">×</a>'});
+		var original, alert = this.element.getElement('div.alert-' + type) || new Element('div.alert.alert-' + type, { html: '<a href="#close" class="close">×</a>'});
 
 		if (typeOf(messages) == 'string')
 		{
@@ -500,7 +500,7 @@ Brickrouge.Form = new Class({
 
 	clearAlert: function()
 	{
-		var alerts = this.element.getElements('div.alert-message');
+		var alerts = this.element.getElements('div.alert');
 
 		if (alerts)
 		{
