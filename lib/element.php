@@ -1098,7 +1098,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 
 		$dataset = $this->dataset;
 
-		if (in_array($this->tag_name, self::$has_attribute_value) || $this->tag_name == 'textarea')
+		if (in_array($this->tag_name, self::$has_attribute_value) || $this->tag_name == 'textarea' && $this['data-default-value'] === null)
 		{
 			$dataset['default-value'] = $this[self::DEFAULT_VALUE];
 		}
