@@ -8,14 +8,16 @@ use Brickrouge\Group;
 
 class Simple extends Element
 {
+	const GROUP_CLASS = '#group-class';
+
 	protected $form;
 
 	/**
 	 * Circumvent Element constructor.
 	 */
-	public function __construct()
+	public function __construct(array $attributes=array())
 	{
-
+		parent::__construct('div', $attributes);
 	}
 
 	public function __invoke(Form $form)
@@ -76,7 +78,9 @@ class Simple extends Element
 			$class .= ' group--' . \Brickrouge\normalize($key);
 		}
 
-		$group = new Group
+		$constructor = $this[self::GROUP_CLASS] ?: 'Brickrouge\Group';
+
+		$group = new $constructor
 		(
 			array
 			(
