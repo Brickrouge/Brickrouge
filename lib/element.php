@@ -1000,6 +1000,10 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		{
 			$inner = $this->render_inner_html();
 		}
+		catch (Exception\EmptyElement $e)
+		{
+			throw $e;
+		}
 		catch (\Exception $e)
 		{
 			$inner = render_exception($e);
@@ -1630,6 +1634,10 @@ EOT;
 				try
 				{
 					$rc = $this->render_outer_html();
+				}
+				catch (Exception\EmptyElement $e)
+				{
+					return '';
 				}
 				catch (\Exception $e)
 				{

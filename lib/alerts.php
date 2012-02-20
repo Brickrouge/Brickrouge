@@ -115,9 +115,19 @@ class Alert extends Element
 
 		$message = $this->message;
 
+		if (!$message)
+		{
+			throw Exception\EmptyElement;
+		}
 		if ($message instanceof Errors)
 		{
 			$errors = $message;
+
+			if (!count($errors))
+			{
+				throw Exception\EmptyElement;
+			}
+
 			$message = '';
 
 			foreach ($errors as $error)
