@@ -62,6 +62,16 @@ class Actions extends Element
 
 		if (is_array($actions))
 		{
+			foreach ($actions as $name => $action)
+			{
+				if (!is_string($name) || !($action instanceof Element) || $action['name'])
+				{
+					continue;
+				}
+
+				$action['name'] = $name;
+			}
+
 			$actions = implode('<span class="separator">&nbsp;</span>', $actions);
 		}
 		else if ($actions === true)
