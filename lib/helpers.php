@@ -441,12 +441,11 @@ class Patchable
 		}
 
 		$holders = array();
-
 		$i = 0;
 
 		foreach ($args as $key => $value)
 		{
-			$i++;
+			++$i;
 
 			if (is_array($value) || is_object($value))
 			{
@@ -460,7 +459,8 @@ class Patchable
 			{
 				$value = '<em>null</em>';
 			}
-			else if (is_string($key))
+
+			if (is_string($key))
 			{
 				switch ($key{0})
 				{
@@ -472,10 +472,10 @@ class Patchable
 					{
 						$escaped_value = escape($value);
 
-						$holders["!$key"] = $escaped_value;
-						$holders["%$key"] = '<q>' . $escaped_value . '</q>';
+						$holders['!' . $key] = $escaped_value;
+						$holders['%' . $key] = '<q>' . $escaped_value . '</q>';
 
-						$key = ":$key";
+						$key = ':' . $key;
 					}
 				}
 			}
