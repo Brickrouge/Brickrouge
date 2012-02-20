@@ -19,8 +19,8 @@ class A extends Element
 	/**
 	 * Constructor.
 	 *
-	 * @param string $label Defines the content of the element. The value is translated with the
-	 * scope "a" and escaped.
+	 * @param string|Element $label Defines the content of the element. If the $label is not
+	 * a Element object it is escaped.
 	 * @param string $href URI for linked resource.
 	 * @param array $tags Optional tags.
 	 *
@@ -28,15 +28,20 @@ class A extends Element
 	 *
 	 * echo new A('Brickrouge', 'http://brickrouge.org');
 	 */
-	public function __construct($label, $href='#', array $tags=array())
+	public function __construct($label, $href='#', array $attributes=array())
 	{
+		if (is_string($label)
+		{
+			$label = escape($label);	
+		}
+
 		parent::__construct
 		(
-			'a', $tags + array
+			'a', $attributes + array
 			(
 				'href' => $href,
 
-				self::INNER_HTML => escape(t($label, array(), array('scope' => 'a')))
+				self::INNER_HTML => $label
 			)
 		);
 	}
