@@ -38,7 +38,7 @@ class Alert extends Element
 	/**
 	 * Constructor.
 	 *
-	 * The element is created with the class "alert-message".
+	 * The element is created with the class "alert".
 	 *
 	 * @param string|array|ICanBoogie\Errors $message The alert message is provided as a string,
 	 * an array of strings or an ICanBoogie\Errors object.

@@ -185,7 +185,7 @@ class File extends Element
 		}
 
 		return $rc . <<<EOT
-<div class="error"></div>
+<div class="alert alert-error"></div>
 <div class="infos">$infos</div>
 EOT;
 	}
