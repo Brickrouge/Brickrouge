@@ -22,6 +22,12 @@ class DropdownMenu extends Element
 	{
 		$html = '';
 		$options = $this[self::OPTIONS];
+		$value = $this['value'];
+
+		if ($value === null)
+		{
+			$value = $this[self::DEFAULT_VALUE];
+		}
 
 		foreach ($options as $key => $option)
 		{
@@ -36,7 +42,18 @@ class DropdownMenu extends Element
 				continue;
 			}
 
-			$html .= '<li><a href="#" data-key="' . escape($key) . '">' . (is_string($option) ? escape($option) : $option) . '</a></li>';
+			$html .= '<li' . ((string) $key === (string) $value ? ' class="active"' : '') . '>';
+
+			if ($option instanceof Element)
+			{
+				$html .= $option;
+			}
+			else
+			{
+				$html .= '<a href="#" data-key="' . escape($key) . '">' . (is_string($option) ? escape($option) : $option) . '</a>';
+			}
+
+			$html .= '</li>';
 		}
 
 		return $html;
@@ -52,11 +69,16 @@ class SplitButton extends Element
 {
 	public function __construct($label, array $attributes=array())
 	{
+		if (is_string($label))
+		{
+			$label = escape(t($label, array(), array('scope' => 'button')));
+		}
+
 		parent::__construct
 		(
-			'class', $attributes + array
+			'div', $attributes + array
 			(
-				self::INNER_HTML => escape(t($label, array(), array('scope' => 'button')))
+				self::INNER_HTML => $label
 			)
 		);
 	}
@@ -71,7 +93,7 @@ class SplitButton extends Element
 	 */
 	protected function render_inner_html()
 	{
-		$label = escape(parent::render_inner_html());
+		$label = parent::render_inner_html();
 
 		$class_names = array_intersect_key
 		(
@@ -90,10 +112,16 @@ class SplitButton extends Element
 
 		$options = $this->resolve_options($this[self::OPTIONS]);
 
-		return <<<EOT
-<span class="btn $class">$label</span>
-<span class="btn dropdown-toggle $class" data-toggle="dropdown"><span class="caret"></span></span>
+		return $this->render_splitbutton_label($label, $class) . <<<EOT
+<a href="javascript:void()" class="btn dropdown-toggle $class" data-toggle="dropdown"><span class="caret"></span></a>
 $options
+EOT;
+	}
+
+	protected function render_splitbutton_label($label, $class)
+	{
+		return <<<EOT
+<a href="javascript:void()" class="btn $class">$label</a>
 EOT;
 	}
 
@@ -133,7 +161,7 @@ EOT;
 	{
 		if (is_array($options))
 		{
-			$options = new DropdownMenu(array(Element::OPTIONS => $options));
+			$options = new DropdownMenu(array(Element::OPTIONS => $options, 'value' => $this['value'] ?: $this[self::DEFAULT_VALUE]));
 		}
 
 		if (!($options instanceof DropdownMenu))
