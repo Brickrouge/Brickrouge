@@ -62,21 +62,12 @@
 	margin: 1em 0;
 }
 
-.widget-file div.error
+.widget-file .alert-error
 {
 	max-width: 76ex;
-	font-size: .8em;
-	color: #D33;
-	background-color: #FEE;
-	padding: .5em;
-	border: 1px solid;
-	margin-top: 1em;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	border-radius: 4px;
 }
 
-.widget-file:not(.has-error) div.error
+.widget-file:not(.has-error) .alert-error
 {
 	display: none;
 }

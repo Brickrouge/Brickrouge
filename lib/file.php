@@ -120,14 +120,14 @@ class File extends Element
 		(
 			array
 			(
-				'value' => $this->get('value'),
+				'value' => $this['value'],
 				'readonly' => true,
 				'name' => $name,
 				'class' => 'reminder'
 			)
 		);
 
-		$rc .= ' <span class="btn trigger">' . t('choose_a_file', array(), array('scope' => array('fileupload', 'element'))) . '<input type="file" /></span>';
+		$rc .= ' <span class="btn trigger"><i class="icon-file"></i> ' . t('choose_a_file', array(), array('scope' => array('fileupload', 'element'))) . '<input type="file" /></span>';
 
 		$rc .= '</div>';
 
@@ -145,7 +145,7 @@ class File extends Element
 		# reminding the maximum file size allowed for the upload
 		#
 
-		$limit = $this->get(self::FILE_WITH_LIMIT);
+		$limit = $this[self::FILE_WITH_LIMIT];
 
 		if ($limit)
 		{
