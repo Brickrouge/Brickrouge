@@ -33,7 +33,7 @@ class Group extends Element
 	 */
 	public function __construct(array $attributes=array())
 	{
-		parent::__construct('fieldset', $attributes);
+		parent::__construct('fieldset', $attributes + array('class' => 'group'));
 	}
 
 	/**
@@ -129,7 +129,7 @@ EOT;
 		if ($description)
 		{
 			$description = t($description, array(), array('scope' => 'group.description'));
-			$html = '<div class="group-description">' . $description . '</div>' . $html;
+			$html = '<div class="group-description"><div class="group-description-inner">' . $description . '</div></div>' . $html;
 		}
 
 		$legend = $this[self::LEGEND];
@@ -145,7 +145,7 @@ EOT;
 				$legend = escape(t($legend, array(), array('scope' => 'group.legend')));
 			}
 
-			$html = '<legend>' . $legend . '</legend>' . $html;
+			$html = $this->render_group_legend($legend) . $html;
 		}
 
 		return $html;
@@ -171,5 +171,10 @@ EOT;
 	protected function decorate_with_legend($html, $legend)
 	{
 		return $html;
+	}
+
+	protected function render_group_legend($legend)
+	{
+		return '<legend class="group-legend">' . $legend . '</legend>';
 	}
 }
