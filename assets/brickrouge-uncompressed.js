@@ -623,13 +623,11 @@ document.id(document.body).addEvent
 	{
 		var selector = this.get('data-target') || this.get('href')
         , parent = document.id(selector) || this.getParent()
-        , isActive
+        , isActive = parent.hasClass('open')
 
-		isActive = parent.hasClass('open')
+		!isActive && clearMenus()
 
-		clearMenus()
-
-		!isActive && parent.toggleClass('open')
+		parent.toggleClass('open')
 
 		return false
 	}
@@ -637,18 +635,20 @@ document.id(document.body).addEvent
 	/**
 	 * Clears all menus when the user clicks away
 	 */
-	window.addEvent('click', clearMenus)
+	window.addEvent('click', function(ev) {
+		clearMenus()
+	})
 
 	window.addEvent
 	(
 		'click:relay(' + toggleSelector + ')', function(ev, el)
 		{
+			if (ev.rightClick) return
 			ev.stop()
 			toggle.bind(el)()
 		}
 	)
-} ()
-/*
+} ()/*
  * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
@@ -678,14 +678,14 @@ Brickrouge.Popover = new Class({
 
 	initialize: function(el, options)
 	{
-		this.element = $(el);
-		this.setOptions(options);
-		this.arrow = this.element.getElement('.arrow');
-		this.actions = this.element.getElement('.popover-actions');
-		this.repositionCallback = this.reposition.bind(this, false);
-		this.quickRepositionCallback = this.reposition.bind(this, true);
+		this.element = $(el)
+		this.setOptions(options)
+		this.arrow = this.element.getElement('.arrow')
+		this.actions = this.element.getElement('.popover-actions')
+		this.repositionCallback = this.reposition.bind(this, false)
+		this.quickRepositionCallback = this.reposition.bind(this, true)
 
-		this.iframe = this.options.iframe;
+		this.iframe = this.options.iframe
 
 		if (this.options.anchor)
 		{

@@ -10,7 +10,17 @@
  *
  * https://github.com/twitter/bootstrap
  */
-/*!
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before, .clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
+/*
  * Default style sheet for HTML.
  *
  * @link http://www.w3.org/TR/CSS2/sample.html 
@@ -407,7 +417,13 @@ nav {
     pitch: x-high;
   }
 }
-/*!
+/*
+ * Remove IE focus outline on DIV
+ */
+div:focus {
+  outline: none;
+}
+/*
  * Some additions
  */
 q:lang(en):before {
@@ -546,40 +562,40 @@ q:lang(fr):after {
 .row-fluid > [class*="span"]:first-child {
   margin-left: 0;
 }
-.row-fluid .span1 {
+.row-fluid > .span1 {
   width: 6.382978723%;
 }
-.row-fluid .span2 {
+.row-fluid > .span2 {
   width: 14.89361702%;
 }
-.row-fluid .span3 {
+.row-fluid > .span3 {
   width: 23.404255317%;
 }
-.row-fluid .span4 {
+.row-fluid > .span4 {
   width: 31.914893614%;
 }
-.row-fluid .span5 {
+.row-fluid > .span5 {
   width: 40.425531911%;
 }
-.row-fluid .span6 {
+.row-fluid > .span6 {
   width: 48.93617020799999%;
 }
-.row-fluid .span7 {
+.row-fluid > .span7 {
   width: 57.446808505%;
 }
-.row-fluid .span8 {
+.row-fluid > .span8 {
   width: 65.95744680199999%;
 }
-.row-fluid .span9 {
+.row-fluid > .span9 {
   width: 74.468085099%;
 }
-.row-fluid .span10 {
+.row-fluid > .span10 {
   width: 82.97872339599999%;
 }
-.row-fluid .span11 {
+.row-fluid > .span11 {
   width: 91.489361693%;
 }
-.row-fluid .span12 {
+.row-fluid > .span12 {
   width: 99.99999998999999%;
 }
 .container {
@@ -648,6 +664,10 @@ legend {
   border: 0;
   border-bottom: 1px solid #eee;
 }
+legend small {
+  font-size: 13.5px;
+  color: #bfbfbf;
+}
 label,
 input,
 button,
@@ -656,6 +676,14 @@ textarea {
   font-weight: normal;
   line-height: 18px;
 }
+/*@brickrouge: we don't want that
+input,
+button,
+select,
+textarea {
+  #font > #family > .sans-serif(); // And only set font-family here for those that need it (note the missing label element)
+}
+*/
 label {
   display: block;
   margin-bottom: 5px;
@@ -700,13 +728,19 @@ input[type="image"], input[type="checkbox"], input[type="radio"] {
   /* IE7 */
 
   line-height: normal;
-  border: 0;
   cursor: pointer;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
+  border: 0 \9;
+  /* IE9 and down */
+
+}
+input[type="image"] {
+  border: 0;
 }
 input[type="file"] {
+  width: auto;
   padding: initial;
   line-height: initial;
   border: initial;
@@ -728,6 +762,9 @@ select, input[type="file"] {
   /* For IE7, add top margin to align select with labels */
 
   line-height: 28px;
+}
+input[type="file"] {
+  line-height: 18px \9;
 }
 select {
   width: 220px;
@@ -762,14 +799,12 @@ input.measure {
 }
 .radio.inline, .checkbox.inline {
   display: inline-block;
+  padding-top: 5px;
   margin-bottom: 0;
   vertical-align: middle;
 }
 .radio.inline + .radio.inline, .checkbox.inline + .checkbox.inline {
   margin-left: 10px;
-}
-.controls > .radio.inline:first-child, .controls > .checkbox.inline:first-child {
-  padding-top: 0;
 }
 .inline-inputs > label {
   display: inline-block;
@@ -795,14 +830,17 @@ input:focus, textarea:focus {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
   outline: 0;
   outline: thin dotted \9;
-  /* IE6-8 */
+  /* IE6-9 */
 
 }
-input[type="file"]:focus, input[type="checkbox"]:focus, select:focus {
+input[type="file"]:focus,
+input[type="radio"]:focus,
+input[type="checkbox"]:focus,
+select:focus {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  outline: thin dotted;
+  outline: thin dotted #333;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -953,7 +991,7 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
   box-shadow: 0 0 6px #f8b9b7;
 }
 .form-actions {
-  padding: 1.33em 20px 1.33em 150px;
+  padding: 17px 20px 18px;
   margin-top: 18px;
   margin-bottom: 18px;
   background-color: #f5f5f5;
@@ -975,6 +1013,7 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
   color: #bfbfbf;
 }
 .help-block {
+  display: block;
   margin-top: 5px;
   margin-bottom: 0;
   color: #bfbfbf;
@@ -1067,6 +1106,7 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
   border-radius: 3px 0 0 3px;
 }
 .input-append .uneditable-input {
+  border-left-color: #eee;
   border-right-color: #ccc;
 }
 .input-append .add-on {
@@ -1108,6 +1148,9 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
   display: inline-block;
   margin-bottom: 0;
 }
+.form-search .hide, .form-inline .hide, .form-horizontal .hide {
+  display: none;
+}
 .form-search label,
 .form-inline label,
 .form-search .input-append,
@@ -1122,10 +1165,17 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
 .form-inline .input-prepend .add-on {
   vertical-align: middle;
 }
+.form-search .radio,
+.form-inline .radio,
+.form-search .checkbox,
+.form-inline .checkbox {
+  margin-bottom: 0;
+  vertical-align: middle;
+}
 .control-group + .control-group {
   margin-top: 9px;
 }
-.form-horizontal legend + .control-group {
+legend + .control-group {
   margin-top: 18px;
   -webkit-margin-top-collapse: separate;
 }
@@ -1201,7 +1251,6 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
   float: left;
   display: none;
   min-width: 160px;
-  max-width: 220px;
   _width: 160px;
   padding: 4px 0;
   margin: 0;
@@ -1570,15 +1619,18 @@ label.required sup, label.required:after {
   color: #404040;
   text-align: center;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-  background-color: #fafafa;
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6));
-  background-image: -webkit-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-  background-image: -moz-linear-gradient(top, #ffffff, #ffffff 25%, #e6e6e6);
-  background-image: -ms-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-  background-image: -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-  background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-  background-repeat: no-repeat;
+  background-color: #f5f5f5;
+  background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
+  background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+  background-image: linear-gradient(top, #ffffff, #e6e6e6);
+  background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
+  border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   border: 1px solid #ccc;
   border-bottom-color: #bbb;
   -webkit-border-radius: 4px;
@@ -1588,7 +1640,33 @@ label.required sup, label.required:after {
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   cursor: default;
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   *margin-left: .3em;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+.btn:hover,
+button:hover,
+.btn:active,
+button:active,
+.btn.active,
+button.active,
+.btn.disabled,
+button.disabled,
+.btn[disabled],
+button[disabled] {
+  background-color: #e6e6e6;
+}
+.btn:active,
+button:active,
+.btn.active,
+button.active {
+  background-color: #cccccc \9;
 }
 .btn:first-child, button:first-child {
   *margin-left: 0;
@@ -1605,18 +1683,16 @@ label.required sup, label.required:after {
   transition: background-position 0.1s linear;
 }
 .btn:focus, button:focus {
-  outline: thin dotted;
+  outline: thin dotted #333;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
 .btn.active, .btn:active, button:active {
-  background-image: none;
   -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   background-color: #e6e6e6;
   background-color: #d9d9d9 \9;
-  color: rgba(0, 0, 0, 0.5);
   outline: 0;
 }
 .btn.disabled, .btn[disabled], button:disabled {
@@ -1637,7 +1713,7 @@ label.required sup, label.required:after {
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-.btn-large .icon {
+.btn-large [class^="icon-"] {
   margin-top: 1px;
 }
 .btn-small {
@@ -1645,8 +1721,13 @@ label.required sup, label.required:after {
   font-size: 11px;
   line-height: 16px;
 }
-.btn-small .icon {
+.btn-small [class^="icon-"] {
   margin-top: -1px;
+}
+.btn-mini {
+  padding: 2px 6px;
+  font-size: 11px;
+  line-height: 14px;
 }
 .btn-primary,
 .btn-primary:hover,
@@ -1657,7 +1738,9 @@ label.required sup, label.required:after {
 .btn-success,
 .btn-success:hover,
 .btn-info,
-.btn-info:hover {
+.btn-info:hover,
+.btn-inverse,
+.btn-inverse:hover {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   color: #ffffff;
 }
@@ -1665,7 +1748,8 @@ label.required sup, label.required:after {
 .btn-warning.active,
 .btn-danger.active,
 .btn-success.active,
-.btn-info.active {
+.btn-info.active,
+.btn-dark.active {
   color: rgba(255, 255, 255, 0.75);
 }
 .btn-primary {
@@ -1787,6 +1871,30 @@ label.required sup, label.required:after {
 }
 .btn-info:active, .btn-info.active {
   background-color: #24748c \9;
+}
+.btn-inverse {
+  background-color: #393939;
+  background-image: -moz-linear-gradient(top, #454545, #262626);
+  background-image: -ms-linear-gradient(top, #454545, #262626);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#454545), to(#262626));
+  background-image: -webkit-linear-gradient(top, #454545, #262626);
+  background-image: -o-linear-gradient(top, #454545, #262626);
+  background-image: linear-gradient(top, #454545, #262626);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#454545', endColorstr='#262626', GradientType=0);
+  border-color: #262626 #262626 #000000;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+.btn-inverse:hover,
+.btn-inverse:active,
+.btn-inverse.active,
+.btn-inverse.disabled,
+.btn-inverse[disabled] {
+  background-color: #262626;
+}
+.btn-inverse:active, .btn-inverse.active {
+  background-color: #0c0c0c \9;
 }
 button.btn, input[type="submit"].btn {
   *padding-top: 2px;
@@ -1934,7 +2042,8 @@ a[href].btn {
 .btn-primary .caret,
 .btn-danger .caret,
 .btn-info .caret,
-.btn-success .caret {
+.btn-success .caret,
+.btn-inverse .caret {
   border-top-color: #ffffff;
   opacity: 0.75;
   filter: alpha(opacity=75);
