@@ -299,7 +299,13 @@ class Form extends Element implements Validator
 		{
 			if (is_string($renderer))
 			{
-				$class = 'Brickrouge\Renderer\\' . $renderer;
+				$class = $renderer;
+
+				if (!class_exists($class))
+				{
+					$class = 'Brickrouge\Renderer\\' . $class;
+				}
+
 				$renderer = new $class();
 			}
 
