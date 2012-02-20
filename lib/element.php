@@ -1093,6 +1093,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 				$value = $attribute;
 			}
 
+			if (is_array($value))
+			{
+				throw new \Exception(format('Invalid value for attribute %attribute: :value', array('attribute' => $attribute, 'value' => $value)));
+			}
+
 			$rc .= ' ' . $attribute . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
 		}
 
