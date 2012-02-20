@@ -564,7 +564,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 
 			if ($name)
 			{
-				$id = 'autoid--' . wd_normalize($name);
+				$id = 'autoid--' . normalize($name);
 			}
 			else
 			{
