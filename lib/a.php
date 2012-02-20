@@ -30,9 +30,9 @@ class A extends Element
 	 */
 	public function __construct($label, $href='#', array $attributes=array())
 	{
-		if (is_string($label)
+		if (is_string($label))
 		{
-			$label = escape($label);	
+			$label = escape($label);
 		}
 
 		parent::__construct
