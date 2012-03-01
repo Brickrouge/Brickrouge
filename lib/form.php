@@ -12,8 +12,6 @@
 namespace Brickrouge;
 
 use ICanBoogie\Errors;
-use ICanBoogie\Event;
-use ICanBoogie\Operation;
 
 /**
  * A FORM element.
@@ -753,31 +751,5 @@ class Form extends Element implements Validator
 		}
 
 		return $rc;
-	}
-
-	/**
-	 * Tries to load the form associated with the operation.
-	 *
-	 * This function is a callback for the `ICanBoogie\Operation::get_form` event.
-	 *
-	 * @param Event $event
-	 * @param Operation $operation
-	 */
-	public static function on_operation_get_form(Event $event, Operation $operation)
-	{
-		$request = $event->request;
-
-		if (!$request[self::STORED_KEY_NAME])
-		{
-			return;
-		}
-
-		$form = self::load($request->params);
-
-		if ($form)
-		{
-			$event->rc = $form;
-			$event->stop();
-		}
 	}
 }
