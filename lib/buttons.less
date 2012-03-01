@@ -26,7 +26,6 @@ button { // @brickrouge: we add 'button' to style buttons
   cursor: default; // @brickrouge: we don't want pointer cursor on buttons
 
   // Give IE7 some love
-  .reset-filter();
   .ie7-restore-left-whitespace();
   
   -webkit-touch-callout: none; // @brickrouge: we don't want button labels to be selectable
@@ -139,7 +138,7 @@ button:disabled { //@brickrouge: we use button
 .btn-danger.active,
 .btn-success.active,
 .btn-info.active,
-.btn-dark.active {
+.btn-inverse.active {
   color: rgba(255,255,255,.75);
 }
 
@@ -166,7 +165,7 @@ button:disabled { //@brickrouge: we use button
 }
 // Inverse appears as dark gray
 .btn-inverse {
-  .buttonBackground(#454545, #262626);
+  .buttonBackground(@gray, @grayDarker);
 }
 
 
@@ -185,11 +184,11 @@ input[type="submit"].btn {
   // IE7 has some default padding on button controls
   *padding-top: 2px;
   *padding-bottom: 2px;
-  &.large {
+  &.btn-large {
     *padding-top: 7px;
     *padding-bottom: 7px;
   }
-  &.small {
+  &.btn-small {
     *padding-top: 3px;
     *padding-bottom: 3px;
   }

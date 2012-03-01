@@ -9,6 +9,7 @@
   background-color: @warningBackground;
   border: 1px solid @warningBorder;
   .border-radius(4px);
+  color: @warningText;
   
   .content { // @brickrouge
   	& :first-child {
@@ -19,7 +20,7 @@
   	}
   }
 
-  p {
+  p { // @brickrouge
     margin: 0;
 
     & + p {
@@ -27,13 +28,9 @@
     }
   }
 }
-.alert,
 .alert-heading {
-  color: @warningText;
-}
-
-.alert-heading { // @brickrouge: because our headers have margins
-  margin-top: 0;
+  color: inherit;
+  margin-top: 0; // @brickrouge: because our headers have margins
 }
 
 // Adjust close link position
@@ -51,31 +48,19 @@
 .alert-success {
   background-color: @successBackground;
   border-color: @successBorder;  
-}
-.alert-success,
-.alert-success .alert-heading {
   color: @successText;
 }
 .alert-danger,
 .alert-error {
   background-color: @errorBackground;
   border-color: @errorBorder;
-}
-.alert-danger,
-.alert-error,
-.alert-danger .alert-heading,
-.alert-error .alert-heading {
   color: @errorText;
 }
 .alert-info {
   background-color: @infoBackground;
   border-color: @infoBorder;
-}
-.alert-info,
-.alert-info .alert-heading {
   color: @infoText;
 }
-
 
 // Block alerts
 // ------------------------
