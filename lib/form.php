@@ -82,7 +82,7 @@ class Form extends Element implements Validator
 	 *
 	 * @var array[string]string
 	 */
-	public $hiddens=array();
+	public $hiddens = array();
 
 	/**
 	 * Name of the form.
@@ -106,7 +106,7 @@ class Form extends Element implements Validator
 	 *
 	 * @param array $tags Tags used to create the element.
 	 */
-	public function __construct(array $tags)
+	public function __construct(array $tags=array())
 	{
 		$tags += array
 		(
@@ -171,6 +171,11 @@ class Form extends Element implements Validator
 	protected $required=array();
 
 	/**
+	 * @var array[string] Booleans found in the form.
+	 */
+	protected $booleans=array();
+
+	/**
 	 * @var array[string]Element Elements of the form with a validator.
 	 */
 	protected $validators=array();
@@ -191,6 +196,7 @@ class Form extends Element implements Validator
 	public function __sleep()
 	{
 		$required = array();
+		$booleans = array();
 		$validators = array();
 
 		$iterator = new \RecursiveIteratorIterator($this, \RecursiveIteratorIterator::SELF_FIRST);
@@ -209,6 +215,21 @@ class Form extends Element implements Validator
 				$required[$name] = self::select_element_label($element);
 			}
 
+			if ($element->tag_name == 'input')
+			{
+				if ($element['type'] == 'checkbox')
+				{
+					$booleans[$name] = true;
+				}
+			}
+			else if ($element->type == Element::TYPE_CHECKBOX_GROUP)
+			{
+				foreach ($element[self::OPTIONS] as $option_name => $dummy)
+				{
+					$booleans[$name . '[' . $option_name . ']'] = true;
+				}
+			}
+
 			if ($element[self::VALIDATOR] || $element[self::VALIDATOR_OPTIONS] || $element instanceof Validator)
 			{
 				$validators[$name] = $element;
@@ -216,6 +237,7 @@ class Form extends Element implements Validator
 		}
 
 		$this->required = $required;
+		$this->booleans = $booleans;
 		$this->validators = $validators;
 		$this->validator = $this[self::VALIDATOR];
 
@@ -224,7 +246,7 @@ class Form extends Element implements Validator
 		# validation.
 		#
 
-		return array('name', 'required', 'validators', 'validator');
+		return array('name', 'required', 'booleans', 'validators', 'validator');
 	}
 
 	/**
