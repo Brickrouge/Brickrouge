@@ -110,18 +110,38 @@ class SplitButton extends Element
 
 		$class = implode(' ', array_keys(array_filter($class_names)));
 
-		$options = $this->resolve_options($this[self::OPTIONS]);
-
-		return $this->render_splitbutton_label($label, $class) . <<<EOT
-<a href="javascript:void()" class="btn dropdown-toggle $class" data-toggle="dropdown"><span class="caret"></span></a>
-$options
-EOT;
+		return $this->render_splitbutton_label($label, $class)
+		. $this->render_splitbutton_toggle($class)
+		. $this->resolve_options($this[self::OPTIONS]);
 	}
 
+	/**
+	 * Renders the button part of the element.
+	 *
+	 * @param string $label Label of the button. The label is already a HTML string. It doesn't
+	 * need to be escaped.
+	 * @param string $class Class of the label.
+	 *
+	 * @return string A HTML string.
+	 */
 	protected function render_splitbutton_label($label, $class)
 	{
 		return <<<EOT
 <a href="javascript:void()" class="btn $class">$label</a>
+EOT;
+	}
+
+	/**
+	 * Renders the dropdown toggle part of the element.
+	 *
+	 * @param string $class Class of the element.
+	 *
+	 * @return string A HTML string.
+	 */
+	protected function render_splitbutton_toggle($class)
+	{
+		return <<<EOT
+<a href="javascript:void()" class="btn dropdown-toggle $class" data-toggle="dropdown"><span class="caret"></span></a>
 EOT;
 	}
 
