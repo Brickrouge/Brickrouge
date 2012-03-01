@@ -182,14 +182,14 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 *
 	 * @var string
 	 */
-	const OPTIONS = '#element-options';
+	const OPTIONS = '#options';
 
 	/**
 	 * Used to define which options are disabled.
 	 *
 	 * @var string
 	 */
-	const OPTIONS_DISABLED = '#element-options-disabled';
+	const OPTIONS_DISABLED = '#options-disabled';
 
 	/**
 	 * Used to define the state of the element: 'success', 'warning', 'error'.
@@ -350,7 +350,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			case 'textarea':
 			{
 				$this->tag_name = 'textarea';
-				$this->inner_html = '';
 
 				$tags += array('rows' => 10, 'cols' => 76);
 			}
@@ -365,13 +364,10 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 
 		$this->set($tags);
 
-		if ((string) $type == self::TYPE_CHECKBOX_GROUP)
+		switch ((string) $this->type)
 		{
-			$this->add_class('checkbox-group');
-		}
-		else if ((string) $type == self::TYPE_RADIO_GROUP)
-		{
-			$this->add_class('radio-group');
+			case self::TYPE_CHECKBOX_GROUP: $this->add_class('checkbox-group'); break;
+			case self::TYPE_RADIO_GROUP: $this->add_class('radio-group'); break;
 		}
 	}
 
@@ -718,12 +714,12 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		if ($name)
 		{
 			// TODO-20110926: I added the `&& empty($child->tags['name'])` part to avoid setting
-			// the name twice, so the name defined is preserved, we need to check is this is
+			// the name twice, so the name defined is preserved, we need to check if this is
 			// ok or not.
 
-			if (is_object($child) && empty($child->tags['name']))
+			if (is_object($child) && $child['name'] === null)
 			{
-				$child->set('name', $name);
+				$child['name'] = $name;
 			}
 
 			$this->children[$name] = $child;
@@ -849,11 +845,12 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	protected function render_inner_html()
 	{
-		$rc = null;
+		$html = null;
 
-		if ($this->type === 'select')
+		switch ($this->type)
 		{
-			$rc = $this->render_inner_html_for_select();
+			case 'select': $html = $this->render_inner_html_for_select(); break;
+			case 'textarea': $html = $this->render_inner_html_for_textarea(); break;
 		}
 
 		$children = $this->get_ordered_children();
@@ -862,15 +859,15 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		{
 			foreach ($children as $child)
 			{
-				$rc .= $this->render_child($child);
+				$html .= $this->render_child($child);
 			}
 		}
 		else if ($this->inner_html !== null)
 		{
-			$rc = $this->inner_html;
+			$html = $this->inner_html;
 		}
 
-		return $rc;
+		return $html;
 	}
 
 	/**
@@ -880,13 +877,16 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	protected function render_inner_html_for_select()
 	{
-		$this->contextPush();
-
 		#
 		# get the name and selected value for our children
 		#
 
 		$selected = $this['value'];
+
+		if ($selected === null)
+		{
+			$selected = $this[self::DEFAULT_VALUE];
+		}
 
 		#
 		# this is the 'template' child
@@ -898,7 +898,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		# create the inner content of our element
 		#
 
-		$rc = '';
+		$html = '';
 
 		$options = $this[self::OPTIONS] ?: array();
 		$disabled = $this[self::OPTIONS_DISABLED];
@@ -932,12 +932,27 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 
 			$option->inner_html = $label;
 
-			$rc .= $option;
+			$html .= $option;
 		}
 
-		$this->contextPop();
+		return $html;
+	}
 
-		return $rc;
+	/**
+	 * Renders the inner HTML of TEXTAREA elements.
+	 *
+	 * @return string
+	 */
+	protected function render_inner_html_for_textarea()
+	{
+		$value = $this['value'];
+
+		if ($value === null)
+		{
+			$value = $this[self::DEFAULT_VALUE];
+		}
+
+		return escape($value);
 	}
 
 	/**
@@ -996,23 +1011,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	protected function render_outer_html()
 	{
-		try
-		{
-			$inner = $this->render_inner_html();
-		}
-		catch (Exception\EmptyElement $e)
-		{
-			throw $e;
-		}
-		catch (\Exception $e)
-		{
-			$inner = render_exception($e);
-		}
-
-		#
-		#
-		#
-
+		$inner = $this->render_inner_html();
 		$rc = '<' . $this->tag_name;
 
 		#
@@ -1092,8 +1091,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			{
 				$value = $attribute;
 			}
-
-			if (is_array($value))
+			else if (is_array($value))
 			{
 				throw new \InvalidArgumentException(format('Invalid value for attribute %attribute: :value', array('attribute' => $attribute, 'value' => $value)));
 			}
@@ -1381,278 +1379,264 @@ EOT;
 	 */
 	public function __toString()
 	{
-		if (get_class($this) != __CLASS__)
+		try
 		{
-			static::handle_assets();
-		}
-
-		$rc = '';
-
-		$tags =& $this->tags;
-
-		#
-		# handle value for some selected 'types' and 'elements'
-		#
-
-		static $valued_elements = array
-		(
-			'input', 'select', 'button', 'textarea'
-		);
-
-		if (in_array($this->tag_name, $valued_elements))
-		{
-			$this->handleValue($tags);
-		}
-
-		#
-		#
-		#
-
-		switch ($this->type)
-		{
-			case self::TYPE_CHECKBOX:
+			if (get_class($this) != __CLASS__)
 			{
-				$this->contextPush();
-
-				if ($this[self::DEFAULT_VALUE] && $this['checked'] === null)
-				{
-					$this['checked'] = true;
-				}
-
-				$rc = $this->render_outer_html();
-
-				$this->contextPop();
+				static::handle_assets();
 			}
-			break;
 
-			case self::TYPE_CHECKBOX_GROUP:
+			$rc = '';
+
+			$tags =& $this->tags;
+
+			#
+			# handle value for some selected 'types' and 'elements'
+			#
+
+			static $valued_elements = array
+			(
+				'input', 'select', 'button', 'textarea'
+			);
+
+			if (in_array($this->tag_name, $valued_elements))
 			{
-				$this->contextPush();
-
 				$this->handleValue($tags);
-
-				#
-				# get the name and selected value for our children
-				#
-
-				$name = $this['name'];
-				$selected = $this['value'] ?: array();
-				$disabled = $this['disabled'] ?: false;
-				$readonly = $this['readonly'] ?: false;
-
-				#
-				# this is the 'template' child
-				#
-
-				$child = new Element
-				(
-					'input', array
-					(
-						'type' => 'checkbox',
-						'readonly' => $readonly
-					)
-				);
-
-				#
-				# create the inner content of our element
-				#
-
-				$inner = null;
-				$disableds = $this[self::OPTIONS_DISABLED];
-
-				foreach ($tags[self::OPTIONS] as $option_name => $label)
-				{
-					$child[self::LABEL] = $label;
-					$child['name'] = $name . '[' . $option_name . ']';
-					$child['checked'] = !empty($selected[$option_name]);
-					$child['disabled'] = $disabled || !empty($disableds[$option_name]);
-
-					$inner .= $child;
-				}
-
-				$this->inner_html .= $inner;
-
-				#
-				# make our element
-				#
-
-				$rc = $this->render_outer_html();
-
-				$this->contextPop();
 			}
-			break;
 
-			case self::TYPE_FILE:
+			#
+			#
+			#
+
+			switch ($this->type)
 			{
-				$rc .= '<div class="wd-file">';
-
-				#
-				# the FILE_WITH_REMINDER tag can be used to add a disabled text input before
-				# the file element. this text input is used to display the current value of the
-				# file element.
-				#
-
-				$reminder = $this[self::FILE_WITH_REMINDER];
-
-				if ($reminder === true)
+				case self::TYPE_CHECKBOX:
 				{
-					$reminder = $this['value'];
+					$this->contextPush();
+
+					if ($this[self::DEFAULT_VALUE] && $this['checked'] === null)
+					{
+						$this['checked'] = true;
+					}
+
+					$rc = $this->render_outer_html();
+
+					$this->contextPop();
 				}
+				break;
 
-				if ($reminder)
+				case self::TYPE_CHECKBOX_GROUP:
 				{
-					$rc .= '<div class="reminder">';
+					$this->contextPush();
 
-					$rc .= new Text
+					$this->handleValue($tags);
+
+					#
+					# get the name and selected value for our children
+					#
+
+					$name = $this['name'];
+					$selected = $this['value'] ?: array();
+					$disabled = $this['disabled'] ?: false;
+					$readonly = $this['readonly'] ?: false;
+
+					#
+					# this is the 'template' child
+					#
+
+					$child = new Element
 					(
-						array
+						'input', array
 						(
-							'value' => $reminder,
-							'disabled' => true,
-							'size' => $this['size'] ?: 40
+							'type' => 'checkbox',
+							'readonly' => $readonly
 						)
 					);
 
-					$rc .= ' ';
+					#
+					# create the inner content of our element
+					#
 
-					$rc .= new A
-					(
-						'Download', $reminder, array
+					$inner = null;
+					$disableds = $this[self::OPTIONS_DISABLED];
+
+					foreach ($tags[self::OPTIONS] as $option_name => $label)
+					{
+						$child[self::LABEL] = $label;
+						$child['name'] = $name . '[' . $option_name . ']';
+						$child['checked'] = !empty($selected[$option_name]);
+						$child['disabled'] = $disabled || !empty($disableds[$option_name]);
+
+						$inner .= $child;
+					}
+
+					$this->inner_html .= $inner;
+
+					#
+					# make our element
+					#
+
+					$rc = $this->render_outer_html();
+
+					$this->contextPop();
+				}
+				break;
+
+				case self::TYPE_FILE:
+				{
+					$rc .= '<div class="wd-file">';
+
+					#
+					# the FILE_WITH_REMINDER tag can be used to add a disabled text input before
+					# the file element. this text input is used to display the current value of the
+					# file element.
+					#
+
+					$reminder = $this[self::FILE_WITH_REMINDER];
+
+					if ($reminder === true)
+					{
+						$reminder = $this['value'];
+					}
+
+					if ($reminder)
+					{
+						$rc .= '<div class="reminder">';
+
+						$rc .= new Text
 						(
-							'title' => $reminder,
-							'target' => '_blank'
+							array
+							(
+								'value' => $reminder,
+								'disabled' => true,
+								'size' => $this->offsetGet('size', 40)
+							)
+						);
+
+						$rc .= ' ';
+
+						$rc .= new A
+						(
+							'Download', $reminder, array
+							(
+								'title' => $reminder,
+								'target' => '_blank'
+							)
+						);
+
+						$rc .= '</div>';
+					}
+					#
+					#
+					#
+
+					$rc .= $this->render_outer_html();
+
+					#
+					# the FILE_WITH_LIMIT tag can be used to add a little text after the element
+					# reminding the maximum file size allowed for the upload
+					#
+
+					$limit = $this->get(self::FILE_WITH_LIMIT);
+
+					if ($limit)
+					{
+						if ($limit === true)
+						{
+							$limit = ini_get('upload_max_filesize') * 1024;
+						}
+
+						$limit = format_size($limit * 1024);
+
+						$rc .= PHP_EOL;
+						$rc .= '<div class="limit">';
+						$rc .= t('The maximum file size must be less than :size.', array(':size' => $limit));
+						$rc .= '</div>';
+					}
+
+					$rc .= '</div>';
+				}
+				break;
+
+				case self::TYPE_RADIO_GROUP:
+				{
+					$this->contextPush();
+
+					$this->handleValue($tags);
+
+					#
+					# get the name and selected value for our children
+					#
+
+					$name = $this['name'];
+					$selected = $this['value'];
+					$disabled = $this['disabled'] ?: false;
+					$readonly = $this['readonly'] ?: false;
+
+					#
+					# this is the 'template' child
+					#
+
+					$child = new Element
+					(
+						'input', array
+						(
+							'type' => 'radio',
+							'name' => $name,
+							'readonly' => $readonly
 						)
 					);
 
-					$rc .= '</div>';
-				}
-				#
-				#
-				#
+					#
+					# create the inner content of our element
+					#
+					# add our options as children
+					#
 
-				$rc .= $this->render_outer_html();
+					$disableds = $this->get(self::OPTIONS_DISABLED);
 
-				#
-				# the FILE_WITH_LIMIT tag can be used to add a little text after the element
-				# reminding the maximum file size allowed for the upload
-				#
-
-				$limit = $this->get(self::FILE_WITH_LIMIT);
-
-				if ($limit)
-				{
-					if ($limit === true)
+					foreach ($tags[self::OPTIONS] as $value => $label)
 					{
-						$limit = ini_get('upload_max_filesize') * 1024;
+						if ($label && $label{0} == '.')
+						{
+							$label = t(substr($label, 1), array(), array('scope' => 'element.option'));
+						}
+
+						$child[self::LABEL] = $label;
+						$child['value'] = $value;
+						$child['checked'] = (string) $value === (string) $selected;
+						$child['disabled'] = $disabled || !empty($disableds[$value]);
+
+						$this->inner_html .= $child;
 					}
 
-					$limit = format_size($limit * 1024);
+					#
+					# make our element
+					#
 
-					$rc .= PHP_EOL;
-					$rc .= '<div class="limit">';
-					$rc .= t('The maximum file size must be less than :size.', array(':size' => $limit));
-					$rc .= '</div>';
+					$rc = $this->render_outer_html();
+
+					$this->contextPop();
 				}
+				break;
 
-				$rc .= '</div>';
-			}
-			break;
-
-			case self::TYPE_RADIO_GROUP:
-			{
-				$this->contextPush();
-
-				$this->handleValue($tags);
-
-				#
-				# get the name and selected value for our children
-				#
-
-				$name = $this['name'];
-				$selected = $this['value'];
-				$disabled = $this['disabled'] ?: false;
-				$readonly = $this['readonly'] ?: false;
-
-				#
-				# this is the 'template' child
-				#
-
-				$child = new Element
-				(
-					'input', array
-					(
-						'type' => 'radio',
-						'name' => $name,
-						'readonly' => $readonly
-					)
-				);
-
-				#
-				# create the inner content of our element
-				#
-				# add our options as children
-				#
-
-				$disableds = $this->get(self::OPTIONS_DISABLED);
-
-				foreach ($tags[self::OPTIONS] as $value => $label)
-				{
-					if ($label && $label{0} == '.')
-					{
-						$label = t(substr($label, 1), array(), array('scope' => 'element.option'));
-					}
-
-					$child[self::LABEL] = $label;
-					$child['value'] = $value;
-					$child['checked'] = (string) $value === (string) $selected;
-					$child['disabled'] = $disabled || !empty($disableds[$value]);
-
-					$this->inner_html .= $child;
-				}
-
-				#
-				# make our element
-				#
-
-				$rc = $this->render_outer_html();
-
-				$this->contextPop();
-			}
-			break;
-
-			case 'textarea':
-			{
-				$this->contextPush();
-
-				$this->inner_html = escape($this['value'] ?: '');
-
-				$this->set('value', null);
-
-				$rc = $this->render_outer_html();
-
-				$this->contextPop();
-			}
-			break;
-
-			default:
-			{
-				try
+				default:
 				{
 					$rc = $this->render_outer_html();
 				}
-				catch (Exception\EmptyElement $e)
-				{
-					return '';
-				}
-				catch (\Exception $e)
-				{
-					$rc = render_exception($e);
-				}
+				break;
 			}
-			break;
-		}
 
-		return $this->decorate($rc);
+			return $this->decorate($rc);
+		}
+		catch (Exception\EmptyElement $e)
+		{
+			return '';
+		}
+		catch (\Exception $e)
+		{
+			$rc = render_exception($e);
+		}
 	}
 
 	/**
