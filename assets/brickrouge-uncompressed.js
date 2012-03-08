@@ -678,14 +678,14 @@ Brickrouge.Popover = new Class({
 
 	initialize: function(el, options)
 	{
-		this.element = $(el)
-		this.setOptions(options)
-		this.arrow = this.element.getElement('.arrow')
-		this.actions = this.element.getElement('.popover-actions')
-		this.repositionCallback = this.reposition.bind(this, false)
-		this.quickRepositionCallback = this.reposition.bind(this, true)
+		this.element = $(el);
+		this.setOptions(options);
+		this.arrow = this.element.getElement('.arrow');
+		this.actions = this.element.getElement('.popover-actions');
+		this.repositionCallback = this.reposition.bind(this, false);
+		this.quickRepositionCallback = this.reposition.bind(this, true);
 
-		this.iframe = this.options.iframe
+		this.iframe = this.options.iframe;
 
 		if (this.options.anchor)
 		{

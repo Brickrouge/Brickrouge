@@ -1659,6 +1659,10 @@ label.required sup, label.required:after {
   background: url(searchbox-search.png) center center no-repeat;
   width: 20px;
 }
+.widget-searchbox button:hover {
+  background-color: transparent;
+  background-position: center;
+}
 .widget-searchbox.busy button {
   background-image: url(searchbox-busy.gif);
 }
