@@ -111,12 +111,12 @@ class Form extends Element implements Validator
 		$tags += array
 		(
 			'action' => isset($tags['id']) ? '#' . $tags['id'] : '',
-			'method' => 'post',
+			'method' => 'POST',
 			'enctype' => 'multipart/form-data',
 			'name' => isset($tags['id']) ? $tags['id'] : self::get_auto_name()
 		);
 
-		if ($tags['method'] != 'post')
+		if (strtoupper($tags['method']) != 'POST')
 		{
 			unset($tags['enctype']);
 		}
