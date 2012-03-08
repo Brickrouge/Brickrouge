@@ -1635,7 +1635,7 @@ EOT;
 		}
 		catch (\Exception $e)
 		{
-			$rc = render_exception($e);
+			return render_exception($e);
 		}
 	}
 
