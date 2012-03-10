@@ -1629,7 +1629,7 @@ EOT;
 
 			return $this->decorate($rc);
 		}
-		catch (Exception\EmptyElement $e)
+		catch (EmptyElementException $e)
 		{
 			return '';
 		}
@@ -1694,5 +1694,19 @@ EOT;
 		}
 
 		return true;
+	}
+}
+
+/**
+ * The {@link EmptyElementException} exception is usually thrown when one wants to cancel the whole
+ * rendering because the element is empty. The {@link Element} class takes care of this special
+ * case and instead of rendering the exception only returns an empty string as the result of its
+ * {@link __toString()} method.
+ */
+class EmptyElementException extends \Exception
+{
+	public function __construct($message="The element is empty.", $code=200, \Exception $previous=null)
+	{
+		parent::__construct($message, $code, $previous);
 	}
 }

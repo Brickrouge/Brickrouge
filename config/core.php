@@ -17,7 +17,7 @@ return array
 		'Brickrouge\Document' => $lib . 'document.php',
 		'Brickrouge\DropdownMenu' => $lib . 'dropdowns.php',
 		'Brickrouge\Element' => $lib . 'element.php',
-		'Brickrouge\Exception\EmptyElement' => $lib . 'exception/empty-element.php',
+		'Brickrouge\EmptyElementException' => $lib . 'element.php',
 		'Brickrouge\File' => $lib . 'file.php',
 		'Brickrouge\Form' => $lib . 'form.php',
 		'Brickrouge\Form\Templated' => $lib . 'form.templated.php',

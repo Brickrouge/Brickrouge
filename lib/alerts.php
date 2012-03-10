@@ -117,7 +117,7 @@ class Alert extends Element
 
 		if (!$message)
 		{
-			throw Exception\EmptyElement;
+			throw new EmptyElementException;
 		}
 		if ($message instanceof Errors)
 		{
@@ -125,7 +125,7 @@ class Alert extends Element
 
 			if (!count($errors))
 			{
-				throw Exception\EmptyElement;
+				throw new EmptyElementException;
 			}
 
 			$message = '';
@@ -146,22 +146,5 @@ class Alert extends Element
 		}
 
 		return '<a href="javascript://" class="close">×</a>' . $heading . '<div class="content">' . $message . '</div>';
-	}
-
-	/**
-	 * An empty string is returned if there is no message.
-	 *
-	 * @see Brickrouge.Element::__toString()
-	 */
-	public function __toString()
-	{
-		$message = $this->message;
-
-		if (($message instanceof Errors && !count($message)) || !$message)
-		{
-			return '';
-		}
-
-		return parent::__toString();
 	}
 }
