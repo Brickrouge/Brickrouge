@@ -12,9 +12,9 @@
 namespace Brickrouge;
 
 /**
- * A <FIELDSET> element with an optional <LEGEND> element.
+ * A `<FIELDSET>` element with an optional `<LEGEND>` element.
  *
- * The direct children of the element are wrapped in a DIV.field element, see the
+ * The direct children of the element are wrapped in a `DIV.field` element, see the
  * {@link render_child()} method for more information.
  *
  * Localization:
@@ -25,11 +25,11 @@ namespace Brickrouge;
 class Group extends Element
 {
 	/**
-	 * Constructor.
-	 *
-	 * Create an element of type "fieldset".
+	 * Creates a `<FIELDSET.group>` element.
 	 *
 	 * @param array $attributes
+	 *
+	 * @see Element::__construct()
 	 */
 	public function __construct(array $attributes=array())
 	{
@@ -37,9 +37,10 @@ class Group extends Element
 	}
 
 	/**
-	 * Adds the 'no-legend' class name if the group has no legend.
+	 * Adds the `no-legend` class name if the group has no legend (the {@link LEGEND} attribute
+	 * is empty).
 	 *
-	 * @see Brickrouge.Element::render_class()
+	 * @see Element::render_class()
 	 */
 	protected function render_class(array $class_names)
 	{
@@ -52,14 +53,14 @@ class Group extends Element
 	}
 
 	/**
-	 * Override the method to render the child in a DIV.field wrapper.
+	 * Override the method to render the child in a `<DIV.field>` wrapper:
 	 *
 	 * <div class="field [{normalized_field_name}][required]">
 	 *     [<label for="{element_id}" class="input-label [required]">{element_form_label}</label>]
 	 *     <div class="input">{child}</div>
 	 * </div>
 	 *
-	 * @see Brickrouge.Element::render_child()
+	 * @see Element::render_child()
 	 */
 	protected function render_child($child)
 	{
@@ -114,11 +115,19 @@ EOT;
 	}
 
 	/**
-	 * Prepend the inner HTML with a LEGEND element if the {@link LEGEND} tag is not empty.
+	 * Prepends the inner HTML with a description and a legend.
 	 *
-	 * The legend is translated within the "legend" scope.
+	 * If the {@link DESCRIPTION} attribute is defined the HTML is prepend with a
+	 * `DIV.group-description>DIV.group-description-inner` element. The description is translated
+	 * within the "group.description" scope. The description is not escaped.
 	 *
-	 * @see Brickrouge.Element::render_inner_html()
+	 * If the {@link LEGEND} attribute is defined the HTML is prenpend with a `<LEGEND>` element.
+	 * The legend can be provided as an object in which it is used _as is_, otherwise the legend
+	 * is translated within the "group.legend" scope, then escaped.
+	 *
+	 * The legend element is rendered using the {@link render_group_legend()} method.
+	 *
+	 * @see Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -152,10 +161,22 @@ EOT;
 	}
 
 	/**
-	 * The legend decoration is disabled because the {@link LEGEND} tag is already used by the
-	 * {@link render_inner_html()} method to prepend the inner HTML.
+	 * Renders the group legend.
 	 *
-	 * @see Brickrouge.Element::decorate_with_legend()
+	 * @param string $legend The legend to render.
+	 *
+	 * @return string a `<LEGEND.group-legend>` HTML element.
+	 */
+	protected function render_group_legend($legend)
+	{
+		return '<legend class="group-legend">' . $legend . '</legend>';
+	}
+
+	/**
+	 * The description decoration is disabled because the {@link DESCRIPTION} attribute is rendered
+	 * by the {@link render_inner_html()} method to prepend the inner HTML.
+	 *
+	 * @see Element::decorate_with_legend()
 	 */
 	protected function decorate_with_description($html, $description)
 	{
@@ -163,18 +184,13 @@ EOT;
 	}
 
 	/**
-	 * The legend decoration is disabled because the {@link LEGEND} tag is already used by the
-	 * {@link render_inner_html()} method to prepend the inner HTML.
+	 * The legend decoration is disabled because the {@link LEGEND} attribute is rendered
+	 * by the {@link render_inner_html()} method to prepend the inner HTML.
 	 *
-	 * @see Brickrouge.Element::decorate_with_legend()
+	 * @see Element::decorate_with_legend()
 	 */
 	protected function decorate_with_legend($html, $legend)
 	{
 		return $html;
-	}
-
-	protected function render_group_legend($legend)
-	{
-		return '<legend class="group-legend">' . $legend . '</legend>';
 	}
 }

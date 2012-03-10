@@ -11,6 +11,9 @@
 
 namespace Brickrouge;
 
+/**
+ * A dropdown menu element.
+ */
 class DropdownMenu extends Element
 {
 	public function __construct(array $attributes=array())
@@ -65,6 +68,9 @@ class DropdownMenu extends Element
 	}
 }
 
+/**
+ * An element made of a button and a dropdown menu.
+ */
 class SplitButton extends Element
 {
 	public function __construct($label, array $attributes=array())
@@ -86,10 +92,10 @@ class SplitButton extends Element
 	/**
 	 * Renders the button and dropdown trigger button.
 	 *
-	 * The 'btn-primary', 'btn-danger', 'btn-success' and 'btn-info' class names are forwarded to
+	 * The `btn-primary`, `btn-danger`, `btn-success` and `btn-info` class names are forwarded to
 	 * the buttons.
 	 *
-	 * @see Brickrouge.Element::render_inner_html()
+	 * @see Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -146,10 +152,10 @@ EOT;
 	}
 
 	/**
-	 * Removes the 'btn-primary', 'btn-danger', 'btn-success' and 'btn-info' class names and adds
-	 * the 'btn-group' class.
+	 * Removes the `btn-primary`, `btn-danger`, `btn-success` and `btn-info` class names and adds
+	 * the `btn-group` class.
 	 *
-	 * @see Brickrouge.Element::render_class()
+	 * @see Element::render_class()
 	 */
 	protected function render_class(array $class_names)
 	{
@@ -175,7 +181,7 @@ EOT;
 	 * @throws \UnexpectedValueException If the provided options cannot be resolved into a
 	 * DropdownMenu element.
 	 *
-	 * @return \Brickrouge\DropdownMenu
+	 * @return DropdownMenu
 	 */
 	protected function resolve_options($options)
 	{

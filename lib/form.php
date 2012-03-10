@@ -14,53 +14,69 @@ namespace Brickrouge;
 use ICanBoogie\Errors;
 
 /**
- * A FORM element.
+ * A `<FORM>` element.
  */
 class Form extends Element implements Validator
 {
 	/**
-	 * @var bool Set to true to disable all the elements of the form.
+	 * Set to true to disable all the elements of the form.
+	 *
+	 * @var boolean
 	 */
 	const DISABLED = '#form-disabled';
 
 	/**
-	 * @var array The HIDDENS tag can be used to provide hidden values. Each key/value pair of the
-	 * array is used to create an hidden input element with key as "name" attribute and value as
-	 * "value" attribute.
+	 * Used to provide hidden values. Each key/value pair of the array is used to create
+	 * an hidden input element with key as `name` attribute and value as `value` attribute.
+	 *
+	 * @var array[string]mixed
 	 */
 	const HIDDENS = '#form-hiddens';
 
 	/**
-	 * @var string Used by elements to define a form label, this is different from the
-	 * Element::LABEL, which wraps the element in a "LABEL" element, the form label is associated
-	 * with the element but its layout depend on the form renderer.
+	 * Used by elements to define a form label, this is different from the
+	 * {@link Element::LABEL}, which wraps the element in a `<LABEL>` element, the form label is
+	 * associated with the element but its layout depend on the form renderer.
+	 *
+	 * @var string
 	 */
 	const LABEL = '#form-label';
 
 	/**
-	 * @var string Complement to the LABEL tag. Its layout depends on the form renderer.
+	 * Complement to the {@link LABEL} tag. Its layout depends on the form renderer.
+	 *
+	 * @var string
 	 */
 	const LABEL_COMPLEMENT = '#form-label-complement';
 
 	/**
-	 * @var bool If true possible alert messages are not displayed.
+	 * If true possible alert messages are not displayed.
+	 *
+	 * @var boolean
 	 */
 	const NO_LOG = '#form-no-log';
 
 	/**
-	 * @var array Values for the elements of the form. The form recursively iterates through its
+	 * Values for the elements of the form. The form recursively iterates through its
 	 * children to set their values, if their values it not already set (e.g. non null).
+	 *
+	 * @var array
 	 */
 	const VALUES = '#form-values';
 
 	/**
-	 * @var string The class name of the renderer to use to render the children of the form. If no
+	 * The class name of the renderer to use to render the children of the form. If no
 	 * renderer is defined, children are simply concatened.
+	 *
+	 * @var string
 	 */
 	const RENDERER = '#form-renderer';
 
 	/**
-	 * @var bool|array|string Defines the actions of the form.
+	 * Defines the actions of the form.
+	 *
+	 * @var bool|array|string
+	 *
 	 * @see render_actions()
 	 */
 	const ACTIONS = '#form-actions';
@@ -75,7 +91,7 @@ class Form extends Element implements Validator
 		return 'form-autoname-' . self::$auto_name_index++;
 	}
 
-	static protected $auto_name_index=1;
+	static protected $auto_name_index = 1;
 
 	/**
 	 * Hidden values, initialized with the {@link HIDDENS} tag.
@@ -92,38 +108,37 @@ class Form extends Element implements Validator
 	protected $name;
 
 	/**
-	 * Constructor.
+	 * Default attributes are added to those provided using a union:
 	 *
-	 * Default tags are added to the provided tags by a union:
+	 * - `action`: If the `id` attribute is provided, `action` is set to "#<id>".
+	 * - `method`: "POST"
+	 * - `enctype`: "multipart/form-data"
+	 * - `name`: The value of the `id` attribute or a name generated with the {@link get_auto_name()} method
 	 *
-	 * - 'action': If the "id" tag is provided, 'action' is set to '#<id>'.
-	 * - 'method': "post"
-	 * - 'enctype': "multipart/form-data"
-	 * - 'name': The value of the "id" tag or a name generated with the {@link get_auto_name()}
-	 * method
+	 * If `method` is different than "POST" then the `enctype` attribute is unset.
 	 *
-	 * If the 'method' is different than "post" the 'enctype' attribute is unset.
+	 * @param array $attributes
 	 *
-	 * @param array $tags Tags used to create the element.
+	 * @see Element::__construct
 	 */
-	public function __construct(array $tags=array())
+	public function __construct(array $attributes=array())
 	{
-		$tags += array
+		$attributes += array
 		(
-			'action' => isset($tags['id']) ? '#' . $tags['id'] : '',
+			'action' => isset($attributes['id']) ? '#' . $attributes['id'] : '',
 			'method' => 'POST',
 			'enctype' => 'multipart/form-data',
-			'name' => isset($tags['id']) ? $tags['id'] : self::get_auto_name()
+			'name' => isset($attributes['id']) ? $attributes['id'] : self::get_auto_name()
 		);
 
-		if (strtoupper($tags['method']) != 'POST')
+		if (strtoupper($attributes['method']) != 'POST')
 		{
-			unset($tags['enctype']);
+			unset($attributes['enctype']);
 		}
 
-		$this->name = $tags['name'];
+		$this->name = $attributes['name'];
 
-		parent::__construct('form', $tags);
+		parent::__construct('form', $attributes);
 	}
 
 	/**
@@ -132,7 +147,7 @@ class Form extends Element implements Validator
 	 * Before rendering the object form elements are altered according to the {@link VALUES} and
 	 * {@link DISABLED} tags and previous validation errors.
 	 *
-	 * @see Brickrouge.Element::__toString()
+	 * @see Element::__toString()
 	 */
 	public function __toString()
 	{
@@ -168,17 +183,17 @@ class Form extends Element implements Validator
 	/**
 	 * @var array[string]Element The required elements of the form.
 	 */
-	protected $required=array();
+	protected $required = array();
 
 	/**
 	 * @var array[string] Booleans found in the form.
 	 */
-	protected $booleans=array();
+	protected $booleans = array();
 
 	/**
 	 * @var array[string]Element Elements of the form with a validator.
 	 */
-	protected $validators=array();
+	protected $validators = array();
 
 	/**
 	 * @var callable Validator callback of the form.
@@ -252,7 +267,7 @@ class Form extends Element implements Validator
 	/**
 	 * Override the method to map the {@link HIDDENS} tag to the {@link $hiddens} property.
 	 *
-	 * @see Brickrouge.Element::offsetSet()
+	 * @see Element::offsetSet()
 	 */
 	public function offsetSet($offset, $value)
 	{
@@ -268,7 +283,7 @@ class Form extends Element implements Validator
 	 * Add hidden input elements and log messages to the inner HTML of the element
 	 * being converted to a string.
 	 *
-	 * @see Brickrouge.Element::render_inner_html()
+	 * @see Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -480,9 +495,9 @@ class Form extends Element implements Validator
 	 * Load a form previously saved in session.
 	 *
 	 * @param $key The key used to identify the form to load, or an array in which
-	 * STORED_KEY_NAME defines the key.
+	 * {@link STORED_KEY_NAME} defines the key.
 	 *
-	 * @return object A Brickrouge\Form object
+	 * @return object A {@link Form} object
 	 */
 	static public function load($key)
 	{
@@ -513,7 +528,7 @@ class Form extends Element implements Validator
 	 *
 	 * @param $key The key used to identify the form.
 	 *
-	 * @return boolean Return TRUE if the form exists.
+	 * @return boolean Return `true` if the form exists.
 	 */
 	public static function exists($key)
 	{
@@ -554,7 +569,7 @@ class Form extends Element implements Validator
 	/**
 	 * Validates the form using the provided values.
 	 *
-	 * @see Brickrouge.Element::validate()
+	 * @see Element::validate()
 	 */
 	public function validate($values, Errors $errors)
 	{

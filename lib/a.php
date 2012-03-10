@@ -12,21 +12,19 @@
 namespace Brickrouge;
 
 /**
- * Creates a "A" element.
+ * A `<A>` element.
  */
 class A extends Element
 {
 	/**
-	 * Constructor.
-	 *
-	 * @param string|Element $label Defines the content of the element. If the $label is not
-	 * a Element object it is escaped.
+ 	 * @param string|Element $label Defines the content of the element. If `$label` is not
+	 * a {@link Element} instance it is escaped.
 	 * @param string $href URI for linked resource.
-	 * @param array $tags Optional tags.
+	 * @param array $attributes Optional attributes.
 	 *
-	 * Example:
+	 * @example
 	 *
-	 * echo new A('Brickrouge', 'http://brickrouge.org');
+	 * <?php echo new A('Brickrouge', 'http://brickrouge.org');
 	 */
 	public function __construct($label, $href='#', array $attributes=array())
 	{

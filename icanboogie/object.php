@@ -26,10 +26,10 @@ class Object
 	 *
 	 * 2. `__get_<property>`: Get, set and return the value of the property. Because the property
 	 * is set, the callback might only be called once if the property was previously undefined,
-	 * that's because in that case the property is created as _public_. This feature is mostly used
+	 * that's because in that case the property is created as _public_. This feature is perfect
 	 * for lazy loading.
 	 *
-	 * An error is triggered if the property is only readable, inaccessible or unknown.
+	 * An error is triggered if the property is readable only, inaccessible or unknown.
 	 *
 	 * @param string $property
 	 *
@@ -110,7 +110,7 @@ class Object
 	}
 
 	/**
-	 * The method is invoked when unset() is used on inaccessible properties.
+	 * The method is invoked when the `unset()` function is used on inaccessible properties.
 	 *
 	 * If the `__unset_<property>` method exists it is used to unset the property.
 	 *
@@ -129,7 +129,7 @@ class Object
 	/**
 	 * Checks if the object has the specified property.
 	 *
-	 * Unlike the property_exists() function, this method uses all the getters available to find
+	 * Unlike the `property_exists()` function, this method uses all the getters available to find
 	 * the property.
 	 *
 	 * @param string $property The property to check.

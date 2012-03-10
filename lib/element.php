@@ -11,10 +11,12 @@
 
 namespace Brickrouge;
 
-use ICanBoogie\Errors;
-
 /**
  * An HTML element.
+ *
+ * The `Element` class can create any kind of HTML element. It supports class names, dataset,
+ * children. It handles values and default values. It can decorate the HTML element with a label,
+ * a legend and a description.
  *
  * @property string $class Assigns a class name or set of class names to an element. Any number of
  * elements may be assigned the same class name or names. Multiple class names must be separated
@@ -80,7 +82,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 * for which there are no more appropriate attributes or elements. The dataset property
 	 * provides convenient accessors for all the data-* attributes on an element.
 	 *
-	 * @var string
+	 * @var array
 	 *
 	 * @see http://www.w3.org/TR/html5/elements.html#embedding-custom-non-visible-data-with-the-data-attributes
 	 */
@@ -103,8 +105,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 * @see Element::decorate_with_description()
 	 */
 	const DESCRIPTION = '#description';
-	const FILE_WITH_LIMIT = '#element-file-with-limit';
-	const FILE_WITH_REMINDER = '#element-file-with-reminder';
+	const FILE_WITH_LIMIT = '#file-with-limit';
+	const FILE_WITH_REMINDER = '#file-with-reminder';
 
 	/**
 	 * Used to define the group of an element.
@@ -144,7 +146,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 *
 	 * @see Element::decorate_with_label()
 	 */
-	const LABEL = '#element-label';
+	const LABEL = '#label';
 
 	/**
 	 * Used to define the position of the label. Possible positions are "before", "after" and
@@ -152,9 +154,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 *
 	 * @var string
 	 */
-	const LABEL_POSITION = '#element-label-position';
-	const LABEL_SEPARATOR = '#element-label-separator';
-	const LABEL_MISSING = '#element-label-missing';
+	const LABEL_POSITION = '#label-position';
+	const LABEL_SEPARATOR = '#label-separator';
+	const LABEL_MISSING = '#label-missing';
 
 	/**
 	 * Used to define the legend of an element. If the legend is defined the element is wrapped
@@ -177,8 +179,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	const REQUIRED = 'required';
 
 	/**
-	 * Used to define the options of the following element types: "select", TYPE_RADIO_GROUP
-	 * and TYPE_CHECKBOX_GROUP.
+	 * Used to define the options of the following element types: "select",
+	 * {@link TYPE_RADIO_GROUP} and {@link TYPE_CHECKBOX_GROUP}.
 	 *
 	 * @var string
 	 */
@@ -192,7 +194,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	const OPTIONS_DISABLED = '#options-disabled';
 
 	/**
-	 * Used to define the state of the element: 'success', 'warning', 'error'.
+	 * Used to define the state of the element: "success", "warning" or "error".
 	 *
 	 * @var string
 	 */
@@ -223,7 +225,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	static private $has_attribute_required = array('input', 'select', 'textarea');
 
 	/**
-	 * Type if the element, as provided during __construct().
+	 * Type if the element, as provided during {@link __construct()}.
 	 *
 	 * @var string
 	 */
@@ -246,12 +248,15 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	/**
 	 * Dataset of the element.
 	 *
+	 * The dataset of the element can be defined using the {@link DATASET} special attribute or
+	 * `data-*` attributes.
+	 *
 	 * @var array[]string
 	 */
 	public $dataset = array();
 
 	/**
-	 * Tags of the element, including HTML attributes and custom tags.
+	 * Tags of the element, including HTML and special attributes.
 	 *
 	 * @var array[string]mixed
 	 */
@@ -267,42 +272,35 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	protected $inner_html;
 
 	/**
-	 * Constructor.
+	 * @param string $type Type of the element, it can be one of the custom types (`TYPE_*`) or
+	 * any HTML type.
 	 *
-	 * @param string $type Type of the element, it can be one of the custom types (TYPE_*) or any
-	 * HTML type.
-	 *
-	 * @param array $tags HTML attributes and custom tags.
+	 * @param array $attributes HTML and custom attributes.
 	 */
-	public function __construct($type, $tags=array())
+	public function __construct($type, $attributes=array())
 	{
-		if ($tags === null)
-		{
-			$tags = array();
-		}
-
 		$this->type = $type;
-		$this->tags = $tags;
+		$this->tags = $attributes;
 
 		#
 		# children first
 		#
 
-		if (!empty($tags[self::CHILDREN]))
+		if (!empty($attributes[self::CHILDREN]))
 		{
 			$this->children = array();
-			$this->add_children($tags[self::CHILDREN]);
+			$this->add_children($attributes[self::CHILDREN]);
 
-			unset($tags[self::CHILDREN]);
+			unset($attributes[self::CHILDREN]);
 		}
 
 		#
 		# DATASET before "data-*"
 		#
 
-		if (!empty($tags[self::DATASET]))
+		if (!empty($attributes[self::DATASET]))
 		{
-			$this[self::DATASET] = $tags[self::DATASET];
+			$this[self::DATASET] = $attributes[self::DATASET];
 		}
 
 		#
@@ -321,7 +319,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 				);
 
 				$this->tag_name = $translate[$type][0];
-				$tags['type'] = $translate[$type][1];
+				$attributes['type'] = $translate[$type][1];
 			}
 			break;
 
@@ -335,9 +333,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			{
 				$this->tag_name = 'input';
 
-				$tags['type'] = 'file';
+				$attributes['type'] = 'file';
 
-				$tags += array('size' => 40);
+				$attributes += array('size' => 40);
 			}
 			break;
 
@@ -351,7 +349,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			{
 				$this->tag_name = 'textarea';
 
-				$tags += array('rows' => 10, 'cols' => 76);
+				$attributes += array('rows' => 10, 'cols' => 76);
 			}
 			break;
 
@@ -362,7 +360,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			break;
 		}
 
-		$this->set($tags);
+		$this->set($attributes);
 
 		switch ((string) $this->type)
 		{
@@ -541,7 +539,12 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		return 'autoid--' . self::$auto_element_id++;
 	}
 
-	static protected $auto_element_id = 1;
+	/**
+	 * Next available auto element id index.
+	 *
+	 * @var int
+	 */
+	protected static $auto_element_id = 1;
 
 	/**
 	 * Returns the element's id.
@@ -577,7 +580,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 * The set() method is used to set, unset (nullify) and modify a tag
 	 * of an element.
 	 *
-	 * TODO-20111106: this is a legacy method, it will be removed as soon as possible.
+	 * TODO-20111106: this is a legacy method, it shall be removed as soon as possible.
 	 */
 	public function set($name, $value=null)
 	{
@@ -607,9 +610,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
-	 * @var array Class names used to compose the value of the "class" attribute.
+	 * Class names used to compose the value of the `class` attribute.
+	 *
+	 * @var array
 	 */
-	protected $class_names=array();
+	protected $class_names = array();
 
 	/**
 	 * Returns the value of the "class" attribute.
@@ -645,7 +650,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
-	 * Removes class name from the "class" attribute.
+	 * Removes a class name from the `class` attribute.
 	 *
 	 * @param $class
 	 */
@@ -655,7 +660,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
-	 * Checks a class name in the class attribute.
+	 * Checks if a class name is defined in the `class` attribute.
 	 *
 	 * @param string $class_name
 	 *
@@ -707,7 +712,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 *
 	 * @param $child The child element to add
 	 *
-	 * @param $name Optional, the name of the child element
+	 * @param $name Optional, the name of the child element. The name is set only if the child's
+	 * name is `null`.
 	 */
 	public function add_child($child, $name=null)
 	{
@@ -730,6 +736,14 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		}
 	}
 
+	/**
+	 * Add children to the element.
+	 *
+	 * The {@link add_child()} method is use to add each child of the array. If the key is not
+	 * numeric it is used as the child's name.
+	 *
+	 * @param array $children
+	 */
 	public function add_children(array $children)
 	{
 		foreach ($children as $name => $child)
@@ -839,9 +853,16 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	/**
 	 * Returns the HTML representation of the element's content.
 	 *
-	 * If the element has a null content it is considered as self closing.
+	 * The children of the element are ordered before they are rendered using the
+	 * {@link render_child()} method.
 	 *
-	 * @return string The content of the element.
+	 * If the element is of type "select" the {@link render_inner_html_for_select()} method is
+	 * invoked to render the inner HTML of the element. If the element is of type "textarea"
+	 * the {@link render_inner_html_for_textarea()} method is invoked to render the inner HTML of
+	 * the element.
+	 *
+	 * @return string|null The content of the element. If the method returns `null` the element is
+	 * to be considered as self-closing.
 	 */
 	protected function render_inner_html()
 	{
@@ -995,17 +1016,17 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	/**
 	 * Returns the HTML representation of the element and its contents.
 	 *
-	 * The final element's attributes are filtered when the element is rendered. All custom
+	 * The final element's attributes are filtered when the element is rendered. All special
 	 * attributes, those starting with the hash sign "#", are discarted. The `value`, `required`,
 	 * `disabled` and `name` attributes are discarted if they are not supported by the element's
 	 * type.
 	 *
-	 * If the element has a dataset each of its keys are mapped to a "data-+" attribute.
-	 *
-	 * Note: The inner HTML is rendered before the outer HTML in a try/catch block. If an
-	 * exception is caught, it is converted into a string and used as inner HTML.
+	 * If the element has a dataset each of its keys are mapped to a "data-*" attribute. The
+	 * {@link render_dataset()} method is invoked to render the dataset as "data-*" attributes.
 	 *
 	 * If the inner HTML is null the element is self-closing.
+	 *
+	 * Note: The inner HTML is rendered before the outer HTML.
 	 *
 	 * @return string
 	 */
@@ -1125,33 +1146,27 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
-	 * Returns a HTML representation of the complete element, including external labels and such.
+	 * Decorates the specified HTML.
 	 *
-	 * @return string
+	 * The HTML can be decorated by following attributes:
 	 *
-	 * @todo-20110813 The code from the __toString() method should be moved here, and the
-	 * __toString() method should only call this method wrapped in a try/catch block.
+	 * - A label defined by the {@link LABEL} special attribute. The {@link decorate_with_label()}
+	 * method is used to decorate the HTML with the label.
 	 *
-	 * But before that, we need to modify how editors work because they already define a static
-	 * "render" method used to render the data they are used to edit.
-	 */
-	/*
-	protected function render()
-	{
-
-	}
-	*/
-
-	/**
-	 * Decorate the specified HTML.
+	 * - An inline help defined by the {@link INLINE_HELP} special attribute. The
+	 * {@link decorate_with_inline_help()} method is used to decorate the HTML with the inline
+	 * help.
 	 *
-	 * If the label starts with a dot ".", the label is translated within the "element.label"
-	 * scope (the dot is removed during the translation), otherwise the label is translated within
-	 * the current scope.
+	 * - A description (or help block) defined by the {@link DESCRIPTION} special attribute. The
+	 * {@link decorate_with_description()} method is used to decorate the HTML with the
+	 * description.
 	 *
-	 * @param string $html
+	 * - A legend defined by the {@link LEGEND} special attribute. The
+	 * {@link decorate_with_label()} method is used to decorate the HTML with the legend.
 	 *
-	 * @return string
+	 * @param string $html The HTML to decorate.
+	 *
+	 * @return string The decorated HTML.
 	 */
 	protected function decorate($html)
 	{
@@ -1343,7 +1358,7 @@ EOT;
 		return $html . '<div class="element-description help-block">' . $description . '</div>';
 	}
 
-	private static $assets_handled=array();
+	private static $assets_handled = array();
 
 	protected static function handle_assets()
 	{
@@ -1370,12 +1385,19 @@ EOT;
 	}
 
 	/**
-	 * Returns the HTML representation of the element, including external labels and such.
+	 * Returns the HTML representation of the element, including decoration.
+	 *
+	 * The inner HTML is rendered using the {@link render_inner_html()} method. The outer HTML is
+	 * rendered using the {@link render_outer_html()} method. Finaly the HTML is decorated using
+	 * the {@link decorate()} method.
+	 *
+	 * If a exception is thrown during rendering the exception is rendered using the
+	 * {@link render_exception()} function and returned, unless the exception is of type
+	 * {@link EmptyElementException} in which case an empty string is returned instead.
+	 *
+	 * Before the element is rendered the {@link handle_assets()} method is invoked.
 	 *
 	 * @return string The HTML representation of the object
-	 *
-	 * @todo-20110813 The method shoul call a 'decorate' method to add external labels and such to
-	 * the element.
 	 */
 	public function __toString()
 	{
@@ -1403,10 +1425,6 @@ EOT;
 			{
 				$this->handleValue($tags);
 			}
-
-			#
-			#
-			#
 
 			switch ($this->type)
 			{
@@ -1640,16 +1658,16 @@ EOT;
 	}
 
 	/**
-	 * Validates the value of the element.
+	 * Validates the specified value.
 	 *
-	 * This function uses the validator defined using the VALIDATOR tag to validate
-	 * its value.
+	 * This function uses the validator defined using the {@link VALIDATOR} special attribute to
+	 * validate its value.
 	 *
 	 * @param $value
 	 *
-	 * @return boolean Return TRUE is the validation succeed.
+	 * @return boolean `true` if  the validation succeed, `false` otherwise.
 	 */
-	public function validate($value, Errors $errors)
+	public function validate($value, \ICanBoogie\Errors $errors)
 	{
 		$validator = $this[self::VALIDATOR];
 		$options = $this[self::VALIDATOR_OPTIONS];

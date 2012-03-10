@@ -12,7 +12,7 @@
 namespace Brickrouge;
 
 /**
- * An input element of type `text`.
+ * An `<INPUT>` element of type `text`.
  *
  * One can override the `type` attribute to use a different kind of input, such as `password`.
  */
@@ -27,8 +27,9 @@ class Text extends Element
 	const ADDON = '#addon';
 
 	/**
-	 * Defines the position of the add-on: `before` or `after`, default to `after`.
-	 * @var unknown_type
+	 * Defines the position of the add-on: `before` or `after`. Defaults to `after`.
+	 *
+	 * @var string
 	 */
 	const ADDON_POSITION = '#addon-position';
 
@@ -37,7 +38,9 @@ class Text extends Element
 	 *
 	 * - type: 'text'
 	 *
-	 * @param array $attributes User attributes
+	 * @param array $attributes
+	 *
+	 * @see Element::__construct()
 	 */
 	public function __construct(array $attributes=array())
 	{
@@ -53,7 +56,7 @@ class Text extends Element
 	/**
 	 * Decorates the HTML with the add-on specified with the {@link ADDON} attribute.
 	 *
-	 * @see Brickrouge.Element::decorate()
+	 * @see Element::decorate()
 	 */
 	protected function decorate($html)
 	{
@@ -80,7 +83,7 @@ class Text extends Element
 	 * @param string $html
 	 * @param string $addon
 	 *
-	 * @return string
+	 * @return string The decorated HTML.
 	 */
 	protected function decorate_with_prepend($html, $addon)
 	{
@@ -92,6 +95,8 @@ class Text extends Element
 	 *
 	 * @param string $html
 	 * @param string $addon
+	 *
+	 * @return string The decorated HTML.
 	 */
 	protected function decorate_with_append($html, $addon)
 	{

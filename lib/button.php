@@ -12,19 +12,16 @@
 namespace Brickrouge;
 
 /**
- * A `<button>` element.
+ * A `<BUTTON>` element.
  */
 class Button extends Element
 {
 	/**
-	 * Constructor.
+	 * The element is created with the type "button" and an union of the provided attributes and
+	 * the following values:
 	 *
-	 * The object is created with the "button" type and an union of the provided tags and the
-	 * following values:
-	 *
-	 * - 'type': "button"
-	 * - INNER_HTML: The translated and escaped label. The label is translated with the "button"
-	 * scope.
+	 * - `type`: "button"
+	 * - {@link INNER_HTML}: The translated and escaped label. The label is translated with the "button" scope.
 	 *
 	 * @param string $label Label of the button (inner text).
 	 * @param array $attributes Optional attributes used to create the element.

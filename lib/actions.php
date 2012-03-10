@@ -11,31 +11,21 @@
 
 namespace Brickrouge;
 
+/**
+ * An actions element that can be used with forms or popovers.
+ */
 class Actions extends Element
 {
 	/**
+	 * Actions.
 	 *
-	 * Enter description here ...
-	 * @var unknown_type
+	 * @var string|array
 	 */
 	protected $actions;
 
 	/**
-	 *
-	 * Enter description here ...
-	 * @param boolean|array|string $actions Actions can be defined as a boolean, an array or a
-	 *
-	 * If actions are defined as the string "boolean" they are replaced by an array with the
-	 * buttons "button[data-action="cancel"]" and
-	 * "button[data-action="ok"][type=submit].btn-primary".
-	 *
-	 * If actions are defined as a boolean, they are replaced by a
-	 * "button[type=submit][data-action="ok"].btn-primary" element with the label "Send".
-	 *
-	 * If actions are defined as an array, the array is concatened with the glue
-	 * "<span class="separator">&nbsp;</span>".
-	 *
-	 * Otherwise actions are used as is.
+	 * @param boolean|array|string|Element $actions Actions can be defined as a boolean, an array
+	 * a string or an instance of the {@link Element} class. @see {@link render_inner_html()}
 	 *
 	 * @param array $attributes
 	 */
@@ -46,6 +36,23 @@ class Actions extends Element
 		parent::__construct('div', $attributes + array('class' => 'actions'));
 	}
 
+	/**
+	 * Renders the actions.
+	 *
+	 * If actions are defined as the string "boolean" they are replaced by an array with the
+	 * buttons `button[data-action="cancel"]` and
+	 * `button[data-action="ok"][type=submit].btn-primary`.
+	 *
+	 * If actions are defined as a boolean, they are replaced by a
+	 * `button[type=submit][data-action="ok"].btn-primary` element with the label "Send".
+	 *
+	 * If actions are defined as an array, the array is concatened with the glue
+	 * `<span class="separator">&nbsp;</span>`.
+	 *
+	 * Otherwise actions are used as is.
+	 *
+	 * @see Element::render_inner_html()
+	 */
 	protected function render_inner_html()
 	{
 		$html = parent::render_inner_html();

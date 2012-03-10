@@ -12,9 +12,9 @@
 namespace Brickrouge;
 
 /**
- * @property $assets array Assets used by the document
+ * An HTML document.
  *
- * @todo: https://github.com/sstephenson/sprockets
+ * @property $assets array The Javascript and CSS assets used by the document.
  */
 class Document extends \ICanBoogie\Object
 {
@@ -158,18 +158,18 @@ class Document extends \ICanBoogie\Object
 		}
 	}
 
-	public static $assets_repository='public/brickrouge/assets';
+	public static $assets_repository = 'public/brickrouge/assets';
 
 	/**
-	 * Resolves a server path into a URL accessible from the DOCUMENT_ROOT.
+	 * Resolves a server path into a URL accessible from the `DOCUMENT_ROOT`.
 	 *
 	 * Unless the path uses a scheme (http://, https:// or phar://) it is always considered
-	 * relative to the path specified by the $relative parameter or to the DOCUMENT_ROOT.
+	 * relative to the path specified by the $relative parameter or to the `DOCUMENT_ROOT`.
 	 *
 	 * @param string $path
 	 * @param string $relative Relative path that can be used to resolve the path. If the
-	 * parameter is null the method tries to _guess_ the relative path using the resolve_root()
-	 * private method.
+	 * parameter is null the method tries to _guess_ the relative path using the
+	 * {@link resolve_root()} private method.
 	 *
 	 * @return string The URL resolved from the path.
 	 */
@@ -307,14 +307,14 @@ abstract class Collector
 	 *
 	 * @var array
 	 */
-	protected $collected=array();
+	protected $collected = array();
 
 	/**
 	 * Wheter the collected assets should be cached.
 	 *
 	 * @var bool
 	 */
-	public $use_cache=false;
+	public $use_cache = false;
 
 	/**
 	 * Sets the cache policy according to the configuration.

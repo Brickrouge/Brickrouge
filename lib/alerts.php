@@ -14,12 +14,12 @@ namespace Brickrouge;
 use ICanBoogie\Errors;
 
 /**
- * An alert message.
+ * A `<DIV.alert>` element.
  */
 class Alert extends Element
 {
 	/**
-	 * The context of the alert, one of 'error', 'success' or 'info'.
+	 * The context of the alert, one of "error", "success" or "info".
 	 *
 	 * @var string
 	 */
@@ -32,33 +32,44 @@ class Alert extends Element
 	 */
 	const HEADING = '#alert-heading';
 
+	/**
+	 * Alert message.
+	 *
+	 * @var string|array|ICanBoogie\Errors
+	 */
 	protected $message;
+
+	/**
+	 * Alert type, one of "error", "success" or "info".
+	 *
+	 * @var string
+	 */
 	protected $alert_type;
 
 	/**
-	 * Constructor.
-	 *
-	 * The element is created with the class "alert".
+	 * Creates a `<DIV.alert>` element.
 	 *
 	 * @param string|array|ICanBoogie\Errors $message The alert message is provided as a string,
-	 * an array of strings or an ICanBoogie\Errors object.
+	 * an array of strings or a {@link ICanBoogie\Errors} object.
 	 *
 	 * If the message is provided as a string it is used as is. If the message is provided as an
 	 * array each value of the array is considered as a message. If the message is provided as
-	 * an ICanBoogie\Errors object each entry of the object is considered as a message.
+	 * an {@link ICanBoogie\Errors} object each entry of the object is considered as a message.
 	 *
-	 * Each message is wrapped in a P element and they are concatenated to create the final
+	 * Each message is wrapped in a `<P>` element and they are concatenated to create the final
 	 * message.
 	 *
-	 * If the message is an instance of \ICanBoogie\Errors the {@link CONTEXT} attribute is set to
-	 * 'error' in the initial tags.
+	 * If the message is an instance of {@link ICanBoogie\Errors} the {@link CONTEXT} attribute is
+	 * set to "error" in the initial attributes.
 	 *
-	 * @param array $tags Additional tags.
+	 * @param array $attributes Additional attributes.
 	 *
 	 * @param string $type Defines an additionnal class for the element. If the message is an
-	 * ICanBoogie\Errors object $type is set to "errors".
+	 * {@link ICanBoogie\Errors} object $type is set to "error".
+	 *
+	 * @see Element::__construct
 	 */
-	public function __construct($message, $attributes=array())
+	public function __construct($message, array $attributes=array())
 	{
 		$this->message = $message;
 
@@ -74,9 +85,11 @@ class Alert extends Element
 	}
 
 	/**
-	 * Add the alert context to the class names.
+	 * Adds the alert context to the class names.
 	 *
-	 * @see Brickrouge.Element::render_class()
+	 * If the {@link HEADING} attribute is defined the `alert-block` class name is added.
+	 *
+	 * @see Element::render_class()
 	 */
 	protected function render_class(array $class_names)
 	{
@@ -102,7 +115,9 @@ class Alert extends Element
 	 * [<h4>$heading</h4>]
 	 * <div class="content">$message</div>
 	 *
-	 * @see Brickrouge.Element::render_inner_html()
+	 * @throws EmptyElementException if the message is empty.
+	 *
+	 * @see Element::render_inner_html()
 	 */
 	public function render_inner_html()
 	{
