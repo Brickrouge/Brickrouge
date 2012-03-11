@@ -360,7 +360,12 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			break;
 		}
 
-		$this->set($attributes);
+// 		$this->set($attributes);
+
+		foreach ($attributes as $attribute => $value)
+		{
+			$this[$attribute] = $value;
+		}
 
 		switch ((string) $this->type)
 		{
@@ -398,7 +403,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			return isset($this->dataset[$offset]) ? $this->dataset[$offset] : $default;
 		}
 
-		return $this->offsetExists($offset) ? $this->tags[$offset] : $default;
+		return isset($this->tags[$offset]) ? $this->tags[$offset] : $default;
 	}
 
 	/**
@@ -574,39 +579,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		}
 
 		return $id;
-	}
-
-	/**
-	 * The set() method is used to set, unset (nullify) and modify a tag
-	 * of an element.
-	 *
-	 * TODO-20111106: this is a legacy method, it shall be removed as soon as possible.
-	 */
-	public function set($name, $value=null)
-	{
-		if (is_array($name))
-		{
-			foreach ($name as $tag => $value)
-			{
-				$this->set($tag, $value);
-			}
-		}
-		else
-		{
-			$this[$name] = $value;
-		}
-	}
-
-	/**
-	 * The get() method is used to get to value of a tag. If the tag is not
-	 * set, `null` is returned. You can provide a default value which is returned
-	 * instead of `null` if the tag is not set.
-	 *
-	 * TODO-20111106: this is a legacy method, it will be removed as soon as possible.
-	 */
-	public function get($name, $default=null)
-	{
-		return isset($this->tags[$name]) ? $this->tags[$name] : $default;
 	}
 
 	/**
@@ -1555,7 +1527,7 @@ EOT;
 					# reminding the maximum file size allowed for the upload
 					#
 
-					$limit = $this->get(self::FILE_WITH_LIMIT);
+					$limit = $this[self::FILE_WITH_LIMIT];
 
 					if ($limit)
 					{
@@ -1611,7 +1583,7 @@ EOT;
 					# add our options as children
 					#
 
-					$disableds = $this->get(self::OPTIONS_DISABLED);
+					$disableds = $this[self::OPTIONS_DISABLED];
 
 					foreach ($tags[self::OPTIONS] as $value => $label)
 					{
