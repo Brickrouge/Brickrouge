@@ -682,9 +682,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	/**
 	 * Add a child or children to the element.
 	 *
-	 * If the children are provided in an array each key/value pair define the name of a child
-	 * and the child. If the key is not numeric it is considered as the child's name and is used
-	 * to set its `name` attribute, unless the attribute is already defined.
+	 * If the children are provided in an array, each key/value pair defines the name of a child
+	 * and the child itself. If the key is not numeric it is considered as the child's name and is
+	 * used to set its `name` attribute, unless the attribute is already defined.
 	 *
 	 * @param string|Element|array $child The child or children to add.
 	 * @param string|Element $other[optional] Other child.
