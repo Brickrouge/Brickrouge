@@ -289,7 +289,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		if (!empty($attributes[self::CHILDREN]))
 		{
 			$this->children = array();
-			$this->add_children($attributes[self::CHILDREN]);
+			$this->adopt($attributes[self::CHILDREN]);
 
 			unset($attributes[self::CHILDREN]);
 		}
@@ -424,7 +424,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			case self::CHILDREN:
 			{
 				$this->children = array();
-				$this->add_children($value);
+				$this->adopt($value);
 			}
 			break;
 
@@ -680,47 +680,46 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
-	 * Add a child to the element.
+	 * Add a child or children to the element.
 	 *
-	 * @param $child The child element to add
+	 * If the children are provided in an array each key/value pair define the name of a child
+	 * and the child. If the key is not numeric it is considered as the child's name and is used
+	 * to set its `name` attribute, unless the attribute is already defined.
 	 *
-	 * @param $name Optional, the name of the child element. The name is set only if the child's
-	 * name is `null`.
+	 * @param string|Element|array $child The child or children to add.
+	 * @param string|Element $other[optional] Other child.
 	 */
-	public function add_child($child, $name=null)
+	public function adopt($child, $other=null)
 	{
-		if ($name)
+		if (func_num_args() > 1)
 		{
-			// TODO-20110926: I added the `&& empty($child->tags['name'])` part to avoid setting
-			// the name twice, so the name defined is preserved, we need to check if this is
-			// ok or not.
+			$child = func_get_args();
+		}
 
-			if (is_object($child) && $child['name'] === null)
+		if (is_array($child))
+		{
+			$children = $child;
+
+			foreach($children as $name => $child)
 			{
-				$child['name'] = $name;
-			}
+				if (is_numeric($name))
+				{
+					$this->children[] = $child;
+				}
+				else
+				{
+					if ($child instanceof self && $child['name'] === null)
+					{
+						$child['name'] = $name;
+					}
 
-			$this->children[$name] = $child;
+					$this->children[$name] = $child;
+				}
+			}
 		}
 		else
 		{
 			$this->children[] = $child;
-		}
-	}
-
-	/**
-	 * Add children to the element.
-	 *
-	 * The {@link add_child()} method is use to add each child of the array. If the key is not
-	 * numeric it is used as the child's name.
-	 *
-	 * @param array $children
-	 */
-	public function add_children(array $children)
-	{
-		foreach ($children as $name => $child)
-		{
-			$this->add_child($child, is_numeric($name) ? null : $name);
 		}
 	}
 
