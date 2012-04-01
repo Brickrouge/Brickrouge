@@ -577,8 +577,8 @@ window.addEvent
  * file that was distributed with this source code.
  */
 
-!function()
-{
+!function() {
+
 	var toggleSelector = '[data-toggle="dropdown"]'
 
 	function clearMenus()
@@ -606,14 +606,11 @@ window.addEvent
 	 */
 	window.addEvent('click', clearMenus)
 
-	window.addEvent
-	(
-		'click:relay(' + toggleSelector + ')', function(ev, el)
-		{
-			ev.stop()
-			toggle.bind(el)()
-		}
-	)
+	window.addEvent('click:relay(' + toggleSelector + ')', function(ev, el) {
+
+		ev.stop()
+		toggle.bind(el)()
+	})
 } ()
 /*
  * This file is part of the Brickrouge package.
@@ -1102,6 +1099,6 @@ Brickrouge.Widget.Searchbox = new Class({
 
 	initialize: function(el, options)
 	{
-		this.element = document.id(el);
+		this.element = document.id(el)
 	}
-});
+})
