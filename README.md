@@ -3,8 +3,8 @@ Brickrouge
 
 Brickrouge is an open source object-oriented toolkit for PHP5.3+ that helps you create elements,
 widgets and forms for your webapps or sites. Using the many features provided by the toolkit you
-can create any kind of element, or you can use built-in elements which are commoly found in web
-applications such as forms, text inputs, popovers or date pickers. Whatever you choose you can
+can create any kind of HTML element, or use provided classes to create elements commoly found in
+web applications such as forms, text inputs, popovers or date pickers. Whatever you choose you can
 always override attributes or behaviours to get exactly what you want.
 
 Out of the box you have everything you need to create anchors, buttons, text inputs, textareas,
@@ -19,6 +19,8 @@ beautiful and clean webapps.
 
 *Website*: <http://brickrouge.org>  
 *Author*: Olivier Laviale <olivier.laviale@gmail.com>, <http://weirdog.com>
+
+
 
 
 Usage
@@ -40,15 +42,34 @@ Or if your are using it as a Phar:
 
 ### Using Brickrouge's autoloader
 
-Brickrouge provides a simple autoloader that can be used to load its own classes. You need to
-define the `Brickrouge\AUTOLOAD` constant to enable it:
+Brickrouge provides a simple autoloader that can be used to load its own classes:
 
 	<?php
 	
-	define('Brickrouge\AUTOLOAD', true);
+	require_once '/path/to/Brickrouge.phar';
+
+	Brickrouge\regsiter_autoloader();
+	
+	
+### Making files accessible
+
+Brickrouge can make unaccessible files–such as assets in the Phar–accessible from the web by
+copying them to a directory defined by the `Brickrouge\ACCESSIBLE_ASSETS` constant :
+
+	<?php
+	
+	define('Brickrouge\ACCESSIBLE_ASSETS', __DIR__ . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR);
 	
 	require_once '/path/to/Brickrouge.phar';
 
+	Brickrouge\regsiter_autoloader();
+	
+	?>
+	
+	<link rel="stylesheet" href="<?= Brickrouge\Document::resolve_url(Brickrouge\ASSETS . 'brickrouge.css') ?>" type="text/css">
+	<link rel="stylesheet" href="<?= Brickrouge\Document::resolve_url(Brickrouge\ASSETS . 'responsive.css') ?>" type="text/css">
+
+The directory mush be writtable by PHP.
 
 
 
@@ -56,8 +77,8 @@ define the `Brickrouge\AUTOLOAD` constant to enable it:
 Patching Brickrouge
 -------------------
 
-Brickrouge was initially designed for the
-[ICanBoogie](https://github.com/ICanBoogie/ICanBoogie) framework, the project evolved to
+Brickrouge was initially designed to work with the framework
+[ICanBoogie](https://github.com/ICanBoogie/ICanBoogie). The project evolved to
 stand alone and provides means to patch critical features such as translation, errors handling or
 form storing/retrieving. Fallbacks for each feature are provided so you can patch what you need
 and leave the rest.
