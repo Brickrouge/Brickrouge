@@ -52,7 +52,7 @@ class Templated extends Element
 			# label
 			#
 
-			$label = $child->get(Form::LABEL);
+			$label = $child[Form::LABEL];
 
 			if ($label)
 			{
@@ -65,7 +65,7 @@ class Templated extends Element
 					$label = t($label);
 				}
 
-				$is_required = $child->get(self::REQUIRED);
+				$is_required = $child[self::REQUIRED];
 
 				$child_id = $child->id;
 
@@ -84,7 +84,7 @@ class Templated extends Element
 				$finish = '</label>';
 
 				/*
-				$complement = $child->get(self::LABEL_COMPLEMENT);
+				$complement = $child[self::LABEL_COMPLEMENT];
 
 				if ($complement)
 				{

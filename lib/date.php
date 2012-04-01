@@ -27,11 +27,11 @@ class Date extends Text
 
 	public function __toString()
 	{
-		$value = $this->get('value');
+		$value = $this['value'];
 
 		if (!(int) $value)
 		{
-			$this->set('value', null);
+			$this['value'] = null;
 		}
 
 		return parent::__toString();

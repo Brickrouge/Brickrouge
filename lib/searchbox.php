@@ -45,7 +45,7 @@ class Searchbox extends Element
 		{
 			if (in_array($property, array('name', 'value', 'placeholder')))
 			{
-				$this->elements['q']->set($property, $value);
+				$this->elements['q'][$property] = $value;
 			}
 		}
 

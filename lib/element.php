@@ -360,8 +360,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			break;
 		}
 
-// 		$this->set($attributes);
-
 		foreach ($attributes as $attribute => $value)
 		{
 			$this[$attribute] = $value;
@@ -669,7 +667,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 				{
 					// TODO-20100108: we need to check this situation further more
 
-					//$this->set('checked', $default);
+					//$this['checked'] = $default;
 				}
 				else
 				{

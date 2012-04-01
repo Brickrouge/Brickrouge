@@ -43,15 +43,15 @@ class Pager extends Element
 
 	public function render_inner_html()
 	{
-		$limit = $this->get(self::T_LIMIT);
-		$count = $this->get(self::T_COUNT);
+		$limit = $this[self::T_LIMIT];
+		$count = $this[self::T_COUNT];
 
 		$pages = ceil($count / $limit);
 
 		$this->urlbase = $this->getURLBase();
 
-		$gap = $this->get(self::T_GAP);
-		$separator = $this->get(self::T_SEPARATOR);
+		$gap = $this[self::T_GAP];
+		$separator = $this[self::T_SEPARATOR];
 
 		#
 		#
@@ -59,7 +59,7 @@ class Pager extends Element
 
 		// FIXME-20081113: prévoir index par offset
 
-		$on_page = $this->get(self::T_POSITION) + 1;
+		$on_page = $this[self::T_POSITION] + 1;
 
 		$rc = '';
 
@@ -134,7 +134,7 @@ class Pager extends Element
 			}
 		}
 
-		if (!$this->get(self::T_NO_ARROWS))
+		if (!$this[self::T_NO_ARROWS])
 		{
 			#
 			# add next (>) link
@@ -176,14 +176,14 @@ class Pager extends Element
 
 	public function __toString()
 	{
-		$limit = $this->get(self::T_LIMIT);
+		$limit = $this[self::T_LIMIT];
 
 		if (!$limit)
 		{
 			return '';
 		}
 
-		$count = $this->get(self::T_COUNT);
+		$count = $this[self::T_COUNT];
 
 		$pages = ceil($count / $limit);
 
@@ -204,9 +204,9 @@ class Pager extends Element
 
 	protected function getURLBase()
 	{
-		$rc = $this->get(self::T_URLBASE);
+		$rc = $this[self::T_URLBASE];
 
-		$with = $this->get(self::T_WITH);
+		$with = $this[self::T_WITH];
 
 		if ($with)
 		{
@@ -235,7 +235,7 @@ class Pager extends Element
 		# add the 'using' part
 		#
 
-		$using = $this->get(self::T_USING, 'page');
+		$using = $this[self::T_USING] ?: 'page';
 
 		unset($parts[$using]);
 

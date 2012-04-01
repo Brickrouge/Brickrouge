@@ -40,7 +40,7 @@ class File extends Element
 
 	protected function infos()
 	{
-		$path = $this->get('value');
+		$path = $this['value'];
 		$details = $this->details($path);
 		$preview = $this->preview($path);
 
@@ -95,7 +95,7 @@ class File extends Element
 	{
 		global $document;
 
-		$limit = $this->get(self::FILE_WITH_LIMIT, 2 * 1024);
+		$limit = $this[self::FILE_WITH_LIMIT] ?: 2 * 1024;
 
 		if ($limit === true)
 		{
@@ -104,15 +104,15 @@ class File extends Element
 
 		return array
 		(
-			'name' => $this->get('name'),
+			'name' => $this['name'],
 			'max-file-size' => $limit * 1024
 		);
 	}
 
 	public function render_inner_html()
 	{
-		$name = $this->get('name');
-		$path = $this->get('value');
+		$name = $this['name'];
+		$path = $this['value'];
 
 		$rc  = '<div class="input">';
 
