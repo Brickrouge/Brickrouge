@@ -15,22 +15,16 @@ var Brickrouge = {
 
 			startBusy: function()
 			{
-				if (++this.busyNest == 1)
-				{
-					return;
-				}
+				if (++this.busyNest == 1) return
 
-				this.element.addClass('busy');
+				this.element.addClass('busy')
 			},
 
 			finishBusy: function()
 			{
-				if (--this.busyNest)
-				{
-					return;
-				}
+				if (--this.busyNest) return
 
-				this.element.removeClass('busy');
+				this.element.removeClass('busy')
 			}
 		})
 	},
@@ -43,60 +37,60 @@ var Brickrouge = {
 	 */
 	updateAssets: (function()
 	{
-		var available_css=null, available_js=null;
+		var available_css = null
+		, available_js = null
 
 		return function (assets, done)
 		{
-			var css=new Array(), js=new Array(), js_count;
+			var css = new Array()
+			, js = new Array()
+			, js_count
 
 			if (available_css === null)
 			{
-				available_css = new Array();
+				available_css = []
 
 				if (typeof(document_cached_css_assets) !== 'undefined')
 				{
-					available_css = document_cached_css_assets;
+					available_css = document_cached_css_assets
 				}
 
 				document.id(document.head).getElements('link[type="text/css"]').each
 				(
 					function(el)
 					{
-						available_css.push(el.get('href'));
+						available_css.push(el.get('href'))
 					}
-				);
+				)
 			}
 
 			if (available_js === null)
 			{
-				available_js = new Array();
+				available_js = []
 
 				if (typeof(brickrouge_cached_js_assets) !== 'undefined')
 				{
-					available_js = brickrouge_cached_js_assets;
+					available_js = brickrouge_cached_js_assets
 				}
 
 				document.id(document.html).getElements('script').each
 				(
 					function(el)
 					{
-						var src = el.get('src');
+						var src = el.get('src')
 
-						if (src) available_js.push(src);
+						if (src) available_js.push(src)
 					}
-				);
+				)
 			}
 
 			assets.css.each
 			(
 				function(url)
 				{
-					if (available_css.indexOf(url) != -1)
-					{
-						return;
-					}
+					if (available_css.indexOf(url) != -1) return
 
-					css.push(url);
+					css.push(url)
 				}
 			);
 
@@ -104,9 +98,9 @@ var Brickrouge = {
 			(
 				function(url)
 				{
-					new Asset.css(url);
+					new Asset.css(url)
 
-					available_css.push(url);
+					available_css.push(url)
 				}
 			);
 
@@ -114,22 +108,19 @@ var Brickrouge = {
 			(
 				function(url)
 				{
-					if (available_js.indexOf(url) != -1)
-					{
-						return;
-					}
+					if (available_js.indexOf(url) != -1) return
 
-					js.push(url);
+					js.push(url)
 				}
 			);
 
-			js_count = js.length;
+			js_count = js.length
 
 			if (!js_count)
 			{
-				done();
+				done()
 
-				return;
+				return
 			}
 
 			js.each
@@ -142,18 +133,18 @@ var Brickrouge = {
 						{
 							onload: function()
 							{
-								available_js.push(url);
+								available_js.push(url)
 
 								if (!--js_count)
 								{
-									done();
+									done()
 								}
 							}
 						}
-					);
+					)
 				}
-			);
-		};
+			)
+		}
 
 	}) (),
 
@@ -183,7 +174,7 @@ var Brickrouge = {
 	 */
 	awakeWidgets: function(container)
 	{
-		container = container || document.id(document.body);
+		container = container || document.id(document.body)
 
 		Object.each
 		(
@@ -191,27 +182,24 @@ var Brickrouge = {
 			(
 				function(constructor, key)
 				{
-					var cl = '.widget' + key.hyphenate();
+					var cl = '.widget' + key.hyphenate()
 
 					container.getElements(cl).each
 					(
 						function(el)
 						{
-							if (el.retrieve('widget'))
-							{
-								return;
-							}
+							if (el.retrieve('widget')) return
 
-							var widget = new constructor(el, el.get('dataset'));
+							var widget = new constructor(el, el.get('dataset'))
 
-							el.store('widget', widget);
+							el.store('widget', widget)
 						}
-					);
+					)
 				}
 			)
-		);
+		)
 	}
-};
+}
 
 /*
  * The Request.Element class requires the Request.API class provided by the ICanBoogie framework,
@@ -229,20 +217,20 @@ if (Request.API)
 
 		onSuccess: function(response, text)
 		{
-			var el = Elements.from(response.rc).shift();
+			var el = Elements.from(response.rc).shift()
 
 			if (!response.assets)
 			{
-				this.parent(el, response, text);
+				this.parent(el, response, text)
 
-				return;
+				return
 			}
 
 			Brickrouge.updateAssets
 			(
 				response.assets, function()
 				{
-					this.fireEvent('complete', [ response, text ]).fireEvent('success', [ el, response, text ]).callChain();
+					this.fireEvent('complete', [ response, text ]).fireEvent('success', [ el, response, text ]).callChain()
 				}
 				.bind(this)
 			);
@@ -260,15 +248,15 @@ if (Request.API)
 		{
 			if (options == undefined)
 			{
-				options = {};
+				options = {}
 			}
 
-			options.url = 'widgets/' + cl;
-			options.onSuccess = onSuccess;
+			options.url = 'widgets/' + cl
+			options.onSuccess = onSuccess
 
-			this.parent(options);
+			this.parent(options)
 		}
-	});
+	})
 }
 
 /**
@@ -281,25 +269,28 @@ Element.Properties.widget = {
 
 	get: function()
 	{
-		var widget = this.retrieve('widget'), type, constructorName, constructor;
+		var widget = this.retrieve('widget')
+		, type
+		, constructorName
+		, constructor
 
 		if (!widget)
 		{
-			type = this.className.match(/widget(-\S+)/);
+			type = this.className.match(/widget(-\S+)/)
 
 			if (type && type.length)
 			{
-				constructorName = type[1].camelCase();
-				constructor = Brickrouge.Widget[constructorName];
+				constructorName = type[1].camelCase()
+				constructor = Brickrouge.Widget[constructorName]
 
 				if (!constructor)
 				{
-					throw "Constructor \"" + constructor + "\"is not defined to create widgets of type \"" + type + "\"";
+					throw new Error("Constructor \"" + constructor + "\"is not defined to create widgets of type \"" + type + "\"")
 				}
 
-				widget = new constructor(this, this.get('dataset'));
+				widget = new constructor(this, this.get('dataset'))
 
-				this.store('widget', widget);
+				this.store('widget', widget)
 			}
 		}
 
@@ -316,65 +307,43 @@ Element.Properties.dataset = {
 
 	get: function() {
 
-		var dataset = {}, attributes = this.attributes, i, attr;
+		var dataset = {}
+		, attributes = this.attributes
+		, i
+		, y
+		, attr
 
 		for (i = 0, y = attributes.length ; i < y ; i++)
 		{
-			attr = attributes[i];
+			attr = attributes[i]
 
-			if (!attr.name.match(/^data-/))
-			{
-				continue;
-			}
+			if (!attr.name.match(/^data-/)) continue;
 
-			dataset[attr.name.substring(5).camelCase()] = attr.value;
+			dataset[attr.name.substring(5).camelCase()] = attr.value
 		}
 
-		return dataset;
+		return dataset
 	}
-};
+}
 
 /**
  * Calls the Brickrouge.awakeWidgets when the `elementsready` event is fired on the document.
  */
-document.addEvent
-(
-	'elementsready', function(ev)
-	{
-		Brickrouge.awakeWidgets(ev.target);
-	}
-);
+document.addEvent('elementsready', function(ev) {
+
+	Brickrouge.awakeWidgets(ev.target)
+
+})
 
 /**
  * The "elementsready" event is fired for elements to be initialized, to become alive thanks to the
  * magic of Javascript. This event is usually fired when new widgets are added to the DOM.
  */
-window.addEvent
-(
-	'domready', function()
-	{
-		document.fireEvent('elementsready', { target: document.id(document.body) });
-	}
-);
+window.addEvent('domready', function() {
 
-/**
- * Destroy the alert message when its close icon is clicked. The "error" class is also removed from
- * elements.
- */
-document.id(document.body).addEvent('click:relay(div.alert-message a.close)', function(ev, target){
+	document.fireEvent('elementsready', { target: document.id(document.body) })
 
-	ev.stop();
-
-	var form = target.getParent('form');
-
-	if (form) {
-
-		form.getElements('.error').removeClass('error');
-	}
-
-	target.getParent('div.alert-message').destroy();
-});
-/*
+})/*
  * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
@@ -398,8 +367,8 @@ Brickrouge.Form = new Class({
 
 	initialize: function(el, options)
 	{
-		this.element = document.id(el);
-		this.setOptions(options);
+		this.element = document.id(el)
+		this.setOptions(options)
 
 		if (this.options.useXHR || (options && (options.onRequest || options.onComplete || options.onFailure || options.onSuccess)))
 		{
@@ -407,28 +376,27 @@ Brickrouge.Form = new Class({
 			(
 				'submit', function(ev)
 				{
-					ev.stop();
-
-					this.submit();
+					ev.stop()
+					this.submit()
 				}
 				.bind(this)
-			);
+			)
 		}
 	},
 
 	alert: function(messages, type)
 	{
-		var original, alert = this.element.getElement('div.alert-' + type) || new Element('div.alert.alert-' + type, { html: '<a href="#close" class="close">×</a>'});
+		var original, alert = this.element.getElement('div.alert-' + type) || new Element('div.alert.alert-' + type, { html: '<a href="#close" class="close">×</a>'})
 
 		if (typeOf(messages) == 'string')
 		{
-			messages = [ messages ];
+			messages = [ messages ]
 		}
 		else if (typeOf(messages) == 'object')
 		{
-			original = messages;
+			original = messages
 
-			messages = [];
+			messages = []
 
 			Object.each
 			(
@@ -436,91 +404,94 @@ Brickrouge.Form = new Class({
 				{
 					if (typeOf(id) == 'string' && id != '_base')
 					{
-						var parent, field, el = this.element.elements[id], i;
+						var parent
+						, field
+						, el = this.element.elements[id]
+						, i
 
 						if (typeOf(el) == 'collection')
 						{
-							parent = el[0].getParent('div.radio-group');
-							field = parent.getParent('.field');
+							parent = el[0].getParent('div.radio-group')
+							field = parent.getParent('.field')
 
 							if (parent)
 							{
-								parent.addClass('error');
+								parent.addClass('error')
 							}
 							else
 							{
 								for (i = 0, j = el.length ; i < j ; i++)
 								{
-									el[i].addClass('error');
+									el[i].addClass('error')
 								}
 							}
 						}
 						else
 						{
-							el.addClass('error');
-							field = el.getParent('.field');
+							el.addClass('error')
+							field = el.getParent('.field')
 						}
 
 						if (field)
 						{
-							field.addClass('error');
+							field.addClass('error')
 						}
 					}
 
 					if (!message || message === true)
 					{
-						return;
+						return
 					}
 
-					messages.push(message);
+					messages.push(message)
 				},
 
 				this
-			);
+			)
 		}
 
 		if (!messages.length)
 		{
-			return;
+			return
 		}
 
 		messages.each
 		(
 			function(message)
 			{
-				alert.adopt(new Element('p', { html: message }));
+				alert.adopt(new Element('p', { html: message }))
 			}
-		);
+		)
 
 		if (!alert.parentNode)
 		{
-			alert.inject(this.element, 'top');
+			alert.inject(this.element, 'top')
 		}
 	},
 
 	clearAlert: function()
 	{
-		var alerts = this.element.getElements('div.alert');
+		var alerts = this.element.getElements('div.alert')
 
 		if (alerts)
 		{
-			alerts.destroy();
+			alerts.destroy()
 		}
 
-		this.element.getElements('.error').removeClass('error');
+		this.element.getElements('.error').removeClass('error')
 	},
 
 	submit: function()
 	{
-		this.fireEvent('submit', {});
-		this.getOperation().send(this.element);
+		this.fireEvent('submit', {})
+		this.getOperation().send(this.element)
 	},
 
 	getOperation: function()
 	{
 		if (this.operation)
 		{
-			return this.operation;
+			return this.operation
 		}
 
 		return this.operation = new Request.JSON
@@ -531,47 +502,47 @@ Brickrouge.Form = new Class({
 			onComplete: this.complete.bind(this),
 			onSuccess: this.success.bind(this),
 			onFailure: this.failure.bind(this)
-		});
+		})
 	},
 
 	request: function()
 	{
-		this.clearAlert();
-		this.fireEvent('request', arguments);
+		this.clearAlert()
+		this.fireEvent('request', arguments)
 	},
 
 	complete: function()
 	{
-		this.fireEvent('complete', arguments);
+		this.fireEvent('complete', arguments)
 	},
 
 	success: function(response)
 	{
 		if (response.success)
 		{
-			this.alert(response.success, 'success');
+			this.alert(response.success, 'success')
 		}
 
-		this.onSuccess(response);
+		this.onSuccess(response)
 	},
 
 	onSuccess: function(response)
 	{
-		this.fireEvent('complete', arguments).fireEvent('success', arguments).callChain();
+		this.fireEvent('success', arguments)
 	},
 
 	failure: function(xhr)
 	{
-		var response = JSON.decode(xhr.responseText);
+		var response = JSON.decode(xhr.responseText)
 
 		if (response && response.errors)
 		{
-			this.alert(response.errors, 'error');
+			this.alert(response.errors, 'error')
 		}
 
-		this.fireEvent('failure', arguments);
+		this.fireEvent('failure', arguments)
 	}
-});/*
+})/*
  * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
@@ -585,23 +556,19 @@ Brickrouge.Form = new Class({
  *
  * If the alert message is in a FORM element the "error" class is removed from its elements.
  */
-document.id(document.body).addEvent
+window.addEvent
 (
 	'click:relay(.alert a.close)', function(ev, target)
 	{
-		ev.stop();
+		var form = target.getParent('form')
 
-		var form = target.getParent('form');
+		ev.stop()
 
-		if (form) {
+		if (form) form.getElements('.error').removeClass('error')
 
-			form.getElements('.error').removeClass('error');
-		}
-
-		target.getParent('.alert').destroy();
+		target.getParent('.alert').destroy()
 	}
-);
-/*
+)/*
  * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
@@ -623,11 +590,13 @@ document.id(document.body).addEvent
 	{
 		var selector = this.get('data-target') || this.get('href')
         , parent = document.id(selector) || this.getParent()
-        , isActive = parent.hasClass('open')
+        , isActive
 
-		!isActive && clearMenus()
+		isActive = parent.hasClass('open')
 
-		parent.toggleClass('open')
+		clearMenus()
+
+		!isActive && parent.toggleClass('open')
 
 		return false
 	}
@@ -635,20 +604,18 @@ document.id(document.body).addEvent
 	/**
 	 * Clears all menus when the user clicks away
 	 */
-	window.addEvent('click', function(ev) {
-		clearMenus()
-	})
+	window.addEvent('click', clearMenus)
 
 	window.addEvent
 	(
 		'click:relay(' + toggleSelector + ')', function(ev, el)
 		{
-			if (ev.rightClick) return
 			ev.stop()
 			toggle.bind(el)()
 		}
 	)
-} ()/*
+} ()
+/*
  * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
@@ -678,85 +645,84 @@ Brickrouge.Popover = new Class({
 
 	initialize: function(el, options)
 	{
-		this.element = $(el);
-		this.setOptions(options);
-		this.arrow = this.element.getElement('.arrow');
-		this.actions = this.element.getElement('.popover-actions');
-		this.repositionCallback = this.reposition.bind(this, false);
-		this.quickRepositionCallback = this.reposition.bind(this, true);
+		this.element = $(el)
+		this.setOptions(options)
+		this.arrow = this.element.getElement('.arrow')
+		this.actions = this.element.getElement('.popover-actions')
+		this.repositionCallback = this.reposition.bind(this, false)
+		this.quickRepositionCallback = this.reposition.bind(this, true)
 
-		this.iframe = this.options.iframe;
+		this.iframe = this.options.iframe
 
 		if (this.options.anchor)
 		{
-			this.attachAnchor(this.options.anchor);
+			this.attachAnchor(this.options.anchor)
 		}
 
-		this.tween = null;
+		this.tween = null
 
 		if (this.options.animate)
 		{
-			this.tween = new Fx.Tween(this.element, { property: 'opacity', link: 'cancel', duration: 'short' });
+			this.tween = new Fx.Tween(this.element, { property: 'opacity', link: 'cancel', duration: 'short' })
 		}
 
 		if (this.options.fitContent)
 		{
-			this.element.addClass('fit-content');
+			this.element.addClass('fit-content')
 		}
 
-		this.element.addEvent('click', this.onClick.bind(this));
+		this.element.addEvent('click', this.onClick.bind(this))
 
 		if (this.options.visible)
 		{
-			this.show();
+			this.show()
 		}
 	},
 
 	attachAnchor: function(anchor)
 	{
-		this.anchor = $(anchor);
+		this.anchor = $(anchor)
 
 		if (!this.anchor)
 		{
-			this.anchor = $(document.body).getElement(anchor);
+			this.anchor = $(document.body).getElement(anchor)
 		}
 	},
 
 	onClick: function(ev)
 	{
-		var target = ev.target;
+		var target = ev.target
 
 		if (target.tagName == 'BUTTON' && target.getParent('.popover-actions'))
 		{
-			this.fireAction({ action: target.get('data-action'), popover: this, ev: ev });
+			this.fireAction({ action: target.get('data-action'), popover: this, ev: ev })
 		}
 	},
 
 	fireAction: function(params)
 	{
-		this.fireEvent('action', arguments);
+		this.fireEvent('action', arguments)
 	},
 
 	changePlacement: function(placement)
 	{
-		this.element.removeClass('before');
-		this.element.removeClass('after');
-		this.element.removeClass('above');
-		this.element.removeClass('below');
-
-		this.element.addClass(placement);
+		this.element.removeClass('before')
+		.removeClass('after')
+		.removeClass('above')
+		.removeClass('below')
+		.addClass(placement)
 	},
 
 	show: function()
 	{
-		this.element.setStyles({ display: 'block', visibility: 'hidden' });
+		this.element.setStyles({ display: 'block', visibility: 'hidden' })
 
 		window.addEvents
 		({
 			'load': this.quickRepositionCallback,
 			'resize': this.quickRepositionCallback,
 			'scroll': this.repositionCallback
-		});
+		})
 
 		if (this.iframe)
 		{
@@ -765,36 +731,36 @@ Brickrouge.Popover = new Class({
 				'load': this.quickRepositionCallback,
 				'resize': this.quickRepositionCallback,
 				'scroll': this.repositionCallback
-			});
+			})
 		}
 
-		this.reposition(true);
+		this.reposition(true)
 
 		if (this.options.animate)
 		{
-			this.tween.set(0);
-			this.element.setStyle('visibility', 'visible');
-			this.tween.start(1);
+			this.tween.set(0)
+			this.element.setStyle('visibility', 'visible')
+			this.tween.start(1)
 		}
 		else
 		{
-			this.element.setStyle('visibility', 'visible');
+			this.element.setStyle('visibility', 'visible')
 		}
 	},
 
 	hide: function()
 	{
-		window.removeEvent('load', this.quickRepositionCallback);
-		window.removeEvent('resize', this.quickRepositionCallback);
-		window.removeEvent('scroll', this.repositionCallback);
+		window.removeEvent('load', this.quickRepositionCallback)
+		window.removeEvent('resize', this.quickRepositionCallback)
+		window.removeEvent('scroll', this.repositionCallback)
 
 		if (this.iframe)
 		{
-			var contentWindow = $(this.iframe.contentWindow);
+			var contentWindow = $(this.iframe.contentWindow)
 
-			contentWindow.removeEvent('load', this.quickRepositionCallback);
-			contentWindow.removeEvent('resize', this.quickRepositionCallback);
-			contentWindow.removeEvent('scroll', this.repositionCallback);
+			contentWindow.removeEvent('load', this.quickRepositionCallback)
+			contentWindow.removeEvent('resize', this.quickRepositionCallback)
+			contentWindow.removeEvent('scroll', this.repositionCallback)
 		}
 
 		if (this.options.animate)
@@ -803,71 +769,78 @@ Brickrouge.Popover = new Class({
 			(
 				function()
 				{
-					this.element.setStyle('display', '');
+					this.element.setStyle('display', '')
 				}
-			);
+			)
 		}
 		else
 		{
-			this.element.setStyle('display', '');
+			this.element.setStyle('display', '')
 		}
 	},
 
 	computeAnchorBox: function()
 	{
-		var anchor = this.anchor, anchorCoords, iframe = this.iframe, iframeCoords,
-		iHTML, visibleH, visibleW, hiddenTop, hiddenLeft;
+		var anchor = this.anchor
+		, anchorCoords
+		, iframe = this.iframe
+		, iframeCoords
+		, iHTML
+		, visibleH
+		, visibleW
+		, hiddenTop
+		, hiddenLeft
 
 		if (iframe)
 		{
-			iframeCoords = iframe.getCoordinates();
-			iHTML = iframe.contentDocument.documentElement;
+			iframeCoords = iframe.getCoordinates()
+			iHTML = iframe.contentDocument.documentElement
 
-			aX = anchor.offsetLeft;
-			aY = anchor.offsetTop;
-			aW = anchor.offsetWidth;
-			aH = anchor.offsetHeight;
+			aX = anchor.offsetLeft
+			aY = anchor.offsetTop
+			aW = anchor.offsetWidth
+			aH = anchor.offsetHeight
 
-			visibleH = iHTML.clientHeight;
-			hiddenTop = iHTML.scrollTop;
+			visibleH = iHTML.clientHeight
+			hiddenTop = iHTML.scrollTop
 
-			aY -= hiddenTop;
+			aY -= hiddenTop
 
 			if (aY < 0)
 			{
-				aH += aY;
+				aH += aY
 			}
 
-			aY = Math.max(aY, 0);
-			aH = Math.min(aH, visibleH);
+			aY = Math.max(aY, 0)
+			aH = Math.min(aH, visibleH)
 
-			visibleW = iHTML.clientWidth;
-			hiddenLeft = iHTML.scrollLeft;
+			visibleW = iHTML.clientWidth
+			hiddenLeft = iHTML.scrollLeft
 
-			aX -= hiddenLeft;
+			aX -= hiddenLeft
 
 			if (aX < 0)
 			{
-				aW += aX;
+				aW += aX
 			}
 
-			aX = Math.max(aX, 0);
-			aW = Math.min(aW, visibleW);
+			aX = Math.max(aX, 0)
+			aW = Math.min(aW, visibleW)
 
-			aX += iframeCoords.left;
-			aY += iframeCoords.top;
+			aX += iframeCoords.left
+			aY += iframeCoords.top
 		}
 		else
 		{
-			anchorCoords = anchor.getCoordinates();
+			anchorCoords = anchor.getCoordinates()
 
-			aX = anchorCoords.left;
-			aY = anchorCoords.top;
-			aH = anchorCoords.height;
-			aW = anchorCoords.width;
+			aX = anchorCoords.left
+			aY = anchorCoords.top
+			aH = anchorCoords.height
+			aW = anchorCoords.width
 		}
 
-		return { x: aX, y: aY, w: aW, h: aH };
+		return { x: aX, y: aY, w: aW, h: aH }
 	},
 
 	/**
@@ -881,67 +854,56 @@ Brickrouge.Popover = new Class({
 	 */
 	computeBestPlacement: function(anchorBox, w, h)
 	{
-		var html = document.body.parentNode,
-		bodyCompleteW = html.scrollWidth,
-		aX = anchorBox.x,
-		aY = anchorBox.y,
-		aW = anchorBox.w,
-		placement,
-		pad = 20;
+		var html = document.body.parentNode
+		, bodyCompleteW = html.scrollWidth
+		, aX = anchorBox.x
+		, aY = anchorBox.y
+		, aW = anchorBox.w
+		, placement
+		, pad = 20
 
 		function fitBefore()
 		{
-			return aX + 1 > w + pad * 2;
+			return aX + 1 > w + pad * 2
 		}
 
 		function fitAfter()
 		{
-			return bodyCompleteW - (aX + 1 + aW) > w + pad * 2;
+			return bodyCompleteW - (aX + 1 + aW) > w + pad * 2
 		}
 
 		function fitAbove()
 		{
-			return aY + 1 > h + pad * 2;
+			return aY + 1 > h + pad * 2
 		}
 
-		placement = this.options.placement;
+		placement = this.options.placement
 
 		switch (placement)
 		{
-			case 'after': if (fitAfter()) return placement; break;
-			case 'before': if (fitBefore()) return placement; break;
-			case 'above': if (fitAbove()) return placement; break;
-			case 'below': return placement;
+			case 'after': if (fitAfter()) return placement; break
+			case 'before': if (fitBefore()) return placement; break
+			case 'above': if (fitAbove()) return placement; break
+			case 'below': return placement
 		}
 
-		if (fitAfter())
-		{
-			return 'after';
-		}
+		if (fitAfter()) return 'after'
+		if (fitBefore()) return 'before'
+		if (fitAbove()) return 'above'
 
-		if (fitBefore())
-		{
-			return 'before';
-		}
-
-		if (fitAbove())
-		{
-			return 'above';
-		}
-
-		return 'below';
+		return 'below'
 	},
 
 	reposition: function(quick)
 	{
 		if (!this.anchor)
 		{
-			return;
+			return
 		}
 
 		if (quick === undefined)
 		{
-			quick = this.element.getStyle('visibility') != 'visible';
+			quick = this.element.getStyle('visibility') != 'visible'
 		}
 
 		var pad = 20, actions = this.actions,
@@ -955,43 +917,43 @@ Brickrouge.Popover = new Class({
 		bodyY = bodyScroll.y,
 		bodyW = bodySize.x,
 		bodyH = bodySize.y,
-		arrowTransform = { top: null, left: null }, arX, arY;
+		arrowTransform = { top: null, left: null }, arX, arY
 
-		anchorBox = this.computeAnchorBox();
-		aX = anchorBox.x;
-		aY = anchorBox.y;
-		aW = anchorBox.w;
-		aH = anchorBox.h;
-		anchorMiddleX = aX + aW / 2 - 1;
-		anchorMiddleY = aY + aH / 2 - 1;
+		anchorBox = this.computeAnchorBox()
+		aX = anchorBox.x
+		aY = anchorBox.y
+		aW = anchorBox.w
+		aH = anchorBox.h
+		anchorMiddleX = aX + aW / 2 - 1
+		anchorMiddleY = aY + aH / 2 - 1
 
-		placement = this.computeBestPlacement(anchorBox, w, h);
+		placement = this.computeBestPlacement(anchorBox, w, h)
 
-		this.changePlacement(placement);
+		this.changePlacement(placement)
 
 		if (placement == 'before' || placement == 'after')
 		{
-			y = Math.round(aY + (aH - h) / 2 - 1);
-			x = (placement == 'before') ? aX - w + 1 : aX + aW - 1;
+			y = Math.round(aY + (aH - h) / 2 - 1)
+			x = (placement == 'before') ? aX - w + 1 : aX + aW - 1
 
 			//
 			// limit 'x' and 'y' to the limits of the document incuding a padding value.
 			//
 
-			x = x.limit(bodyX + pad - 1, bodyX + bodyW - (w + pad) - 1);
-			y = y.limit(bodyY + pad - 1, bodyY + bodyH - (h + pad) - 1);
+			x = x.limit(bodyX + pad - 1, bodyX + bodyW - (w + pad) - 1)
+			y = y.limit(bodyY + pad - 1, bodyY + bodyH - (h + pad) - 1)
 		}
 		else
 		{
-			x = Math.round(aX + (aW - w) / 2 - 1);
-			y = (placement == 'above') ? aY - h + 1 : aY + aH - 1;
+			x = Math.round(aX + (aW - w) / 2 - 1)
+			y = (placement == 'above') ? aY - h + 1 : aY + aH - 1
 
 			//
 			// limit 'x' and 'y' to the limits of the document incuding a padding value.
 			//
 
-			x = x.limit(bodyX + pad - 1, bodyX + bodyW - (w + pad) - 1);
-			//y = y.limit(bodyY + pad, bodyY + bodyH - (h + pad));
+			x = x.limit(bodyX + pad - 1, bodyX + bodyW - (w + pad) - 1)
+			//y = y.limit(bodyY + pad, bodyY + bodyH - (h + pad))
 		}
 
 		// adjust arrow
@@ -1000,47 +962,47 @@ Brickrouge.Popover = new Class({
 		{
 			if (placement == 'before' || placement == 'after')
 			{
-				arY = (aY + aH / 2 - 1) - y;
+				arY = (aY + aH / 2 - 1) - y
 
-				arY = Math.min(h - (actions ? actions.getSize().y : pad) - 10, arY);
-				arY = Math.max(pad, arY);
+				arY = Math.min(h - (actions ? actions.getSize().y : pad) - 10, arY)
+				arY = Math.max(pad, arY)
 
 				// adjust element Y so that the arrow is always centered on the anchor visible height
 
 				if (arY + y - 1 != anchorMiddleY)
 				{
-					y -= (y + arY) - anchorMiddleY;
+					y -= (y + arY) - anchorMiddleY
 				}
 
-				arrowTransform.top = arY;
+				arrowTransform.top = arY
 			}
 			else
 			{
-				arX = ((aX + aW / 2 - 1) - x).limit(pad, w - pad);
+				arX = ((aX + aW / 2 - 1) - x).limit(pad, w - pad)
 
 				// adjust element X so that the arrow is always centered on the anchor visible width
 
 				if (arX + w - 1 != anchorMiddleX)
 				{
-					x -= (x + arX) - anchorMiddleX;
+					x -= (x + arX) - anchorMiddleX
 				}
 
-				arrowTransform.left = arX;
+				arrowTransform.left = arX
 			}
 		}
 
 		if (quick)
 		{
-			this.element.setStyles({ left: x, top: y });
-			this.arrow.setStyles(arrowTransform);
+			this.element.setStyles({ left: x, top: y })
+			this.arrow.setStyles(arrowTransform)
 		}
 		else
 		{
-			this.element.morph({ left: x, top: y });
-			this.arrow.morph(arrowTransform);
+			this.element.morph({ left: x, top: y })
+			this.arrow.morph(arrowTransform)
 		}
 	}
-});
+})
 
 /**
  * Creates a popover element using the provided options.
@@ -1054,41 +1016,41 @@ Brickrouge.Popover.from = function(options)
 	var popover, title = options.title,
 	content = options.content,
 	actions = options.actions,
-	inner = new Element('div.popover-inner');
+	inner = new Element('div.popover-inner')
 
 	if (title)
 	{
-		inner.adopt(new Element('h3.popover-title', { 'html': title }));
+		inner.adopt(new Element('h3.popover-title', { 'html': title }))
 	}
 
 	if (typeOf(content) == 'element')
 	{
-		inner.adopt(new Element('div.popover-content').adopt(content));
+		inner.adopt(new Element('div.popover-content').adopt(content))
 	}
 	else
 	{
-		inner.adopt(new Element('div.popover-content', { 'html': content }));
+		inner.adopt(new Element('div.popover-content', { 'html': content }))
 	}
 
 	if (actions == 'boolean')
 	{
-		actions = [ new Element('button.cancel[data-action="cancel"]', { html: 'Cancel' }), new Element('button.primary[data-action="ok"]', { html: 'Ok' }) ];
+		actions = [ new Element('button.cancel[data-action="cancel"]', { html: 'Cancel' }), new Element('button.primary[data-action="ok"]', { html: 'Ok' }) ]
 	}
 
 	if (actions)
 	{
-		inner.adopt(new Element('div.popover-actions').adopt(actions));
+		inner.adopt(new Element('div.popover-actions').adopt(actions))
 	}
 
-	popover = new Element('div.popover').adopt([ new Element('div.arrow'), inner ]);
+	popover = new Element('div.popover').adopt([ new Element('div.arrow'), inner ])
 
-	return new Brickrouge.Popover(popover, options);
-};
+	return new Brickrouge.Popover(popover, options)
+}
 
 /**
  * Popover widget constructor.
  */
-Brickrouge.Widget.Popover = Brickrouge.Popover;
+Brickrouge.Widget.Popover = Brickrouge.Popover
 
 /**
  * Event delegation for A elements with a `rel="popover"` attribute.
@@ -1097,34 +1059,35 @@ document.id(document.body).addEvents
 ({
 	'mouseenter:relay([rel="popover"])': function(ev, target)
 	{
-		var popover, options;
+		var popover
+		, options
 
-		popover = target.retrieve('popover');
+		popover = target.retrieve('popover')
 
 		if (!popover)
 		{
-			options = target.get('dataset');
+			options = target.get('dataset')
 
-			options.anchor = target;
-			popover = Brickrouge.Popover.from(options);
+			options.anchor = target
+			popover = Brickrouge.Popover.from(options)
 
-			document.body.appendChild(popover.element);
+			document.body.appendChild(popover.element)
 
-			target.store('popover', popover);
+			target.store('popover', popover)
 		}
 
-		popover.show();
+		popover.show()
 	},
 
 	'mouseleave:relay([rel="popover"])': function(ev, target)
 	{
-		var popover = target.retrieve('popover');
+		var popover = target.retrieve('popover')
 
-		if (!popover) return;
+		if (!popover) return
 
-		popover.hide();
+		popover.hide()
 	}
-});/*
+})/*
  * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
