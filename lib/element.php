@@ -400,6 +400,10 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 
 			return isset($this->dataset[$offset]) ? $this->dataset[$offset] : $default;
 		}
+		else if ($offset == self::DATASET)
+		{
+			return $this->dataset;
+		}
 
 		return isset($this->tags[$offset]) ? $this->tags[$offset] : $default;
 	}
@@ -429,6 +433,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			case self::DATASET:
 			{
 				$this->dataset = $value;
+
+				return;
 			}
 			break;
 
