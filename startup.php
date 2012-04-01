@@ -24,7 +24,7 @@ define('Brickrouge\ASSETS', ROOT . 'assets' . DIRECTORY_SEPARATOR);
 /**
  * @var string Version string of the Brickrouge framework.
  */
-define('Brickrouge\VERSION', '1.0.0-dev (2011-11-06)');
+define('Brickrouge\VERSION', '1.0.0-wip (2012-03-31)');
 
 /**
  * @var string Charset used by the Brickrouge framework.
@@ -75,32 +75,4 @@ if (defined('ICanBoogie\VERSION'))
 
 		return $core->session;
 	};
-}
-
-/*
- * A simple autoloaded is used to autoload Brickrouge classes if the `Brickrouge\AUTOLOAD` constant
- * is defined.
- */
-
-if (defined('Brickrouge\AUTOLOAD'))
-{
-	spl_autoload_register
-	(
-		function($name)
-		{
-			static $index;
-
-			if ($index === null)
-			{
-				$path = ROOT; // the $path variable is used within the config file
-				$config = require $path . 'config/core.php';
-				$index = $config['autoload'];
-			}
-
-			if (isset($index[$name]))
-			{
-				require_once $index[$name];
-			}
-		}
-	);
 }
