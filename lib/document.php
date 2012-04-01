@@ -160,8 +160,6 @@ class Document extends \ICanBoogie\Object
 		}
 	}
 
-	public static $assets_repository = 'public/brickrouge/assets';
-
 	/**
 	 * Resolves a server path into a URL accessible from the `DOCUMENT_ROOT`.
 	 *
@@ -265,7 +263,7 @@ class Document extends \ICanBoogie\Object
 		if (strpos($url, $root) === false)
 		{
 			$key = sprintf('unaccessible-%s-%04x.%s', md5($path), strlen($path), pathinfo($path, PATHINFO_EXTENSION));
-			$replacement = DOCUMENT_ROOT . 'repository/files/assets/' . $key;
+			$replacement = ACCESSIBLE_ASSETS . $key;
 
 			if (!file_exists($replacement) || filemtime($path) > filemtime($replacement))
 			{

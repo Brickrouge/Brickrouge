@@ -12,30 +12,23 @@
 namespace Brickrouge;
 
 /**
- * @var string The ROOT directory of the Brickrouge framework.
+ * Version string of the Brickrouge framework.
+ *
+ * @var string
+ */
+define('Brickrouge\VERSION', '1.0.0-wip (2012-04-01)');
+
+/**
+ * The ROOT directory of the Brickrouge framework.
+ *
+ * @var string
  */
 defined('Brickrouge\ROOT') or define('Brickrouge\ROOT', rtrim(__DIR__, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
 
 /**
- * @var string Path to the Brickrouge's assets directory.
- */
-define('Brickrouge\ASSETS', ROOT . 'assets' . DIRECTORY_SEPARATOR);
-
-/**
- * @var string Version string of the Brickrouge framework.
- */
-define('Brickrouge\VERSION', '1.0.0-wip (2012-03-31)');
-
-/**
- * @var string Charset used by the Brickrouge framework.
- */
-if (!defined('Brickrouge\CHARSET'))
-{
-	define('Brickrouge\CHARSET', 'utf-8');
-}
-
-/**
- * @var string The DOCUMENT_ROOT directory used by the Brickrouge framework.
+ * The DOCUMENT_ROOT directory used by the Brickrouge framework.
+ *
+ * @var string
  */
 if (!defined('Brickrouge\DOCUMENT_ROOT'))
 {
@@ -47,6 +40,32 @@ if (!defined('Brickrouge\DOCUMENT_ROOT'))
 	{
 		define('Brickrouge\DOCUMENT_ROOT', rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
 	}
+}
+
+/**
+ * Path to the Brickrouge's assets directory.
+ *
+ * @var string
+ */
+define('Brickrouge\ASSETS', ROOT . 'assets' . DIRECTORY_SEPARATOR);
+
+/**
+ * Path to the directory used to stored files which are not web accessible, such as the assets in
+ * the Phar. The {@link Document::resolve_url()} method use this directory to make files
+ * files web accessible.
+ *
+ * @var string
+ */
+defined('Brickrouge\ACCESSIBLE_ASSETS') or define('Brickrouge\ACCESSIBLE_ASSETS', DOCUMENT_ROOT . 'public' . DIRECTORY_SEPARATOR . 'brickrouge' . DIRECTORY_SEPARATOR);
+
+/**
+ * Charset used by the Brickrouge framework.
+ *
+ * @var string
+ */
+if (!defined('Brickrouge\CHARSET'))
+{
+	define('Brickrouge\CHARSET', 'utf-8');
 }
 
 /*

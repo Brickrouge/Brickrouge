@@ -228,6 +228,8 @@ function dump($value)
  *
  * If the accessible file does not exists it is created.
  *
+ * The directory where the files are copied is defined by the {@link ACCESSIBLE_ASSETS} constant.
+ *
  * @param string $path Absolute path to the web inaccessible file.
  * @param string $suffix Optional suffix for the web accessible filename.
  *
@@ -236,7 +238,7 @@ function dump($value)
 function get_accessible_file($path, $suffix=null)
 {
 	$key = sprintf('%s-%04x%s.%s', md5($path), strlen($path), ($suffix ? '-' . $suffix : ''), pathinfo($path, PATHINFO_EXTENSION));
-	$replacement_path = DOCUMENT_ROOT . 'public/brickrouge/';
+	$replacement_path = ACCESSIBLE_ASSETS;
 	$replacement = $replacement_path . $key;
 
 	if (!is_writable($replacement_path))
