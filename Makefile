@@ -1,6 +1,9 @@
 BRICKROUGE = ./assets/brickrouge
 BRICKROUGE_UNCOMPRESSED = ./assets/brickrouge-uncompressed
 BRICKROUGE_LESS = ./lib/brickrouge.less
+BRICKROUGE_LITE = ./assets/brickrouge-lite
+BRICKROUGE_LITE_UNCOMPRESSED = ./assets/brickrouge-lite-uncompressed
+BRICKROUGE_LITE_LESS = ./lib/brickrouge-lite.less
 BRICKROUGE_RESPONSIVE = ./assets/responsive
 BRICKROUGE_RESPONSIVE_UNCOMPRESSED = ./assets/responsive-uncompressed
 BRICKROUGE_RESPONSIVE_LESS = ./lib/responsive.less
@@ -11,6 +14,8 @@ build:
 	@@if test ! -z ${LESS_COMPILER}; then \
 		lessc ${BRICKROUGE_LESS} > ${BRICKROUGE_UNCOMPRESSED}.css; \
 		lessc -x ${BRICKROUGE_LESS} > ${BRICKROUGE}.css; \
+		lessc ${BRICKROUGE_LITE_LESS} > ${BRICKROUGE_LITE_UNCOMPRESSED}.css; \
+		lessc -x ${BRICKROUGE_LITE_LESS} > ${BRICKROUGE_LITE}.css; \
 		lessc ${BRICKROUGE_RESPONSIVE_LESS} > ${BRICKROUGE_RESPONSIVE_UNCOMPRESSED}.css; \
 		lessc -x ${BRICKROUGE_RESPONSIVE_LESS} > ${BRICKROUGE_RESPONSIVE}.css; \
 		echo "Brickrouge successfully built! - `date`"; \

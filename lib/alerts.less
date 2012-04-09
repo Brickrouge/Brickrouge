@@ -10,27 +10,9 @@
   border: 1px solid @warningBorder;
   .border-radius(4px);
   color: @warningText;
-  
-  .content { // @brickrouge
-  	& :first-child {
-  		margin-top: 0;
-  	}
-  	& :last-child {
-  		margin-bottom: 0;
-  	}
-  }
-
-  p { // @brickrouge
-    margin: 0;
-
-    & + p {
-      margin-top: .5em;
-    }
-  }
 }
 .alert-heading {
   color: inherit;
-  margin-top: 0; // @brickrouge: because our headers have margins
 }
 
 // Adjust close link position
@@ -39,7 +21,6 @@
   top: -2px;
   right: -21px;
   line-height: 18px;
-  text-decoration: none; // @brickrouge: because we don't remove text-decoration on links
 }
 
 // Alternate styles
@@ -74,8 +55,4 @@
 }
 .alert-block p + p {
   margin-top: 5px;
-}
-
-pre.alert { // @brickrouge
-	white-space: pre-wrap;
 }

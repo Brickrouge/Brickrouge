@@ -1,5 +1,7 @@
 .clearfix{*zoom:1;}.clearfix:before,.clearfix:after{display:table;content:"";}
 .clearfix:after{clear:both;}
+.hide-text{border:0;font:0/0 a;text-shadow:none;color:transparent;background-color:transparent;}
+.input-block-level{display:block;width:100%;min-height:28px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;box-sizing:border-box;}
 .hidden{display:none;visibility:hidden;}
 .visible-phone{display:none;}
 .visible-tablet{display:none;}

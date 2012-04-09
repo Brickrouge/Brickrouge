@@ -37,6 +37,7 @@ class Date extends Text
 		return parent::__toString();
 	}
 
+	/*
 	protected static function add_assets(\Brickrouge\Document $document)
 	{
 		parent::add_assets($document);
@@ -47,4 +48,5 @@ class Date extends Text
 		$document->css->add(ASSETS . 'element/datepicker/calendar-eightysix-v1.1-default.css');
 		$document->css->add(ASSETS . 'element/datepicker/calendar-eightysix-v1.1-osx-dashboard.css');
 	}
+	*/
 }
