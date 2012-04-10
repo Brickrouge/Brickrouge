@@ -1,0 +1,487 @@
+/*!
+ * This file is part of the Brickrouge package.
+ *
+ * (c) Olivier Laviale <olivier.laviale@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This package uses parts of the bootstrap package (c) Twitter.
+ *
+ * https://github.com/twitter/bootstrap
+ */
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before, .clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
+.hide-text {
+  border: 0;
+  font: 0/0 a;
+  text-shadow: none;
+  color: transparent;
+  background-color: transparent;
+}
+.input-block-level {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  /* Make inputs at least the height of their button counterpart */
+
+  /* Makes inputs behave like true block-level elements */
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+/*
+ * Default style sheet for HTML.
+ *
+ * @link http://www.w3.org/TR/CSS2/sample.html 
+ */
+address,
+blockquote,
+body,
+dd,
+div,
+dl,
+dt,
+fieldset,
+form,
+frame,
+frameset,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+iframe,
+noframes,
+object,
+ol,
+p,
+ul,
+applet,
+center,
+dir,
+hr,
+menu,
+pre,
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+navsection {
+  display: block;
+}
+li {
+  display: list-item;
+}
+head {
+  display: none;
+}
+table {
+  display: table;
+}
+tr {
+  display: table-row;
+}
+thead {
+  display: table-header-group;
+}
+tbody {
+  display: table-row-group;
+}
+tfoot {
+  display: table-footer-group;
+}
+col {
+  display: table-column;
+}
+colgroup {
+  display: table-column-group;
+}
+td, th {
+  display: table-cell;
+}
+caption {
+  display: table-caption;
+}
+th {
+  font-weight: bolder;
+  text-align: center;
+}
+caption {
+  text-align: center;
+}
+body {
+  font-size: 13px;
+  line-height: 1.33;
+  margin: 0;
+  padding: 8px;
+}
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+h2 {
+  font-size: 1.5em;
+  margin: 0.83em 0;
+}
+h3 {
+  font-size: 1.17em;
+  margin: 1em 0;
+}
+h4,
+p,
+blockquote,
+ul,
+fieldset,
+form,
+ol,
+dl,
+dir,
+menu {
+  margin: 1.33em 0;
+}
+h5 {
+  font-size: .83em;
+  line-height: 1.17em;
+  margin: 1.67em 0;
+}
+h6 {
+  font-size: .67em;
+  margin: 2.33em 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+b,
+strong {
+  font-weight: bolder;
+}
+blockquote {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+i,
+cite,
+em,
+var,
+address {
+  font-style: italic;
+}
+pre,
+tt,
+code,
+kbd,
+samp {
+  font-family: monospace;
+}
+pre {
+  white-space: pre;
+}
+big {
+  font-size: 1.17em;
+}
+small, sub, sup {
+  font-size: 0.83em;
+}
+sub {
+  vertical-align: sub;
+}
+sup {
+  vertical-align: super;
+}
+s, strike, del {
+  text-decoration: line-through;
+}
+hr {
+  border: 1px inset;
+}
+ol,
+ul,
+dir,
+menu,
+dd {
+  margin-left: 4ex;
+  padding: 0;
+}
+ol {
+  list-style-type: decimal;
+}
+ol ul,
+ul ol,
+ul ul,
+ol ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+u, ins {
+  text-decoration: underline;
+}
+center {
+  text-align: center;
+}
+br:before {
+  content: "\a";
+}
+/*! An example of style for HTML 4.0's ABBR/ACRONYM elements */
+abbr, acronym {
+  font-variant: small-caps;
+  letter-spacing: 0.1em;
+}
+a {
+  text-decoration: underline;
+}
+:focus {
+  outline: thin dotted invert;
+}
+/*! Begin bidirectionality settings (do not change) */
+bdo[dir="ltr"] {
+  direction: ltr;
+  unicode-bidi: bidi-override;
+}
+bdo[dir="rtl"] {
+  direction: rtl;
+  unicode-bidi: bidi-override;
+}
+*[dir="ltr"] {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+*[dir="rtl"] {
+  direction: rtl;
+  unicode-bidi: embed;
+}
+/*! Elements that are block-level in HTML4 */
+address,
+blockquote,
+body,
+dd,
+div,
+dl,
+dt,
+fieldset,
+form,
+frame,
+frameset,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+iframe,
+noscript,
+noframes,
+object,
+ol,
+p,
+ul,
+applet,
+center,
+dir,
+hr,
+menu,
+pre,
+li,
+table,
+tr,
+thead,
+tbody,
+tfoot,
+col,
+colgroup,
+td,
+th,
+caption,
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+nav {
+  unicode-bidi: embed;
+}
+/*! End bidi settings */
+@media print {
+  @page  {
+    margin: 10%;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  blockquote, pre {
+    page-break-inside: avoid;
+  }
+  ul, ol, dl {
+    page-break-before: avoid;
+  }
+}
+@media speech {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    voice-family: paul, male;
+    stress: 20;
+    richness: 90;
+  }
+  h1 {
+    pitch: x-low;
+    pitch-range: 90;
+  }
+  h2 {
+    pitch: x-low;
+    pitch-range: 80;
+  }
+  h3 {
+    pitch: low;
+    pitch-range: 70;
+  }
+  h4 {
+    pitch: medium;
+    pitch-range: 60;
+  }
+  h5 {
+    pitch: medium;
+    pitch-range: 50;
+  }
+  h6 {
+    pitch: medium;
+    pitch-range: 40;
+  }
+  li, dt, dd {
+    pitch: medium;
+    richness: 60;
+  }
+  dt {
+    stress: 80;
+  }
+  pre, code, tt {
+    pitch: medium;
+    pitch-range: 0;
+    stress: 0;
+    richness: 80;
+  }
+  em {
+    pitch: medium;
+    pitch-range: 60;
+    stress: 60;
+    richness: 50;
+  }
+  strong {
+    pitch: medium;
+    pitch-range: 60;
+    stress: 90;
+    richness: 90;
+  }
+  dfn {
+    pitch: high;
+    pitch-range: 60;
+    stress: 60;
+  }
+  s, strike {
+    richness: 0;
+  }
+  i {
+    pitch: medium;
+    pitch-range: 60;
+    stress: 60;
+    richness: 50;
+  }
+  b {
+    pitch: medium;
+    pitch-range: 60;
+    stress: 90;
+    richness: 90;
+  }
+  u {
+    richness: 0;
+  }
+  a:link {
+    voice-family: harry, male;
+  }
+  a:visited {
+    voice-family: betty, female;
+  }
+  a:active {
+    voice-family: betty, female;
+    pitch-range: 80;
+    pitch: x-high;
+  }
+}
+/*
+ * Remove IE focus outline on DIV
+ */
+div:focus {
+  outline: none;
+}
+/*
+ * Some additions
+ */
+q:lang(en):before {
+  content: '"';
+}
+q:lang(en):after {
+  content: '"';
+}
+q:lang(en):before {
+  content: '\201C';
+}
+q:lang(en):after {
+  content: '\201D';
+}
+q:lang(fr):before {
+  content: '«\a0';
+}
+q:lang(fr):after {
+  content: '\a0»';
+}
+.alert .content :first-child {
+  margin-top: 0;
+}
+.alert .content :last-child {
+  margin-bottom: 0;
+}
+.alert p {
+  margin: 0;
+}
+.alert p  + p {
+  margin-top: .5em;
+}
+.alert-heading {
+  margin-top: 0;
+}
+.alert .close {
+  text-decoration: none;
+}
+pre.alert {
+  white-space: pre-wrap;
+}
