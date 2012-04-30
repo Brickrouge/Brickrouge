@@ -24,7 +24,7 @@ build:
 		echo "You can install it by running: npm install less -g"; \
 	fi
 	
-	@cat ./lib/brickrouge.js ./lib/form.js ./lib/alerts.js ./lib/dropdowns.js ./lib/popover.js ./lib/searchbox.js > ${BRICKROUGE_UNCOMPRESSED}.js
+	@cat ./lib/brickrouge.js ./lib/form.js ./lib/alerts.js ./lib/dropdowns.js ./lib/navs.js ./lib/popover.js ./lib/searchbox.js ./lib/carousel.js > ${BRICKROUGE_UNCOMPRESSED}.js
 	php ./build/compress.php ${BRICKROUGE_UNCOMPRESSED}.js ${BRICKROUGE}.js;
 
 phar:
