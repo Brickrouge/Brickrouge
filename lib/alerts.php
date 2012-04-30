@@ -24,6 +24,9 @@ class Alert extends Element
 	 * @var string
 	 */
 	const CONTEXT = '#alert-context';
+	const CONTEXT_SUCCESS = 'success';
+	const CONTEXT_INFO = 'info';
+	const CONTEXT_ERROR = 'error';
 
 	/**
 	 * The heading of the alert.
