@@ -280,7 +280,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	public function __construct($type, $attributes=array())
 	{
 		$this->type = $type;
-		$this->tags = $attributes;
 
 		#
 		# children first

@@ -411,7 +411,7 @@ class Form extends Element implements Validator
 		foreach ($iterator as $element)
 		{
 			#
-			# disable the element is the form is disabled.
+			# disable the element if the form is disabled.
 			#
 
 			if ($disabled)
