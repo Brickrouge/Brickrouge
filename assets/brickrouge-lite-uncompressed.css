@@ -440,7 +440,11 @@ nav {
 /*
  * Remove IE focus outline on DIV
  */
-div:focus {
+body:focus,
+div:focus,
+fieldset:focus,
+html:focus,
+td:focus {
   outline: none;
 }
 /*

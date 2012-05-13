@@ -31,20 +31,20 @@ class Simple extends Element
 
 	protected function render_inner_html()
 	{
-		$rc = '';
+		$html = '';
 		$groups = $this->group_children();
 
-		foreach ($groups as $key => $group)
+		foreach ($groups as $group_id => $group)
 		{
 			if (empty($group[self::CHILDREN]))
 			{
 				continue;
 			}
 
-			$rc .= PHP_EOL . $this->render_group($group, $key) . PHP_EOL;
+			$html .= PHP_EOL . $this->render_group($group, $group_id) . PHP_EOL;
 		}
 
-		return $rc;
+		return $html;
 	}
 
 	protected function group_children()

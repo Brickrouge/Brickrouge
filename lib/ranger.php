@@ -43,7 +43,8 @@ class Ranger extends Element
 				(
 					'name' => 'start',
 					'value' => $start,
-					'size' => 4
+					'size' => 4,
+					'class' => 'measure'
 				)
 			);
 		}

@@ -825,6 +825,25 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
+	 * Renders the children of the element into a HTML string.
+	 *
+	 * @param array $children
+	 *
+	 * @return string
+	 */
+	protected function render_children(array $children)
+	{
+		$html = '';
+
+		foreach ($children as $child)
+		{
+			$html .= $this->render_child($child);
+		}
+
+		return $html;
+	}
+
+	/**
 	 * Returns the HTML representation of the element's content.
 	 *
 	 * The children of the element are ordered before they are rendered using the
@@ -852,10 +871,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 
 		if ($children)
 		{
-			foreach ($children as $child)
-			{
-				$html .= $this->render_child($child);
-			}
+			$html .= $this->render_children($children);
 		}
 		else if ($this->inner_html !== null)
 		{
@@ -1345,7 +1361,7 @@ EOT;
 
 		self::$assets_handled[$class] = true;
 
-		call_user_func($class . '::add_assets', get_document());
+		static::add_assets(get_document());
 	}
 
 	/**
@@ -1458,6 +1474,7 @@ EOT;
 						$child['name'] = $name . '[' . $option_name . ']';
 						$child['checked'] = !empty($selected[$option_name]);
 						$child['disabled'] = $disabled || !empty($disableds[$option_name]);
+						$child['data-key'] = $option_name;
 
 						$inner .= $child;
 					}
@@ -1575,7 +1592,8 @@ EOT;
 						(
 							'type' => 'radio',
 							'name' => $name,
-							'readonly' => $readonly
+							'readonly' => $readonly,
+							'required' => $this[self::REQUIRED]
 						)
 					);
 

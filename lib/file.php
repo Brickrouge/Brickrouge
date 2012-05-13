@@ -13,15 +13,15 @@ namespace Brickrouge;
 
 use ICanBoogie\Uploaded;
 
-class File extends Element
+class File extends Widget
 {
 	const T_UPLOAD_URL = '#file-upload-url';
 
-	public function __construct($tags, $dummy=null)
+	public function __construct(array $attributes=array())
 	{
 		parent::__construct
 		(
-			'div', $tags + array
+			'div', $attributes + array
 			(
 				'class' => 'widget-file'
 			)
@@ -137,7 +137,7 @@ class File extends Element
 
 		$rc .= '<div class="uploading">';
 		$rc .= '<span class="progress"><span class="position"><span class="label">&nbsp;</span></span></span> ';
-		$rc .= '<button type="button" class="danger cancel">' . t('cancel', array(), array('scope' => array('element', 'label'))) . '</button>';
+		$rc .= '<button type="button" class="btn-danger cancel">' . t('cancel', array(), array('scope' => 'button')) . '</button>';
 		$rc .= '</div>';
 
 		#

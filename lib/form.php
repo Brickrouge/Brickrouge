@@ -280,6 +280,37 @@ class Form extends Element implements Validator
 	}
 
 	/**
+	 * If a rendered is defined it is used to render the children.
+	 *
+	 * The rendered is defined using the {@link RENDERER} attribute.
+	 *
+	 * @see WdElement::render_children()
+	 */
+	protected function render_children(array $children)
+	{
+		$renderer = $this[self::RENDERER];
+
+		if ($renderer)
+		{
+			if (is_string($renderer))
+			{
+				$class = $renderer;
+
+				if (!class_exists($class))
+				{
+					$class = 'Brickrouge\Renderer\\' . $class;
+				}
+
+				$renderer = new $class();
+			}
+
+			return $renderer($this);
+		}
+
+		return parent::render_children($children);
+	}
+
+	/**
 	 * Add hidden input elements and log messages to the inner HTML of the element
 	 * being converted to a string.
 	 *
@@ -324,32 +355,7 @@ class Form extends Element implements Validator
 			}
 		}
 
-		#
-		# render children
-		#
-
-		$renderer = $this[self::RENDERER];
-
-		if ($renderer)
-		{
-			if (is_string($renderer))
-			{
-				$class = $renderer;
-
-				if (!class_exists($class))
-				{
-					$class = 'Brickrouge\Renderer\\' . $class;
-				}
-
-				$renderer = new $class();
-			}
-
-			$rc .= $renderer($this);
-		}
-		else
-		{
-			$rc .= parent::render_inner_html();
-		}
+		$rc .= parent::render_inner_html();
 
 		#
 		# actions

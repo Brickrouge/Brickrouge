@@ -128,8 +128,12 @@ figcaption, figure, footer, header, hgroup, nav
 /*
  * Remove IE focus outline on DIV
  */
- 
-div:focus       { outline: none; }
+
+body:focus,
+div:focus,
+fieldset:focus,
+html:focus,
+td:focus        { outline: none; }
 
 /*
  * Some additions

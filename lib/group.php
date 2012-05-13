@@ -19,8 +19,10 @@ namespace Brickrouge;
  *
  * Localization:
  *
- * - Labels defined using the {@link Form::LABEL} attribute are translated within the 'label' scope.
- * - Legends defined using the {@link LEGEND} attribute are translated within the 'legend' scope.
+ * - Labels defined using the {@link Form::LABEL} attribute are translated within the
+ * 'group.label|element.label' scope.
+ * - Legends defined using the {@link LEGEND} attribute are translated within the 'group.legend'
+ * scope.
  */
 class Group extends Element
 {

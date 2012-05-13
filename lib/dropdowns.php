@@ -53,7 +53,7 @@ class DropdownMenu extends Element
 			}
 			else
 			{
-				$html .= '<a href="#" data-key="' . escape($key) . '">' . (is_string($option) ? escape($option) : $option) . '</a>';
+				$html .= '<a href="' . escape($key) . '" data-key="' . escape($key) . '">' . (is_string($option) ? escape($option) : $option) . '</a>';
 			}
 
 			$html .= '</li>';

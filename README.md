@@ -48,7 +48,7 @@ Brickrouge provides a simple autoloader that can be used to load its own classes
 	
 	require_once '/path/to/Brickrouge.phar';
 
-	Brickrouge\regsiter_autoloader();
+	Brickrouge\register_autoloader();
 	
 	
 ### Making files accessible
