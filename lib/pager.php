@@ -140,8 +140,8 @@ class Pager extends Element
 			# add next (>) link
 			#
 
-			$next_text = t('Next&nbsp;→', array(), array('scope' => 'pagination.label'));
-			$previous_text = t('←&nbsp;Previous', array(), array('scope' => 'pagination.label'));
+			$next_text = t('Next', array(), array('scope' => 'pagination.label', 'default' => 'Next →'));
+			$previous_text = t('Previous', array(), array('scope' => 'pagination.label', 'default' => '← Previous'));
 
 //			if ($this->reverse_arrows ? ($on_page > 1) : ($on_page < $pages))
 			if ($on_page < $pages)
@@ -167,7 +167,7 @@ class Pager extends Element
 			}
 			else
 			{
-				$rc = '<li class="prev disabled"><a href="#">' . $previous_text . '</a></li>' . $rc;
+				$rc = '<li class="previous disabled"><a href="#">' . $previous_text . '</a></li>' . $rc;
 			}
 		}
 
@@ -260,17 +260,8 @@ class Pager extends Element
 
 	protected function getLink($n, $label=null, $class=null)
 	{
-		$rc = '<li><a href="' . $this->getURL($n) . '"';
-
-		if ($class)
-		{
-			$rc .= ' class="' . $class . '"';
-		}
-
-		$rc .= '>';
-
+		$rc = '<li' . ($class ? ' class="' . $class . '"' : '') . '><a href="' . $this->getURL($n) . '">';
 		$rc .= $label ? $label : ($n + 1);
-
 		$rc .= '</a></li>';
 
 		return $rc;

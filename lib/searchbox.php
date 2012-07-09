@@ -39,16 +39,13 @@ class Searchbox extends Element
 		);
 	}
 
-	public function set($property, $value=null)
+	public function offsetSet($offset, $value)
 	{
-		if (is_string($property))
+		if (in_array($offset, array('name', 'value', 'placeholder')))
 		{
-			if (in_array($property, array('name', 'value', 'placeholder')))
-			{
-				$this->elements['q'][$property] = $value;
-			}
+			$this->elements['q'][$offset] = $value;
 		}
 
-		return parent::set($property, $value);
+		return parent::offsetSet($offset, $value);
 	}
 }

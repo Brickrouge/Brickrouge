@@ -22,6 +22,12 @@ class Salutation extends Element
 			'Mister'
 		);
 
+		array_walk($options, function(&$v) {
+
+			$v = t($v, array(), array('scope' => 'salutation'));
+
+		});
+
 		if ($type == 'select' && !empty($tags[self::REQUIRED]))
 		{
 			$options = array(null => '') + $options;

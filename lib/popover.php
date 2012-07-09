@@ -194,7 +194,8 @@ class PopoverWidget extends Popover
 		(
 			$tags + array
 			(
-				'class' => 'widget-popover popover'
+				'class' => 'widget-popover popover',
+				'data-widget-constructor' => 'Popover'
 			)
 		);
 	}

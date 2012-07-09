@@ -1080,7 +1080,7 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
   padding-left: 5px;
 }
 .input-prepend, .input-append {
-  margin-bottom: 5px;
+  display: inline-block;
 }
 .input-prepend input,
 .input-append input,

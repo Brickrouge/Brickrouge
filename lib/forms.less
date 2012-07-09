@@ -403,7 +403,8 @@ select:focus:required:invalid {
 // Allow us to put symbols and text within the input field for a cleaner look
 .input-prepend,
 .input-append {
-  margin-bottom: 5px;
+  //margin-bottom: 5px; @brickrouge: we don't want that.
+  display: inline-block; // @brickrouge: inputs are inline elements, decorated or not they shall remain that way.
   input,
   select,
   .uneditable-input {

@@ -682,7 +682,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		{
 			$default = $this[self::DEFAULT_VALUE];
 
-			if ($default)
+			if ($default !== null)
 			{
 				if ($this->type == self::TYPE_CHECKBOX)
 				{
@@ -761,7 +761,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		{
 			$weight = is_object($child) ? $child[self::WEIGHT] : 0;
 
-			if (is_string($weight) && !is_numeric($weight)) // FIXME: is is_numeric() not enought ?
+			if (is_string($weight) && !is_numeric($weight)) // FIXME: is is_numeric() not enough ?
 			{
 				$with_relative_positions[] = $child;
 

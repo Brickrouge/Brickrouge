@@ -329,7 +329,8 @@ Brickrouge.Form = new Class({
 	options:
 	{
 		url: null,
-		useXHR: false
+		useXHR: false,
+		replaceOnSuccess: false
 	},
 
 	initialize: function(el, options)
@@ -353,7 +354,8 @@ Brickrouge.Form = new Class({
 
 	alert: function(messages, type)
 	{
-		var original, alert = this.element.getElement('div.alert-' + type) || new Element('div.alert.alert-' + type, { html: '<a href="#close" class="close">×</a>'})
+		var original = messages
+		, alert = this.element.getElement('div.alert-' + type) || new Element('div.alert.alert-' + type, { html: '<a href="#close" class="close">×</a>'})
 
 		if (typeOf(messages) == 'string')
 		{
@@ -361,60 +363,54 @@ Brickrouge.Form = new Class({
 		}
 		else if (typeOf(messages) == 'object')
 		{
-			original = messages
-
 			messages = []
 
-			Object.each
-			(
-				original, function(message, id)
+			Object.each(original, function(message, id) {
+
+				if (typeOf(id) == 'string' && id != '_base')
 				{
-					if (typeOf(id) == 'string' && id != '_base')
+					var parent
+					, field
+					, el = document.id(this.element.elements[id])
+					, i
+
+					if (typeOf(el) == 'collection')
 					{
-						var parent
-						, field
-						, el = this.element.elements[id]
-						, i
+						parent = document.id(el[0]).getParent('div.radio-group')
+						field = parent.getParent('.field')
 
-						if (typeOf(el) == 'collection')
+						if (parent)
 						{
-							parent = el[0].getParent('div.radio-group')
-							field = parent.getParent('.field')
-
-							if (parent)
-							{
-								parent.addClass('error')
-							}
-							else
-							{
-								for (i = 0, j = el.length ; i < j ; i++)
-								{
-									el[i].addClass('error')
-								}
-							}
+							parent.addClass('error')
 						}
 						else
 						{
-							el.addClass('error')
-							field = el.getParent('.field')
-						}
-
-						if (field)
-						{
-							field.addClass('error')
+							for (i = 0, j = el.length ; i < j ; i++)
+							{
+								document.id(el[i]).addClass('error')
+							}
 						}
 					}
-
-					if (!message || message === true)
+					else
 					{
-						return
+						el.addClass('error')
+						field = el.getParent('.field')
 					}
 
-					messages.push(message)
-				},
+					if (field)
+					{
+						field.addClass('error')
+					}
+				}
 
-				this
-			)
+				if (!message || message === true)
+				{
+					return
+				}
+
+				messages.push(message)
+
+			}, this)
 		}
 
 		if (!messages.length)
@@ -430,7 +426,18 @@ Brickrouge.Form = new Class({
 			}
 		)
 
-		if (!alert.parentNode)
+		this.insertAlert(alert)
+	},
+
+	insertAlert: function(alert)
+	{
+		if (alert.hasClass('alert-success') && this.options.replaceOnSuccess)
+		{
+			alert.inject(this.element, 'before')
+
+			this.element.addClass('hidden')
+		}
+		else if (!alert.getParent())
 		{
 			alert.inject(this.element, 'top')
 		}
@@ -500,12 +507,21 @@ Brickrouge.Form = new Class({
 
 	failure: function(xhr)
 	{
-		var response = JSON.decode(xhr.responseText)
-
-		if (response && response.errors)
+		try
 		{
-			this.alert(response.errors, 'error')
+			var response = JSON.decode(xhr.responseText)
+
+			if (response && response.errors)
+			{
+				this.alert(response.errors, 'error')
+			}
+
+			if (response.exception)
+			{
+				alert(response.exception)
+			}
 		}
+		catch (e) {}
 
 		this.fireEvent('failure', arguments)
 	}
@@ -604,15 +620,30 @@ document.body.addEvent('click:relay(.alert a.close)', function(ev, target) {
  */
 document.body.addEvent('click:relay(.nav-tabs a)', function(ev, el) {
 
-	var target = document.id(el.get('href').substring(1))
+	var targetId = el.get('href').substring(1)
+	, target = document.id(targetId)
+	, active = el.getParent('.nav-tabs').getElement('li.active')
 
-	if (!target) return
+	ev.preventDefault()
+
+	if (!target)
+	{
+		throw new Error('Invalid target: ' + targetId)
+	}
+
+	if (active)
+	{
+		active.removeClass('active')
+	}
+
+	el.getParent('li').addClass('active')
 
 	target.getParent('.tab-content').getChildren().each(function(pane) {
 
 		pane[target == pane ? 'addClass' : 'removeClass']('active')
 	})
-})/*
+})
+/*
  * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
@@ -626,6 +657,8 @@ document.body.addEvent('click:relay(.nav-tabs a)', function(ev, el) {
  *
  * The popover element is a floating element attached to an anchor. It repositions itself to
  * follow its anchor, and may change its placement according to the available space around it.
+ *
+ * @property element Element The popover element.
  */
 Brickrouge.Popover = new Class({
 
@@ -642,7 +675,7 @@ Brickrouge.Popover = new Class({
 
 	initialize: function(el, options)
 	{
-		this.element = $(el)
+		this.element = document.id(el)
 		this.setOptions(options)
 		this.arrow = this.element.getElement('.arrow')
 		this.actions = this.element.getElement('.popover-actions')
@@ -678,12 +711,14 @@ Brickrouge.Popover = new Class({
 
 	attachAnchor: function(anchor)
 	{
-		this.anchor = $(anchor)
+		this.anchor = document.id(anchor)
 
 		if (!this.anchor)
 		{
-			this.anchor = $(document.body).getElement(anchor)
+			this.anchor = document.body.getElement(anchor)
 		}
+
+		this.reposition(true)
 	},
 
 	onClick: function(ev)
@@ -714,6 +749,11 @@ Brickrouge.Popover = new Class({
 	{
 		this.element.setStyles({ display: 'block', visibility: 'hidden' })
 
+		if (!this.element.getParent())
+		{
+			document.body.appendChild(this.element)
+		}
+
 		window.addEvents
 		({
 			'load': this.quickRepositionCallback,
@@ -723,7 +763,7 @@ Brickrouge.Popover = new Class({
 
 		if (this.iframe)
 		{
-			$(this.iframe.contentWindow).addEvents
+			document.id(this.iframe.contentWindow).addEvents
 			({
 				'load': this.quickRepositionCallback,
 				'resize': this.quickRepositionCallback,
@@ -753,7 +793,7 @@ Brickrouge.Popover = new Class({
 
 		if (this.iframe)
 		{
-			var contentWindow = $(this.iframe.contentWindow)
+			var contentWindow = document.id(this.iframe.contentWindow)
 
 			contentWindow.removeEvent('load', this.quickRepositionCallback)
 			contentWindow.removeEvent('resize', this.quickRepositionCallback)
@@ -1006,32 +1046,39 @@ Brickrouge.Popover = new Class({
  *
  * @param options
  *
- * @returns {Brickrouge.Popover}
+ * @return Brickrouge.Popover
  */
 Brickrouge.Popover.from = function(options)
 {
-	var popover, title = options.title,
-	content = options.content,
-	actions = options.actions,
-	inner = new Element('div.popover-inner')
+	var popover
+	, title = options.title
+	, content = options.content
+	, actions = options.actions
+	, inner = new Element('div.popover-inner')
 
 	if (title)
 	{
 		inner.adopt(new Element('h3.popover-title', { 'html': title }))
 	}
 
-	if (typeOf(content) == 'element')
+	if (typeOf(content) == 'string')
 	{
-		inner.adopt(new Element('div.popover-content').adopt(content))
+		inner.adopt(new Element('div.popover-content', { 'html': content }))
 	}
 	else
 	{
-		inner.adopt(new Element('div.popover-content', { 'html': content }))
+		inner.adopt(new Element('div.popover-content').adopt(content))
+
+		if (options.fitContent === undefined)
+		{
+			options.fitContent = true
+		}
 	}
 
 	if (actions == 'boolean')
 	{
-		actions = [ new Element('button.cancel[data-action="cancel"]', { html: 'Cancel' }), new Element('button.primary[data-action="ok"]', { html: 'Ok' }) ]
+		actions = [ new Element('button.btn-cancel[data-action="cancel"]', { html: 'Cancel' })
+		, new Element('button.btn-primary[data-action="ok"]', { html: 'Ok' }) ]
 	}
 
 	if (actions)
@@ -1052,14 +1099,12 @@ Brickrouge.Widget.Popover = Brickrouge.Popover
 /**
  * Event delegation for A elements with a `rel="popover"` attribute.
  */
-document.id(document.body).addEvents
+document.body.addEvents
 ({
 	'mouseenter:relay([rel="popover"])': function(ev, target)
 	{
-		var popover
+		var popover = target.retrieve('popover')
 		, options
-
-		popover = target.retrieve('popover')
 
 		if (!popover)
 		{
@@ -1147,8 +1192,19 @@ Brickrouge.Carousel = new Class({
 
 		this.element.addEvents({
 
-			'click:relay(.carousel-control.left)': this.prev.bind(this),
-			'click:relay(.carousel-control.right)': this.next.bind(this),
+			'click:relay(.carousel-control.left)': function(ev) {
+
+				ev.stop()
+				this.prev()
+
+			}.bind(this),
+
+			'click:relay(.carousel-control.right)': function(ev) {
+
+				ev.stop()
+				this.next()
+
+			}.bind(this),
 
 			mouseenter: this.pause.bind(this),
 			mouseleave: this.resume.bind(this)
