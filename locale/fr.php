@@ -6,26 +6,23 @@ return array
 	(
 		'cancel' => 'Annuler',
 		'continue' => 'Continuer',
-		'next' => 'Suiv.',
-		'previous' => 'Préc.',
 		'save' => 'Enregistrer',
 		'use' => 'Utiliser',
 
 		'Salutation' => 'Civilité'
 	),
 
-	'option' => array
+	'pagination.label' => array
 	(
-		'Misses' => 'Madame',
-		'Miss' => 'Mademoiselle',
-		'Mister' => 'Monsieur'
+		'Next' => 'Suiv.',
+		'Previous' => 'Préc.',
 	),
 
 	'salutation' => array
 	(
-		'misses' => 'Madame',
-		'miss' => 'Mademoiselle',
-		'mister' => 'Monsieur'
+		'Misses' => 'Madame',
+		'Miss' => 'Mademoiselle',
+		'Mister' => 'Monsieur'
 	),
 
 	'From :start to :finish on :max' => 'De :start à :finish sur :max',

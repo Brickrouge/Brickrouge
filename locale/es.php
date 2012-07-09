@@ -2,18 +2,11 @@
 
 return array
 (
-	'option' => array
+	'salutation' => array
 	(
 		'Misses' => 'Señora',
 		'Miss' => 'Señorita',
 		'Mister' => 'Señor'
-	),
-
-	'salutation' => array // compat
-	(
-		'misses' => 'Señora',
-		'miss' => 'Señorita',
-		'mister' => 'Señor'
 	),
 
 	# wdelement

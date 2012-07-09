@@ -2,18 +2,11 @@
 
 return array
 (
-	'option' => array
+	'salutation' => array
 	(
 		'Misses' => 'Pani',
 		'Miss' => 'Slečna',
 		'Mister' => 'Pán'
-	),
-
-	'salutation' => array
-	(
-		'misses' => 'Pani',
-		'miss' => 'Slečna',
-		'mister' => 'Pán'
 	),
 
 	'The maximum file size must be less than :size.' => 'Súbor nesmie byť väčší ako :size.',

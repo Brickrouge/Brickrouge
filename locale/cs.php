@@ -2,18 +2,17 @@
 
 return array
 (
-	'option' => array
-  	(
-		'Misses' => 'Paní',
-		'Miss' => 'Slečna',
-		'Mister' => 'Pan'
+	'pagination.label' => array
+	(
+		'Next' => 'Následující →',
+		'Previous' => '← Předchozí',
 	),
 
 	'salutation' => array
   	(
-		'misses' => 'Paní',
-		'miss' => 'Slečna',
-		'mister' => 'Pan'
+		'Misses' => 'Paní',
+		'Miss' => 'Slečna',
+		'Mister' => 'Pan'
 	),
 
 	'Invalid email address %value for the %label element.' => 'Neplatná e-mailová adres: %email.',
