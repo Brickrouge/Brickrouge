@@ -598,7 +598,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	protected function volatile_get_class()
 	{
-		return $this->render_class($this->class_names);
+		$class_names = $this->alter_class_names($this->class_names);
+
+		return $this->render_class($class_names);
 	}
 
 	/**
@@ -644,6 +646,20 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	public function has_class($class_name)
 	{
 		return isset($this->class_names[$class_name]);
+	}
+
+	/**
+	 * Alters the classe names.
+	 *
+	 * This method is invoked before the class names are rendered.
+	 *
+	 * @param array $class_names
+	 *
+	 * @return array
+	 */
+	protected function alter_class_names(array $class_names)
+	{
+		return $class_names;
 	}
 
 	/**
@@ -967,6 +983,25 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
+	 * Alters the dataset.
+	 *
+	 * The method is invoked before the dataset is rendered.
+	 *
+	 * @param array $dataset
+	 *
+	 * @return array
+	 */
+	protected function alter_dataset(array $dataset)
+	{
+		if (in_array($this->tag_name, self::$has_attribute_value) || $this->tag_name == 'textarea' && $this['data-default-value'] === null)
+		{
+			$dataset['default-value'] = $this[self::DEFAULT_VALUE];
+		}
+
+		return $dataset;
+	}
+
+	/**
 	 * Renders dataset.
 	 *
 	 * The dataset is rendered as a series of "data-*" attributes. Values of type array are
@@ -1110,13 +1145,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			$rc .= ' ' . $attribute . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
 		}
 
-		$dataset = $this->dataset;
-
-		if (in_array($this->tag_name, self::$has_attribute_value) || $this->tag_name == 'textarea' && $this['data-default-value'] === null)
-		{
-			$dataset['default-value'] = $this[self::DEFAULT_VALUE];
-		}
-
+		$dataset = $this->alter_dataset($this->dataset);
 		$rc .= $this->render_dataset($dataset);
 
 		#

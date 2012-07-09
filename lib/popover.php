@@ -86,18 +86,36 @@ class Popover extends Element
 	/**
 	 * Adds the 'fit-content' class name if the {@link FIT_CONTENT} attribute is truthy.
 	 *
-	 * @see Brickrouge.Element::volatile_get_class()
+	 * @see Brickrouge.Element::alter_class_names()
 	 */
-	protected function volatile_get_class()
+	protected function alter_class_names(array $class_names)
 	{
-		$rc = parent::volatile_get_class();
+		$class_names = parent::alter_class_names($class_names);
 
 		if ($this[self::FIT_CONTENT])
 		{
-			$rc .= ' fit-content';
+			$class_names['fit-content'] = true;
 		}
 
-		return $rc;
+		return $class_names;
+	}
+
+	/**
+	 * Adds the anchor specified using the {@link ANCHOR} special attribute to the dataset before
+	 * it is rendered.
+	 *
+	 * @see Brickrouge.Element::alter_dataset()
+	 */
+	protected function alter_dataset(array $dataset)
+	{
+		return parent::alter_dataset
+		(
+			$dataset + array
+			(
+				'anchor' => $this[self::ANCHOR],
+				'placement' => $this[self::PLACEMENT]
+			)
+		);
 	}
 
 	/**
@@ -146,24 +164,6 @@ EOT;
 	{
 		return new Actions($actions, array('class' => 'popover-actions'));
 	}
-
-	/**
-	 * Adds the anchor specified using the {@link ANCHOR} special attribute to the dataset before
-	 * it is rendered.
-	 *
-	 * @see Brickrouge.Element::render_dataset()
-	 */
-	protected function render_dataset(array $dataset)
-	{
-		return parent::render_dataset
-		(
-			$dataset + array
-			(
-				'anchor' => $this[self::ANCHOR],
-				'placement' => $this[self::PLACEMENT]
-			)
-		);
-	}
 }
 
 /**
@@ -202,11 +202,11 @@ class PopoverWidget extends Popover
 	/**
 	 * Adds the `visible` property to the dataset.
 	 *
-	 * @see Brickrouge.Popover::render_dataset()
+	 * @see Brickrouge.Popover::alter_dataset()
 	 */
-	protected function render_dataset(array $dataset)
+	protected function alter_dataset(array $dataset)
 	{
-		return parent::render_dataset
+		return parent::alter_dataset
 		(
 			$dataset + array
 			(
