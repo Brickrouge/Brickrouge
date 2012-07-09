@@ -22,9 +22,9 @@ class Object
 	 *
 	 * The following callbacks are tried to retrieve the value of the property:
 	 *
-	 * 1. `__volatile_get_<property>`: Get and return the value of the property.
+	 * 1. `volatile_get_<property>`: Get and return the value of the property.
 	 *
-	 * 2. `__get_<property>`: Get, set and return the value of the property. Because the property
+	 * 2. `get_<property>`: Get, set and return the value of the property. Because the property
 	 * is set, the callback might only be called once if the property was previously undefined,
 	 * that's because in that case the property is created as _public_. This feature is perfect
 	 * for lazy loading.
@@ -40,14 +40,14 @@ class Object
 	 */
 	public function __get($property)
 	{
-		$getter = '__volatile_get_' . $property;
+		$getter = 'volatile_get_' . $property;
 
 		if (method_exists($this, $getter))
 		{
 			return $this->$getter();
 		}
 
-		$getter = '__get_' . $property;
+		$getter = 'get_' . $property;
 
 		if (method_exists($this, $getter))
 		{
@@ -70,7 +70,7 @@ class Object
 	/**
 	 * Sets the value of a property.
 	 *
-	 * If the `__volatile_set_<property>` or `__set_<property>` setter methods exists, they are
+	 * If the `volatile_set_<property>` or `set_<property>` setter methods exists, they are
 	 * used to set the value to the property, otherwise if the property doesn't exists the property
 	 * is created as public and its value is set _as is_.
 	 *
@@ -83,14 +83,14 @@ class Object
 	 */
 	public function __set($property, $value)
 	{
-		$setter = '__volatile_set_' . $property;
+		$setter = 'volatile_set_' . $property;
 
 		if (method_exists($this, $setter))
 		{
 			return $this->$setter($value);
 		}
 
-		$setter = '__set_' . $property;
+		$setter = 'set_' . $property;
 
 		if (method_exists($this, $setter))
 		{
@@ -118,7 +118,7 @@ class Object
 	 */
 	public function __unset($property)
 	{
-		$method_name = '__unset_' . $property;
+		$method_name = 'unset_' . $property;
 
 		if (method_exists($this, $method_name))
 		{
@@ -138,6 +138,6 @@ class Object
 	 */
 	public function has_property($property)
 	{
-		return property_exists($this, $property) || method_exists($this, '__volatile_get_' . $property) || method_exists($this, '__get_' . $property);
+		return property_exists($this, $property) || method_exists($this, 'volatile_get_' . $property) || method_exists($this, 'get_' . $property);
 	}
 }

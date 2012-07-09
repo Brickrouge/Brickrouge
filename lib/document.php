@@ -50,7 +50,7 @@ class Document extends \ICanBoogie\Object
 	 *
 	 * @return array The assets used by the document.
 	 */
-	protected function __volatile_get_assets()
+	protected function volatile_get_assets()
 	{
 		return array
 		(
@@ -74,7 +74,7 @@ class Document extends \ICanBoogie\Object
 	 *     'js' => array('brickrouge.js' => 0)
 	 * );
 	 */
-	protected function __volatile_set_assets(array $assets)
+	protected function volatile_set_assets(array $assets)
 	{
 		unset($this->assets);
 		$this->add_assets($assets);

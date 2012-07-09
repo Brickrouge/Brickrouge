@@ -561,7 +561,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 *
 	 * @return string
 	 */
-	protected function __get_id()
+	protected function get_id()
 	{
 		$id = $this['id'];
 
@@ -596,7 +596,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 *
 	 * @return string
 	 */
-	protected function __volatile_get_class()
+	protected function volatile_get_class()
 	{
 		return $this->render_class($this->class_names);
 	}
@@ -606,7 +606,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 *
 	 * @param string $class
 	 */
-	protected function __volatile_set_class($class)
+	protected function volatile_set_class($class)
 	{
 		$names = explode(' ', trim($class));
 		$names = array_map('trim', $names);

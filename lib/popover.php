@@ -86,11 +86,11 @@ class Popover extends Element
 	/**
 	 * Adds the 'fit-content' class name if the {@link FIT_CONTENT} attribute is truthy.
 	 *
-	 * @see Brickrouge.Element::__volatile_get_class()
+	 * @see Brickrouge.Element::volatile_get_class()
 	 */
-	protected function __volatile_get_class()
+	protected function volatile_get_class()
 	{
-		$rc = parent::__volatile_get_class();
+		$rc = parent::volatile_get_class();
 
 		if ($this[self::FIT_CONTENT])
 		{
