@@ -525,7 +525,8 @@ Brickrouge.Form = new Class({
 
 		this.fireEvent('failure', arguments)
 	}
-})/*
+})
+Brickrouge.Form.STORED_KEY_NAME = '_brickrouge_form_key'/*
  * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>
@@ -814,6 +815,11 @@ Brickrouge.Popover = new Class({
 		{
 			this.element.setStyle('display', '')
 		}
+	},
+
+	isVisible: function()
+	{
+		return this.element.getStyle('visibility') == 'visible' && this.element.getStyle('display') != 'none'
 	},
 
 	computeAnchorBox: function()
