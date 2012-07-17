@@ -526,6 +526,7 @@ Brickrouge.Form = new Class({
 		this.fireEvent('failure', arguments)
 	}
 })
+
 Brickrouge.Form.STORED_KEY_NAME = '_brickrouge_form_key'/*
  * This file is part of the Brickrouge package.
  *
@@ -619,7 +620,7 @@ document.body.addEvent('click:relay(.alert a.close)', function(ev, target) {
 /**
  * Activates the target tab content of a tab.
  */
-document.body.addEvent('click:relay(.nav-tabs a)', function(ev, el) {
+document.body.addEvent('click:relay(.tabbable .nav-tabs a)', function(ev, el) {
 
 	var targetId = el.get('href').substring(1)
 	, target = document.id(targetId)
@@ -668,9 +669,11 @@ Brickrouge.Popover = new Class({
 	options:
 	{
 		anchor: null,
+		animate: false,
 		placement: null,
 		visible: false,
 		fitContent: false,
+		loveContent: false,
 		iframe: null
 	},
 
@@ -683,31 +686,48 @@ Brickrouge.Popover = new Class({
 		this.repositionCallback = this.reposition.bind(this, false)
 		this.quickRepositionCallback = this.reposition.bind(this, true)
 
-		this.iframe = this.options.iframe
+		el = this.element
+		options = this.options
 
-		if (this.options.anchor)
+		this.iframe = options.iframe
+
+		if (options.anchor)
 		{
-			this.attachAnchor(this.options.anchor)
+			this.attachAnchor(options.anchor)
 		}
 
 		this.tween = null
 
-		if (this.options.animate)
+		if (options.animate)
 		{
-			this.tween = new Fx.Tween(this.element, { property: 'opacity', link: 'cancel', duration: 'short' })
+			this.tween = new Fx.Tween(el, { property: 'opacity', link: 'cancel', duration: 'short' })
 		}
 
-		if (this.options.fitContent)
+		if (options.fitContent || options.loveContent)
 		{
-			this.element.addClass('fit-content')
+			el.addClass('fit-content')
 		}
 
-		this.element.addEvent('click', this.onClick.bind(this))
+		if (options.loveContent)
+		{
+			el.addClass('love-content')
+		}
 
-		if (this.options.visible)
+		el.addEvent('click:relay(.popover-actions [data-action])', function(ev, target) {
+
+			this.fireAction({ action: target.get('data-action'), popover: this, event: ev })
+
+		}.bind(this))
+
+		if (options.visible)
 		{
 			this.show()
 		}
+	},
+
+	fireAction: function(params)
+	{
+		this.fireEvent('action', arguments)
 	},
 
 	attachAnchor: function(anchor)
@@ -720,21 +740,6 @@ Brickrouge.Popover = new Class({
 		}
 
 		this.reposition(true)
-	},
-
-	onClick: function(ev)
-	{
-		var target = ev.target
-
-		if (target.tagName == 'BUTTON' && target.getParent('.popover-actions'))
-		{
-			this.fireAction({ action: target.get('data-action'), popover: this, ev: ev })
-		}
-	},
-
-	fireAction: function(params)
-	{
-		this.fireEvent('action', arguments)
 	},
 
 	changePlacement: function(placement)
@@ -1083,8 +1088,8 @@ Brickrouge.Popover.from = function(options)
 
 	if (actions == 'boolean')
 	{
-		actions = [ new Element('button.btn-cancel[data-action="cancel"]', { html: 'Cancel' })
-		, new Element('button.btn-primary[data-action="ok"]', { html: 'Ok' }) ]
+		actions = [ new Element('button.btn-cancel[data-action="cancel"]', { html: Locale.get('Popover.cancel') || 'Cancel' })
+		, new Element('button.btn-primary[data-action="ok"]', { html: Locale.get('Popover.ok') || 'Ok' }) ]
 	}
 
 	if (actions)
@@ -1105,8 +1110,8 @@ Brickrouge.Widget.Popover = Brickrouge.Popover
 /**
  * Event delegation for A elements with a `rel="popover"` attribute.
  */
-document.body.addEvents
-({
+document.body.addEvents({
+
 	'mouseenter:relay([rel="popover"])': function(ev, target)
 	{
 		var popover = target.retrieve('popover')
@@ -1115,13 +1120,11 @@ document.body.addEvents
 		if (!popover)
 		{
 			options = target.get('dataset')
-
 			options.anchor = target
 			popover = Brickrouge.Popover.from(options)
 
-			document.body.appendChild(popover.element)
-
 			target.store('popover', popover)
+			document.body.appendChild(popover.element)
 		}
 
 		popover.show()
