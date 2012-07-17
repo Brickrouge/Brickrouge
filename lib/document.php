@@ -206,8 +206,6 @@ class Document extends \ICanBoogie\Object
 			$relative = self::resolve_root();
 		}
 
-		$script_dir = dirname($_SERVER['SCRIPT_NAME']);
-
 		/*
 		 * TODO-20110616: file conflict !! if we want 'public/auto.js' relative to our file, and
 		 * 'public/auto.js' exists at the root of the website, the second is used instead :-(
@@ -217,19 +215,23 @@ class Document extends \ICanBoogie\Object
 
 		$tries = array();
 
-		if ($path{0} == '/')
+		if (strpos($path, $root) === 0)
 		{
 			$tries[] = '';
 		}
-
-		$tries[] = $relative . DIRECTORY_SEPARATOR;
-
-		if ($script_dir != '/')
+		else
 		{
-			$tries[] = $root . $script_dir;
-		}
+			$tries[] = $relative . DIRECTORY_SEPARATOR;
 
-		$tries[] = $root . DIRECTORY_SEPARATOR;
+			$script_dir = dirname($_SERVER['SCRIPT_NAME']);
+
+			if ($script_dir != '/')
+			{
+				$tries[] = $root . $script_dir;
+			}
+
+			$tries[] = $root . DIRECTORY_SEPARATOR;
+		}
 
 		$url = null;
 		$i = 0;

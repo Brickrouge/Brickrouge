@@ -28,6 +28,10 @@ defined('Brickrouge\ROOT') or define('Brickrouge\ROOT', rtrim(__DIR__, DIRECTORY
 /**
  * The DOCUMENT_ROOT directory used by the Brickrouge framework.
  *
+ * We ensure that the directory separator is indeed the directory separator used by the file
+ * system. e.g. "c:path/to/my/root" is changed to "c:path\to\my\root" if the directory
+ * separator is "\".
+
  * @var string
  */
 if (!defined('Brickrouge\DOCUMENT_ROOT'))
@@ -38,7 +42,7 @@ if (!defined('Brickrouge\DOCUMENT_ROOT'))
 	}
 	else
 	{
-		define('Brickrouge\DOCUMENT_ROOT', rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
+		define('Brickrouge\DOCUMENT_ROOT', rtrim(strtr($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR == '/' ? '\\' : '/', DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
 	}
 }
 
