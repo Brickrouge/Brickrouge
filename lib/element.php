@@ -1621,8 +1621,7 @@ EOT;
 						(
 							'type' => 'radio',
 							'name' => $name,
-							'readonly' => $readonly,
-							'required' => $this[self::REQUIRED]
+							'readonly' => $readonly
 						)
 					);
 
