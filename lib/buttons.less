@@ -3,11 +3,13 @@
 
 
 // Base styles
-// -----------
+// --------------------------------------------------
 
 // Core
-.btn,
-button { // @brickrouge: we add 'button' to style buttons
+//<brickrouge>
+// BUTTON elements are automatically styled
+button,
+.btn {
   display: inline-block;
   .ie7-inline-block();
   padding: 4px 10px 4px;
@@ -15,36 +17,37 @@ button { // @brickrouge: we add 'button' to style buttons
   font-size: inherit; // @brickrouge: we prefer inheriting font-size
   font-family: inherit; // @brickrouge: we inherit font family
   line-height: @baseLineHeight;
+  *line-height: 20px;
   color: @grayDark;
   text-align: center;
   text-shadow: 0 1px 1px rgba(255,255,255,.75);
   // @brickrouge: we have to check this vertical-align thing
+  cursor: default; // @brickrouge: we don't want pointer cursor on buttons
   .buttonBackground(@btnBackground, @btnBackgroundHighlight);
   border: 1px solid @btnBorder;
+  *border: 0; // Remove the border to prevent IE7's black border on input:focus
   border-bottom-color: darken(@btnBorder, 10%);
   .border-radius(4px);
+  .ie7-restore-left-whitespace(); // Give IE7 some love
   .box-shadow(~"inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05)");
-  cursor: default; // @brickrouge: we don't want pointer cursor on buttons
+  .user-select(none); // @brickrouge: we don't want button labels to be selectable
+}
+//</brickrouge>
 
-  // Give IE7 some love
-  .ie7-restore-left-whitespace();
+//<brickrouge>
+// `A` may have text-decoration but we don't want it when they are styled as buttons.
 
-  /* Remove the border to prevent IE7's black border on input:focus */
-  *border: 0;
-  *line-height: 20px;
-  
-  -webkit-touch-callout: none; // @brickrouge: we don't want button labels to be selectable
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
+a[href].btn {
+  text-decoration: none !important;
 }
 
+//</brickrouge>
+
 // Hover state
-.btn:hover,
-button:hover { // @brickrouge: we use button
+//<brickrouge>
+// BUTTON elements are automatically styled
+button:hover,
+.btn:hover {
   color: @grayDark;
   text-decoration: none;
   background-color: darken(@white, 10%);
@@ -57,33 +60,33 @@ button:hover { // @brickrouge: we use button
 }
 
 // Focus state for keyboard and accessibility
-.btn:focus,
-button:focus { //@brickrouge: we use button
+button:focus,
+.btn:focus {
   .tab-focus();
 }
 
 // Active state
+button:active,
 .btn.active,
-.btn:active,
-button:active { //@brickrouge: we use button
-  //background-image: none; @brickrouge: we don't want that
-  .box-shadow(~"inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05)");
+.btn:active {
   background-color: darken(@white, 10%);
   background-color: darken(@white, 15%) e("\9");
+  //background-image: none; @brickrouge: we don't want that
   outline: 0;
+  .box-shadow(~"inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05)");
 }
 
 // Disabled state
+button:disabled,
 .btn.disabled,
-.btn[disabled],
-button:disabled { //@brickrouge: we use button
+.btn[disabled] {
   cursor: default;
-  background-image: none;
   background-color: darken(@white, 10%);
+  background-image: none;
   .opacity(65);
   .box-shadow(none);
 }
-
+//</brickrouge>
 
 // Button Sizes
 // --------------------------------------------------
@@ -134,8 +137,8 @@ button:disabled { //@brickrouge: we use button
 .btn-info:hover,
 .btn-inverse,
 .btn-inverse:hover {
-  text-shadow: 0 -1px 0 rgba(0,0,0,.25);
   color: @white;
+  text-shadow: 0 -1px 0 rgba(0,0,0,.25);
 }
 // Provide *some* extra contrast for those who can get it
 .btn-primary.active,
@@ -149,6 +152,15 @@ button:disabled { //@brickrouge: we use button
 
 // Set the backgrounds
 // -------------------------
+//<brickrouge>
+// BUTTON elements are automatically styled
+button,
+.btn {
+  // reset here as of 2.0.3 due to Recess property order
+  border-color: #ccc;
+  border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.25);
+}
+//</brickrouge>
 .btn-primary {
   .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
 }
@@ -201,9 +213,4 @@ input[type="submit"].btn {
     *padding-top: 1px;
     *padding-bottom: 1px;
   }
-}
-
-// @brickrouge: A may have text-decoration but we don't want it on button styled A.
-a[href].btn {
-  text-decoration: none !important;
 }

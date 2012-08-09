@@ -8,10 +8,10 @@
   z-index: @zindexPopover;
   display: none;
   padding: 5px;
-  &.above { margin-top: -20px; } // @brickrouge: we use "above" instead of "top", and a wider offset
-  &.after	{ margin-left: 20px; } // @brickrouge: we use "after" instead of "right", and a wider offset
-  &.below { margin-top: 20px; } // @brickrouge: we use "below" instead of "bottom", and a wider offset
-  &.before { margin-left: -20px; } // @brickrouge: we use "before" instead of "right", and a wider offset
+  &.above { margin-top: -10px; } // @brickrouge: we use "above" instead of "top", and a wider offset
+  &.after	{ margin-left: 10px; } // @brickrouge: we use "after" instead of "right", and a wider offset
+  &.below { margin-top: 10px; } // @brickrouge: we use "below" instead of "bottom", and a wider offset
+  &.before { margin-left: -10px; } // @brickrouge: we use "before" instead of "right", and a wider offset
   &.above .arrow { #popoverArrow > .top(); }
   &.after .arrow { #popoverArrow > .right(); }
   &.below .arrow { #popoverArrow > .bottom(); }
@@ -20,10 +20,6 @@
     position: absolute;
     width: 0;
     height: 0;
-  }
-
-  &.fit-content .popover-inner { // @brickrouge: because sometimes the content is no simple text
-    width: auto;
   }
 }
 .popover-inner {
@@ -34,7 +30,61 @@
   background: rgba(0,0,0,.8);
   .border-radius(6px);
   .box-shadow(0 3px 7px rgba(0,0,0,0.3));
+}
 
+//<brickrouge>
+// Because sometimes the content is not a simple text
+.popover.fit-content .popover-inner {
+  width: auto;
+}
+//</brickrouge>
+
+.popover-title {
+  padding: 9px 15px;
+  line-height: 1;
+  background-color: #f5f5f5;
+  border-bottom:1px solid #eee;
+  .border-radius(3px 3px 0 0);
+}
+
+//<brickrouge>
+// An h3 element is usually used as popover title, and our h3 have margins
+.popover-title {
+  margin: 0;
+}
+//</brickrouge>
+
+.popover-content {
+  padding: 14px;
+  background-color: @white;
+  .border-radius(0 0 3px 3px);
+  .background-clip(padding-box);
+  p, ul, ol {
+    margin-bottom: 0;
+  }
+}
+
+//<brickrouge>
+// Remove the top margin of our first child and the bottom margin of our last child.
+.popover-content {
+  & > :first-child { // @brickrouge
+    margin-top: 0;
+  }
+
+  & > :last-child { // @brickrouge
+    margin-bottom: 0;
+  }
+}
+//</brickrouge>
+
+//<brickrouge>
+// Our popovers can have a variable number of children
+
+.popover-title,
+.popover-content {
+  .border-radius(0);
+}
+.popover-inner {
   & > :first-child { // @brickrouge: because the number of elements is variable
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
@@ -45,42 +95,24 @@
     border-bottom-right-radius: 3px;
   }
 }
-.popover-title {
-  padding: 9px 15px;
-  line-height: 1;
-  background-color: #f5f5f5;
-  border-bottom:1px solid #eee;
-  //.border-radius(3px 3px 0 0); @brickrouge: see .popover-inner > :first-child
-  margin: 0; // @brickrouge: because we use margins around h3
-}
-.popover-content {
-  padding: 14px;
-  background-color: @white;
-  //.border-radius(0 0 3px 3px); @brickrouge: see .popover-inner > :first-child
-  .background-clip(padding-box);
-  p, ul, ol {
-    margin-bottom: 0;
-  }
+//</brickrouge>
 
-  & > :first-child { // @brickrouge
-    margin-top: 0;
-  }
-
-  & > :last-child { // @brickrouge
-    margin-bottom: 0;
-  }
-}
-.popover-actions { // @brickrouge: our popovers can have actions
+//<brickrouge>
+// Our popovers can have actions
+.popover-actions {
   text-align: center;
-  background-color: darken(@white, 4%);
+  background-color: @formActionsBackground;
   border-top: 1px solid @grayLight;
 		
   button {
     margin: .6em 1ex;	
   }
 }
+//</brickrouge>
 
-.popover.contrast { // @brickrouge: our popovers can have a contrasted color scheme
+//<brickrouge>
+// Our popovers can have a contrasted color scheme to make it standout.
+.popover.contrast {
 	
 	&, input[type="text"], input[type="password"], select, textarea, .field > label {
 		color: @white;
@@ -137,3 +169,4 @@
 		box-shadow: 0 0 1px @black inset;
 	}
 }
+//</brickrouge>

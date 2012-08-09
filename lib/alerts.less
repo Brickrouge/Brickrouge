@@ -11,9 +11,40 @@
   .border-radius(4px);
   color: @warningText;
 }
+
+//<brickrouge>
+// Because our elements have top and bottom margins
+.alert .content { 
+	& :first-child {
+		margin-top: 0;
+	}
+	& :last-child {
+		margin-bottom: 0;
+	}
+}
+//</brickrouge>
+
+//<brickrouge>
+// Because our P elements have top and bottom margins
+.alert p { 
+	margin: 0;
+
+	& + p {
+		margin-top: .5em;
+	}
+}
+//</brickrouge>
+
 .alert-heading {
   color: inherit;
 }
+
+//<brickrouge>
+// Because our headers have margins
+.alert-heading {
+	margin-top: 0;
+}
+//</brickrouge>
 
 // Adjust close link position
 .alert .close {
@@ -22,6 +53,14 @@
   right: -21px;
   line-height: 18px;
 }
+
+//<brickrouge>
+// Because we don't remove text-decoration on links
+.alert .close {
+  text-decoration: none;
+}
+//</brickrouge>
+
 
 // Alternate styles
 // ----------------

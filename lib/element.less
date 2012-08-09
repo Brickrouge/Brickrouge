@@ -41,32 +41,30 @@ ol.unstyled {
  * Labels
  *
  * Altough one can easily generate a label element, the task is usually left to the Brickrouge
- * framework for it handles positioning, translating as well as special cases such as field labels,
- * element labels or decoration when the value of the element is required or invalid.  
- */
-label {
-	/*
-	 * The "above" class is added to label when elements are genereated with the T_LABEL_POSITION
-	 * tag set to "above".
-	 */
-	&.above {
-		display: block;
-		margin-bottom: .2em;
+ * framework for it handles positioning, translating, as well as special cases such as field
+ * labels, element labels, or decoration when the value of the element is required or invalid.
+ * 
+ * The "above" class is added to label when elements are genereated with the T_LABEL_POSITION
+ * tag set to "above".
+ */	
+label.above {
+	display: block;
+	margin-bottom: .2em;
+}
+
+/*
+ * The "required" class is added to elements and their label when the T_REQUIRED tag
+ * (or "required") is set to true.
+ */	 
+label.required {
+	&:after {
+		content: '*';
+		margin-left: .5ex;
+		font-size: 0.83em;
 	}
-	/*
-	 * The "required" class is added to elements and their label when the T_REQUIRED tag
-	 * (or "required") is set to true.
-	 */
-	&.required {
-		&:after {
-			content: '*';
-			margin-left: .5ex;
-			font-size: 0.83em;
-		}
-		
-		sup, &:after {
-			color: #339BB9;
-			vertical-align: text-top;
-		}
+	
+	sup, &:after {
+		color: #339BB9;
+		vertical-align: text-top;
 	}
 }

@@ -10,10 +10,17 @@
 }
 
 // Toggling content
-.hide,
-.hidden { //@brickrouge: added .hidden
+.hide {
   display: none;
 }
+
+//<brickrouge>
+// We use `hidden` rather then `hide`
+.hidden {
+  display: none;
+}
+//</brickrouge>
+
 .show {
   display: block;
 }
@@ -21,4 +28,18 @@
 // Visibility
 .invisible {
   visibility: hidden;
+}
+
+// We define .clearfix as a mixin and not a class in mixin.less,
+// this time we define it as a class.
+.clearfix {
+  *zoom: 1;
+  &:before,
+  &:after {
+    display: table;
+    content: "";
+  }
+  &:after {
+    clear: both;
+  }
 }

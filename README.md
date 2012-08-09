@@ -1,24 +1,28 @@
 Brickrouge
 ==========
 
-Brickrouge is an open source object-oriented toolkit for PHP5.3+ that helps you create elements,
-widgets and forms for your webapps or sites. Using the many features provided by the toolkit you
-can create any kind of HTML element, or use provided classes to create elements commoly found in
-web applications such as forms, text inputs, popovers or date pickers. Whatever you choose you can
-always override attributes or behaviours to get exactly what you want.
+Brickrouge is an object-oriented toolkit for PHP5.3+ that helps you create inputs, widgets,
+forms and many other common elements, with all the CSS and JavaScript needed to make them
+beautiful and magical.
 
-Out of the box you have everything you need to create anchors, buttons, text inputs, textareas,
-selects, checkbox group, radio groups, pagers, rangers, saluation pickers, alert messages, groups,
-popovers, widgets and forms. Brickrouge supports localization and provides hooks to patch its
-most critical features.
+Here are some of its features:
 
-Brickrouge is compatible with
-[Bootstrap](http://twitter.github.com/bootstrap/) from twitter and
-[MooTools](http://mootools.net). Ready in a minute, you'll have everything you need to create
-beautiful and clean webapps.
+* Standalone and patchable
+* Compatible with Bootstrap
+* Supports localization
+* Fits in a 50ko Phar
+* Object-oritented
+* Can create any kind of HTML element
+* Populate and validate forms
 
-*Website*: <http://brickrouge.org>  
-*Author*: Olivier Laviale <olivier.laviale@gmail.com>, <http://weirdog.com>
+Brickrouge uses [Bootstrap](http://twitter.github.com/bootstrap/) from
+twitter for its style, and [MooTools](http://mootools.net/) for its magic. Ready under minute,
+you'll have everything you need to create beautiful and clean web applications. Together with the
+framework [ICanBoogie](http://icanboogie.org/), Brickrouge is one of the
+precious components that make the CMS [Icybee](http://icybee.org/).
+
+Homepage: <http://brickrouge.org/>  
+Author: Olivier Laviale [@olvlvl](https://twitter.com/olvlvl) – [http://weirdog.com/](http://www.weirdog.com/)
 
 
 
@@ -26,29 +30,37 @@ beautiful and clean webapps.
 Usage
 -----
 
-Brickrouge doesn't need any configuration. Include the "Brickrouge/startup.php" file
-somewhere in your application and it's ready:
+Brickrouge doesn't need any configuration, simply include the "Brickrouge/startup.php" file
+somewhere in your application:
 
-	<?php
+```php
+<?php
 	
-	require_once '/path/to/Brickrouge/startup.php';
+require_once '/path/to/Brickrouge/startup.php';
+```
 	
-Or if your are using it as a Phar:
+Or, if you use it as a Phar:
 
-	<?php
+```php
+<?php
 	
-	require_once '/path/to/Brickrouge.phar';
+require_once '/path/to/Brickrouge.phar';
+```
+
 
 
 ### Using Brickrouge's autoloader
 
-Brickrouge provides a simple autoloader that can be used to load its own classes:
+Brickrouge provides a simple autoloader that can be used to load its classes:
 
-	<?php
-	
-	require_once '/path/to/Brickrouge.phar';
+```php
+<?php
 
-	Brickrouge\register_autoloader();
+require_once '/path/to/Brickrouge.phar';
+
+Brickrouge\register_autoloader();
+```
+
 	
 	
 ### Making files accessible
@@ -56,20 +68,22 @@ Brickrouge provides a simple autoloader that can be used to load its own classes
 Brickrouge can make unaccessible files–such as assets in the Phar–accessible from the web by
 copying them to a directory defined by the `Brickrouge\ACCESSIBLE_ASSETS` constant :
 
-	<?php
-	
-	define('Brickrouge\ACCESSIBLE_ASSETS', __DIR__ . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR);
-	
-	require_once '/path/to/Brickrouge.phar';
+```php
+<?php
 
-	Brickrouge\regsiter_autoloader();
-	
-	?>
-	
-	<link rel="stylesheet" href="<?= Brickrouge\Document::resolve_url(Brickrouge\ASSETS . 'brickrouge.css') ?>" type="text/css">
-	<link rel="stylesheet" href="<?= Brickrouge\Document::resolve_url(Brickrouge\ASSETS . 'responsive.css') ?>" type="text/css">
+define('Brickrouge\ACCESSIBLE_ASSETS', __DIR__ . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR);
 
-The directory mush be writtable by PHP.
+require_once '/path/to/Brickrouge.phar';
+
+Brickrouge\regsiter_autoloader();
+
+?>
+
+<link rel="stylesheet" href="<?= Brickrouge\Document::resolve_url(Brickrouge\ASSETS . 'brickrouge.css') ?>" type="text/css">
+<link rel="stylesheet" href="<?= Brickrouge\Document::resolve_url(Brickrouge\ASSETS . 'responsive.css') ?>" type="text/css">
+```
+
+Note: The directory mush be writtable by PHP.
 
 
 
@@ -78,18 +92,20 @@ Patching Brickrouge
 -------------------
 
 Brickrouge was initially designed to work with the framework
-[ICanBoogie](https://github.com/ICanBoogie/ICanBoogie). The project evolved to
-stand alone and provides means to patch critical features such as translation, errors handling or
-form storing/retrieving. Fallbacks for each feature are provided so you can patch what you need
+[ICanBoogie](https://github.com/ICanBoogie/ICanBoogie). The project has evolved to
+stand alone and now provides means to patch critical features such as translation, errors handling
+or form storing/retrieving. Fallbacks for each feature are provided so you can patch what you need
 and leave the rest.
 
 Note: If Brickrouge detects ICanBoogie it will take full advantage of the framework.
 
 
-### How it works
 
-Brickrouge uses helpers defined in the "/lib/helpers.php" file. These are for the most part dummy
-functions which call callbacks. For example the `Brickrouge\t()` function calls the
+
+### How patching works
+
+Brickrouge uses helpers defined in the "lib/helpers.php" file. These are for the most part dummy
+functions which call callbacks. For instance the `Brickrouge\t()` function calls the
 `Brickrouge\Patchable::$callback_translate` callback, which defaults to the
 `Brickrouge\Patchable::fallback_translate()` function.
 
@@ -97,23 +113,31 @@ Thus, in order to patch the `t()` helper you need to overwrite the `$callback_tr
 static property.
 
 
-### Example with the ICanBoogie framework
 
-If you take a look at the "Brickrouge/startup.php" file you'll notice how Brickrouge patches its
-helpers if it detects the [ICanBoogie](https://github.com/ICanBoogie/ICanBoogie) framework.
 
-For example, this is how it patches its `t()` helper:
+### Patching with the ICanBoogie framework
 
-	Patchable::$callback_translate = 'ICanBoogie\I18n::translate';
+If you take a look at the "startup.php" file you'll notice how helpers are patched
+if the [ICanBoogie](https://github.com/ICanBoogie/ICanBoogie) framework is available.
+
+For instance, this is how the `t()` helper function is patched:
+
+```php
+<?php
+
+Patchable::$callback_translate = 'ICanBoogie\I18n::translate';
+```
 	
-And this is how it patches its `check_session()` helper:
+And this is how the `check_session()` helper function is patched:
 
-	Patchable::$callback_check_session = function()
-	{
-		global $core;
+```php
+<?php
 
-		return $core->session;
-	};
+Patchable::$callback_check_session = function()
+{
+	return \ICanBoogie\Core::get()->session;
+};
+```
 
 
 
@@ -121,30 +145,76 @@ And this is how it patches its `check_session()` helper:
 Building Brickrouge
 -------------------
 
-Brickrouge comes with pre-built CSS and JS files, compressed and non-compressed, but you might
-want to play with its source, or use it as a Phar, in which case you might probably want to build
-it yourself. A Makefile is available for this purpose.
+Brickrouge comes with pre-built CSS and JavaScript files, compressed and non-compressed, but you
+might want to play with its source, or use it as a Phar, in which case you might probably want
+to build it yourself. A Makefile is available for this purpose.
 
 Open a terminal, go to its directory and type "make":
 
 	$ cd /path/to/Brickrouge/
 	$ make
 
-This consolidates the various CSS and JS files and create compressed and non-compressed
-files in the "Brickrouge/assets/" directory.
+This consolidates the various CSS and JavaScript files and create compressed and non-compressed
+files in the "assets/" directory. Files containing only the differences with Bootstrap
+are also created ("-lite-uncompressed.css" and "-lite.css"). The following files are created:
 
-Note that you need the [LESS](http://lesscss.org/) compiler to complie CSS files, and the
-[YUI compressor](http://developer.yahoo.com/yui/compressor/) to compress JS and CSS files.
+* [brickrouge-lite-uncompressed.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge-lite-uncompressed.css)
+* [brickrouge-lite.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge-lite.css)
+* [brickrouge-uncompressed.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge-uncompressed.css)
+* [brickrouge-uncompressed.js](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge-uncompressed.js)
+* [brickrouge.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge.css)
+* [brickrouge.js](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge.js)
+* [responsive-uncompressed.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/responsive-uncompressed.css)
+* [responsive.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/responsive.css)
+
+Note that you need the [LESS](http://lesscss.org/) compiler to compile the CSS files. JavaScript
+files are compressed using the [online UglifyJS JavaScript minification](http://marijnhaverbeke.nl/uglifyjs/).
+
+
 
 
 ### Creating a Phar
 
-To create a Phar type:
+To create a Phar, type the following commands in a terminal:
 
 	$ cd /path/to/Brickrouge/
 	$ make phar
 
-The Phar is created in the parent directory under "Brickrouge.phar".
+The Phar is created in the parent directory as "Brickrouge.phar".
+
+
+
+
+New BSD Licence
+---------------
+
+Copyright (c) 2011-2012, Olivier Laviale.  
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of Olivier Laviale nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
@@ -152,12 +222,4 @@ The Phar is created in the parent directory under "Brickrouge.phar".
 More information
 ----------------
 
-For more information please visit the [Brickrouge website](http://brickrouge.org/).
-
-
-
-
-Licence
--------
-
-Brickrouge is licenced under the BSD licence.
+For more information and a demonstration please visit the [Brickrouge homepage](http://brickrouge.org/).

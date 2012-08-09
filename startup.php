@@ -16,7 +16,7 @@ namespace Brickrouge;
  *
  * @var string
  */
-define('Brickrouge\VERSION', '1.0.0-wip (2012-04-01)');
+define('Brickrouge\VERSION', '1.0.0-wip (2012-08-09)');
 
 /**
  * The ROOT directory of the Brickrouge framework.
@@ -87,15 +87,11 @@ if (defined('ICanBoogie\VERSION'))
 
 	Patchable::$callback_get_document = function()
 	{
-		global $core;
-
-		return $core->document;
+		return \ICanBoogie\Core::get()->document;
 	};
 
 	Patchable::$callback_check_session = function()
 	{
-		global $core;
-
-		return $core->session;
+		return \ICanBoogie\Core::get()->session;
 	};
 }

@@ -6,22 +6,27 @@
 // GENERAL STYLES
 // --------------
 
-/* @brickrouge: we define this in our reset
 // Make all forms have space below them
+// <brickrouge>
+// We prefer defining both top and bottom margins because the previous element might
+// not have a bottom margin.
 form {
-  margin: 0 0 @baseLineHeight;
+  margin: @baseLineHeight 0;
 }
-*/
+// </brickrouge>
 
 fieldset {
   padding: 0;
   margin: 0;
   border: 0;
-
-  + fieldset { // @brickrouge
-    margin-top: @baseline;
-  }
 }
+
+//<brickrouge>
+// We add a top margin to FIELDSETs that follow other FIELDSETs
+fieldset + fieldset {
+  margin-top: @baseline;
+}
+//</brickrouge>
 
 // Groups of fields with labels on top (legends)
 legend {
@@ -33,7 +38,7 @@ legend {
   line-height: @baseLineHeight * 2;
   color: @grayDark;
   border: 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e5e5e5;
 
   // Small
   small {
@@ -42,96 +47,138 @@ legend {
   }
 }
 
+//<brickrouge>
+// Removed super huge bottom margin on LEGEND elements.
+legend {
+  margin-bottom: 0;
+}
+//</brickrouge>
+
 // Set font for forms
+//<brickrouge>
+// We prefer to inherit font size from the container.
 label,
 input,
 button,
 select,
 textarea {
-  font-weight: normal; // @brickrouge: we don't want to define font family
-  line-height: @baseLineHeight; // @brickrouge: we don't want to define font family
+  #font > .shorthand(inherit,normal,@baseLineHeight); // Set size, weight, line-height here
 }
-/*@brickrouge: we don't want that
+//</brickrouge>
+//<brickrouge>
+// We prefer to inherit font family from the container.
 input,
 button,
 select,
 textarea {
-  #font > #family > .sans-serif(); // And only set font-family here for those that need it (note the missing label element)
+  font-family: inherit;
 }
-*/
+//</brickrouge>
 
 // Identify controls by their labels
 label {
   display: block;
   margin-bottom: 5px;
-  color: @grayDark;
 }
 
-// Inputs, Textareas, Selects
-input,
-textarea,
+// Form controls
+// -------------------------
+
+// Shared size and type resets
+//<brickrouge>
+// The .like-input class can be used to create _input_ looking elements.
+.like-input,
 select,
-.uneditable-input,
-.like-input { //@brickrouge: added .like-input
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input {
   display: inline-block;
-  width: 210px;
   height: @baseLineHeight;
   padding: 4px;
-  //margin-bottom: 9px; @brickrouge: we don't want that
+  margin-bottom: 0; //@brickrouge: Our elements don't have a bottom margin
   font-size: inherit; //@brickrouge: we prefer inheriting the font size
-  font-family: inherit; ///@brickrouge: also we prefer inheriting the font family
   line-height: @baseLineHeight;
   color: @gray;
+}
+//</brickrouge>
+
+// Reset appearance properties for textual inputs and textarea
+// Declare width for legacy (can't be on input[type=*] selectors or it's too specific)
+input,
+textarea {
+  width: 210px;
+}
+// Reset height since textareas have rows
+textarea {
+  height: auto;
+}
+// Everything else
+select,
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input {
+  background-color: @inputBackground;
   border: 1px solid @inputBorder;
   .border-radius(@inputBorderRadius);
-}
-.uneditable-textarea {
-  width: auto;
-  height: auto;
+  .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+  @transition: border linear .2s, box-shadow linear .2s;
+  .transition(@transition);
+
+  // Focus state
+  &:focus {
+    border-color: rgba(82,168,236,.8);
+    outline: 0;
+    outline: thin dotted \9; /* IE6-9 */
+    .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6)");
+  }
 }
 
-/* @brickrouge: we don't want that
-// Inputs within a label
-label input,
-label textarea,
-label select {
-  display: block;
-}
-*/
-
-// Mini reset for unique input types
-input[type="image"],
-input[type="checkbox"],
-input[type="radio"] {
-  width: auto;
-  height: auto;
-  padding: 0;
+// Position radios and checkboxes better
+input[type="radio"],
+input[type="checkbox"] {
   margin: 3px 0;
   *margin-top: 0; /* IE7 */
   line-height: normal;
   cursor: pointer;
-  .border-radius(0);
-  border: 0 \9; /* IE9 and down */
-}
-input[type="image"] {
-  border: 0;
 }
 
-// Reset the file input to browser defaults
-input[type="file"] {
-  width: auto;
-  padding: initial;
-  line-height: initial;
-  border: initial;
-  background-color: @inputBackground;
-  background-color: initial;
-  .box-shadow(none);
-}
-
-// Help out input buttons
-input[type="button"],
+// Reset width of input buttons, radios, checkboxes
+input[type="submit"],
 input[type="reset"],
-input[type="submit"] {
+input[type="button"],
+input[type="radio"],
+input[type="checkbox"] {
+  width: auto; // Override of generic input selector
+}
+
+// Make uneditable textareas behave like a textarea
+.uneditable-textarea {
   width: auto;
   height: auto;
 }
@@ -144,15 +191,10 @@ input[type="file"] {
   line-height: 28px;
 }
 
-// Reset line-height for IE
-input[type="file"] {
-  line-height: 18px \9;
-}
-
-// Chrome on Linux and Mobile Safari need background-color
+// Make select elements obey height by applying a border
 select {
   width: 220px; // default input width + 10px of padding that doesn't get applied
-  background-color: @inputBackground;
+  border: 1px solid #bbb;
 }
 
 // Make multiple select elements height not fixed
@@ -161,27 +203,20 @@ select[size] {
   height: auto;
 }
 
-// Remove shadow from image inputs
-input[type="image"] {
-  .box-shadow(none);
+// Focus for select, file, radio, and checkbox
+select:focus,
+input[type="file"]:focus,
+input[type="radio"]:focus,
+input[type="checkbox"]:focus {
+  .tab-focus();
 }
 
-// Make textarea height behave
-textarea {
-  height: auto;
-}
-
-// Hidden inputs
-input[type="hidden"] {
-  display: none;
-}
-
-// @brickrouge: right align inputs with the '.measure' class
-input.measure {
+//<brickrouge>
+// Right align text inputs with the '.measure' class
+input["text"].measure {
 	text-align: right;
 }
-
-
+//</brickrouge>
 
 // CHECKBOXES & RADIOS
 // -------------------
@@ -189,6 +224,7 @@ input.measure {
 // Indent the labels to position radios/checkboxes as hanging
 .radio,
 .checkbox {
+  min-height: 18px; // clear the floating input if there is no label text
   padding-left: 18px;
 }
 .radio input[type="radio"],
@@ -217,38 +253,16 @@ input.measure {
   margin-left: 10px; // space out consecutive inline controls
 }
 
-.inline-inputs > label { // @brickrouge
-	display: inline-block;
-	margin-bottom: 0;
+//<brickrouge>
+.inline-inputs > label {
+  display: inline-block;
+  margin-bottom: 0;
 
-	& + label {
-		margin-left: 10px;
-	}
+  & + label {
+    margin-left: 10px;
+  }
 }
-
-// FOCUS STATE
-// -----------
-
-input,
-textarea {
-  .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
-  @transition: border linear .2s, box-shadow linear .2s;
-  .transition(@transition);
-}
-input:focus,
-textarea:focus {
-  border-color: rgba(82,168,236,.8);
-  .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6)");
-  outline: 0;
-  outline: thin dotted \9; /* IE6-9 */
-}
-input[type="file"]:focus,
-input[type="radio"]:focus,
-input[type="checkbox"]:focus,
-select:focus {
-  .box-shadow(none); // override for file inputs
-  .tab-focus();
-}
+//</brickrouge>
 
 
 
@@ -276,14 +290,22 @@ textarea[class*="span"],
   float: none;
   margin-left: 0;
 }
+// Ensure input-prepend/append never wraps
+.input-append input[class*="span"],
+.input-append .uneditable-input[class*="span"],
+.input-prepend input[class*="span"],
+.input-prepend .uneditable-input[class*="span"],
+.row-fluid .input-prepend [class*="span"],
+.row-fluid .input-append [class*="span"] {
+  display: inline-block;
+}
 
 
 
 // GRID SIZING FOR INPUTS
 // ----------------------
 
-#grid > .input (@gridColumnWidth, @gridGutterWidth);
-
+#grid > .input(@gridColumnWidth, @gridGutterWidth);
 
 
 
@@ -297,9 +319,16 @@ textarea[disabled],
 input[readonly],
 select[readonly],
 textarea[readonly] {
+  cursor: not-allowed;
   background-color: @inputDisabledBackground;
   border-color: #ddd;
-  cursor: not-allowed;
+}
+// Explicitly reset the colors here
+input[type="radio"][disabled],
+input[type="checkbox"][disabled],
+input[type="radio"][readonly],
+input[type="checkbox"][readonly] {
+  background-color: transparent;
 }
 
 
@@ -321,7 +350,8 @@ textarea[readonly] {
   .formFieldState(@successText, @successText, @successBackground);
 }
 
-// @brickrouge: mark required elements
+//<brickrouge>
+// Mark required controls with a colored asterisk
 .control-group.required > label::after {
 	content: '\000a0*';
 	vertical-align: top;
@@ -333,7 +363,7 @@ textarea[readonly] {
 .control-group.required.warning > label::after {
 	color: @warningText;
 }
-// /@brickrouge
+//</brickrouge>
 
 // HTML5 invalid states
 // Shares styles with the .control-group.error above
@@ -358,20 +388,22 @@ select:focus:required:invalid {
   margin-top: @baseLineHeight;
   margin-bottom: @baseLineHeight;
   background-color: @formActionsBackground;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #e5e5e5;
   .clearfix(); // Adding clearfix to allow for .pull-right button containers
 }
 
 // For text that needs to appear as an input but should not be an input
 .uneditable-input {
+  overflow: hidden; // prevent text from wrapping, but still cut it off like an input does
+  white-space: nowrap;
+  cursor: not-allowed;
   background-color: @inputBackground;
   border-color: #eee;
   .box-shadow(inset 0 1px 2px rgba(0,0,0,.025));
-  cursor: not-allowed;
 }
 
 // Placeholder text gets special styles; can't be bundled together though for some reason
-.placeholder(@grayLight);
+.placeholder();
 
 
 
@@ -383,10 +415,15 @@ select:focus:required:invalid {
   color: @gray; // lighten the text some for contrast
 }
 
+//<brickrouge>
+// Our elements don't have a bottom margin, because the margin of the .control-group is use to
+// separate elements verticaly, so we use a top margin instead.
 .help-block {
   display: block; // account for any element using help-block
-  margin-top: @baseLineHeight / 2; // @brickrouge: we prefer top margin
+  margin-top: @baseLineHeight / 2;
+  margin-bottom: 0;
 }
+//</brickrouge>
 
 .help-inline {
   display: inline-block;
@@ -403,8 +440,7 @@ select:focus:required:invalid {
 // Allow us to put symbols and text within the input field for a cleaner look
 .input-prepend,
 .input-append {
-  //margin-bottom: 5px; @brickrouge: we don't want that.
-  display: inline-block; // @brickrouge: inputs are inline elements, decorated or not they shall remain that way.
+  margin-bottom: 5px;
   input,
   select,
   .uneditable-input {
@@ -424,8 +460,8 @@ select:focus:required:invalid {
   .add-on {
     display: inline-block;
     width: auto;
-    min-width: 16px;
     height: @baseLineHeight;
+    min-width: 16px;
     padding: 4px 5px;
     font-weight: normal;
     line-height: @baseLineHeight;
@@ -445,6 +481,16 @@ select:focus:required:invalid {
     border-color: @green;
   }
 }
+
+//<brickrouge>
+// Our input elements don't have a bottom margin because the bottom margin of the
+// .control-group elements is used to separate elements.
+.input-prepend,
+.input-append {
+  margin-bottom: 0;
+}
+//</brickrouge>
+
 .input-prepend {
   .add-on,
   .btn {
@@ -462,8 +508,8 @@ select:focus:required:invalid {
     .border-radius(@inputBorderRadius 0 0 @inputBorderRadius);
   }
   .uneditable-input {
-    border-left-color: #eee;
     border-right-color: #ccc;
+    border-left-color: #eee;
   }
   .add-on:last-child,
   .btn:last-child {
@@ -495,10 +541,10 @@ select:focus:required:invalid {
 // -----------
 
 .search-query {
-  padding-left: 14px;
   padding-right: 14px;
-  padding-left: 4px \9; /* IE7-8 doesn't have border-radius, so don't indent the padding */
   padding-right: 4px \9;
+  padding-left: 14px;
+  padding-left: 4px \9; /* IE7-8 doesn't have border-radius, so don't indent the padding */
   margin-bottom: 0; // remove the default margin on all inputs
   .border-radius(14px);
 }
@@ -556,15 +602,21 @@ select:focus:required:invalid {
 .form-inline .radio input[type="radio"],
 .form-inline .checkbox input[type="checkbox"] {
   float: left;
-  margin-left: 0;
   margin-right: 3px;
+  margin-left: 0;
 }
 
 
 // Margin to space out fieldsets
-.control-group + .control-group { //@brickrouge: we don't like blind margins
+//<brickrouge>
+// We don't like blind margins and prefer using E + E to decide if we should add a margin or not.
+.control-group {
+  margin-bottom: 0;
+}
+.control-group + .control-group {
   margin-top: @baseLineHeight / 2;
 }
+//</brickrouge>
 
 // Legend collapses margin, so next element is responsible for spacing
 legend + .control-group {
@@ -578,10 +630,8 @@ legend + .control-group {
 .form-horizontal {
   // Increase spacing between groups
   .control-group {
+    margin-bottom: @baseLineHeight;
     .clearfix();
-    & + .control-group { //@brickrouge: we don't like blind margins
-      margin-top: @baseLineHeight;
-    }
   }
   // Float the labels left
   .control-group > label { //@brickrouge: we might add .control-label but we want to keep immediate child " > "
@@ -592,7 +642,15 @@ legend + .control-group {
   }
   // Move over all input controls and content
   .controls {
+    // Super jank IE7 fix to ensure the inputs in .input-append and input-prepend
+    // don't inherit the margin of the parent, in this case .controls
+    *display: inline-block;
+    *padding-left: 20px;
     margin-left: 160px;
+    *margin-left: 0;
+    &:first-child {
+      *padding-left: 160px;
+    }
   }
   // Remove bottom margin on block level help text since that's accounted for on .control-group
   .help-block {
@@ -604,3 +662,15 @@ legend + .control-group {
     padding-left: 160px;
   }
 }
+
+//<brickrouge>
+// We don't like blind margins and prefer using E + E to decide if we should add a margin or not.
+.form-horizontal {
+  .control-group {
+    margin-bottom: 0;
+  }
+ .control-group + .control-group {
+    margin-top: @baseLineHeight / 2;
+  }
+}
+//</brickrouge>
