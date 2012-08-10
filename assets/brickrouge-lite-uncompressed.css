@@ -10,7 +10,7 @@
  *
  * https://github.com/twitter/bootstrap
  */
-/*
+/* @brickrouge We don't want that
 // CSS image replacement
 // -------------------------
 // Source: https://github.com/h5bp/html5-boilerplate/commit/aa0396eae757
@@ -67,7 +67,7 @@ input[type="color"],
   margin-bottom: 0;
   font-size: inherit;
   line-height: 18px;
-  color: #808080;
+  color: inherit;
 }
 input[[object Object]].measure {
   text-align: right;

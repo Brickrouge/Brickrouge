@@ -3,7 +3,7 @@ fieldset+fieldset{margin-top:1.33em;}
 legend{margin-bottom:0;}
 label,input,button,select,textarea{font-size:inherit;font-weight:normal;line-height:18px;}
 input,button,select,textarea{font-family:inherit;}
-.like-input,select,textarea,input[type="text"],input[type="password"],input[type="datetime"],input[type="datetime-local"],input[type="date"],input[type="month"],input[type="time"],input[type="week"],input[type="number"],input[type="email"],input[type="url"],input[type="search"],input[type="tel"],input[type="color"],.uneditable-input{display:inline-block;height:18px;padding:4px;margin-bottom:0;font-size:inherit;line-height:18px;color:#808080;}
+.like-input,select,textarea,input[type="text"],input[type="password"],input[type="datetime"],input[type="datetime-local"],input[type="date"],input[type="month"],input[type="time"],input[type="week"],input[type="number"],input[type="email"],input[type="url"],input[type="search"],input[type="tel"],input[type="color"],.uneditable-input{display:inline-block;height:18px;padding:4px;margin-bottom:0;font-size:inherit;line-height:18px;color:inherit;}
 input[[object Object]].measure{text-align:right;}
 .inline-inputs>label{display:inline-block;margin-bottom:0;}.inline-inputs>label +label{margin-left:10px;}
 .control-group.required>label::after{content:'\000a0*';vertical-align:top;color:#3a87ad;}
