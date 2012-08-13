@@ -17,6 +17,14 @@ class File extends Widget
 {
 	const T_UPLOAD_URL = '#file-upload-url';
 
+	static protected function add_assets(Document $document)
+	{
+		parent::add_assets($document);
+
+		$document->js->add('file.js');
+		$document->css->add('file.css');
+	}
+
 	public function __construct(array $attributes=array())
 	{
 		parent::__construct
@@ -26,16 +34,6 @@ class File extends Widget
 				'class' => 'widget-file'
 			)
 		);
-
-		$this->dataset += $this->options();
-	}
-
-	protected static function add_assets(Document $document)
-	{
-		parent::add_assets($document);
-
-		$document->js->add('file.js');
-		$document->css->add('file.css');
 	}
 
 	protected function infos()
@@ -91,25 +89,7 @@ class File extends Widget
 		return $rc;
 	}
 
-	protected function options()
-	{
-		global $document;
-
-		$limit = $this[self::FILE_WITH_LIMIT] ?: 2 * 1024;
-
-		if ($limit === true)
-		{
-			$limit = ini_get('upload_max_filesize') * 1024;
-		}
-
-		return array
-		(
-			'name' => $this['name'],
-			'max-file-size' => $limit * 1024
-		);
-	}
-
-	public function render_inner_html()
+	protected function render_inner_html()
 	{
 		$name = $this['name'];
 		$path = $this['value'];
@@ -188,6 +168,24 @@ class File extends Widget
 <div class="alert alert-error"></div>
 <div class="infos">$infos</div>
 EOT;
+	}
+
+	protected function alter_dataset(array $dataset)
+	{
+		$limit = $this[self::FILE_WITH_LIMIT] ?: 2 * 1024;
+
+		if ($limit === true)
+		{
+			$limit = ini_get('upload_max_filesize') * 1024;
+		}
+
+		return array
+		(
+			'name' => $this['name'],
+			'max-file-size' => $limit * 1024
+		)
+
+		+ parent::alter_dataset($dataset);
 	}
 
 	protected function render_outer_html()
