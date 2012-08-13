@@ -12,7 +12,7 @@
 namespace Brickrouge;
 
 /**
- * A dropdown menu element.
+ * A drop down menu element.
  */
 class DropdownMenu extends Element
 {
@@ -69,7 +69,7 @@ class DropdownMenu extends Element
 }
 
 /**
- * An element made of a button and a dropdown menu.
+ * An element made of a button and a drop down menu.
  */
 class SplitButton extends Element
 {
@@ -90,7 +90,7 @@ class SplitButton extends Element
 	}
 
 	/**
-	 * Renders the button and dropdown trigger button.
+	 * Renders the button and drop down trigger button.
 	 *
 	 * The `btn-primary`, `btn-danger`, `btn-success` and `btn-info` class names are forwarded to
 	 * the buttons.
@@ -138,7 +138,7 @@ EOT;
 	}
 
 	/**
-	 * Renders the dropdown toggle part of the element.
+	 * Renders the drop down toggle part of the element.
 	 *
 	 * @param string $class Class of the element.
 	 *
@@ -174,14 +174,14 @@ EOT;
 	}
 
 	/**
-	 * Resolves the provided options into a DropdownMenu element.
+	 * Resolves the provided options into a {@link DropdownMenu} element.
 	 *
 	 * @param mixed $options
 	 *
-	 * @throws \UnexpectedValueException If the provided options cannot be resolved into a
-	 * DropdownMenu element.
-	 *
 	 * @return DropdownMenu
+	 *
+	 * @throws \UnexpectedValueException If the provided options cannot be resolved into a
+	 * {@link DropdownMenu} element.
 	 */
 	protected function resolve_options($options)
 	{

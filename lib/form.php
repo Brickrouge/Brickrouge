@@ -66,7 +66,7 @@ class Form extends Element implements Validator
 
 	/**
 	 * The class name of the renderer to use to render the children of the form. If no
-	 * renderer is defined, children are simply concatened.
+	 * renderer is defined, children are simply concatenated.
 	 *
 	 * @var string
 	 */
@@ -382,7 +382,7 @@ class Form extends Element implements Validator
 	 *
 	 * An {@link Alert} object is used to render the provided errors.
 	 *
-	 * @param string|ICanBoogie\Errors $errors.
+	 * @param string|\ICanBoogie\Errors $errors.
 	 *
 	 * @return string
 	 */
@@ -408,7 +408,7 @@ class Form extends Element implements Validator
 	 *
 	 * @param array $values
 	 * @param bool $disabled true if the form is disabled, false otherwise.
-	 * @param array|ICanBoogie\Errors $errors The validation errors.
+	 * @param array|\ICanBoogie\Errors $errors The validation errors.
 	 */
 	protected function alter_elements($values, $disabled, $errors)
 	{
@@ -498,12 +498,14 @@ class Form extends Element implements Validator
 	}
 
 	/**
-	 * Load a form previously saved in session.
+	 * Loads a form previously saved in session.
 	 *
-	 * @param $key The key used to identify the form to load, or an array in which
+	 * @param $string $key The key used to identify the form to load, or an array in which
 	 * {@link STORED_KEY_NAME} defines the key.
 	 *
-	 * @return object A {@link Form} object
+	 * @return Form
+	 *
+	 * @throws \Exception if the form cannot be retrieved.
 	 */
 	static public function load($key)
 	{
@@ -532,7 +534,7 @@ class Form extends Element implements Validator
 	/**
 	 * Checks if a previously saved form exists for a given key.
 	 *
-	 * @param $key The key used to identify the form.
+	 * @param string $key The key used to identify the form.
 	 *
 	 * @return boolean Return `true` if the form exists.
 	 */

@@ -383,51 +383,62 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 
 	/**
-	 * @param offset
+	 * Checks is an attribute is set.
+	 *
+	 * @param string $attribute
+	 *
+	 * @return bool
 	 */
-	public function offsetExists($offset)
+	public function offsetExists($attribute)
 	{
-		if (strpos($offset, 'data-') === 0)
+		if (strpos($attribute, 'data-') === 0)
 		{
-			return isset($this->dataset[substr($offset, 5)]);
+			return isset($this->dataset[substr($attribute, 5)]);
 		}
 
-		return isset($this->tags[$offset]);
+		return isset($this->tags[$attribute]);
 	}
 
 	/**
-	 * @param offset
+	 * Returns the value of an attribute.
+	 *
+	 * @param string $attribute
+	 * @param null $default The default value of the attribute.
+	 *
+	 * @return mixed|null The value of the attribute, or null if is not set.
 	 */
-	public function offsetGet($offset, $default=null)
+	public function offsetGet($attribute, $default=null)
 	{
-		if (strpos($offset, 'data-') === 0)
+		if (strpos($attribute, 'data-') === 0)
 		{
-			$offset = substr($offset, 5);
+			$attribute = substr($attribute, 5);
 
-			return isset($this->dataset[$offset]) ? $this->dataset[$offset] : $default;
+			return isset($this->dataset[$attribute]) ? $this->dataset[$attribute] : $default;
 		}
-		else if ($offset == self::DATASET)
+		else if ($attribute == self::DATASET)
 		{
 			return $this->dataset;
 		}
 
-		return isset($this->tags[$offset]) ? $this->tags[$offset] : $default;
+		return isset($this->tags[$attribute]) ? $this->tags[$attribute] : $default;
 	}
 
 	/**
-	 * @param offset
-	 * @param value
+	 * Sets the value of an attribute.
+	 *
+	 * @param string $attribute The attribute.
+	 * @param mixed $value The value of the attribute.
 	 */
-	public function offsetSet($offset, $value)
+	public function offsetSet($attribute, $value)
 	{
-		if (strpos($offset, 'data-') === 0)
+		if (strpos($attribute, 'data-') === 0)
 		{
-			$this->dataset[substr($offset, 5)] = $value;
+			$this->dataset[substr($attribute, 5)] = $value;
 
 			return;
 		}
 
-		switch ($offset)
+		switch ($attribute)
 		{
 			case self::CHILDREN:
 			{
@@ -463,22 +474,24 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			break;
 		}
 
-		$this->tags[$offset] = $value;
+		$this->tags[$attribute] = $value;
 	}
 
 	/**
-	 * @param offset
+	 * Removes an attribute.
+	 *
+	 * @param string $attribute The name of the attribute.
 	 */
-	public function offsetUnset($offset)
+	public function offsetUnset($attribute)
 	{
-		if (strpos($offset, 'data-') === 0)
+		if (strpos($attribute, 'data-') === 0)
 		{
-			unset($this->dataset[substr($offset, 5)]);
+			unset($this->dataset[substr($attribute, 5)]);
 
 			return;
 		}
 
-		unset($this->tags[$offset]);
+		unset($this->tags[$attribute]);
 	}
 
 	/*
@@ -504,7 +517,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
-	 * Creates an array with instanced from the class, descarting children provided as
+	 * Creates an array with instanced from the class, discarding children provided as
 	 * strings.
 	 *
 	 * @see RecursiveIterator::rewind()
@@ -656,7 +669,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
-	 * Alters the classe names.
+	 * Alters the class names.
 	 *
 	 * This method is invoked before the class names are rendered.
 	 *
@@ -1054,8 +1067,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 * Returns the HTML representation of the element and its contents.
 	 *
 	 * The final element's attributes are filtered when the element is rendered. All special
-	 * attributes, those starting with the hash sign "#", are discarted. The `value`, `required`,
-	 * `disabled` and `name` attributes are discarted if they are not supported by the element's
+	 * attributes, those starting with the hash sign "#", are discarded. The `value`, `required`,
+	 * `disabled` and `name` attributes are discarded if they are not supported by the element's
 	 * type.
 	 *
 	 * If the element has a dataset each of its keys are mapped to a "data-*" attribute. The
@@ -1090,7 +1103,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		foreach ($this->tags as $attribute => $value)
 		{
 			#
-			# We discard false, null or custom tags. The 'class' tag is also discarted because it's
+			# We discard false, null or custom tags. The 'class' tag is also discarded because it's
 			# handled separately.
 			#
 
@@ -1100,7 +1113,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			}
 
 			#
-			# The `value`, `required`, `disabled` and `name` attributes are discarted if they are
+			# The `value`, `required`, `disabled` and `name` attributes are discarded if they are
 			# not supported by the element's type.
 			#
 
@@ -1270,7 +1283,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 * Decorates the specified HTML with specified label.
 	 *
 	 * The position of the label is defined using the{[@link T_LABEL_POSITION} tag. A separator is
-	 * generaly append to the label, it can be removed by setting the {@link T_LABEL_SEPARATOR} tag
+	 * generally append to the label, it can be removed by setting the {@link T_LABEL_SEPARATOR} tag
 	 * to false.
 	 *
 	 * @param string $html
@@ -1377,7 +1390,7 @@ EOT;
 	}
 
 	/**
-	 * Decoartes the specified HTML with the specified description.
+	 * Decorates the specified HTML with the specified description.
 	 *
 	 * @param string $html
 	 * @param string $description
@@ -1696,6 +1709,7 @@ EOT;
 	 * validate its value.
 	 *
 	 * @param $value
+	 * @param \ICanBoogie\Errors $errors
 	 *
 	 * @return boolean `true` if  the validation succeed, `false` otherwise.
 	 */

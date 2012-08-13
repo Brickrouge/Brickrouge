@@ -143,7 +143,7 @@ class Document extends \ICanBoogie\Object
 	 * Tries to locate the file where the assets was added by searching for the first file which
 	 * is not the file where our class is defined.
 	 *
-	 * @return string|null The dirname of the file or null if no file could be found.
+	 * @return string|null The path to the directory of the file or null if no file could be found.
 	 */
 	private static function resolve_root()
 	{
@@ -309,7 +309,7 @@ abstract class AssetsCollector
 	protected $collected = array();
 
 	/**
-	 * Wheter the collected assets should be cached.
+	 * Whether the collected assets should be cached.
 	 *
 	 * @var bool
 	 */
@@ -551,7 +551,7 @@ class JSCollector extends AssetsCollector
 		catch (\Exception $e) { echo render_exception($e); }
 
 		#
-		# default ouput
+		# default output
 		#
 
 		$rc = '';

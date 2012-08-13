@@ -184,7 +184,7 @@ class PopoverWidget extends Popover
 	 * popover behaviour to the element, while the "popover" class is used to style the element.
 	 *
 	 * If you override the `class` attribute, remember to define this two class names, unless
-	 * you want to use a diffenrent behaviour or style.
+	 * you want to use a different behaviour or style.
 	 *
 	 * @param array $tags
 	 */

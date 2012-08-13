@@ -46,7 +46,7 @@ class Actions extends Element
 	 * If actions are defined as a boolean, they are replaced by a
 	 * `button[type=submit][data-action="ok"].btn-primary` element with the label "Send".
 	 *
-	 * If actions are defined as an array, the array is concatened with the glue
+	 * If actions are defined as an array, the array is concatenated with the glue
 	 * `<span class="separator">&nbsp;</span>`.
 	 *
 	 * Otherwise actions are used as is.

@@ -234,6 +234,8 @@ function dump($value)
  * @param string $suffix Optional suffix for the web accessible filename.
  *
  * @return string The pathname of the replacement.
+ *
+ * @throws \Exception if the replacement file could not be created.
  */
 function get_accessible_file($path, $suffix=null)
 {
@@ -260,7 +262,7 @@ function get_accessible_file($path, $suffix=null)
  * The function is patchable by overriding the {@link Patchable::$callback_format property}.
  *
  * @param string $str The string to format.
- * @param array $args An array of replacement for the plaecholders. Occurences in $str of any
+ * @param array $args An array of replacement for the placeholders. Occurrences in $str of any
  * key in $args are replaced with the corresponding sanitized value. The sanitization function
  * depends on the first character of the key:
  *
@@ -321,7 +323,7 @@ function normalize($str, $separator='-', $charset=CHARSET)
  * @param string $str The native string to translate.
  * @param array $args An array of replacements to make after the translation. The replacement is
  * handled by the {@link format()} function.
- * @param array $options An array of additionnal options, with the following elements:
+ * @param array $options An array of additional options, with the following elements:
  * - 'default': The default string to use if the translation failed.
  * - 'scope': The scope of the translation.
  *
@@ -446,6 +448,8 @@ function retrieve_form_errors($name)
  * The function is patchable by overriding the {@link Patchable::$callback_get_document} property.
  *
  * @param \Exception $exception
+ *
+ * @return string
  */
 function render_exception(\Exception $exception)
 {
@@ -577,7 +581,7 @@ class Patchable
 	/**
 	 * This method is the fallback for the {@link t()} function.
 	 *
-	 * We usualy realy on the ICanBoogie framework I18n features to translate our string, if it is
+	 * We usually rely on the ICanBoogie framework I18n features to translate our string, if it is
 	 * not available we simply format the string using the {@link Brickrouge\format()} function.
 	 */
 	public static function fallback_translate($str, array $args=array(), array $options=array())

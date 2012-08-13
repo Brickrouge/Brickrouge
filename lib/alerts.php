@@ -38,7 +38,7 @@ class Alert extends Element
 	/**
 	 * Alert message.
 	 *
-	 * @var string|array|ICanBoogie\Errors
+	 * @var string|array|\ICanBoogie\Errors
 	 */
 	protected $message;
 
@@ -52,25 +52,20 @@ class Alert extends Element
 	/**
 	 * Creates a `<DIV.alert>` element.
 	 *
-	 * @param string|array|ICanBoogie\Errors $message The alert message is provided as a string,
-	 * an array of strings or a {@link ICanBoogie\Errors} object.
+	 * @param string|array|\ICanBoogie\Errors $message The alert message is provided as a string,
+	 * an array of strings or a {@link \ICanBoogie\Errors} object.
 	 *
 	 * If the message is provided as a string it is used as is. If the message is provided as an
 	 * array each value of the array is considered as a message. If the message is provided as
-	 * an {@link ICanBoogie\Errors} object each entry of the object is considered as a message.
+	 * an {@link Errors} object each entry of the object is considered as a message.
 	 *
 	 * Each message is wrapped in a `<P>` element and they are concatenated to create the final
 	 * message.
 	 *
-	 * If the message is an instance of {@link ICanBoogie\Errors} the {@link CONTEXT} attribute is
+	 * If the message is an instance of {@link \ICanBoogie\Errors} the {@link CONTEXT} attribute is
 	 * set to "error" in the initial attributes.
 	 *
 	 * @param array $attributes Additional attributes.
-	 *
-	 * @param string $type Defines an additionnal class for the element. If the message is an
-	 * {@link ICanBoogie\Errors} object $type is set to "error".
-	 *
-	 * @see Element::__construct
 	 */
 	public function __construct($message, array $attributes=array())
 	{
