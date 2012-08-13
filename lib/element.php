@@ -219,6 +219,13 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	const WEIGHT = '#weight';
 
+	/**
+	 * The name of the Javascript constructor that should be used to construct the widget.
+	 *
+	 * @var string
+	 */
+	const WIDGET_CONSTRUCTOR = '#widget-constructor';
+
 	static private $inputs = array('button', 'form', 'input', 'option', 'select', 'textarea');
 	static private $has_attribute_disabled = array('button', 'input', 'optgroup', 'option', 'select', 'textarea');
 	static private $has_attribute_value = array('button', 'input', 'option');
@@ -987,16 +994,21 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 *
 	 * The method is invoked before the dataset is rendered.
 	 *
+	 * The method might add the 'default-value' and 'widget-constructor' keys.
+	 *
 	 * @param array $dataset
 	 *
 	 * @return array
 	 */
 	protected function alter_dataset(array $dataset)
 	{
-		if (in_array($this->tag_name, self::$has_attribute_value) || $this->tag_name == 'textarea' && $this['data-default-value'] === null)
+		if ((in_array($this->tag_name, self::$has_attribute_value) || $this->tag_name == 'textarea')
+		&& $this['data-default-value'] === null)
 		{
 			$dataset['default-value'] = $this[self::DEFAULT_VALUE];
 		}
+
+		$dataset['widget-constructor'] = $this[self::WIDGET_CONSTRUCTOR];
 
 		return $dataset;
 	}
@@ -1005,7 +1017,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 * Renders dataset.
 	 *
 	 * The dataset is rendered as a series of "data-*" attributes. Values of type array are
-	 * encoded using the {@link json_encode()} function. Attributes with null values are skipped.
+	 * encoded using the {@link json_encode()} function. Attributes with null values are discarted.
 	 *
 	 * @param array $dataset
 	 *

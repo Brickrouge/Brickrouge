@@ -20,7 +20,6 @@ return array
 		'Brickrouge\EmptyElementException' => $lib . 'element.php',
 		'Brickrouge\File' => $lib . 'file.php',
 		'Brickrouge\Form' => $lib . 'form.php',
-		'Brickrouge\Form\Templated' => $lib . 'form.templated.php',
 		'Brickrouge\Group' => $lib . 'group.php',
 		'Brickrouge\Pager' => $lib . 'pager.php',
 		'Brickrouge\Popover' => $lib . 'popover.php',
@@ -30,7 +29,6 @@ return array
 		'Brickrouge\Searchbox' => $lib . 'searchbox.php',
 		'Brickrouge\SplitButton' => $lib . 'dropdowns.php',
 		'Brickrouge\Text' => $lib . 'text.php',
-		'Brickrouge\Element\Templated' => $lib . 'element.templated.php',
 		'Brickrouge\Renderer\Simple' => $lib . 'renderer/simple.php',
 		'Brickrouge\Validator' => $lib . 'validator.interface.php'
 	)
