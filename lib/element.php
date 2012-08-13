@@ -21,6 +21,10 @@ namespace Brickrouge;
  * @property string $class Assigns a class name or set of class names to an element. Any number of
  * elements may be assigned the same class name or names. Multiple class names must be separated
  * by white space characters.
+ *
+ * @property Dataset $dataset The dataset property provides convenient accessors for all the
+ * data-* attributes on an element.
+ *
  * @property string $id Assigns a name to an element. This name mush be unique in a document.
  *
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
@@ -76,17 +80,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 * @var string
 	 */
 	const CHILDREN = '#children';
-
-	/**
-	 * Custom data attributes are intended to store custom data private to the page or application,
-	 * for which there are no more appropriate attributes or elements. The dataset property
-	 * provides convenient accessors for all the data-* attributes on an element.
-	 *
-	 * @var array
-	 *
-	 * @see http://www.w3.org/TR/html5/elements.html#embedding-custom-non-visible-data-with-the-data-attributes
-	 */
-	const DATASET = '#dataset';
 
 	/**
 	 * Used to define the default value of an element.
@@ -253,16 +246,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	public $children = array();
 
 	/**
-	 * Dataset of the element.
-	 *
-	 * The dataset of the element can be defined using the {@link DATASET} special attribute or
-	 * `data-*` attributes.
-	 *
-	 * @var array[]string
-	 */
-	public $dataset = array();
-
-	/**
 	 * Tags of the element, including HTML and special attributes.
 	 *
 	 * @var array[string]mixed
@@ -298,15 +281,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 			$this->adopt($attributes[self::CHILDREN]);
 
 			unset($attributes[self::CHILDREN]);
-		}
-
-		#
-		# DATASET before "data-*"
-		#
-
-		if (!empty($attributes[self::DATASET]))
-		{
-			$this[self::DATASET] = $attributes[self::DATASET];
 		}
 
 		#
@@ -378,9 +352,37 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		}
 	}
 
-	/*
-	 * ArrayAccess implement.
+	/**
+	 * Returns the {@link Dataset} of the element.
+	 *
+	 * @return Dataset
 	 */
+	protected function get_dataset()
+	{
+		return new Dataset($this);
+	}
+
+	/**
+	 * Sets the datset of the element.
+	 *
+	 * @param array|Dataset $properties
+	 *
+	 * @return Dataset
+	 */
+	protected function set_dataset($properties)
+	{
+		if ($properties instanceof Dataset)
+		{
+			return $properties;
+		}
+
+		return new Dataset($this, $properties);
+	}
+
+	protected function volatile_get_attributes()
+	{
+		return $this->tags;
+	}
 
 	/**
 	 * Checks is an attribute is set.
@@ -391,11 +393,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	public function offsetExists($attribute)
 	{
-		if (strpos($attribute, 'data-') === 0)
-		{
-			return isset($this->dataset[substr($attribute, 5)]);
-		}
-
 		return isset($this->tags[$attribute]);
 	}
 
@@ -409,17 +406,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	public function offsetGet($attribute, $default=null)
 	{
-		if (strpos($attribute, 'data-') === 0)
-		{
-			$attribute = substr($attribute, 5);
-
-			return isset($this->dataset[$attribute]) ? $this->dataset[$attribute] : $default;
-		}
-		else if ($attribute == self::DATASET)
-		{
-			return $this->dataset;
-		}
-
 		return isset($this->tags[$attribute]) ? $this->tags[$attribute] : $default;
 	}
 
@@ -431,27 +417,12 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	public function offsetSet($attribute, $value)
 	{
-		if (strpos($attribute, 'data-') === 0)
-		{
-			$this->dataset[substr($attribute, 5)] = $value;
-
-			return;
-		}
-
 		switch ($attribute)
 		{
 			case self::CHILDREN:
 			{
 				$this->children = array();
 				$this->adopt($value);
-			}
-			break;
-
-			case self::DATASET:
-			{
-				$this->dataset = $value;
-
-				return;
 			}
 			break;
 
@@ -484,13 +455,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	 */
 	public function offsetUnset($attribute)
 	{
-		if (strpos($attribute, 'data-') === 0)
-		{
-			unset($this->dataset[substr($attribute, 5)]);
-
-			return;
-		}
-
 		unset($this->tags[$attribute]);
 	}
 
@@ -822,32 +786,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		return $rc;
 	}
 
-	/*
-	**
-
-	CONTEXT
-
-	**
-	*/
-
-	protected $pushed_tags = array();
-	protected $pushed_children = array();
-	protected $pushed_inner_html = array();
-
-	public function contextPush()
-	{
-		array_push($this->pushed_tags, $this->tags);
-		array_push($this->pushed_children, $this->children);
-		array_push($this->pushed_inner_html, $this->inner_html);
-	}
-
-	public function contextPop()
-	{
-		$this->tags = array_pop($this->pushed_tags);
-		$this->children = array_pop($this->pushed_children);
-		$this->inner_html = array_pop($this->pushed_inner_html);
-	}
-
 	/**
 	 * Returns the HTML representation of a child element.
 	 *
@@ -901,6 +839,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		{
 			case 'select': $html = $this->render_inner_html_for_select(); break;
 			case 'textarea': $html = $this->render_inner_html_for_textarea(); break;
+			case self::TYPE_CHECKBOX_GROUP: $html = $this->render_inner_html_for_checkbox_group(); break;
+			case self::TYPE_RADIO_GROUP: $html = $this->render_inner_html_for_radio_group(); break;
 		}
 
 		$children = $this->get_ordered_children();
@@ -1003,6 +943,208 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	}
 
 	/**
+	 * Renders inner HTML of the CHECKBOX_GROUP custom element.
+	 *
+	 * @return string
+	 */
+	protected function render_inner_html_for_checkbox_group()
+	{
+		#
+		# get the name and selected value for our children
+		#
+
+		$name = $this['name'];
+		$selected = (array) $this['value'] ?: $this[self::DEFAULT_VALUE];
+		$disabled = $this['disabled'] ?: false;
+		$readonly = $this['readonly'] ?: false;
+
+		#
+		# this is the 'template' child
+		#
+
+		$child = new Element
+		(
+			'input', array
+			(
+				'type' => 'checkbox',
+				'readonly' => $readonly
+			)
+		);
+
+		#
+		# create the inner content of our element
+		#
+
+		$html = '';
+		$disableds = $this[self::OPTIONS_DISABLED];
+
+		foreach ($this[self::OPTIONS] as $option_name => $label)
+		{
+			$child[self::LABEL] = $label;
+			$child['name'] = $name . '[' . $option_name . ']';
+			$child['checked'] = !empty($selected[$option_name]);
+			$child['disabled'] = $disabled || !empty($disableds[$option_name]);
+			$child['data-key'] = $option_name;
+
+			$html .= $child;
+		}
+
+		return $html;
+	}
+
+	protected function render_inner_html_for_radio_group()
+	{
+		#
+		# get the name and selected value for our children
+		#
+
+		$name = $this['name'];
+		$selected = $this['value'] ?: $this[self::DEFAULT_VALUE];
+		$disabled = $this['disabled'] ?: false;
+		$readonly = $this['readonly'] ?: false;
+
+		#
+		# this is the 'template' child
+		#
+
+		$child = new Element
+		(
+			'input', array
+			(
+				'type' => 'radio',
+				'name' => $name,
+				'readonly' => $readonly
+			)
+		);
+
+		#
+		# create the inner content of our element
+		#
+		# add our options as children
+		#
+
+		$html = '';
+		$disableds = $this[self::OPTIONS_DISABLED];
+
+		foreach ($this[self::OPTIONS] as $value => $label)
+		{
+			if ($label && $label{0} == '.')
+			{
+				$label = t(substr($label, 1), array(), array('scope' => 'element.option'));
+			}
+
+			$child[self::LABEL] = $label;
+			$child['value'] = $value;
+			$child['checked'] = (string) $value === (string) $selected;
+			$child['disabled'] = $disabled || !empty($disableds[$value]);
+
+			$html .= $child;
+		}
+
+		return $html;
+	}
+
+	/**
+	 * The `value`, `required`, `disabled` and `name` attributes are discarded if they are not
+	 * supported by the element type.
+	 *
+	 * The `title` attribute is translated within the scope `element.title`.
+	 *
+	 * @param array $attributes
+	 *
+	 * @return array
+	 */
+	protected function alter_attributes(array $attributes)
+	{
+		$tag_name = $this->tag_name;
+
+		foreach ($attributes as $attribute => $value)
+		{
+			if ($attribute == 'value' && !in_array($tag_name, self::$has_attribute_value))
+			{
+				unset($attributes[$attribute]);
+
+				continue;
+			}
+
+			if ($attribute == 'required' && !in_array($tag_name, self::$has_attribute_required))
+			{
+				unset($attributes[$attribute]);
+
+				continue;
+			}
+
+			if ($attribute == 'disabled' && !in_array($tag_name, self::$has_attribute_disabled))
+			{
+				unset($attributes[$attribute]);
+
+				continue;
+			}
+
+			if ($attribute == 'name' && !in_array($tag_name, self::$inputs))
+			{
+				unset($attributes[$attribute]);
+
+				continue;
+			}
+
+			if ($attribute == 'title')
+			{
+				$attributes[$attribute] = t($value, array(), array('scope' => 'element.title'));
+			}
+		}
+
+		#
+		# value/checked
+		#
+
+		if ($this->type == self::TYPE_CHECKBOX)
+		{
+			if ($this[self::DEFAULT_VALUE] && $this['checked'] === null)
+			{
+				$attributes['checked'] = true;
+			}
+		}
+
+		return $attributes;
+	}
+
+	/**
+	 * Renders attributes.
+	 *
+	 * @param array $attributes
+	 *
+	 * @return string
+	 *
+	 * @throws \InvalidArgumentException if the value type is invalid.
+	 */
+	protected function render_attributes(array $attributes)
+	{
+		$html = '';
+
+		foreach ($attributes as $attribute => $value)
+		{
+			#
+			# attributes with the value `true` are translated to XHTML standard
+			# e.g. readonly="readonly"
+			#
+
+			if ($value === true)
+			{
+				$value = $attribute;
+			}
+			else if (is_array($value))
+			{
+				throw new \InvalidArgumentException(format('Invalid value for attribute %attribute: :value', array('attribute' => $attribute, 'value' => $value)));
+			}
+
+			$html .= ' ' . $attribute . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
+		}
+
+		return $html;
+	}
+
+	/**
 	 * Alters the dataset.
 	 *
 	 * The method is invoked before the dataset is rendered.
@@ -1066,10 +1208,16 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	/**
 	 * Returns the HTML representation of the element and its contents.
 	 *
-	 * The final element's attributes are filtered when the element is rendered. All special
-	 * attributes, those starting with the hash sign "#", are discarded. The `value`, `required`,
-	 * `disabled` and `name` attributes are discarded if they are not supported by the element's
-	 * type.
+	 * The attributes are filtered before they are rendered. The attributes with a `false` or
+	 * `null` value are discarded as well as custom attributes, attributes that start with the has
+	 * sign "#". The dataset properties—attributes starting with "data-*"—are extracted to be
+	 * handled separately.
+	 *
+	 * The {@link alter_attributes()} method is invoked to alter the attributes and the
+	 * {@link render_attributes()} method is invoked to render them.
+	 *
+	 * The {@link alter_dataset()} method is invoked to alter the dataset and the
+	 * {@link render_dataset()} method is invoked to render them.
 	 *
 	 * If the element has a dataset each of its keys are mapped to a "data-*" attribute. The
 	 * {@link render_dataset()} method is invoked to render the dataset as "data-*" attributes.
@@ -1083,110 +1231,60 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 	protected function render_outer_html()
 	{
 		$inner = $this->render_inner_html();
-		$rc = '<' . $this->tag_name;
+		$attributes = array();
+		$dataset = array();
 
-		#
-		# class
-		#
+		foreach ($this->tags as $attribute => $value)
+		{
+			#
+			# We discard `false` and `null` values as well as custom attributes. The `class`
+			# attribute is also discarded because it is handled separately.
+			#
+
+			if ($value === false || $value === null || $attribute{0} === '#' || $attribute === 'class')
+			{
+				continue;
+			}
+
+			if (strpos($attribute, 'data-') === 0)
+			{
+				$dataset[substr($attribute, 5)] = $value;
+			}
+			else
+			{
+				$attributes[$attribute] = $value;
+			}
+		}
+
+		$html = '<' . $this->tag_name;
 
 		$class = $this->class;
 
 		if ($class)
 		{
-			$rc .= ' class="' . $class . '"';
+			$html .= ' class="' . $class . '"';
 		}
 
-		#
-		# attributes
-		#
+		$attributes = $this->alter_attributes($attributes);
+		$html .= $this->render_attributes($attributes);
 
-		foreach ($this->tags as $attribute => $value)
-		{
-			#
-			# We discard false, null or custom tags. The 'class' tag is also discarded because it's
-			# handled separately.
-			#
-
-			if ($value === false || $value === null || $attribute{0} == '#' || $attribute == 'class')
-			{
-				continue;
-			}
-
-			#
-			# The `value`, `required`, `disabled` and `name` attributes are discarded if they are
-			# not supported by the element's type.
-			#
-
-			if ($attribute == 'value' && !in_array($this->tag_name, self::$has_attribute_value))
-			{
-				continue;
-			}
-
-			if ($attribute == 'required' && !in_array($this->tag_name, self::$has_attribute_required))
-			{
-				continue;
-			}
-
-			if ($attribute == 'disabled' && !in_array($this->tag_name, self::$has_attribute_disabled))
-			{
-				continue;
-			}
-
-			if ($attribute == 'name' && !in_array($this->tag_name, self::$inputs))
-			{
-				continue;
-			}
-
-			#
-			# The 'title' attribute is translated within the 'element.title' scope.
-			#
-
-			if ($attribute == 'title')
-			{
-				// TODO-20111229: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
-
-				if ($value{0} == '.')
-				{
-					$value = substr($value, 1);
-				}
-
-				$value = t($value, array(), array('scope' => 'element.title'));
-			}
-
-			#
-			# attributes with the value TRUE are translated to XHTML standard
-			# e.g. readonly="readonly"
-			#
-
-			if ($value === true)
-			{
-				$value = $attribute;
-			}
-			else if (is_array($value))
-			{
-				throw new \InvalidArgumentException(format('Invalid value for attribute %attribute: :value', array('attribute' => $attribute, 'value' => $value)));
-			}
-
-			$rc .= ' ' . $attribute . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
-		}
-
-		$dataset = $this->alter_dataset($this->dataset);
-		$rc .= $this->render_dataset($dataset);
+		$dataset = $this->alter_dataset($dataset);
+		$html .= $this->render_dataset($dataset);
 
 		#
-		# if the inner HTML of the element is null, the element is self closing.
+		# if the inner HTML of the element is `null`, the element is self closing.
 		#
 
 		if ($inner === null)
 		{
-			$rc .= ' />';
+			$html .= ' />';
 		}
 		else
 		{
-			$rc .= '>' . $inner . '</' . $this->tag_name . '>';
+			$html .= '>' . $inner . '</' . $this->tag_name . '>';
 		}
 
-		return $rc;
+		return $html;
 	}
 
 	/**
@@ -1462,7 +1560,7 @@ EOT;
 
 			static $valued_elements = array
 			(
-				'input', 'select', 'button', 'textarea'
+				'input', 'button'
 			);
 
 			if (in_array($this->tag_name, $valued_elements))
@@ -1472,79 +1570,6 @@ EOT;
 
 			switch ($this->type)
 			{
-				case self::TYPE_CHECKBOX:
-				{
-					$this->contextPush();
-
-					if ($this[self::DEFAULT_VALUE] && $this['checked'] === null)
-					{
-						$this['checked'] = true;
-					}
-
-					$rc = $this->render_outer_html();
-
-					$this->contextPop();
-				}
-				break;
-
-				case self::TYPE_CHECKBOX_GROUP:
-				{
-					$this->contextPush();
-
-					$this->handleValue($tags);
-
-					#
-					# get the name and selected value for our children
-					#
-
-					$name = $this['name'];
-					$selected = $this['value'] ?: array();
-					$disabled = $this['disabled'] ?: false;
-					$readonly = $this['readonly'] ?: false;
-
-					#
-					# this is the 'template' child
-					#
-
-					$child = new Element
-					(
-						'input', array
-						(
-							'type' => 'checkbox',
-							'readonly' => $readonly
-						)
-					);
-
-					#
-					# create the inner content of our element
-					#
-
-					$inner = null;
-					$disableds = $this[self::OPTIONS_DISABLED];
-
-					foreach ($tags[self::OPTIONS] as $option_name => $label)
-					{
-						$child[self::LABEL] = $label;
-						$child['name'] = $name . '[' . $option_name . ']';
-						$child['checked'] = !empty($selected[$option_name]);
-						$child['disabled'] = $disabled || !empty($disableds[$option_name]);
-						$child['data-key'] = $option_name;
-
-						$inner .= $child;
-					}
-
-					$this->inner_html .= $inner;
-
-					#
-					# make our element
-					#
-
-					$rc = $this->render_outer_html();
-
-					$this->contextPop();
-				}
-				break;
-
 				case self::TYPE_FILE:
 				{
 					$rc .= '<div class="wd-file">';
@@ -1572,7 +1597,7 @@ EOT;
 							(
 								'value' => $reminder,
 								'disabled' => true,
-								'size' => $this->offsetGet('size', 40)
+								'size' => $this['size'] ?: 40
 							)
 						);
 
@@ -1618,68 +1643,6 @@ EOT;
 					}
 
 					$rc .= '</div>';
-				}
-				break;
-
-				case self::TYPE_RADIO_GROUP:
-				{
-					$this->contextPush();
-
-					$this->handleValue($tags);
-
-					#
-					# get the name and selected value for our children
-					#
-
-					$name = $this['name'];
-					$selected = $this['value'];
-					$disabled = $this['disabled'] ?: false;
-					$readonly = $this['readonly'] ?: false;
-
-					#
-					# this is the 'template' child
-					#
-
-					$child = new Element
-					(
-						'input', array
-						(
-							'type' => 'radio',
-							'name' => $name,
-							'readonly' => $readonly
-						)
-					);
-
-					#
-					# create the inner content of our element
-					#
-					# add our options as children
-					#
-
-					$disableds = $this[self::OPTIONS_DISABLED];
-
-					foreach ($tags[self::OPTIONS] as $value => $label)
-					{
-						if ($label && $label{0} == '.')
-						{
-							$label = t(substr($label, 1), array(), array('scope' => 'element.option'));
-						}
-
-						$child[self::LABEL] = $label;
-						$child['value'] = $value;
-						$child['checked'] = (string) $value === (string) $selected;
-						$child['disabled'] = $disabled || !empty($disableds[$value]);
-
-						$this->inner_html .= $child;
-					}
-
-					#
-					# make our element
-					#
-
-					$rc = $this->render_outer_html();
-
-					$this->contextPop();
 				}
 				break;
 

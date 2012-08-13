@@ -11,6 +11,7 @@ return array
 		'Brickrouge\Actions' => $lib . 'actions.php',
 		'Brickrouge\Alert' => $lib . 'alerts.php',
 		'Brickrouge\Button' => $lib . 'button.php',
+		'Brickrouge\Dataset' => $lib . 'dataset.php',
 		'Brickrouge\Date' => $lib . 'date.php',
 		'Brickrouge\DateRange' => $lib . 'date-range.php',
 		'Brickrouge\DateTime' => $lib . 'date-time.php',
