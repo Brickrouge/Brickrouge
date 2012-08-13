@@ -181,6 +181,37 @@ class Form extends Element implements Validator
 	}
 
 	/**
+	 * Override the method to map the {@link HIDDENS} tag to the {@link $hiddens} property.
+	 *
+	 * @see Element::offsetSet()
+	 */
+	public function offsetSet($offset, $value)
+	{
+		parent::offsetSet($offset, $value);
+
+		if ($offset == self::HIDDENS)
+		{
+			$this->hiddens = $value;
+		}
+	}
+
+	/**
+	 * Returns a recursive iterator.
+	 *
+	 * A {@link RecursiveIterator} iterator is created to traverse the children of the form.
+	 *
+	 * The recursive iterator is created with the {@link SELF_FIRST} mode.
+	 *
+	 * @return \RecursiveIteratorIterator
+	 *
+	 * @see IteratorAggregate::getIterator()
+	 */
+	public function getIterator()
+	{
+		return new \RecursiveIteratorIterator(new RecursiveIterator($this), \RecursiveIteratorIterator::SELF_FIRST);
+	}
+
+	/**
 	 * @var array[string]Element The required elements of the form.
 	 */
 	protected $required = array();
@@ -214,9 +245,7 @@ class Form extends Element implements Validator
 		$booleans = array();
 		$validators = array();
 
-		$iterator = new \RecursiveIteratorIterator($this, \RecursiveIteratorIterator::SELF_FIRST);
-
-		foreach ($iterator as $element)
+		foreach ($this as $element)
 		{
 			$name = $element['name'];
 
@@ -262,21 +291,6 @@ class Form extends Element implements Validator
 		#
 
 		return array('name', 'required', 'booleans', 'validators', 'validator');
-	}
-
-	/**
-	 * Override the method to map the {@link HIDDENS} tag to the {@link $hiddens} property.
-	 *
-	 * @see Element::offsetSet()
-	 */
-	public function offsetSet($offset, $value)
-	{
-		parent::offsetSet($offset, $value);
-
-		if ($offset == self::HIDDENS)
-		{
-			$this->hiddens = $value;
-		}
 	}
 
 	/**
@@ -412,9 +426,7 @@ class Form extends Element implements Validator
 	 */
 	protected function alter_elements($values, $disabled, $errors)
 	{
-		$iterator = new \RecursiveIteratorIterator($this, \RecursiveIteratorIterator::SELF_FIRST);
-
-		foreach ($iterator as $element)
+		foreach ($this as $element)
 		{
 			#
 			# disable the element if the form is disabled.

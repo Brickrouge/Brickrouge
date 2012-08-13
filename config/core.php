@@ -1,5 +1,7 @@
 <?php
 
+namespace Brickrouge;
+
 $lib = $path . 'lib' . DIRECTORY_SEPARATOR;
 $icanboogie = $path . 'icanboogie' . DIRECTORY_SEPARATOR;
 
@@ -7,31 +9,33 @@ return array
 (
 	'autoload' => array
 	(
-		'Brickrouge\A' => $lib . 'a.php',
-		'Brickrouge\Actions' => $lib . 'actions.php',
-		'Brickrouge\Alert' => $lib . 'alerts.php',
-		'Brickrouge\Button' => $lib . 'button.php',
-		'Brickrouge\Dataset' => $lib . 'dataset.php',
-		'Brickrouge\Date' => $lib . 'date.php',
-		'Brickrouge\DateRange' => $lib . 'date-range.php',
-		'Brickrouge\DateTime' => $lib . 'date-time.php',
-		'Brickrouge\Document' => $lib . 'document.php',
-		'Brickrouge\DropdownMenu' => $lib . 'dropdowns.php',
-		'Brickrouge\Element' => $lib . 'element.php',
-		'Brickrouge\EmptyElementException' => $lib . 'element.php',
-		'Brickrouge\File' => $lib . 'file.php',
-		'Brickrouge\Form' => $lib . 'form.php',
-		'Brickrouge\Group' => $lib . 'group.php',
-		'Brickrouge\Pager' => $lib . 'pager.php',
-		'Brickrouge\Popover' => $lib . 'popover.php',
-		'Brickrouge\PopoverWidget' => $lib . 'popover.php',
-		'Brickrouge\Ranger' => $lib . 'ranger.php',
-		'Brickrouge\Salutation' => $lib . 'salutation.php',
-		'Brickrouge\Searchbox' => $lib . 'searchbox.php',
-		'Brickrouge\SplitButton' => $lib . 'dropdowns.php',
-		'Brickrouge\Text' => $lib . 'text.php',
-		'Brickrouge\Renderer\Simple' => $lib . 'renderer/simple.php',
-		'Brickrouge\Validator' => $lib . 'validator.interface.php'
+		__NAMESPACE__ . '\A' => $lib . 'a.php',
+		__NAMESPACE__ . '\Actions' => $lib . 'actions.php',
+		__NAMESPACE__ . '\Alert' => $lib . 'alerts.php',
+		__NAMESPACE__ . '\Button' => $lib . 'button.php',
+		__NAMESPACE__ . '\Dataset' => $lib . 'dataset.php',
+		__NAMESPACE__ . '\Date' => $lib . 'date.php',
+		__NAMESPACE__ . '\DateRange' => $lib . 'date-range.php',
+		__NAMESPACE__ . '\DateTime' => $lib . 'date-time.php',
+		__NAMESPACE__ . '\Document' => $lib . 'document.php',
+		__NAMESPACE__ . '\DropdownMenu' => $lib . 'dropdowns.php',
+		__NAMESPACE__ . '\Element' => $lib . 'element.php',
+		__NAMESPACE__ . '\EmptyElementException' => $lib . 'element.php',
+		__NAMESPACE__ . '\File' => $lib . 'file.php',
+		__NAMESPACE__ . '\Form' => $lib . 'form.php',
+		__NAMESPACE__ . '\Group' => $lib . 'group.php',
+		__NAMESPACE__ . '\Iterator' => $lib . 'iterators.php',
+		__NAMESPACE__ . '\RecursiveIterator' => $lib . 'iterators.php',
+		__NAMESPACE__ . '\Pager' => $lib . 'pager.php',
+		__NAMESPACE__ . '\Popover' => $lib . 'popover.php',
+		__NAMESPACE__ . '\PopoverWidget' => $lib . 'popover.php',
+		__NAMESPACE__ . '\Ranger' => $lib . 'ranger.php',
+		__NAMESPACE__ . '\Salutation' => $lib . 'salutation.php',
+		__NAMESPACE__ . '\Searchbox' => $lib . 'searchbox.php',
+		__NAMESPACE__ . '\SplitButton' => $lib . 'dropdowns.php',
+		__NAMESPACE__ . '\Text' => $lib . 'text.php',
+		__NAMESPACE__ . '\Renderer\Simple' => $lib . 'renderer/simple.php',
+		__NAMESPACE__ . '\Validator' => $lib . 'validator.interface.php'
 	)
 	+ (defined('ICanBoogie\VERSION') ? array() : array
 	(

@@ -29,7 +29,7 @@ namespace Brickrouge;
  *
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
-class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIterator
+class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggregate
 {
 	#
 	# special elements
@@ -458,63 +458,16 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		unset($this->tags[$attribute]);
 	}
 
-	/*
-	 * RecursiveIterator implementation.
-	 */
-
-	protected $recursive_iterator_position;
-	protected $recursive_iterator_keys;
-
-	public function current()
-	{
-		return $this->children[$this->recursive_iterator_keys[$this->recursive_iterator_position]];
-	}
-
-	public function key()
-	{
-		return $this->recursive_iterator_keys[$this->recursive_iterator_position];
-	}
-
-	public function next()
-	{
-		return $this->recursive_iterator_position++;
-	}
-
 	/**
-	 * Creates an array with instanced from the class, discarding children provided as
-	 * strings.
+	 * Returns an iterator.
 	 *
-	 * @see RecursiveIterator::rewind()
+	 * @return Iterator
+	 *
+	 * @see IteratorAggregate::getIterator()
 	 */
-	public function rewind()
+	public function getIterator()
 	{
-		$keys = array();
-
-		foreach ($this->children as $key => $child)
-		{
-			if ($child instanceof self)
-			{
-				$keys[] = $key;
-			}
-		}
-
-		$this->recursive_iterator_keys = $keys;
-		$this->recursive_iterator_position = 0;
-	}
-
-	public function valid()
-	{
-		return isset($this->recursive_iterator_keys[$this->recursive_iterator_position]);
-	}
-
-	public function getChildren()
-	{
-		return $this->current();
-	}
-
-	public function hasChildren()
-	{
-		return $this->getChildren() instanceof self;
+		return new Iterator($this);
 	}
 
 	/*
@@ -666,18 +619,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \RecursiveIter
 		{
 			$default = $this[self::DEFAULT_VALUE];
 
-			if ($default !== null)
+			if ($default !== null && $this->type != self::TYPE_CHECKBOX)
 			{
-				if ($this->type == self::TYPE_CHECKBOX)
-				{
-					// TODO-20100108: we need to check this situation further more
-
-					//$this['checked'] = $default;
-				}
-				else
-				{
-					$this['value'] = $default;
-				}
+				$this['value'] = $default;
 			}
 		}
 	}
