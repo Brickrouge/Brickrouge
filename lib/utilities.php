@@ -113,3 +113,80 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 		return $properties;
 	}
 }
+
+/**
+ * An iterator used to traverse {@link Element} descendant.
+ *
+ * The iterator collects all descendant elements excluding non {@link Element} instances.
+ */
+class Iterator implements \Iterator
+{
+	protected $children = array();
+	protected $left;
+
+	public function __construct(Element $element)
+	{
+		$children = array();
+
+		foreach ($element->children as $key => $child)
+		{
+			if (!($child instanceof Element))
+			{
+				continue;
+			}
+
+			$children[$key] = $child;
+		}
+
+		$this->children = $children;
+	}
+
+	public function rewind()
+	{
+		reset($this->children);
+
+		$this->left = count($this->children);
+	}
+
+	public function next()
+	{
+		next($this->children);
+
+		$this->left--;
+	}
+
+	public function valid()
+	{
+		return !!$this->left;
+	}
+
+	public function key()
+	{
+		return key($this->children);
+	}
+
+	public function current()
+	{
+		return current($this->children);
+	}
+}
+
+/**
+ * Recursive iterator used to traverse in depth {@link Element} children.
+ */
+class RecursiveIterator extends Iterator implements \RecursiveIterator
+{
+	public function hasChildren()
+	{
+		$current = $this->current();
+
+		return !empty($current->children);
+	}
+
+	public function getChildren()
+	{
+		$current = $this->current();
+
+		return new static($current);
+	}
+}
