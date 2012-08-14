@@ -1,6 +1,8 @@
 Brickrouge
 ==========
 
+[![Build Status](https://secure.travis-ci.org/ICanBoogie/Brickrouge.png?branch=master)](http://travis-ci.org/ICanBoogie/Brickrouge)
+
 Brickrouge is an object-oriented toolkit for PHP5.3+ that helps you create inputs, widgets,
 forms and many other common elements, with all the CSS and JavaScript needed to make them
 beautiful and magical.
@@ -11,7 +13,7 @@ Here are some of its features:
 * Compatible with Bootstrap
 * Supports localization
 * Fits in a 50ko Phar
-* Object-oritented
+* Object-oriented
 * Can create any kind of HTML element
 * Populate and validate forms
 
@@ -21,8 +23,8 @@ you'll have everything you need to create beautiful and clean web applications. 
 framework [ICanBoogie](http://icanboogie.org/), Brickrouge is one of the
 precious components that make the CMS [Icybee](http://icybee.org/).
 
-Homepage: <http://brickrouge.org/>  
-Author: Olivier Laviale [@olvlvl](https://twitter.com/olvlvl) – [http://weirdog.com/](http://www.weirdog.com/)
+Homepage: [brickrouge.org](http://brickrouge.org/)  
+Author: Olivier Laviale [@olvlvl](https://twitter.com/olvlvl)
 
 
 
@@ -83,7 +85,7 @@ Brickrouge\regsiter_autoloader();
 <link rel="stylesheet" href="<?= Brickrouge\Document::resolve_url(Brickrouge\ASSETS . 'responsive.css') ?>" type="text/css">
 ```
 
-Note: The directory mush be writtable by PHP.
+Note: The directory must be writable by PHP.
 
 
 
@@ -94,7 +96,7 @@ Patching Brickrouge
 Brickrouge was initially designed to work with the framework
 [ICanBoogie](https://github.com/ICanBoogie/ICanBoogie). The project has evolved to
 stand alone and now provides means to patch critical features such as translation, errors handling
-or form storing/retrieving. Fallbacks for each feature are provided so you can patch what you need
+or form storing/retrieving. Fallback for each feature are provided so you can patch what you need
 and leave the rest.
 
 Note: If Brickrouge detects ICanBoogie it will take full advantage of the framework.
@@ -181,40 +183,6 @@ To create a Phar, type the following commands in a terminal:
 	$ make phar
 
 The Phar is created in the parent directory as "Brickrouge.phar".
-
-
-
-
-New BSD Licence
----------------
-
-Copyright (c) 2011-2012, Olivier Laviale.  
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice,
-  this list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of Olivier Laviale nor the names of its
-  contributors may be used to endorse or promote products derived from this
-  software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
