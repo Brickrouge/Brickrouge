@@ -67,8 +67,10 @@ foreach ($rii as $pathname => $file)
 	$relative_pathname = substr($pathname, $root_length);
 
 	if ($relative_pathname === 'README.md'
+	|| $relative_pathname === 'phpunit.xml.dist'
 	|| strpos($relative_pathname, '.git/') === 0
 	|| strpos($relative_pathname, 'build/') === 0
+	|| strpos($relative_pathname, 'tests/') === 0
 	|| strpos($pathname, 'uncompressed') !== false
 	|| strpos($relative_pathname, '.less') !== false
 	|| preg_match('#lib/[^.]+\.js$#', $relative_pathname))
