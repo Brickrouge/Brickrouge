@@ -141,7 +141,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * @var string
 	 */
 	const LABEL_POSITION = '#label-position';
-	const LABEL_SEPARATOR = '#label-separator';
 	const LABEL_MISSING = '#label-missing';
 
 	/**
@@ -1240,13 +1239,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if ($label)
 		{
-			// TODO-20111106: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
-
-			if ($label{0} == '.')
-			{
-				$label = substr($label, 1);
-			}
-
 			$label = t($label, array(), array('scope' => 'element.label'));
 			$html = $this->decorate_with_label($html, $label);
 		}
@@ -1259,13 +1251,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if ($help)
 		{
-			// TODO-20111106: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
-
-			if ($help{0} == '.')
-			{
-				$help = substr($help, 1);
-			}
-
 			$help = t($help, array(), array('scope' => 'element.inline_help'));
 			$html = $this->decorate_with_inline_help($html, $help);
 		}
@@ -1300,62 +1285,29 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	/**
 	 * Decorates the specified HTML with specified label.
 	 *
-	 * The position of the label is defined using the{[@link T_LABEL_POSITION} tag. A separator is
-	 * generally append to the label, it can be removed by setting the {@link T_LABEL_SEPARATOR} tag
-	 * to false.
+	 * The position of the label is defined using the{[@link T_LABEL_POSITION} tag
 	 *
 	 * @param string $html
 	 * @param string $label The label as defined by the {@link T_LABEL} tag.
 	 *
 	 * @return string
-	 *
-	 * @todo-20110813 use a translatable string for the separator e.g.
-	 * 'brickrouge.label_with_separator' => ':label<span class="separator>:</span>'
-	 *
-	 * so that it can be tweaked e.g. in french
-	 *
-	 * 'brickrouge.label_with_separator' => ':label<span class="separator>&nbsp;:</span>'
 	 */
 	protected function decorate_with_label($html, $label)
 	{
-		$is_required = $this[self::REQUIRED];
-		$position = $this->offsetGet(self::LABEL_POSITION, 'after');
-		$separator = $this->offsetGet(self::LABEL_SEPARATOR, true);
-
-		/*
-		if ($is_required)
-		{
-			$label = $label . '<sup>&nbsp;*</sup>';
-		}
-
-		if ($position != 'after' && $separator)
-		{
-			$label .= '<span class="separator">&nbsp;:</span>';
-		}
-		*/
-
-		//if ($position != 'above')
-		{
-			$label = '<span class="text">' . $label . '</span>';
-		}
-
-		// TODO-20100714: T_LABEL_SEPARATOR is no longer used, watch out for consequences
-
-		$content = $html;
 		$class = 'element-label';
 
-		if ($is_required)
+		if ($this[self::REQUIRED])
 		{
 			$class .= ' required';
 		}
 
-		switch ($position)
+		switch ($this[self::LABEL_POSITION] ?: 'after')
 		{
 			case 'above':
 			{
 				$html = <<<EOT
 <label class="$class above">$label</label>
-$content
+$html
 EOT;
 			}
 			break;
@@ -1363,7 +1315,7 @@ EOT;
 			case 'before':
 			{
 				$html = <<<EOT
-<label class="$class">$label $content</label>
+<label class="$class">$label $html</label>
 EOT;
 			}
 			break;
@@ -1372,7 +1324,7 @@ EOT;
 			default:
 			{
 				$html = <<<EOT
-<label class="$class">$content $label</label>
+<label class="$class">$html $label</label>
 EOT;
 			}
 			break;
