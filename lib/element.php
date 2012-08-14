@@ -50,13 +50,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	const TYPE_CHECKBOX_GROUP = '#checkbox-group';
 
 	/**
-	 * Custom type used to create file elements.
-	 *
-	 * @var string
-	 */
-	const TYPE_FILE = '#file';
-
-	/**
 	 * Custom type used to create radio elements.
 	 *
 	 * @var string
@@ -306,16 +299,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			case self::TYPE_CHECKBOX_GROUP:
 			{
 				$this->tag_name = 'div';
-			}
-			break;
-
-			case self::TYPE_FILE:
-			{
-				$this->tag_name = 'input';
-
-				$attributes['type'] = 'file';
-
-				$attributes += array('size' => 40);
 			}
 			break;
 
@@ -1487,94 +1470,9 @@ EOT;
 				static::handle_assets();
 			}
 
-			$rc = '';
+			$html = $this->render_outer_html();
 
-			switch ($this->type)
-			{
-				case self::TYPE_FILE:
-				{
-					$rc .= '<div class="wd-file">';
-
-					#
-					# the FILE_WITH_REMINDER tag can be used to add a disabled text input before
-					# the file element. this text input is used to display the current value of the
-					# file element.
-					#
-
-					$reminder = $this[self::FILE_WITH_REMINDER];
-
-					if ($reminder === true)
-					{
-						$reminder = $this['value'];
-					}
-
-					if ($reminder)
-					{
-						$rc .= '<div class="reminder">';
-
-						$rc .= new Text
-						(
-							array
-							(
-								'value' => $reminder,
-								'disabled' => true,
-								'size' => $this['size'] ?: 40
-							)
-						);
-
-						$rc .= ' ';
-
-						$rc .= new A
-						(
-							'Download', $reminder, array
-							(
-								'title' => $reminder,
-								'target' => '_blank'
-							)
-						);
-
-						$rc .= '</div>';
-					}
-					#
-					#
-					#
-
-					$rc .= $this->render_outer_html();
-
-					#
-					# the FILE_WITH_LIMIT tag can be used to add a little text after the element
-					# reminding the maximum file size allowed for the upload
-					#
-
-					$limit = $this[self::FILE_WITH_LIMIT];
-
-					if ($limit)
-					{
-						if ($limit === true)
-						{
-							$limit = ini_get('upload_max_filesize') * 1024;
-						}
-
-						$limit = format_size($limit * 1024);
-
-						$rc .= PHP_EOL;
-						$rc .= '<div class="limit">';
-						$rc .= t('The maximum file size must be less than :size.', array(':size' => $limit));
-						$rc .= '</div>';
-					}
-
-					$rc .= '</div>';
-				}
-				break;
-
-				default:
-				{
-					$rc = $this->render_outer_html();
-				}
-				break;
-			}
-
-			return $this->decorate($rc);
+			return $this->decorate($html);
 		}
 		catch (EmptyElementException $e)
 		{
