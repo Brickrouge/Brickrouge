@@ -611,21 +611,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		return implode(' ', array_keys(array_filter($class_names)));
 	}
 
-	protected function handleValue(&$tags)
-	{
-		$value = $this['value'];
-
-		if ($value === null)
-		{
-			$default = $this[self::DEFAULT_VALUE];
-
-			if ($default !== null && $this->type != self::TYPE_CHECKBOX)
-			{
-				$this['value'] = $default;
-			}
-		}
-	}
-
 	/**
 	 * Add a child or children to the element.
 	 *
@@ -846,15 +831,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 			if ($label)
 			{
-				// TODO-20111106: only string prefixed with a dot "." were translated, this is only here for compat and should be removed as soon as possible.
-
-				if ($label{0} == '.')
-				{
-					$label = substr($label, 1);
-				}
-
-				$label = t($label, array(), array('scope' => 'element.option'));
-				$label = escape($label);
+				$label = escape(t($label, array(), array('scope' => 'element.option')));
 			}
 			else
 			{
@@ -1049,6 +1026,25 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 				$attributes['checked'] = true;
 			}
 		}
+		else if ($tag_name == 'input' || $tag_name == 'button')
+		{
+			$value = $this['value'];
+
+			if ($value === null)
+			{
+				$default = $this[self::DEFAULT_VALUE];
+
+				if ($default !== null)
+				{
+					$value = $default;
+				}
+			}
+
+			if ($value !== null)
+			{
+				$attributes['value'] = $value;
+			}
+		}
 
 		return $attributes;
 	}
@@ -1209,11 +1205,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			$html .= ' class="' . $class . '"';
 		}
 
-		$attributes = $this->alter_attributes($attributes);
-		$html .= $this->render_attributes($attributes);
-
-		$dataset = $this->alter_dataset($dataset);
-		$html .= $this->render_dataset($dataset);
+		$html .= $this->render_attributes($this->alter_attributes($attributes));
+		$html .= $this->render_dataset($this->alter_dataset($dataset));
 
 		#
 		# if the inner HTML of the element is `null`, the element is self closing.
@@ -1495,22 +1488,6 @@ EOT;
 			}
 
 			$rc = '';
-
-			$tags =& $this->tags;
-
-			#
-			# handle value for some selected 'types' and 'elements'
-			#
-
-			static $valued_elements = array
-			(
-				'input', 'button'
-			);
-
-			if (in_array($this->tag_name, $valued_elements))
-			{
-				$this->handleValue($tags);
-			}
 
 			switch ($this->type)
 			{
