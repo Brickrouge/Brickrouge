@@ -228,7 +228,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @var string
 	 */
-	protected $tag_name;
+	public $tag_name;
 
 	/**
 	 * An array containing the children of the element.
@@ -1085,7 +1085,10 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			$dataset['default-value'] = $this[self::DEFAULT_VALUE];
 		}
 
-		$dataset['widget-constructor'] = $this[self::WIDGET_CONSTRUCTOR];
+		if (!isset($dataset['widget-constructor']))
+		{
+			$dataset['widget-constructor'] = $this[self::WIDGET_CONSTRUCTOR];
+		}
 
 		return $dataset;
 	}
@@ -1399,29 +1402,28 @@ EOT;
 	}
 
 	/**
-	 * Returns the HTML representation of the element, including decoration.
+	 * Renders the element into an HTML string.
 	 *
-	 * The inner HTML is rendered using the {@link render_inner_html()} method. The outer HTML is
-	 * rendered using the {@link render_outer_html()} method. Finaly the HTML is decorated using
+	 * Before the element is rendered the method  {@link handle_assets()} is invoked.
+	 *
+	 * The inner HTML is rendered by the {@link render_inner_html()} method. The outer HTML is
+	 * rendered by the {@link render_outer_html()} method. Finaly, the HTML is decorated by
 	 * the {@link decorate()} method.
 	 *
-	 * If a exception is thrown during rendering the exception is rendered using the
-	 * {@link render_exception()} function and returned, unless the exception is of type
-	 * {@link EmptyElementException} in which case an empty string is returned instead.
-	 *
-	 * Before the element is rendered the {@link handle_assets()} method is invoked.
+	 * If the {@link EmptyElementException} is caught during the rendering an empty string is
+	 * returned.
 	 *
 	 * @return string The HTML representation of the object
 	 */
-	public function __toString()
+	public function render()
 	{
+		if (get_class($this) != __CLASS__)
+		{
+			static::handle_assets();
+		}
+
 		try
 		{
-			if (get_class($this) != __CLASS__)
-			{
-				static::handle_assets();
-			}
-
 			$html = $this->render_outer_html();
 
 			return $this->decorate($html);
@@ -1429,6 +1431,24 @@ EOT;
 		catch (EmptyElementException $e)
 		{
 			return '';
+		}
+	}
+
+	/**
+	 * Renders the element into an HTML string.
+	 *
+	 * The method {@link render()} is invoked to render the element.
+	 *
+	 * If an exception is thrown during the rendering it is rendered using the
+	 * {@link render_exception()} function and returned.
+	 *
+	 * @return string The HTML representation of the object
+	 */
+	public function __toString()
+	{
+		try
+		{
+			return $this->render();
 		}
 		catch (\Exception $e)
 		{

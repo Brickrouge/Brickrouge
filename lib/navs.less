@@ -7,8 +7,8 @@
 // ----------
 
 .nav {
-  margin-left: 0;
-  margin-bottom: @baseLineHeight;
+  margin: 0 0 @baseLineHeight 0; //@brickrouge: we define all the margins
+  padding: 0; //@we also define the padding, because UL have paddings.
   list-style: none;
 }
 
@@ -95,7 +95,7 @@
   padding-left: 12px;
   margin-right: 2px;
   line-height: 14px; // keeps the overall height an even number
-  text-decoration: none; //@brickrouge: we don't force text decoration on A
+  text-decoration: none !important; //@brickrouge: we don't force text decoration on A
 }
 
 // TABS

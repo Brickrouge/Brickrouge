@@ -137,7 +137,7 @@ var Brickrouge = {
 	 * element to turn into widgets. The widgets created are store under the `widget` key, and the
 	 * key is used to avoid generating two widgets for the same element.
 	 *
-	 * @param container This optionnal parameter can be used to limit widget construction to a
+	 * @param container This optional parameter can be used to limit widget construction to a
 	 * specified container. If the container if not defined or empty the document body is used
 	 * instead.
 	 */
@@ -151,6 +151,8 @@ var Brickrouge = {
 
 				if (el.retrieve('widget')) return
 
+				el.store('widget', true)
+
 				var widget = new constructor(el, el.get('dataset'))
 
 				el.store('widget', widget)
@@ -161,7 +163,7 @@ var Brickrouge = {
 
 /*
  * The Request.Element class requires the Request.API class provided by the ICanBoogie framework,
- * maybe we should move the Request.Element and Request.Widget clases to the Icybee CMS.
+ * maybe we should move the Request.Element and Request.Widget classes to the Icybee CMS.
  */
 if (Request.API)
 {
@@ -242,6 +244,8 @@ Element.Properties.widget = {
 				throw new Error("Undefined constructor: " + constructorName)
 			}
 
+			this.store('widget', true)
+
 			widget = new constructor(this, this.get('dataset'))
 
 			this.store('widget', widget)
@@ -254,7 +258,7 @@ Element.Properties.widget = {
 /**
  * Returns the dataset of the element.
  *
- * The dataset is created by readding and aggregatting value defined by the data-* attributes.
+ * The dataset is created by reading and aggregating value defined by the data-* attributes.
  */
 Element.Properties.dataset = {
 
@@ -305,7 +309,7 @@ document.addEvent('elementsready', function(ev) {
 
 /**
  * The "elementsready" event is fired for elements to be initialized, to become alive thanks to the
- * magic of Javascript. This event is usually fired when new widgets are added to the DOM.
+ * magic of JavaSript. This event is usually fired when new widgets are added to the DOM.
  */
 window.addEvent('domready', function() {
 
@@ -618,20 +622,33 @@ document.body.addEvent('click:relay(.alert a.close)', function(ev, target) {
  */
 
 /**
- * Activates the target tab content of a tab.
+ * Activates the pane associated with a tab.
  */
 document.body.addEvent('click:relay(.tabbable .nav-tabs a)', function(ev, el) {
 
-	var targetId = el.get('href').substring(1)
-	, target = document.id(targetId)
-	, active = el.getParent('.nav-tabs').getElement('li.active')
+	var href = el.get('href')
+	, pane
+	, active
+
+	if (href == '#')
+	{
+		var index = el.getParent('.nav-tabs').getElements('a').indexOf(el)
+
+		pane = el.getParent('.tabbable').getElement('.tab-content').getChildren()[index]
+	}
+	else
+	{
+		pane = document.id(href.substring(1))
+	}
 
 	ev.preventDefault()
 
-	if (!target)
+	if (!pane)
 	{
-		throw new Error('Invalid target: ' + targetId)
+		throw new Error('Invalid pane id: ' + href)
 	}
+
+	active = el.getParent('.nav-tabs').getFirst('.active')
 
 	if (active)
 	{
@@ -640,10 +657,14 @@ document.body.addEvent('click:relay(.tabbable .nav-tabs a)', function(ev, el) {
 
 	el.getParent('li').addClass('active')
 
-	target.getParent('.tab-content').getChildren().each(function(pane) {
+	active = pane.getParent('.tab-content').getFirst('.active')
 
-		pane[target == pane ? 'addClass' : 'removeClass']('active')
-	})
+	if (active)
+	{
+		active.removeClass('active')
+	}
+
+	pane.addClass('active')
 })
 /*
  * This file is part of the Brickrouge package.

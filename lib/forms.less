@@ -213,9 +213,16 @@ input[type="checkbox"]:focus {
 
 //<brickrouge>
 // Right align text inputs with the '.measure' class
-input["text"].measure {
+input[type="text"].measure {
 	text-align: right;
 }
+
+input[type="password"],
+input[type="text"],
+select {
+	vertical-align: middle;
+}
+
 //</brickrouge>
 
 // CHECKBOXES & RADIOS

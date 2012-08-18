@@ -69,8 +69,13 @@ input[type="color"],
   line-height: 18px;
   color: inherit;
 }
-input[[object Object]].measure {
+input[type="text"].measure {
   text-align: right;
+}
+input[type="password"],
+input[type="text"],
+select {
+  vertical-align: middle;
 }
 .inline-inputs > label {
   display: inline-block;
@@ -95,7 +100,8 @@ input[[object Object]].measure {
   margin-top: 9px;
   margin-bottom: 0;
 }
-.input-prepend, .input-append {
+.input-prepend,
+.input-append {
   margin-bottom: 0;
 }
 .control-group {
@@ -110,7 +116,8 @@ input[[object Object]].measure {
 .form-horizontal .control-group + .control-group {
   margin-top: 9px;
 }
-button, .btn {
+button,
+.btn {
   display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
@@ -177,13 +184,15 @@ button.active,
 .btn.active {
   background-color: #cccccc \9;
 }
-button:first-child, .btn:first-child {
+button:first-child,
+.btn:first-child {
   *margin-left: 0;
 }
 a[href].btn {
   text-decoration: none !important;
 }
-button:hover, .btn:hover {
+button:hover,
+.btn:hover {
   color: #404040;
   text-decoration: none;
   background-color: #e6e6e6;
@@ -197,12 +206,15 @@ button:hover, .btn:hover {
   -o-transition: background-position 0.1s linear;
   transition: background-position 0.1s linear;
 }
-button:focus, .btn:focus {
+button:focus,
+.btn:focus {
   outline: thin dotted #333;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
-button:active, .btn.active, .btn:active {
+button:active,
+.btn.active,
+.btn:active {
   background-color: #e6e6e6;
   background-color: #d9d9d9 \9;
   outline: 0;
@@ -210,7 +222,9 @@ button:active, .btn.active, .btn:active {
   -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05);
   box-shadow: inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05);
 }
-button:disabled, .btn.disabled, .btn[disabled] {
+button:disabled,
+.btn.disabled,
+.btn[disabled] {
   cursor: default;
   background-color: #e6e6e6;
   background-image: none;
@@ -220,7 +234,8 @@ button:disabled, .btn.disabled, .btn[disabled] {
   -moz-box-shadow: none;
   box-shadow: none;
 }
-button, .btn {
+button,
+.btn {
   border-color: #ccc;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
@@ -236,7 +251,8 @@ button, .btn {
 .popover-content  > :last-child {
   margin-bottom: 0;
 }
-.popover-title, .popover-content {
+.popover-title,
+.popover-content {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
@@ -250,6 +266,7 @@ button, .btn {
   border-bottom-right-radius: 3px;
 }
 .popover-actions {
+  clear: both;
   text-align: center;
   background-color: #f5f5f5;
   border-top: 1px solid #bfbfbf;
@@ -294,7 +311,9 @@ button, .btn {
   background: linear-gradient(top, #222222, transparent);
   border-top-color: #212121;
 }
-.popover.contrast input[type="text"], .popover.contrast select, .popover.contrast textarea {
+.popover.contrast input[type="text"],
+.popover.contrast select,
+.popover.contrast textarea {
   background: #333333;
   background: -webkit-linear-gradient(top, #212121 5%, #333333);
   background: -moz-linear-gradient(top, #212121 5%, #333333);
@@ -331,7 +350,8 @@ button, .btn {
   background-color: #212121;
   *background-color: #141414;
 }
-.popover.contrast .add-on:active, .popover.contrast .add-on.active {
+.popover.contrast .add-on:active,
+.popover.contrast .add-on.active {
   background-color: #080808 \9;
 }
 .hidden {

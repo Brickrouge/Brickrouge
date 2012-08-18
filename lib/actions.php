@@ -71,7 +71,7 @@ class Actions extends Element
 		{
 			foreach ($actions as $name => $action)
 			{
-				if (!is_string($name) || !($action instanceof Element) || $action['name'])
+				if (!is_string($name) || !($action instanceof Element) || $action['name'] !== null)
 				{
 					continue;
 				}

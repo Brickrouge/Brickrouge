@@ -3,6 +3,21 @@
 $src = $_SERVER['argv'][1];
 $dst = $_SERVER['argv'][2];
 
+if (!function_exists('curl_init'))
+{
+	echo <<<EOT
+
+Unable to call the online compressor, cURL is not installed!
+You can install its package using the following line:
+
+apt-get install php5-curl
+
+
+EOT;
+
+	exit(-1);
+}
+
 $ch = curl_init('http://marijnhaverbeke.nl/uglifyjs');
 
 curl_setopt_array
