@@ -16,7 +16,7 @@ namespace Brickrouge;
  *
  * @var string
  */
-define('Brickrouge\VERSION', '1.0.0-wip (2012-08-09)');
+define('Brickrouge\VERSION', '1.1.0 (2012-09-18)');
 
 /**
  * The ROOT directory of the Brickrouge framework.
@@ -82,16 +82,16 @@ require_once ROOT . 'lib/helpers.php';
  */
 if (defined('ICanBoogie\VERSION'))
 {
-	Patchable::$callback_translate = 'ICanBoogie\I18n::translate';
-	Patchable::$callback_render_exception = 'ICanBoogie\Debug::format_alert';
+	Helpers::patch('translate', 'ICanBoogie\I18n::translate');
+	Helpers::patch('render_exception', 'ICanBoogie\Debug::format_alert');
 
-	Patchable::$callback_get_document = function()
+	Helpers::patch('get_document', function()
 	{
 		return \ICanBoogie\Core::get()->document;
-	};
+	});
 
-	Patchable::$callback_check_session = function()
+	Helpers::patch('check_session', function()
 	{
 		return \ICanBoogie\Core::get()->session;
-	};
+	});
 }

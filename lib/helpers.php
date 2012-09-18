@@ -25,8 +25,7 @@ function register_autoloader()
 			if ($index === null)
 			{
 				$path = ROOT; // the $path variable is used within the config file
-				$config = require $path . 'config/core.php';
-				$index = $config['autoload'];
+				$index = require $path . 'config/autoload.php';
 			}
 
 			if (isset($index[$name]))
@@ -277,7 +276,7 @@ function get_accessible_file($path, $suffix=null)
  */
 function format($str, array $args=array())
 {
-	return call_user_func(Patchable::$callback_format, $str, $args);
+	return Helpers::format($str, $args);
 }
 
 /**
@@ -293,7 +292,7 @@ function format($str, array $args=array())
  */
 function format_size($size)
 {
-	return call_user_func(Patchable::$callback_format_size, $size);
+	return Helpers::format_size($size);
 }
 
 /**
@@ -308,7 +307,7 @@ function format_size($size)
  */
 function normalize($str, $separator='-', $charset=CHARSET)
 {
-	return call_user_func(Patchable::$callback_normalize, $str, $separator, $charset);
+	return Helpers::normalize($str, $separator, $charset);
 }
 
 /**
@@ -333,7 +332,7 @@ function normalize($str, $separator='-', $charset=CHARSET)
  */
 function t($str, array $args=array(), array $options=array())
 {
-	return call_user_func(Patchable::$callback_translate, $str, $args, $options);
+	return Helpers::translate($str, $args, $options);
 }
 
 /**
@@ -369,7 +368,7 @@ function t($str, array $args=array(), array $options=array())
  */
 function get_document()
 {
-	return call_user_func(Patchable::$callback_get_document);
+	return Helpers::get_document();
 }
 
 /**
@@ -384,7 +383,7 @@ function get_document()
  */
 function check_session()
 {
-	call_user_func(Patchable::$callback_check_session);
+	Helpers::check_session();
 }
 
 /**
@@ -398,7 +397,7 @@ function check_session()
  */
 function store_form(Form $form)
 {
-	return call_user_func(Patchable::$callback_store_form, $form);
+	return Helpers::store_form($form);
 }
 
 /**
@@ -412,7 +411,7 @@ function store_form(Form $form)
  */
 function retrieve_form($key)
 {
-	return call_user_func(Patchable::$callback_retrieve_form, $key);
+	return Helpers::retrieve_form($key);
 }
 
 /**
@@ -425,7 +424,7 @@ function retrieve_form($key)
  */
 function store_form_errors($name, $errors)
 {
-	call_user_func(Patchable::$callback_store_form_errors, $name, $errors);
+	Helpers::store_form_errors($name, $errors);
 }
 
 /**
@@ -439,7 +438,7 @@ function store_form_errors($name, $errors)
  */
 function retrieve_form_errors($name)
 {
-	return call_user_func(Patchable::$callback_retrieve_form_errors, $name);
+	return Helpers::retrieve_form_errors($name);
 }
 
 /**
@@ -453,27 +452,68 @@ function retrieve_form_errors($name)
  */
 function render_exception(\Exception $exception)
 {
-	return call_user_func(Patchable::$callback_render_exception, $exception);
+	return Helpers::render_exception($exception);
 }
 
-class Patchable
+/**
+ * Helpers jumptable.
+ */
+class Helpers
 {
-	static $callback_format = array(__CLASS__, 'fallback_format');
-	static $callback_format_size = array(__CLASS__, 'fallback_format_size');
-	static $callback_normalize = array(__CLASS__, 'fallback_normalize');
-	static $callback_translate = array(__CLASS__, 'fallback_translate');
-	static $callback_get_document = array(__CLASS__, 'fallback_get_document');
-	static $callback_check_session = array(__CLASS__, 'fallback_check_session');
-	static $callback_store_form = array(__CLASS__, 'fallback_store_form');
-	static $callback_retrieve_form = array(__CLASS__, 'fallback_retrieve_form');
-	static $callback_store_form_errors = array(__CLASS__, 'fallback_store_form_errors');
-	static $callback_retrieve_form_errors = array(__CLASS__, 'fallback_retrieve_form_errors');
-	static $callback_render_exception = array(__CLASS__, 'fallback_render_exception');
+	static private $jumptable = array
+	(
+		'format' => array(__CLASS__, 'format'),
+		'format_size' => array(__CLASS__, 'format_size'),
+		'normalize' => array(__CLASS__, 'normalize'),
+		'translate' => array(__CLASS__, 'translate'),
+		'get_document' => array(__CLASS__, 'get_document'),
+		'check_session' => array(__CLASS__, 'check_session'),
+		'store_form' => array(__CLASS__, 'store_form'),
+		'retrieve_form' => array(__CLASS__, 'retrieve_form'),
+		'store_form_errors' => array(__CLASS__, 'store_form_errors'),
+		'retrieve_form_errors' => array(__CLASS__, 'retrieve_form_errors'),
+		'render_exception' => array(__CLASS__, 'render_exception')
+	);
+
+	/**
+	 * Calls the callback of a patchable function.
+	 *
+	 * @param string $name Name of the function.
+	 * @param array $arguments Arguments.
+	 *
+	 * @return mixed
+	 */
+	static public function __callstatic($name, array $arguments)
+	{
+		return call_user_func_array(self::$jumptable[$name], $arguments);
+	}
+
+	/**
+	 * Patches a patchable function.
+	 *
+	 * @param string $name Name of the function.
+	 * @param collable $callback Callback.
+	 *
+	 * @throws \RuntimeException is attempt to patch an undefined function.
+	 */
+	static public function patch($name, $callback)
+	{
+		if (empty(self::$jumptable[$name]))
+		{
+			throw new \RuntimeException("Undefined patchable: $name.");
+		}
+
+		self::$jumptable[$name] = $callback;
+	}
+
+	/*
+	 * fallbacks
+	 */
 
 	/**
 	 * This method is the fallback for the {@link format()} function.
 	 */
-	public static function fallback_format($str, array $args=array())
+	static private function format($str, array $args=array())
 	{
 		if (!$args)
 		{
@@ -534,7 +574,7 @@ class Patchable
 	/**
 	 * This method is the fallback for the {@link format_size()} function.
 	 */
-	public static function fallback_format_size($size)
+	static private function format_size($size)
 	{
 		if ($size < 1024)
 		{
@@ -562,7 +602,7 @@ class Patchable
 	/**
 	 * This method is the fallback for the {@link normalize()} function.
 	 */
-	public static function fallback_normalize($str, $separator='-', $charset=CHARSET)
+	static private function normalize($str, $separator='-', $charset=CHARSET)
 	{
 		$str = str_replace('\'', '', $str);
 
@@ -584,7 +624,7 @@ class Patchable
 	 * We usually rely on the ICanBoogie framework I18n features to translate our string, if it is
 	 * not available we simply format the string using the {@link Brickrouge\format()} function.
 	 */
-	public static function fallback_translate($str, array $args=array(), array $options=array())
+	static private function translate($str, array $args=array(), array $options=array())
 	{
 		return format($str, $args);
 	}
@@ -592,7 +632,7 @@ class Patchable
 	/**
 	 * This method is the fallback for the {@link get_document()} function.
 	 */
-	public static function fallback_get_document()
+	static private function get_document()
 	{
 		if (self::$document === null)
 		{
@@ -607,7 +647,7 @@ class Patchable
 	/**
 	 * This method is the fallback for the {@link check_session()} function.
 	 */
-	public static function fallback_check_session()
+	static private function check_session()
 	{
 		if (session_id())
 		{
@@ -629,7 +669,7 @@ class Patchable
 	 *
 	 * @return string The key to use to retrieve the form.
 	 */
-	public static function fallback_store_form(Form $form)
+	static private function store_form(Form $form)
 	{
 		check_session();
 
@@ -662,7 +702,7 @@ class Patchable
 	 *
 	 * @return void|Form The retrieved form or null if the key matched none.
 	 */
-	public static function fallback_retrieve_form($key)
+	static private function retrieve_form($key)
 	{
 		check_session();
 
@@ -678,12 +718,12 @@ class Patchable
 		return $form;
 	}
 
-	private static $errors;
+	static private $errors;
 
 	/**
 	 * This method is the fallback for the {@link store_form_errors()} function.
 	 */
-	public static function fallback_store_form_errors($name, $errors)
+	static private function store_form_errors($name, $errors)
 	{
 		self::$errors[$name] = $errors;
 	}
@@ -691,7 +731,7 @@ class Patchable
 	/**
 	 * This method is the fallback for the {@link retrieve_form_errors()} function.
 	 */
-	public static function fallback_retrieve_form_errors($name)
+	static private function retrieve_form_errors($name)
 	{
 		return isset(self::$errors[$name]) ? self::$errors[$name] : array();
 	}
@@ -703,7 +743,7 @@ class Patchable
 	 *
 	 * @return string
 	 */
-	public static function fallback_render_exception(\Exception $exception)
+	static private function render_exception(\Exception $exception)
 	{
 		return (string) $exception;
 	}
