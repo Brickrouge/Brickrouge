@@ -233,7 +233,7 @@ class Document extends \ICanBoogie\Object
 			$tries[] = $root . DIRECTORY_SEPARATOR;
 		}
 
-		$url = null;
+		$pathname = null;
 		$i = 0;
 
 		foreach ($tries as &$try)
@@ -246,7 +246,7 @@ class Document extends \ICanBoogie\Object
 				continue;
 			}
 
-			$url = $try;
+			$pathname = $try;
 
 			break;
 		}
@@ -255,31 +255,27 @@ class Document extends \ICanBoogie\Object
 		# We couldn't find a matching file :-(
 		#
 
-		if (!$url)
+		if (!$pathname)
 		{
 			trigger_error(format('Unable to resolve path %path to an URL, tried: :tried', array('%path' => $path, ':tried' => implode(', ', array_slice($tries, 0, $i)))));
 
 			return;
 		}
 
-		if (strpos($url, $root) === false)
+		#
+		# If the file is not accessible from the document root, we create an accessible version.
+		#
+
+		if (strpos($pathname, $root) === false)
 		{
-			$key = sprintf('unaccessible-%s-%04x.%s', md5($path), strlen($path), pathinfo($path, PATHINFO_EXTENSION));
-			$replacement = ACCESSIBLE_ASSETS . $key;
-
-			if (!file_exists($replacement) || filemtime($path) > filemtime($replacement))
-			{
-				file_put_contents($replacement, file_get_contents($path));
-			}
-
-			$url = $replacement;
+			$pathname = get_accessible_file($pathname);
 		}
 
 		#
 		# let's turn this pathname into a lovely URL
 		#
 
-		$url = substr(realpath($url), strlen($root));
+		$url = substr(realpath($pathname), strlen($root));
 
 		if (DIRECTORY_SEPARATOR == '\\')
 		{

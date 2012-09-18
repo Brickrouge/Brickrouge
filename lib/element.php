@@ -91,8 +91,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * @see Element::decorate_with_description()
 	 */
 	const DESCRIPTION = '#description';
-	const FILE_WITH_LIMIT = '#file-with-limit';
-	const FILE_WITH_REMINDER = '#file-with-reminder';
 
 	/**
 	 * Used to define the group of an element.

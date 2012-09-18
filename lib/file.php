@@ -15,6 +15,7 @@ use ICanBoogie\Uploaded;
 
 class File extends Widget
 {
+	const FILE_WITH_LIMIT = '#file-with-limit';
 	const T_UPLOAD_URL = '#file-upload-url';
 
 	static protected function add_assets(Document $document)
