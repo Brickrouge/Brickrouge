@@ -12,16 +12,27 @@
   }
 }
 
+h1, h2, h3, h4, h5, h6 {
+	a {
+		color: inherit;
+	}
+	
+	a:not(:hover) {
+		text-decoration: none;
+	}
+}
+
+
 // inputs
 
-input[type=text][size],
-input[type=password][size] {
+input[type="text"][size],
+input[type="password"][size] {
 	width: auto;
 }
 
 input.unstyled,
-input[type=text].unstyled,
-input[type=password].unstyled,
+input[type="text"].unstyled,
+input[type="password"].unstyled,
 select.unstyled,
 textarea.unstyled {
 	background: transparent;

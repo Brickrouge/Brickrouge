@@ -1,7 +1,11 @@
-// ALERT STYLES
-// ------------
+//
+// Alerts
+// --------------------------------------------------
 
-// Base alert styles
+
+// Base styles
+// -------------------------
+
 .alert {
   padding: 8px 35px 8px 14px;
   margin-bottom: @baseLineHeight;
@@ -51,7 +55,7 @@
   position: relative;
   top: -2px;
   right: -21px;
-  line-height: 18px;
+  line-height: @baseLineHeight;
 }
 
 //<brickrouge>
@@ -63,11 +67,11 @@
 
 
 // Alternate styles
-// ----------------
+// -------------------------
 
 .alert-success {
   background-color: @successBackground;
-  border-color: @successBorder;  
+  border-color: @successBorder;
   color: @successText;
 }
 .alert-danger,
@@ -82,8 +86,10 @@
   color: @infoText;
 }
 
+
 // Block alerts
-// ------------------------
+// -------------------------
+
 .alert-block {
   padding-top: 14px;
   padding-bottom: 14px;
