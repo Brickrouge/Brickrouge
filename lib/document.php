@@ -20,6 +20,18 @@ use ICanBoogie\FileCache;
  */
 class Document extends \ICanBoogie\Object
 {
+	public $body;
+
+	/**
+	 * @var JSCollector Collector for Javascript assets.
+	 */
+	public $js;
+
+	/**
+	 * @var CSSCollector Collector for CSS assets.
+	 */
+	public $css;
+
 	/**
 	 * Constructor.
 	 *
@@ -31,19 +43,10 @@ class Document extends \ICanBoogie\Object
 
 		$use_cache = !empty($core->config['cache assets']);
 
+		$this->body = new Element('body');
 		$this->js = new JSCollector($use_cache);
 		$this->css = new CSSCollector($use_cache);
 	}
-
-	/**
-	 * @var JSCollector Collector for Javascript assets.
-	 */
-	public $js;
-
-	/**
-	 * @var CSSCollector Collector for CSS assets.
-	 */
-	public $css;
 
 	/**
 	 * Returns the Javascript and CSS assets used by the document as an array or URLs.
