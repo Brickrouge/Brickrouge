@@ -298,7 +298,7 @@ class Form extends Element implements Validator
 	 *
 	 * The rendered is defined using the {@link RENDERER} attribute.
 	 *
-	 * @see WdElement::render_children()
+	 * @see Element::render_children()
 	 */
 	protected function render_children(array $children)
 	{

@@ -16,7 +16,7 @@ namespace Brickrouge;
  *
  * @var string
  */
-define('Brickrouge\VERSION', '1.1.0 (2012-09-18)');
+define('Brickrouge\VERSION', '1.1.2 (2012-10-03)');
 
 /**
  * The ROOT directory of the Brickrouge framework.

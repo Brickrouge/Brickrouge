@@ -1408,7 +1408,7 @@ EOT;
 	 * rendered by the {@link render_outer_html()} method. Finaly, the HTML is decorated by
 	 * the {@link decorate()} method.
 	 *
-	 * If the {@link EmptyElementException} is caught during the rendering an empty string is
+	 * If the {@link ElementIsEmpty} is caught during the rendering an empty string is
 	 * returned.
 	 *
 	 * @return string The HTML representation of the object
@@ -1426,7 +1426,7 @@ EOT;
 
 			return $this->decorate($html);
 		}
-		catch (EmptyElementException $e)
+		catch (ElementIsEmpty $e)
 		{
 			return '';
 		}
@@ -1514,12 +1514,11 @@ EOT;
 }
 
 /**
- * The {@link EmptyElementException} exception is usually thrown when one wants to cancel the whole
- * rendering because the element is empty. The {@link Element} class takes care of this special
- * case and instead of rendering the exception only returns an empty string as the result of its
- * {@link __toString()} method.
+ * Exception thrown when one wants to cancel the whole rendering of an empty element. The
+ * {@link Element} class takes care of this special case and instead of rendering the exception
+ * only returns an empty string as the result of its {@link __toString()} method.
  */
-class EmptyElementException extends \Exception
+class ElementIsEmpty extends \Exception
 {
 	public function __construct($message="The element is empty.", $code=200, \Exception $previous=null)
 	{

@@ -113,7 +113,7 @@ class Alert extends Element
 	 * [<h4>$heading</h4>]
 	 * <div class="content">$message</div>
 	 *
-	 * @throws EmptyElementException if the message is empty.
+	 * @throws ElementIsEmpty if the message is empty.
 	 *
 	 * @see Element::render_inner_html()
 	 */
@@ -130,7 +130,7 @@ class Alert extends Element
 
 		if (!$message)
 		{
-			throw new EmptyElementException;
+			throw new ElementIsEmpty;
 		}
 		if ($message instanceof Errors)
 		{
@@ -138,7 +138,7 @@ class Alert extends Element
 
 			if (!count($errors))
 			{
-				throw new EmptyElementException;
+				throw new ElementIsEmpty;
 			}
 
 			$message = '';
