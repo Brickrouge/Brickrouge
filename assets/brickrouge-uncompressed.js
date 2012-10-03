@@ -7,40 +7,109 @@
  * file that was distributed with this source code.
  */
 
-var Brickrouge = {
+!function() {
 
-	Utils: {
-
-		Busy: new Class({
-
-			startBusy: function()
-			{
-				if (++this.busyNest == 1) return
-
-				this.element.addClass('busy')
-			},
-
-			finishBusy: function()
-			{
-				if (--this.busyNest) return
-
-				this.element.removeClass('busy')
-			}
-		})
-	},
+	var available_css = null
+	, available_js = null
 
 	/**
-	 * Update the document by adding missing CSS and JS assets.
+	 * Construct widgets.
 	 *
-	 * @param object assets
-	 * @param function done
+	 * Widgets are constructed by creating a new object using a constructor, an element and
+	 * options. The constructor name is defined by the `data-widget-constructor` attribute of the
+	 * element, and the dataset of the element is used as options.
+	 *
+	 * The function uses the constructors in the `Brickrouge.Widget` namespace to search for
+	 * element to turn into widgets. The widgets created are store under the `widget` key, and the
+	 * key is used to avoid generating two widgets for the same element.
+	 *
+	 * The `brickrouge.construct` event is fired on the `window` with the elements which had
+	 * widgets constructed for. The event is only fired if widgets were constructed.
+	 *
+	 * @param container This optional parameter can be used to limit widget construction to a
+	 * specified container. If the container if not defined or empty the document body is used
+	 * instead.
 	 */
-	updateAssets: (function()
+	function constructWidgets(container)
 	{
-		var available_css = null
-		, available_js = null
+		var constructed = []
 
-		return function (assets, done)
+		container = container || document.body
+
+		Object.each(this.Widget, function(constructor, key) {
+
+			container.getElements('[data-widget-constructor="' + key + '"]').each(function(el) {
+
+				if (el.retrieve('widget')) return
+
+				el.store('widget', true) // prevents recursing
+				el.store('widget', new constructor(el, el.get('dataset')))
+
+				constructed.push(el)
+			})
+		})
+
+		if (constructed.length)
+		{
+			window.fireEvent('brickrouge.construct', { constructed: constructed })
+		}
+	}
+
+	this.Brickrouge = {
+
+		Utils: {
+
+			Busy: new Class({
+
+				startBusy: function()
+				{
+					if (++this.busyNest == 1) return
+
+					this.element.addClass('busy')
+				},
+
+				finishBusy: function()
+				{
+					if (--this.busyNest) return
+
+					this.element.removeClass('busy')
+				}
+			})
+		},
+
+		/**
+		 * The `Brickrouge.Widget` namespace is used to store widgets constructors.
+		 */
+		Widget: {
+
+		},
+
+		/**
+		 * Constructs the widgets defined in the document.
+		 *
+		 * Before the widgets are constructed the event `brickrouge.update` is fired on the
+		 * `window`.
+		 *
+		 * Note: A widget is only constructed once.
+		 *
+		 * @param el Element updating the document.
+		 */
+		updateDocument: function(el) {
+
+			el = el || document.body
+
+			window.fireEvent('brickrouge.update', { target: el })
+
+			constructWidgets.apply(this, [ el ])
+		},
+
+		/**
+		 * Update the document by adding missing CSS and JS assets.
+		 *
+		 * @param object assets
+		 * @param function done
+		 */
+		updateAssets: function (assets, done)
 		{
 			var css = new Array()
 			, js = new Array()
@@ -116,50 +185,8 @@ var Brickrouge = {
 				})
 			})
 		}
-
-	}) (),
-
-	/**
-	 * The `Brickrouge.Widget` namespace is used to store widgets constructors.
-	 */
-	Widget: {
-
-	},
-
-	/**
-	 * Construct widgets.
-	 *
-	 * Widgets are constructed by creating a new object using a constructor, an element and
-	 * options. The constructor name is defined by the `data-widget-constructor` attribute of the
-	 * element, and the dataset of the element is used as options.
-	 *
-	 * The function uses the constructors in the `Brickrouge.Widget` namespace to search for
-	 * element to turn into widgets. The widgets created are store under the `widget` key, and the
-	 * key is used to avoid generating two widgets for the same element.
-	 *
-	 * @param container This optional parameter can be used to limit widget construction to a
-	 * specified container. If the container if not defined or empty the document body is used
-	 * instead.
-	 */
-	constructWidgets: function(container)
-	{
-		container = container || document.body
-
-		Object.each(Brickrouge.Widget, function(constructor, key) {
-
-			container.getElements('[data-widget-constructor="' + key + '"]').each(function(el) {
-
-				if (el.retrieve('widget')) return
-
-				el.store('widget', true)
-
-				var widget = new constructor(el, el.get('dataset'))
-
-				el.store('widget', widget)
-			})
-		})
 	}
-}
+} ()
 
 /*
  * The Request.Element class requires the Request.API class provided by the ICanBoogie framework,
@@ -188,6 +215,7 @@ if (Request.API)
 			Brickrouge.updateAssets(response.assets, function() {
 
 				this.fireEvent('complete', [ response, text ]).fireEvent('success', [ el, response, text ]).callChain()
+
 			}.bind(this))
 		}
 	})
@@ -249,6 +277,8 @@ Element.Properties.widget = {
 			widget = new constructor(this, this.get('dataset'))
 
 			this.store('widget', widget)
+
+			window.fireEvent('brickrouge.construct', { constructed: [ this ] })
 		}
 
 		return widget
@@ -296,24 +326,18 @@ if (Browser.ie)
 	document.body.addEvent('click', function(ev) {
 
 		window.fireEvent('click', ev)
+
 	})
 }
 
 /**
- * Calls the Brickrouge.constructWidgets when the `elementsready` event is fired on the document.
- */
-document.addEvent('elementsready', function(ev) {
-
-	Brickrouge.constructWidgets(ev.target)
-})
-
-/**
- * The "elementsready" event is fired for elements to be initialized, to become alive thanks to the
- * magic of JavaSript. This event is usually fired when new widgets are added to the DOM.
+ * Invokes the {@link Brickrouge.updateDocument} method on `domready` with the `body` element
+ * as argument.
  */
 window.addEvent('domready', function() {
 
-	document.fireEvent('elementsready', { target: document.body })
+	Brickrouge.updateDocument(document.body)
+
 })/*
  * This file is part of the Brickrouge package.
  *
@@ -1159,6 +1183,189 @@ document.body.addEvents({
 
 		popover.hide()
 	}
+})/*
+ * This file is part of the Brickrouge package.
+ *
+ * (c) Olivier Laviale <olivier.laviale@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+Brickrouge.Tooltip = new Class({
+
+	Implements: [ Options ],
+
+	options: {
+
+		animation: true,
+		placement: 'top',
+		selector: false,
+		template: '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+		trigger: 'hover',
+		title: '',
+		delay: 0,
+		html: true
+
+	},
+
+	initialize: function(anchor, options)
+	{
+		this.setOptions(options)
+		this.anchor = document.id(anchor)
+		this.element = Elements.from(this.options.template).shift()
+		this.setContent(anchor.get('data-tooltip-content'));
+	},
+
+	setContent: function(content)
+	{
+		this.element.getElement('.tooltip-inner').set(this.options.html ? 'html' : 'text', content)
+
+		;['fade', 'in', 'top', 'bottom', 'left', 'right'].each(this.element.removeClass, this.element)
+	},
+
+	getPosition: function (inside)
+	{
+		var anchor = this.anchor
+		, top = 0
+		, left = 0
+		, width = anchor.offsetWidth
+		, height = anchor.offsetHeight
+
+		if (!inside)
+		{
+			var position = anchor.getPosition()
+
+			top = position.y
+			left = position.x
+		}
+
+		// AREA position is inconsistent between IE and Firefox, thus we use the position of
+		// the image using the MAP, then compute the location of the AREA using its
+		// coordinates.
+
+		if (anchor.tagName == 'AREA')
+		{
+			var x1 = null
+			, x2 = null
+			, y1 = null
+			, y2 = null
+			, map = anchor.getParent()
+			, name = map.id || map.name
+			, image = document.body.getElement('[usemap="#' + name +'"]')
+
+			position = image.getPosition()
+
+			top = position.y
+			left = position.x
+
+			anchor.coords.match(/\d+\s*,\s*\d+/g).each(function(coords) {
+
+				var xy = coords.match(/(\d+)\s*,\s*(\d+)/)
+				, x = xy[1]
+				, y = xy[2]
+
+				x1 = (x1 === null) ? x : Math.min(x1, x)
+				x2 = (x2 === null) ? x : Math.max(x2, x)
+				y1 = (y1 === null) ? y : Math.min(y1, y)
+				y2 = (y2 === null) ? y : Math.max(y2, y)
+			})
+
+			top += y1
+			left += x1
+			width = x2 - x1 + 1
+			height = y2 - y1 + 1
+		}
+
+		return Object.append
+		(
+			{},
+			{ y: top, x: left },
+			{ width: width, height: height }
+		)
+	},
+
+	show: function()
+	{
+		var el = this.element
+		, options = this.options
+		, placement = options.placement
+		, inside
+		, pos
+		, actualWidth
+		, actualHeight
+		, tp = {}
+
+		if (options.animation)
+		{
+			el.addClass('fade')
+		}
+
+		if (typeOf(placement) == 'function')
+		{
+			placement = placement.call(this, el, anchor)
+		}
+
+		inside = /in/.test(placement)
+
+		el.dispose().setStyles({ top: 0, left: 0, display: 'block' }).inject(inside ? this.anchor : document.body)
+
+		actualWidth = el.offsetWidth
+		actualHeight = el.offsetHeight
+
+		pos = this.getPosition(inside)
+
+		switch (inside ? placement.split(' ')[1] : placement)
+		{
+			case 'bottom':
+				tp = {top: pos.y + pos.height, left: pos.x + pos.width / 2 - actualWidth / 2}
+				break
+			case 'top':
+				tp = {top: pos.y - actualHeight, left: pos.x + pos.width / 2 - actualWidth / 2}
+				break
+			case 'left':
+				tp = {top: pos.y + pos.height / 2 - actualHeight / 2, left: pos.x - actualWidth}
+				break
+			case 'right':
+				tp = {top: pos.y + pos.height / 2 - actualHeight / 2, left: pos.x + pos.width}
+				break
+		}
+
+		el.setStyles(tp).addClass(placement).addClass('in')
+	},
+
+	hide: function()
+	{
+		var el = this.element
+
+		el.removeClass('in')
+		el.dispose()
+	}
+
+})
+
+document.body.addEvent('mouseenter:relay([data-tooltip-content])', function(ev, el) {
+
+	var tooltip = el.retrieve('tooltip')
+
+	if (!tooltip)
+	{
+		tooltip = new Brickrouge.Tooltip(el, Brickrouge.extractDataset(el, 'tooltip'))
+		el.store('tooltip', tooltip)
+	}
+
+	tooltip.show()
+
+})
+
+document.body.addEvent('mouseleave:relay([data-tooltip-content])', function(ev, el) {
+
+	try
+	{
+		el.retrieve('tooltip').hide()
+	}
+	catch (e) {}
+
 })/*
  * This file is part of the Brickrouge package.
  *
