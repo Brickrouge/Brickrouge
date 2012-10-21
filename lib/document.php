@@ -148,7 +148,7 @@ class Document extends \ICanBoogie\Object
 	 *
 	 * @return string|null The path to the directory of the file or null if no file could be found.
 	 */
-	private static function resolve_root()
+	static private function resolve_root()
 	{
 		$stack = debug_backtrace();
 
@@ -198,69 +198,39 @@ class Document extends \ICanBoogie\Object
 
 		$root = DOCUMENT_ROOT;
 
-		#
-		# Is the file relative the to the 'relative' path ?
-		#
-		# if the relative path is not defined, we obtain it from the backtrace stack
-		#
+		# trying from directory
 
-		if (!$relative)
+		$tried = array($path);
+		$realpath = realpath($path);
+
+		# trying from relative
+
+		if (!$realpath)
 		{
-			$relative = self::resolve_root();
-		}
-
-		/*
-		 * TODO-20110616: file conflict !! if we want 'public/auto.js' relative to our file, and
-		 * 'public/auto.js' exists at the root of the website, the second is used instead :-(
-		 *
-		 * Maybe only '/public/auto.js' should be checked against the website root.
-		 */
-
-		$tries = array();
-
-		if (strpos($path, $root) === 0)
-		{
-			$tries[] = '';
-		}
-		else
-		{
-			$tries[] = $relative . DIRECTORY_SEPARATOR;
-
-			$script_dir = dirname($_SERVER['SCRIPT_NAME']);
-
-			if ($script_dir != '/')
+			if (!$relative)
 			{
-				$tries[] = $root . $script_dir;
+				$relative = self::resolve_root() . DIRECTORY_SEPARATOR;
 			}
 
-			$tries[] = $root . DIRECTORY_SEPARATOR;
+			$tried[] = $relative . $path;
+			$realpath = realpath($relative . $path);
 		}
 
-		$pathname = null;
-		$i = 0;
+		# trying from document root
 
-		foreach ($tries as &$try)
+		if (!$realpath)
 		{
-			$i++;
-			$try .= $path;
-
-			if (!is_file($try))
-			{
-				continue;
-			}
-
-			$pathname = $try;
-
-			break;
+			$tries[] = $root . $path;
+			$realpath = realpath($root . $path);
 		}
 
 		#
-		# We couldn't find a matching file :-(
+		# We can't find a matching file :-(
 		#
 
-		if (!$pathname)
+		if (!$realpath)
 		{
-			trigger_error(format('Unable to resolve path %path to an URL, tried: :tried', array('%path' => $path, ':tried' => implode(', ', array_slice($tries, 0, $i)))));
+			trigger_error(format('Unable to resolve path %path to an URL, tried: !tried', array('path' => $path, 'tried' => implode(', ', $tried))));
 
 			return;
 		}
@@ -269,20 +239,20 @@ class Document extends \ICanBoogie\Object
 		# If the file is not accessible from the document root, we create an accessible version.
 		#
 
-		if (strpos($pathname, $root) === false)
+		if (strpos($realpath, $root) === false)
 		{
-			$pathname = get_accessible_file($pathname);
+			$realpath = get_accessible_file($realpath);
 		}
 
 		#
 		# let's turn this pathname into a lovely URL
 		#
 
-		$url = substr(realpath($pathname), strlen($root));
+		$url = substr($realpath, strlen($root));
 
 		if (DIRECTORY_SEPARATOR == '\\')
 		{
-			$url = str_replace('\\', '/', $url);
+			$url = strtr($url, '\\', '/');
 		}
 
 		if ($url{0} != '/')
@@ -422,7 +392,7 @@ class CSSCollector extends AssetsCollector
 
 <script type="text/javascript">
 
-var document_cached_css_assets = $list;
+var brickrouge_cached_css_assets = $list;
 
 </script>
 

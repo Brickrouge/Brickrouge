@@ -81,6 +81,8 @@ class Form extends Element implements Validator
 	 */
 	const ACTIONS = '#form-actions';
 
+	const ERRORS = '#form-errors';
+
 	/**
 	 * Returns a unique form name.
 	 *
@@ -332,25 +334,16 @@ class Form extends Element implements Validator
 	 */
 	protected function render_inner_html()
 	{
+		$inner_html = parent::render_inner_html();
+
+		if (!$inner_html)
+		{
+			throw new ElementIsEmpty();
+		}
+
 		$rc = '';
 
-		#
-		# add hidden elements
-		#
-
-		foreach ($this->hiddens as $name => $value)
-		{
-			#
-			# we skip undefined values
-			#
-
-			if ($value === null)
-			{
-				continue;
-			}
-
-			$rc .= '<input type="hidden" name="' . escape($name) . '" value="' . escape($value) . '" />';
-		}
+		$rc .= $this->render_hiddens($this->hiddens);
 
 		#
 		# alert message
@@ -369,7 +362,7 @@ class Form extends Element implements Validator
 			}
 		}
 
-		$rc .= parent::render_inner_html();
+		$rc .= $inner_html;
 
 		#
 		# actions
@@ -415,6 +408,34 @@ class Form extends Element implements Validator
 	protected function render_actions($actions)
 	{
 		return (string) new Actions($actions, array('class' => 'form-actions'));
+	}
+
+	/**
+	 * Renders hidden values.
+	 *
+	 * @param array $hiddens
+	 *
+	 * @return string
+	 */
+	protected function render_hiddens(array $hiddens)
+	{
+		$html = '';
+
+		foreach ($hiddens as $name => $value)
+		{
+			#
+			# we skip undefined values
+			#
+
+			if ($value === null)
+			{
+				continue;
+			}
+
+			$html .= '<input type="hidden" name="' . escape($name) . '" value="' . escape($value) . '" />';
+		}
+
+		return $html;
 	}
 
 	/**
@@ -550,7 +571,7 @@ class Form extends Element implements Validator
 	 *
 	 * @return boolean Return `true` if the form exists.
 	 */
-	public static function exists($key)
+	static public function exists($key)
 	{
 		check_session();
 

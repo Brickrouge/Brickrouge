@@ -82,7 +82,7 @@ require_once ROOT . 'lib/helpers.php';
  */
 if (defined('ICanBoogie\VERSION'))
 {
-	Helpers::patch('translate', 'ICanBoogie\I18n::translate');
+	Helpers::patch('t', 'ICanBoogie\I18n::translate');
 	Helpers::patch('render_exception', 'ICanBoogie\Debug::format_alert');
 
 	Helpers::patch('get_document', function()

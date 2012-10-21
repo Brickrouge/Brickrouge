@@ -39,7 +39,7 @@ class DatasetTest extends \PHPUnit_Framework_TestCase
 		$rendered = (string) $this->element;
 
 		$this->assertEquals(<<<EOT
-<div class="testing" data-one="one" data-two="two" data-three="three" data-true="1" data-numeric="1" />
+<div class="testing" data-one="one" data-two="two" data-three="three" data-true="1" data-false="0" data-numeric="1" />
 EOT
 		, $rendered);
 	}

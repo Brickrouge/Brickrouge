@@ -9,19 +9,51 @@
  * file that was distributed with this source code.
  */
 
+$package_name = 'Brickrouge';
+
+$exclude = array
+(
+	'.*\.less',
+	'.*\.md',
+	'.*-uncompressed\..*',
+	'.git/.*',
+	'.gitignore',
+	'.travis.yml',
+	'build/.*',
+	'lib/.*\.js',
+	'Makefile',
+	'phpunit.xml.dist',
+	'README.md',
+	'tests/.*'
+);
+
+$do_not_compress = array('gif' => true, 'jpg' => true, 'jpeg' => true, 'png' => true);
+
+/*
+ * Do not edit the following lines.
+ */
+
 function strip_comments($source)
 {
-	if (!function_exists('token_get_all')) {
+	if (!function_exists('token_get_all'))
+	{
 		return $source;
 	}
 
 	$output = '';
-	foreach (token_get_all($source) as $token) {
-		if (is_string($token)) {
+
+	foreach (token_get_all($source) as $token)
+	{
+		if (is_string($token))
+		{
 			$output .= $token;
-		} elseif ($token[0] == T_COMMENT || $token[0] == T_DOC_COMMENT) {
+		}
+		else if ($token[0] == T_COMMENT || $token[0] == T_DOC_COMMENT)
+		{
 			$output .= str_repeat("\n", substr_count($token[1], "\n"));
-		} else {
+		}
+		else
+		{
 			$output .= $token[1];
 		}
 	}
@@ -33,23 +65,21 @@ $dir = dirname(__DIR__);
 
 chdir($dir);
 
-$phar_pathname = dirname($dir) . '/Brickrouge.phar';
+$phar_pathname = dirname($dir) . "/{$package_name}.phar";
 
 if (file_exists($phar_pathname))
 {
 	unlink($phar_pathname);
 }
 
-$do_not_compress = array('gif' => true, 'jpg' => true, 'jpeg' => true, 'png' => true);
-
 $phar = new Phar($phar_pathname);
 $phar->setSignatureAlgorithm(\Phar::SHA1);
 $phar->setStub(<<<EOT
 <?php
 
-define('Brickrouge\ROOT', 'phar://' . __FILE__ . DIRECTORY_SEPARATOR);
+define('{$package_name}\ROOT', 'phar://' . __FILE__ . DIRECTORY_SEPARATOR);
 
-require_once Brickrouge\ROOT . 'startup.php';
+require_once {$package_name}\ROOT . 'startup.php';
 
 __HALT_COMPILER();
 EOT
@@ -62,30 +92,38 @@ $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, Filesy
 $n = 0;
 $root_length = strlen($dir . DIRECTORY_SEPARATOR);
 
+array_walk($exclude, function(&$v) { $v = "~^{$v}$~"; });
+
+function is_excluded($pathname)
+{
+	global $exclude;
+
+	foreach ($exclude as $pattern)
+	{
+		if (preg_match($pattern, $pathname))
+		{
+			return true;
+		}
+	}
+}
+
 foreach ($rii as $pathname => $file)
 {
+	$extension = $file->getExtension();
 	$relative_pathname = substr($pathname, $root_length);
 
-	if ($relative_pathname === 'README.md'
-	|| $relative_pathname === 'phpunit.xml.dist'
-	|| strpos($relative_pathname, '.git/') === 0
-	|| strpos($relative_pathname, 'build/') === 0
-	|| strpos($relative_pathname, 'tests/') === 0
-	|| strpos($pathname, 'uncompressed') !== false
-	|| strpos($relative_pathname, '.less') !== false
-	|| preg_match('#lib/[^.]+\.js$#', $relative_pathname))
+	if (is_excluded($relative_pathname))
 	{
 		continue;
 	}
 
 	echo $relative_pathname . PHP_EOL;
 
-	$extension = $file->getExtension();
 	$contents = file_get_contents($pathname);
 
 	if ($extension == 'php')
 	{
-		$contents = strip_comments(file_get_contents($pathname));
+		$contents = strip_comments($contents);
 	}
 
 	$pathname = substr($pathname, $root_length);

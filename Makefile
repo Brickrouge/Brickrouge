@@ -38,4 +38,10 @@ watch:
 	echo "Watching less files..."
 	watchr -e "watch('lib/.*\.less') { system 'make' }"
 
+docs:
+	apigen --source ./ --destination docs/ --title Brickrouge \
+	--exclude "*/build/*" \
+	--exclude "*/tests/*" \
+	--template-config /usr/share/php/data/ApiGen/templates/bootstrap/config.neon
+
 .PHONY: build watch

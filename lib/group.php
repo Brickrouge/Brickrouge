@@ -26,6 +26,8 @@ namespace Brickrouge;
  */
 class Group extends Element
 {
+	const LABEL = '#form-label';
+
 	/**
 	 * Creates a `<FIELDSET.group>` element.
 	 *

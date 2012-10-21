@@ -10,22 +10,73 @@
   z-index: @zindexPopover;
   display: none;
   padding: 5px;
-/*
-  &.above { margin-top: -10px; } // @brickrouge: we use "above" instead of "top", and a wider offset
-  &.after	{ margin-left: 10px; } // @brickrouge: we use "after" instead of "right", and a wider offset
-  &.below { margin-top: 10px; } // @brickrouge: we use "below" instead of "bottom", and a wider offset
-  &.before { margin-left: -10px; } // @brickrouge: we use "before" instead of "right", and a wider offset
-  &.above .arrow { #popoverArrow > .top(); }
-  &.after .arrow { #popoverArrow > .right(); }
-  &.below .arrow { #popoverArrow > .bottom(); }
-  &.before .arrow { #popoverArrow > .left(); }
-  .arrow {
-    position: absolute;
-    width: 0;
-    height: 0;
+
+  // Offset the popover to account for the popover arrow
+  &.top, &.above { // @brickrouge: we use "above" instead of "top", and a wider offset
+    margin-top: -10px;
   }
-*/
+
+  &.right, &.after { // @brickrouge: we use "after" instead of "right", and a wider offset
+    margin-left: 10px;
+  }
+
+  &.bottom, &.below { // @brickrouge: we use "below" instead of "bottom", and a wider offset
+    margin-top: 10px;
+  }
+
+  &.left, &.before { // @brickrouge: we use "before" instead of "right", and a wider offset
+    margin-left: -10px;
+  }
 }
+
+// Arrows
+.popover .arrow,
+.popover .arrow:after {
+  position: absolute;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+.popover .arrow:after {
+  content: "";
+  z-index: -1;
+}
+
+.popover.above .arrow {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(0,0,0,.8);
+    bottom: -3px;
+    left: 50%;
+    margin-left: -5px;
+}
+.popover.after .arrow {
+    border-bottom: 5px solid transparent;
+    border-right: 5px solid rgba(0,0,0,.8);
+    border-top: 5px solid transparent;
+    left: -3px;
+    margin-top: -5px;
+    top: 50%;
+}
+.popover.below .arrow {
+    border-bottom: 5px solid rgba(0,0,0,.8);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    left: 50%;
+    margin-left: -5px;
+    top: -3px;
+}
+.popover.before .arrow {
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid rgba(0,0,0,.8);
+    border-top: 5px solid transparent;
+    margin-top: -5px;
+    right: -3px;
+    top: 50%;
+}
+
 .popover-inner {
   padding: 3px;
   width: 280px;

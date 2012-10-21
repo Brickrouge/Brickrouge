@@ -18,14 +18,17 @@ namespace Brickrouge;
  * children. It handles values and default values. It can decorate the HTML element with a label,
  * a legend and a description.
  *
+ * This is the base class to all element types.
+ *
  * @property string $class Assigns a class name or set of class names to an element. Any number of
  * elements may be assigned the same class name or names. Multiple class names must be separated
  * by white space characters.
  *
- * @property Dataset $dataset The dataset property provides convenient accessors for all the
+ * @property Dataset $dataset The dataset property provides a convenient mapping to the
  * data-* attributes on an element.
  *
- * @property string $id Assigns a name to an element. This name mush be unique in a document.
+ * @property string $id Assigns an identifier to an element. This identifier mush be unique in
+ * a document.
  *
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
@@ -213,6 +216,48 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	static private $has_attribute_disabled = array('button', 'input', 'optgroup', 'option', 'select', 'textarea');
 	static private $has_attribute_value = array('button', 'input', 'option');
 	static private $has_attribute_required = array('input', 'select', 'textarea');
+	static private $handled_assets = array();
+
+	static protected function handle_assets()
+	{
+		$class = get_called_class();
+
+		if (isset(self::$handled_assets[$class]))
+		{
+			return;
+		}
+
+		self::$handled_assets[$class] = true;
+
+		static::add_assets(get_document());
+	}
+
+	/**
+	 * Adds assets to the document.
+	 *
+	 * @param Document $document
+	 */
+	static protected function add_assets(Document $document)
+	{
+
+	}
+
+	/**
+	 * Next available auto element id index.
+	 *
+	 * @var int
+	 */
+	static protected $auto_element_id = 1;
+
+	/**
+	 * Returns a unique element id string.
+	 *
+	 * @return string
+	 */
+	static public function auto_element_id()
+	{
+		return 'autoid--' . self::$auto_element_id++;
+	}
 
 	/**
 	 * Type if the element, as provided during {@link __construct()}.
@@ -333,38 +378,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	}
 
 	/**
-	 * Returns the {@link Dataset} of the element.
-	 *
-	 * @return Dataset
-	 */
-	protected function get_dataset()
-	{
-		return new Dataset($this);
-	}
-
-	/**
-	 * Sets the datset of the element.
-	 *
-	 * @param array|Dataset $properties
-	 *
-	 * @return Dataset
-	 */
-	protected function set_dataset($properties)
-	{
-		if ($properties instanceof Dataset)
-		{
-			return $properties;
-		}
-
-		return new Dataset($this, $properties);
-	}
-
-	protected function volatile_get_attributes()
-	{
-		return $this->tags;
-	}
-
-	/**
 	 * Checks is an attribute is set.
 	 *
 	 * @param string $attribute
@@ -442,34 +455,43 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * Returns an iterator.
 	 *
 	 * @return Iterator
-	 *
-	 * @see IteratorAggregate::getIterator()
 	 */
 	public function getIterator()
 	{
 		return new Iterator($this);
 	}
 
-	/*
-	 * End of the RecursiveIterator implementation.
-	 */
-
 	/**
-	 * Returns a unique element id string.
+	 * Returns the {@link Dataset} of the element.
 	 *
-	 * @return string
+	 * @return Dataset
 	 */
-	public static function auto_element_id()
+	protected function get_dataset()
 	{
-		return 'autoid--' . self::$auto_element_id++;
+		return new Dataset($this);
 	}
 
 	/**
-	 * Next available auto element id index.
+	 * Sets the datset of the element.
 	 *
-	 * @var int
+	 * @param array|Dataset $properties
+	 *
+	 * @return Dataset
 	 */
-	protected static $auto_element_id = 1;
+	protected function set_dataset($properties)
+	{
+		if ($properties instanceof Dataset)
+		{
+			return $properties;
+		}
+
+		return new Dataset($this, $properties);
+	}
+
+	protected function volatile_get_attributes()
+	{
+		return $this->tags;
+	}
 
 	/**
 	 * Returns the element's id.
@@ -537,20 +559,28 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * Adds a class name to the "class" attribute.
 	 *
 	 * @param $class
+	 *
+	 * @return Element
 	 */
 	public function add_class($class)
 	{
 		$this->class_names[$class] = true;
+
+		return $this;
 	}
 
 	/**
 	 * Removes a class name from the `class` attribute.
 	 *
 	 * @param $class
+	 *
+	 * @return Element
 	 */
 	public function remove_class($class)
 	{
 		unset($this->class_names[$class]);
+
+		return $this;
 	}
 
 	/**
@@ -730,15 +760,18 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * Returns the HTML representation of the element's content.
 	 *
 	 * The children of the element are ordered before they are rendered using the
-	 * {@link render_child()} method.
+	 * {@link render_children()} method.
 	 *
-	 * If the element is of type "select" the {@link render_inner_html_for_select()} method is
-	 * invoked to render the inner HTML of the element. If the element is of type "textarea"
-	 * the {@link render_inner_html_for_textarea()} method is invoked to render the inner HTML of
-	 * the element.
+	 * According to their types, the following methods can be invoked to render the inner HTML
+	 * of elements:
 	 *
-	 * @return string|null The content of the element. If the method returns `null` the element is
-	 * to be considered as self-closing.
+	 * - {@link render_inner_html_for_select}
+	 * - {@link render_inner_html_for_textarea}
+	 * - {@link render_inner_html_for_checkbox_group}
+	 * - {@link render_inner_html_for_radio_group}
+	 *
+	 * @return string|null The content of the element. The element is to be considered
+	 * _self-closing_ if `null` is returned.
 	 */
 	protected function render_inner_html()
 	{
@@ -767,7 +800,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	}
 
 	/**
-	 * Renders inner HTML of SELECT elements.
+	 * Renders inner HTML of `SELECT` elements.
 	 *
 	 * @return string
 	 */
@@ -827,7 +860,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	}
 
 	/**
-	 * Renders the inner HTML of TEXTAREA elements.
+	 * Renders the inner HTML of `TEXTAREA` elements.
 	 *
 	 * @return string
 	 */
@@ -844,7 +877,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	}
 
 	/**
-	 * Renders inner HTML of the CHECKBOX_GROUP custom element.
+	 * Renders inner HTML of {@link TYPE_CHECKBOX_GROUP} custom elements.
 	 *
 	 * @return string
 	 */
@@ -893,6 +926,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		return $html;
 	}
 
+	/**
+	 * Renders inner HTML of {@link TYPE_RADIO_GROUP} custom elements.
+	 *
+	 * @return string
+	 */
 	protected function render_inner_html_for_radio_group()
 	{
 		#
@@ -946,14 +984,23 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	}
 
 	/**
-	 * The `value`, `required`, `disabled` and `name` attributes are discarded if they are not
+	 * Alters the provided attributes.
+	 *
+	 * - The `value`, `required`, `disabled` and `name` attributes are discarded if they are not
 	 * supported by the element type.
 	 *
-	 * The `title` attribute is translated within the scope `element.title`.
+	 * - The `title` attribute is translated within the scope `element.title`.
+	 *
+	 * - The `checked` attribute of elements of type {@link TYPE_CHECKBOX} is set to `true` if
+	 * their {@link DEFAULT_VALUE} attribute is not empty and their `checked` attribute is not
+	 * defined (`null`).
+	 *
+	 * - The `value` attribute of `INPUT` and `BUTTON` elements is altered if the
+	 * {@link DEFAULT_VALUE} attribute is defined and the `value` attribute is not (`null`).
 	 *
 	 * @param array $attributes
 	 *
-	 * @return array
+	 * @return array The altered attributes.
 	 */
 	protected function alter_attributes(array $attributes)
 	{
@@ -999,31 +1046,13 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		# value/checked
 		#
 
-		if ($this->type == self::TYPE_CHECKBOX)
+		if ($this->type == self::TYPE_CHECKBOX && $this['checked'] === null)
 		{
-			if ($this[self::DEFAULT_VALUE] && $this['checked'] === null)
-			{
-				$attributes['checked'] = true;
-			}
+			$attributes['checked'] = !!$this[self::DEFAULT_VALUE];
 		}
-		else if ($tag_name == 'input' || $tag_name == 'button')
+		else if (($tag_name == 'input' || $tag_name == 'button') && $this['value'] === null)
 		{
-			$value = $this['value'];
-
-			if ($value === null)
-			{
-				$default = $this[self::DEFAULT_VALUE];
-
-				if ($default !== null)
-				{
-					$value = $default;
-				}
-			}
-
-			if ($value !== null)
-			{
-				$attributes['value'] = $value;
-			}
+			$attributes['value'] = $this[self::DEFAULT_VALUE];
 		}
 
 		return $attributes;
@@ -1032,11 +1061,15 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	/**
 	 * Renders attributes.
 	 *
+	 * Attributes with `false` or `null` values as well as custom attributes are discarted.
+	 * Attributes with the `true` value are translated to XHTML standard e.g. readonly="readonly".
+	 *
 	 * @param array $attributes
 	 *
 	 * @return string
 	 *
-	 * @throws \InvalidArgumentException if the value type is invalid.
+	 * @throws \InvalidArgumentException if the value is an array or an object that doesn't
+	 * implement the `toString()` method.
 	 */
 	protected function render_attributes(array $attributes)
 	{
@@ -1044,16 +1077,15 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		foreach ($attributes as $attribute => $value)
 		{
-			#
-			# attributes with the value `true` are translated to XHTML standard
-			# e.g. readonly="readonly"
-			#
-
-			if ($value === true)
+			if ($value === false || $value === null || $attribute{0} == '#')
+			{
+				continue;
+			}
+			else if ($value === true)
 			{
 				$value = $attribute;
 			}
-			else if (is_array($value))
+			else if (is_array($value) || (is_object($value) && !is_callable(array($value, '__toString'))))
 			{
 				throw new \InvalidArgumentException(format('Invalid value for attribute %attribute: :value', array('attribute' => $attribute, 'value' => $value)));
 			}
@@ -1069,7 +1101,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * The method is invoked before the dataset is rendered.
 	 *
-	 * The method might add the 'default-value' and 'widget-constructor' keys.
+	 * The method might add the `default-value` and `widget-constructor` keys.
 	 *
 	 * @param array $dataset
 	 *
@@ -1095,7 +1127,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * Renders dataset.
 	 *
 	 * The dataset is rendered as a series of "data-*" attributes. Values of type array are
-	 * encoded using the {@link json_encode()} function. Attributes with null values are discarted.
+	 * encoded using the {@link json_encode()} function. Attributes with null values are discarted,
+	 * but unlike classic attributes boolean values are converted to integers.
 	 *
 	 * @param array $dataset
 	 *
@@ -1103,11 +1136,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 */
 	protected function render_dataset(array $dataset)
 	{
-		if (!$dataset)
-		{
-			return '';
-		}
-
 		$rc = '';
 
 		foreach ($dataset as $name => $value)
@@ -1120,6 +1148,10 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			if ($value === null)
 			{
 				continue;
+			}
+			else if ($value === false)
+			{
+				$value = 0;
 			}
 
 			$rc .= ' data-' . $name . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
@@ -1142,9 +1174,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * The {@link alter_dataset()} method is invoked to alter the dataset and the
 	 * {@link render_dataset()} method is invoked to render them.
 	 *
-	 * If the element has a dataset each of its keys are mapped to a "data-*" attribute. The
-	 * {@link render_dataset()} method is invoked to render the dataset as "data-*" attributes.
-	 *
 	 * If the inner HTML is null the element is self-closing.
 	 *
 	 * Note: The inner HTML is rendered before the outer HTML.
@@ -1159,16 +1188,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		foreach ($this->tags as $attribute => $value)
 		{
-			#
-			# We discard `false` and `null` values as well as custom attributes. The `class`
-			# attribute is also discarded because it is handled separately.
-			#
-
-			if ($value === false || $value === null || $attribute{0} === '#' || $attribute === 'class')
-			{
-				continue;
-			}
-
 			if (strpos($attribute, 'data-') === 0)
 			{
 				$dataset[substr($attribute, 5)] = $value;
@@ -1179,17 +1198,17 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			}
 		}
 
-		$html = '<' . $this->tag_name;
-
 		$class = $this->class;
 
 		if ($class)
 		{
-			$html .= ' class="' . $class . '"';
+			$attributes['class'] = $class;
 		}
 
-		$html .= $this->render_attributes($this->alter_attributes($attributes));
-		$html .= $this->render_dataset($this->alter_dataset($dataset));
+		$html = '<'
+		. $this->tag_name
+		. $this->render_attributes($this->alter_attributes($attributes))
+		. $this->render_dataset($this->alter_dataset($dataset));
 
 		#
 		# if the inner HTML of the element is `null`, the element is self closing.
@@ -1286,7 +1305,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	/**
 	 * Decorates the specified HTML with specified label.
 	 *
-	 * The position of the label is defined using the{[@link T_LABEL_POSITION} tag
+	 * The position of the label is defined using the {@link T_LABEL_POSITION} tag
 	 *
 	 * @param string $html
 	 * @param string $label The label as defined by the {@link T_LABEL} tag.
@@ -1373,32 +1392,6 @@ EOT;
 		return $html . '<div class="element-description help-block">' . $description . '</div>';
 	}
 
-	private static $assets_handled = array();
-
-	protected static function handle_assets()
-	{
-		$class = get_called_class();
-
-		if (isset(self::$assets_handled[$class]))
-		{
-			return;
-		}
-
-		self::$assets_handled[$class] = true;
-
-		static::add_assets(get_document());
-	}
-
-	/**
-	 * Adds assets to the document.
-	 *
-	 * @param Document $document
-	 */
-	protected static function add_assets(Document $document)
-	{
-
-	}
-
 	/**
 	 * Renders the element into an HTML string.
 	 *
@@ -1408,8 +1401,8 @@ EOT;
 	 * rendered by the {@link render_outer_html()} method. Finaly, the HTML is decorated by
 	 * the {@link decorate()} method.
 	 *
-	 * If the {@link ElementIsEmpty} is caught during the rendering an empty string is
-	 * returned.
+	 * If the {@link ElementIsEmpty} exception is caught during the rendering
+	 * an empty string is returned.
 	 *
 	 * @return string The HTML representation of the object
 	 */
@@ -1516,7 +1509,7 @@ EOT;
 /**
  * Exception thrown when one wants to cancel the whole rendering of an empty element. The
  * {@link Element} class takes care of this special case and instead of rendering the exception
- * only returns an empty string as the result of its {@link __toString()} method.
+ * only returns an empty string as the result of its {@link Element::render()} method.
  */
 class ElementIsEmpty extends \Exception
 {

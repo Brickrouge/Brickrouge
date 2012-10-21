@@ -229,6 +229,8 @@ function dump($value)
  *
  * The directory where the files are copied is defined by the {@link ACCESSIBLE_ASSETS} constant.
  *
+ * Note: Calls to this function are forwarded to {@link Helpers::get_accessible_file()}.
+ *
  * @param string $path Absolute path to the web inaccessible file.
  * @param string $suffix Optional suffix for the web accessible filename.
  *
@@ -238,39 +240,25 @@ function dump($value)
  */
 function get_accessible_file($path, $suffix=null)
 {
-	$key = sprintf('%s-%04x%s.%s', md5($path), strlen($path), ($suffix ? '-' . $suffix : ''), pathinfo($path, PATHINFO_EXTENSION));
-	$replacement_path = ACCESSIBLE_ASSETS;
-	$replacement = $replacement_path . $key;
-
-	if (!is_writable($replacement_path))
-	{
-		throw new \Exception(format('Unable to make the file %path web accessible, the destination directory %replacement_path is not writtable.', array('path' => $path, 'replacement_path' => $replacement_path)));
-	}
-
-	if (!file_exists($replacement) || filemtime($path) > filemtime($replacement))
-	{
-		file_put_contents($replacement, file_get_contents($path));
-	}
-
-	return $replacement;
+	return Helpers::get_accessible_file($path, $suffix);
 }
 
 /**
  * Formats the given string by replacing placeholders with the given values.
  *
- * The function is patchable by overriding the {@link Patchable::$callback_format property}.
+ * Note: Calls to this function are forwarded to {@link Helpers::format()}.
  *
  * @param string $str The string to format.
- * @param array $args An array of replacement for the placeholders. Occurrences in $str of any
- * key in $args are replaced with the corresponding sanitized value. The sanitization function
+ * @param array $args An array of replacement for the placeholders. Occurrences in `$str` of any
+ * key in `$args` are replaced with the corresponding sanitized value. The sanitization function
  * depends on the first character of the key:
  *
- * * :key: Replace as is. Use this for text that has already been sanitized.
- * * !key: Sanitize using the `escape()` function.
- * * %key: Sanitize using the `escape()` function and wrap inside a "EM" markup.
+ * - `:key`: Replace as is. Use this for text that has already been sanitized.
+ * - `!key`: Sanitize using the {@link escape()} function.
+ * - `%key`: Sanitize using the {@link escape()} function and wrap inside an `EM` markup.
  *
- * Numeric indexes can also be used e.g '\2' or "{2}" are replaced by the value of the index
- * "2".
+ * Numeric indexes can also be used e.g `\2` or `{2}` are replaced by the value of the index
+ * 2.
  *
  * @return string
  */
@@ -282,9 +270,9 @@ function format($str, array $args=array())
 /**
  * Formats a number into a size with unit (o, Ko, Mo, Go).
  *
- * The formatted string is localized using the {@link t()} function.
+ * Before the string is formatted it is localised with the {@link t()} function.
  *
- * The function is patchable by overriding the {@link Patchable::$callback_format_size property}.
+ * Note: Calls to this function are forwarded to {@link Helpers::format_size()}.
  *
  * @param int $size
  *
@@ -297,6 +285,8 @@ function format_size($size)
 
 /**
  * Normalizes the input provided and returns the normalized string.
+ *
+ * Note: Calls to this function are forwarded to {@link Helpers::normalize()}.
  *
  * @param string $str The string to normalize.
  * @param string $separator Whitespaces replacement.
@@ -315,9 +305,7 @@ function normalize($str, $separator='-', $charset=CHARSET)
  *
  * The native string language is supposed to be english (en).
  *
- * The function is patchable by overriding the {@link Patchable::$callback_translate}
- * property and is patched to use the {@link https://github.com/ICanBoogie/ICanBoogie ICanBoogie}
- * translation features if the framework is available (see Brickrouge.php).
+ * Note: Calls to this function are forwarded to {@link Helpers::t}.
  *
  * @param string $str The native string to translate.
  * @param array $args An array of replacements to make after the translation. The replacement is
@@ -332,7 +320,7 @@ function normalize($str, $separator='-', $charset=CHARSET)
  */
 function t($str, array $args=array(), array $options=array())
 {
-	return Helpers::translate($str, $args, $options);
+	return Helpers::t($str, $args, $options);
 }
 
 /**
@@ -340,9 +328,6 @@ function t($str, array $args=array(), array $options=array())
  *
  * This document is used by classes when they need to add assets. Once assets are collected one can
  * simple echo the assets while building the response HTML.
- *
- * The function is patchable by overriding the {@link Patchable::$callback_get_document}
- * property.
  *
  * Example:
  *
@@ -364,6 +349,8 @@ function t($str, array $args=array(), array $options=array())
  * </body>
  * </html>
  *
+ * Note: Calls to this function are forwarded to {@link Helpers::get_document()}.
+ *
  * @return Document
  */
 function get_document()
@@ -378,8 +365,7 @@ function get_document()
  * its forms for later validation. Take a look at the {@link Form::validate()} and
  * {@link Form::save()} methods.
  *
- * The function is patchable by overriding the {@link Patchable::$callback_check_session}
- * property and is patched to use the Brickrouge session features if the framework is available.
+ * Note: Calls to this function are forwarded to {@link Helpers::check_session()}.
  */
 function check_session()
 {
@@ -389,7 +375,7 @@ function check_session()
 /**
  * Stores of form for later validation.
  *
- * The function is patchable by overriding the {@link Patchable::$callback_store_form} property.
+ * Note: Calls to this function are forwarded to {@link Helpers::store_form()}.
  *
  * @param Form $form The form to store.
  *
@@ -403,7 +389,7 @@ function store_form(Form $form)
 /**
  * Retrieve a stored form.
  *
- * The function is patchable by overriding the {@link Patchable::$callback_retrieve_form} property.
+ * Note: Calls to this function are forwarded to {@link Helpers::retrieve_form()}.
  *
  * @param string $key Key of the form to retrieve.
  *
@@ -417,7 +403,7 @@ function retrieve_form($key)
 /**
  * Stores the validation errors of a form.
  *
- * The function is patchable by overriding the {@link Patchable::$callback_store_form_errors} property.
+ * Note: Calls to this function are forwarded to {@link Helpers::store_form_errors()}.
  *
  * @param string $name The name of the form.
  * @param array $errors The validation errors of the form.
@@ -430,7 +416,7 @@ function store_form_errors($name, $errors)
 /**
  * Retrieves the validation errors of a form.
  *
- * The function is patchable by overriding the {@link Patchable::$callback_retrieve_form_errors} property.
+ * Note: Calls to this function are forwarded to {@link Helpers::retrieve_form_errors()}.
  *
  * @param string $name The name if the form.
  *
@@ -444,7 +430,7 @@ function retrieve_form_errors($name)
 /**
  * Renders an exception into a string.
  *
- * The function is patchable by overriding the {@link Patchable::$callback_get_document} property.
+ * Note: Calls to this function are forwarded to {@link Helpers::render_exception()}.
  *
  * @param \Exception $exception
  *
@@ -456,23 +442,52 @@ function render_exception(\Exception $exception)
 }
 
 /**
- * Helpers jumptable.
+ * Brickrouge helpers.
+ *
+ * The following helpers are patchable:
+ *
+ * - {@link check_session()}
+ * - {@link format()}
+ * - {@link format_size()}
+ * - {@link get_accessible_file()}
+ * - {@link get_document()}
+ * - {@link normalize()}
+ * - {@link render_exception()}
+ * - {@link retrieve_form()}
+ * - {@link retrieve_form_errors()}
+ * - {@link store_form()}
+ * - {@link store_form_errors()}
+ * - {@link t()}
+ *
+ * @method void check_session() check_session()
+ * @method string format() format(string $str, array $args=array())
+ * @method string format_size() format_size(number $size)
+ * @method string get_accessible_file() get_accessible_file(string $path, $suffix=null)
+ * @method Document get_document() get_document()
+ * @method string normalize() normalize(string $str)
+ * @method string render_exception() render_exception(\Exception $exception)
+ * @method Form retrieve_form() retrieve_form(string $name)
+ * @method \ICanboogie\Errors retrieve_form_errors() retrieve_form_errors(string $name)
+ * @method string store_form() store_form(Form $form)
+ * @method void store_form_errors() store_form_errors(string $name, \ICanBoogie\Errors $errors)
+ * @method string t() t(string $str, array $args=array(), array $options=array())
  */
 class Helpers
 {
 	static private $jumptable = array
 	(
+		'check_session' => array(__CLASS__, 'check_session'),
 		'format' => array(__CLASS__, 'format'),
 		'format_size' => array(__CLASS__, 'format_size'),
-		'normalize' => array(__CLASS__, 'normalize'),
-		'translate' => array(__CLASS__, 'translate'),
+		'get_accessible_file' => array(__CLASS__, 'get_accessible_file'),
 		'get_document' => array(__CLASS__, 'get_document'),
-		'check_session' => array(__CLASS__, 'check_session'),
-		'store_form' => array(__CLASS__, 'store_form'),
+		'normalize' => array(__CLASS__, 'normalize'),
+		'render_exception' => array(__CLASS__, 'render_exception'),
 		'retrieve_form' => array(__CLASS__, 'retrieve_form'),
-		'store_form_errors' => array(__CLASS__, 'store_form_errors'),
 		'retrieve_form_errors' => array(__CLASS__, 'retrieve_form_errors'),
-		'render_exception' => array(__CLASS__, 'render_exception')
+		'store_form' => array(__CLASS__, 'store_form'),
+		'store_form_errors' => array(__CLASS__, 'store_form_errors'),
+		't' => array(__CLASS__, 't')
 	);
 
 	/**
@@ -624,7 +639,7 @@ class Helpers
 	 * We usually rely on the ICanBoogie framework I18n features to translate our string, if it is
 	 * not available we simply format the string using the {@link Brickrouge\format()} function.
 	 */
-	static private function translate($str, array $args=array(), array $options=array())
+	static private function t($str, array $args=array(), array $options=array())
 	{
 		return format($str, $args);
 	}
@@ -746,5 +761,34 @@ class Helpers
 	static private function render_exception(\Exception $exception)
 	{
 		return (string) $exception;
+	}
+
+	/**
+	 * This method is the fallback for the {@link get_accessible_file()} function.
+	 *
+	 * @param string $path Absolute path to the web inaccessible file.
+	 * @param string $suffix Optional suffix for the web accessible filename.
+	 *
+	 * @return string The pathname of the replacement.
+	 *
+	 * @throws \Exception if the replacement file could not be created.
+	 */
+	static private function get_accessible_file($path, $suffix=null)
+	{
+		$key = sprintf('%s-%04x%s.%s', md5($path), strlen($path), ($suffix ? '-' . $suffix : ''), pathinfo($path, PATHINFO_EXTENSION));
+		$replacement_path = ACCESSIBLE_ASSETS;
+		$replacement = $replacement_path . $key;
+
+		if (!is_writable($replacement_path))
+		{
+			throw new \Exception(format('Unable to make the file %path web accessible, the destination directory %replacement_path is not writtable.', array('path' => $path, 'replacement_path' => $replacement_path)));
+		}
+
+		if (!file_exists($replacement) || filemtime($path) > filemtime($replacement))
+		{
+			file_put_contents($replacement, file_get_contents($path));
+		}
+
+		return $replacement;
 	}
 }

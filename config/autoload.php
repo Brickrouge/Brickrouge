@@ -23,6 +23,7 @@ return array
 	__NAMESPACE__ . '\Form' => $lib . 'form.php',
 	__NAMESPACE__ . '\Group' => $lib . 'group.php',
 	__NAMESPACE__ . '\Iterator' => $lib . 'utilities.php',
+	__NAMESPACE__ . '\Modal' => $lib . 'modal.php',
 	__NAMESPACE__ . '\Pager' => $lib . 'pager.php',
 	__NAMESPACE__ . '\Popover' => $lib . 'popover.php',
 	__NAMESPACE__ . '\PopoverWidget' => $lib . 'popover.php',

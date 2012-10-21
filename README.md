@@ -11,14 +11,14 @@ Here are some of its features:
 
 * Standalone and patchable
 * Compatible with Bootstrap
-* Supports localization
+* Localization support
 * Fits in a 50ko Phar
 * Object-oriented
 * Can create any kind of HTML element
 * Populate and validate forms
 
-Brickrouge uses [Bootstrap](http://twitter.github.com/bootstrap/) from
-twitter for its style, and [MooTools](http://mootools.net/) for its magic. Ready under minute,
+Brickrouge uses [Bootstrap](http://twitter.github.com/bootstrap/) for its style,
+and [MooTools](http://mootools.net/) for its magic. Ready under minute,
 you'll have everything you need to create beautiful and clean web applications. Together with the
 framework [ICanBoogie](http://icanboogie.org/), Brickrouge is one of the
 precious components that make the CMS [Icybee](http://icybee.org/).
@@ -106,13 +106,14 @@ Note: If Brickrouge detects ICanBoogie it will take full advantage of the framew
 
 ### How patching works
 
-Brickrouge uses helpers defined in the "lib/helpers.php" file. These are for the most part dummy
-functions which call callbacks. For instance the `Brickrouge\t()` function calls the
-`Brickrouge\Patchable::$callback_translate` callback, which defaults to the
-`Brickrouge\Patchable::fallback_translate()` function.
+Brickrouge helpers are defined in the "lib/helpers.php" file. For the most part they are
+dummy functions. For instance, calls to the `Brickrouge\t()` function are forwarded to the
+`Brickrouge\Helpers::t()` function, and with some magic the calls can be forwared elsewhere.
 
-Thus, in order to patch the `t()` helper you need to overwrite the `$callback_translate`
-static property.
+Helper functions are patched using the `Brickroue\Helpers::patch()` function.
+
+As a side note, because calls are really handled by the  `Helpers` class, you can either use
+`Brickrouge\t()` or `Brickrouge\Helpers::t()`.
 
 
 
@@ -127,7 +128,7 @@ For instance, this is how the `t()` helper function is patched:
 ```php
 <?php
 
-Patchable::$callback_translate = 'ICanBoogie\I18n::translate';
+Brickrouge\Helpers::patch('t', 'ICanBoogie\I18n::translate');
 ```
 	
 And this is how the `check_session()` helper function is patched:
@@ -135,10 +136,10 @@ And this is how the `check_session()` helper function is patched:
 ```php
 <?php
 
-Patchable::$callback_check_session = function()
+Brickrouge\Helpers::patch('check_session', function()
 {
 	return \ICanBoogie\Core::get()->session;
-};
+});
 ```
 
 

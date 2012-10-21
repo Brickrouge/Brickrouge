@@ -56,8 +56,6 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 	 * Sets the value of a property.
 	 *
 	 * The attribute corresponding to the property is set.
-	 *
-	 * @see ArrayAccess::offsetSet()
 	 */
 	public function offsetSet($property, $value)
 	{
@@ -68,8 +66,6 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 	 * Returns the value of a property,
 	 *
 	 * The value is gotten from the attribute corresponding to the property.
-	 *
-	 * @see ArrayAccess::offsetGet()
 	 */
 	public function offsetGet($property, $default=null)
 	{
@@ -172,7 +168,7 @@ class Iterator implements \Iterator
 }
 
 /**
- * Recursive iterator used to traverse in depth {@link Element} children.
+ * An iterator used to traverse {@link Element} descendant in depth.
  */
 class RecursiveIterator extends Iterator implements \RecursiveIterator
 {

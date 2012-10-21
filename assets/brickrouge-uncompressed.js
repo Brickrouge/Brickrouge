@@ -9,8 +9,61 @@
 
 !function() {
 
-	var available_css = null
-	, available_js = null
+	var WIDGET_CONSTRUCTOR_ATTRIBUTE = 'data-widget-constructor'
+	, WIDGET_CONSTRUCTOR_SELECTOR = '[' + WIDGET_CONSTRUCTOR_ATTRIBUTE + ']'
+
+	/**
+	 * Construct the widget associated with an element.
+	 *
+	 * @param element The element
+	 */
+	function constructWidget(element)
+	{
+		var constructorName = element.get(WIDGET_CONSTRUCTOR_ATTRIBUTE)
+
+		if (!constructorName)
+		{
+			throw new Error("The " + WIDGET_CONSTRUCTOR_ATTRIBUTE + " attribute is not defined.")
+		}
+
+		var constructor = Brickrouge.Widget[constructorName]
+
+		if (!constructor)
+		{
+			throw new Error("Undefined constructor: " + constructorName)
+		}
+
+		element.store('widget', true)
+
+		var widget = new constructor(element, element.get('dataset'))
+
+		element.store('widget', widget)
+
+		return widget
+	}
+
+	/**
+	 * Returns the widget associate with the element.
+	 *
+	 * If the element has no widget attached yet it will be created if a matching constructor is
+	 * available.
+	 */
+	Element.Properties.widget = {
+
+		get: function()
+		{
+			var widget = this.retrieve('widget')
+
+			if (!widget)
+			{
+				widget = constructWidget(this)
+
+				window.fireEvent('brickrouge.construct', { constructed: [ this ] })
+			}
+
+			return widget
+		}
+	}
 
 	/**
 	 * Construct widgets.
@@ -19,34 +72,36 @@
 	 * options. The constructor name is defined by the `data-widget-constructor` attribute of the
 	 * element, and the dataset of the element is used as options.
 	 *
-	 * The function uses the constructors in the `Brickrouge.Widget` namespace to search for
-	 * element to turn into widgets. The widgets created are store under the `widget` key, and the
-	 * key is used to avoid generating two widgets for the same element.
+	 * Elements are collected using the {@link WIDGET_CONSTRUCTOR_SELECTOR} selector from the
+	 * deepest nodes to the root. The function uses the custom `widget` property to inderectly
+	 * create the widgets.
 	 *
 	 * The `brickrouge.construct` event is fired on the `window` with the elements which had
 	 * widgets constructed for. The event is only fired if widgets were constructed.
 	 *
-	 * @param container This optional parameter can be used to limit widget construction to a
-	 * specified container. If the container if not defined or empty the document body is used
+	 * @param element This optional parameter can be used to limit widget construction to a
+	 * specified element. If the element if not defined or is empty the document body is used
 	 * instead.
 	 */
-	function constructWidgets(container)
+	function constructWidgets(element)
 	{
-		var constructed = []
+		element = element || document.body
 
-		container = container || document.body
+		var elements = element.getElements(WIDGET_CONSTRUCTOR_SELECTOR)
+		, constructed = []
 
-		Object.each(this.Widget, function(constructor, key) {
+		if (element.match(WIDGET_CONSTRUCTOR_SELECTOR))
+		{
+			elements.unshift(element)
+		}
 
-			container.getElements('[data-widget-constructor="' + key + '"]').each(function(el) {
+		elements.reverse().each(function(el) {
 
-				if (el.retrieve('widget')) return
+			if (el.retrieve('widget')) return
 
-				el.store('widget', true) // prevents recursing
-				el.store('widget', new constructor(el, el.get('dataset')))
+			constructWidget(el)
 
-				constructed.push(el)
-			})
+			constructed.push(el)
 		})
 
 		if (constructed.length)
@@ -55,61 +110,18 @@
 		}
 	}
 
-	this.Brickrouge = {
+	/**
+	 * Updates the document assets then calls a callback function.
+	 *
+	 * @param assets An object with a 'css' and a 'js' array defining the assets required.
+	 * @param done An optional callback to call once the required assets have been loaded.
+	 */
+	var updateAssets = (function() {
 
-		Utils: {
+		var available_css = null
+		, available_js = null
 
-			Busy: new Class({
-
-				startBusy: function()
-				{
-					if (++this.busyNest == 1) return
-
-					this.element.addClass('busy')
-				},
-
-				finishBusy: function()
-				{
-					if (--this.busyNest) return
-
-					this.element.removeClass('busy')
-				}
-			})
-		},
-
-		/**
-		 * The `Brickrouge.Widget` namespace is used to store widgets constructors.
-		 */
-		Widget: {
-
-		},
-
-		/**
-		 * Constructs the widgets defined in the document.
-		 *
-		 * Before the widgets are constructed the event `brickrouge.update` is fired on the
-		 * `window`.
-		 *
-		 * Note: A widget is only constructed once.
-		 *
-		 * @param el Element updating the document.
-		 */
-		updateDocument: function(el) {
-
-			el = el || document.body
-
-			window.fireEvent('brickrouge.update', { target: el })
-
-			constructWidgets.apply(this, [ el ])
-		},
-
-		/**
-		 * Update the document by adding missing CSS and JS assets.
-		 *
-		 * @param object assets
-		 * @param function done
-		 */
-		updateAssets: function (assets, done)
+		return function(assets, done)
 		{
 			var css = new Array()
 			, js = new Array()
@@ -119,9 +131,9 @@
 			{
 				available_css = []
 
-				if (typeof(document_cached_css_assets) !== 'undefined')
+				if (typeof(brickrouge_cached_css_assets) !== 'undefined')
 				{
-					available_css = document_cached_css_assets
+					available_css = brickrouge_cached_css_assets
 				}
 
 				document.id(document.head).getElements('link[type="text/css"]').each(function(el) {
@@ -169,8 +181,7 @@
 
 			if (!js_count)
 			{
-				done()
-				return
+				done(); return
 			}
 
 			js.each(function(url) {
@@ -185,7 +196,65 @@
 				})
 			})
 		}
+	}) ()
+
+	this.Brickrouge = {
+
+		Utils: {
+
+			Busy: new Class({
+
+				startBusy: function()
+				{
+					if (++this.busyNest == 1) return
+
+					this.element.addClass('busy')
+				},
+
+				finishBusy: function()
+				{
+					if (--this.busyNest) return
+
+					this.element.removeClass('busy')
+				}
+			})
+		},
+
+		/**
+		 * The `Brickrouge.Widget` namespace is used to store widgets constructors.
+		 */
+		Widget: {
+
+		},
+
+		/**
+		 * Constructs the widgets defined in the document.
+		 *
+		 * Before the widgets are constructed the event `brickrouge.update` is fired on the
+		 * `window`.
+		 *
+		 * Note: A widget is only constructed once.
+		 *
+		 * @param el The element updating the document.
+		 */
+		updateDocument: function(el) {
+
+			el = el || document.body
+
+			window.fireEvent('brickrouge.update', { target: el })
+
+			constructWidgets(el)
+		},
+
+		/**
+		 * Update the document by adding missing CSS and JS assets.
+		 *
+		 * @param object assets
+		 * @param function done
+		 */
+		updateAssets: updateAssets
 	}
+
 } ()
 
 /*
@@ -243,49 +312,6 @@ if (Request.API)
 }
 
 /**
- * Returns the widget associate with the element.
- *
- * If the element has no widget attached yet it will be created if a matching constructor if
- * available.
- */
-Element.Properties.widget = {
-
-	get: function()
-	{
-		var widget = this.retrieve('widget')
-		, constructorName
-		, constructor
-
-		if (!widget)
-		{
-			constructorName = this.get('data-widget-constructor')
-
-			if (!constructorName)
-			{
-				throw new Error("This element doesn't define a constructor, its data-widget-constructor attribute is empty.")
-			}
-
-			constructor = Brickrouge.Widget[constructorName]
-
-			if (!constructor)
-			{
-				throw new Error("Undefined constructor: " + constructorName)
-			}
-
-			this.store('widget', true)
-
-			widget = new constructor(this, this.get('dataset'))
-
-			this.store('widget', widget)
-
-			window.fireEvent('brickrouge.construct', { constructed: [ this ] })
-		}
-
-		return widget
-	}
-}
-
-/**
  * Returns the dataset of the element.
  *
  * The dataset is created by reading and aggregating value defined by the data-* attributes.
@@ -331,7 +357,7 @@ if (Browser.ie)
 }
 
 /**
- * Invokes the {@link Brickrouge.updateDocument} method on `domready` with the `body` element
+ * Invokes the {@link Brickrouge.updateDocument} method on `domready` with `document.body`
  * as argument.
  */
 window.addEvent('domready', function() {
@@ -800,11 +826,6 @@ Brickrouge.Popover = new Class({
 	{
 		this.element.setStyles({ display: 'block', visibility: 'hidden' })
 
-		if (!this.element.getParent())
-		{
-			document.body.appendChild(this.element)
-		}
-
 		window.addEvents
 		({
 			'load': this.quickRepositionCallback,
@@ -822,6 +843,9 @@ Brickrouge.Popover = new Class({
 			})
 		}
 
+		document.body.appendChild(this.element)
+		Brickrouge.updateDocument(this.element)
+
 		this.reposition(true)
 
 		if (this.options.animate)
@@ -838,6 +862,13 @@ Brickrouge.Popover = new Class({
 
 	hide: function()
 	{
+		var hide = function() {
+
+			this.element.setStyle('display', '')
+			this.element.dispose()
+
+		}.bind(this)
+
 		window.removeEvent('load', this.quickRepositionCallback)
 		window.removeEvent('resize', this.quickRepositionCallback)
 		window.removeEvent('scroll', this.repositionCallback)
@@ -853,17 +884,11 @@ Brickrouge.Popover = new Class({
 
 		if (this.options.animate)
 		{
-			this.tween.start(0).chain
-			(
-				function()
-				{
-					this.element.setStyle('display', '')
-				}
-			)
+			this.tween.start(0).chain(hide)
 		}
 		else
 		{
-			this.element.setStyle('display', '')
+			hide()
 		}
 	},
 
@@ -1133,8 +1158,8 @@ Brickrouge.Popover.from = function(options)
 
 	if (actions == 'boolean')
 	{
-		actions = [ new Element('button.btn-cancel[data-action="cancel"]', { html: Locale.get('Popover.cancel') || 'Cancel' })
-		, new Element('button.btn-primary[data-action="ok"]', { html: Locale.get('Popover.ok') || 'Ok' }) ]
+		actions = [ new Element('button.btn.btn-cancel[data-action="cancel"]', { html: Locale.get('Popover.cancel') || 'Cancel' })
+		, new Element('button.btn.btn-primary[data-action="ok"]', { html: Locale.get('Popover.ok') || 'Ok' }) ]
 	}
 
 	if (actions)
@@ -1153,7 +1178,7 @@ Brickrouge.Popover.from = function(options)
 Brickrouge.Widget.Popover = Brickrouge.Popover
 
 /**
- * Event delegation for A elements with a `rel="popover"` attribute.
+ * Event delegation for elements with a `rel="popover"` attribute.
  */
 document.body.addEvents({
 
@@ -1169,7 +1194,6 @@ document.body.addEvents({
 			popover = Brickrouge.Popover.from(options)
 
 			target.store('popover', popover)
-			document.body.appendChild(popover.element)
 		}
 
 		popover.show()
@@ -1192,157 +1216,175 @@ document.body.addEvents({
  * file that was distributed with this source code.
  */
 
-Brickrouge.Tooltip = new Class({
+!function() {
 
-	Implements: [ Options ],
+	var opened = []
 
-	options: {
+	Brickrouge.Tooltip = new Class({
 
-		animation: true,
-		placement: 'top',
-		selector: false,
-		template: '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-		trigger: 'hover',
-		title: '',
-		delay: 0,
-		html: true
+		Implements: [ Options ],
 
-	},
+		options: {
 
-	initialize: function(anchor, options)
-	{
-		this.setOptions(options)
-		this.anchor = document.id(anchor)
-		this.element = Elements.from(this.options.template).shift()
-		this.setContent(anchor.get('data-tooltip-content'));
-	},
+			animation: true,
+			placement: 'top',
+			selector: false,
+			template: '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+			trigger: 'hover',
+			title: '',
+			delay: 0,
+			html: true
 
-	setContent: function(content)
-	{
-		this.element.getElement('.tooltip-inner').set(this.options.html ? 'html' : 'text', content)
+		},
 
-		;['fade', 'in', 'top', 'bottom', 'left', 'right'].each(this.element.removeClass, this.element)
-	},
-
-	getPosition: function (inside)
-	{
-		var anchor = this.anchor
-		, top = 0
-		, left = 0
-		, width = anchor.offsetWidth
-		, height = anchor.offsetHeight
-
-		if (!inside)
+		initialize: function(anchor, options)
 		{
-			var position = anchor.getPosition()
+			this.setOptions(options)
+			this.anchor = document.id(anchor)
+			this.element = Elements.from(this.options.template).shift()
+			this.setContent(anchor.get('data-tooltip-content'));
+		},
 
-			top = position.y
-			left = position.x
-		}
-
-		// AREA position is inconsistent between IE and Firefox, thus we use the position of
-		// the image using the MAP, then compute the location of the AREA using its
-		// coordinates.
-
-		if (anchor.tagName == 'AREA')
+		setContent: function(content)
 		{
-			var x1 = null
-			, x2 = null
-			, y1 = null
-			, y2 = null
-			, map = anchor.getParent()
-			, name = map.id || map.name
-			, image = document.body.getElement('[usemap="#' + name +'"]')
+			this.element.getElement('.tooltip-inner').set(this.options.html ? 'html' : 'text', content)
 
-			position = image.getPosition()
+			;['fade', 'in', 'top', 'bottom', 'left', 'right'].each(this.element.removeClass, this.element)
+		},
 
-			top = position.y
-			left = position.x
-
-			anchor.coords.match(/\d+\s*,\s*\d+/g).each(function(coords) {
-
-				var xy = coords.match(/(\d+)\s*,\s*(\d+)/)
-				, x = xy[1]
-				, y = xy[2]
-
-				x1 = (x1 === null) ? x : Math.min(x1, x)
-				x2 = (x2 === null) ? x : Math.max(x2, x)
-				y1 = (y1 === null) ? y : Math.min(y1, y)
-				y2 = (y2 === null) ? y : Math.max(y2, y)
-			})
-
-			top += y1
-			left += x1
-			width = x2 - x1 + 1
-			height = y2 - y1 + 1
-		}
-
-		return Object.append
-		(
-			{},
-			{ y: top, x: left },
-			{ width: width, height: height }
-		)
-	},
-
-	show: function()
-	{
-		var el = this.element
-		, options = this.options
-		, placement = options.placement
-		, inside
-		, pos
-		, actualWidth
-		, actualHeight
-		, tp = {}
-
-		if (options.animation)
+		getPosition: function (inside)
 		{
-			el.addClass('fade')
-		}
+			var anchor = this.anchor
+			, top = 0
+			, left = 0
+			, width = anchor.offsetWidth
+			, height = anchor.offsetHeight
 
-		if (typeOf(placement) == 'function')
+			if (!inside)
+			{
+				var position = anchor.getPosition()
+
+				top = position.y
+				left = position.x
+			}
+
+			// AREA position is inconsistent between IE and Firefox, thus we use the position of
+			// the image using the MAP, then compute the location of the AREA using its
+			// coordinates.
+
+			if (anchor.tagName == 'AREA')
+			{
+				var x1 = null
+				, x2 = null
+				, y1 = null
+				, y2 = null
+				, map = anchor.getParent()
+				, name = map.id || map.name
+				, image = document.body.getElement('[usemap="#' + name +'"]')
+
+				position = image.getPosition()
+
+				top = position.y
+				left = position.x
+
+				anchor.coords.match(/\d+\s*,\s*\d+/g).each(function(coords) {
+
+					var xy = coords.match(/(\d+)\s*,\s*(\d+)/)
+					, x = xy[1]
+					, y = xy[2]
+
+					x1 = (x1 === null) ? x : Math.min(x1, x)
+					x2 = (x2 === null) ? x : Math.max(x2, x)
+					y1 = (y1 === null) ? y : Math.min(y1, y)
+					y2 = (y2 === null) ? y : Math.max(y2, y)
+				})
+
+				top += y1
+				left += x1
+				width = x2 - x1 + 1
+				height = y2 - y1 + 1
+			}
+
+			return Object.append
+			(
+				{},
+				{ y: top, x: left },
+				{ width: width, height: height }
+			)
+		},
+
+		show: function()
 		{
-			placement = placement.call(this, el, anchor)
-		}
+			var el = this.element
+			, options = this.options
+			, placement = options.placement
+			, inside
+			, pos
+			, actualWidth
+			, actualHeight
+			, tp = {}
 
-		inside = /in/.test(placement)
+			if (options.animation)
+			{
+				el.addClass('fade')
+			}
 
-		el.dispose().setStyles({ top: 0, left: 0, display: 'block' }).inject(inside ? this.anchor : document.body)
+			if (typeOf(placement) == 'function')
+			{
+				placement = placement.call(this, el, anchor)
+			}
 
-		actualWidth = el.offsetWidth
-		actualHeight = el.offsetHeight
+			inside = /in/.test(placement)
 
-		pos = this.getPosition(inside)
+			el.dispose().setStyles({ top: 0, left: 0, display: 'block' }).inject(inside ? this.anchor : document.body)
 
-		switch (inside ? placement.split(' ')[1] : placement)
+			actualWidth = el.offsetWidth
+			actualHeight = el.offsetHeight
+
+			pos = this.getPosition(inside)
+
+			switch (inside ? placement.split(' ')[1] : placement)
+			{
+				case 'bottom':
+					tp = {top: pos.y + pos.height, left: pos.x + pos.width / 2 - actualWidth / 2}
+					break
+				case 'top':
+					tp = {top: pos.y - actualHeight, left: pos.x + pos.width / 2 - actualWidth / 2}
+					break
+				case 'left':
+					tp = {top: pos.y + pos.height / 2 - actualHeight / 2, left: pos.x - actualWidth}
+					break
+				case 'right':
+					tp = {top: pos.y + pos.height / 2 - actualHeight / 2, left: pos.x + pos.width}
+					break
+			}
+
+			opened.unshift(this)
+
+			el.setStyles(tp).addClass(placement).addClass('in')
+		},
+
+		hide: function()
 		{
-			case 'bottom':
-				tp = {top: pos.y + pos.height, left: pos.x + pos.width / 2 - actualWidth / 2}
-				break
-			case 'top':
-				tp = {top: pos.y - actualHeight, left: pos.x + pos.width / 2 - actualWidth / 2}
-				break
-			case 'left':
-				tp = {top: pos.y + pos.height / 2 - actualHeight / 2, left: pos.x - actualWidth}
-				break
-			case 'right':
-				tp = {top: pos.y + pos.height / 2 - actualHeight / 2, left: pos.x + pos.width}
-				break
+			var el = this.element
+
+			opened.erase(this)
+
+			el.removeClass('in')
+			el.dispose()
 		}
+	})
 
-		el.setStyles(tp).addClass(placement).addClass('in')
-	},
+	Brickrouge.Tooltip.hideAll = function() {
 
-	hide: function()
-	{
-		var el = this.element
+		Array.slice(opened).each(function(tooltip) {
 
-		el.removeClass('in')
-		el.dispose()
+			tooltip.hide()
+
+		})
 	}
 
-})
+} ()
 
 document.body.addEvent('mouseenter:relay([data-tooltip-content])', function(ev, el) {
 
@@ -1402,6 +1444,7 @@ Brickrouge.Carousel = new Class({
 
 	options: {
 
+		autodots: false,
 		autoplay: false,
 		delay: 6000,
 		method: 'fade'
@@ -1409,12 +1452,12 @@ Brickrouge.Carousel = new Class({
 
 	initialize: function(el, options)
 	{
-		this.element = $(el)
+		this.element = el = document.id(el)
 		this.setOptions(options)
 		this.inner = el.getElement('.carousel-inner')
 		this.slides = this.inner.getChildren()
-		this.position = 0
 		this.limit = this.slides.length
+		this.position = 0
 		this.timer = null
 
 		if (this.options.method)
@@ -1427,21 +1470,54 @@ Brickrouge.Carousel = new Class({
 			}
 		}
 
-		this.element.addEvents({
+		if (this.options.autodots)
+		{
+			this.setDots(this.slides.length)
+		}
 
-			'click:relay(.carousel-control.left)': function(ev) {
+		this.dots = el.getElements('.carousel-dots .dot')
+
+		if (!this.dots.length)
+		{
+			this.dots = null
+		}
+
+		if (this.dots)
+		{
+			this.dots[0].addClass('active')
+		}
+
+		el.addEvents({
+
+			'click:relay([data-slide="prev"])': function(ev) {
 
 				ev.stop()
 				this.prev()
 
 			}.bind(this),
 
-			'click:relay(.carousel-control.right)': function(ev) {
+			'click:relay([data-slide="next"])': function(ev) {
 
 				ev.stop()
 				this.next()
 
 			}.bind(this),
+
+			'click:relay([data-position])': function(ev, el) {
+
+				ev.stop()
+				this.setPosition(el.get('data-position'))
+
+			}.bind(this),
+
+			'click:relay([data-link])': function(ev, el) {
+
+				var link = el.get('data-link')
+
+				if (!link) return
+
+				document.location = link
+			},
 
 			mouseenter: this.pause.bind(this),
 			mouseleave: this.resume.bind(this)
@@ -1451,11 +1527,38 @@ Brickrouge.Carousel = new Class({
 		this.resume()
 	},
 
+	setDots: function(number)
+	{
+		var dots = new Element('div.carousel-dots')
+		, replaces = this.element.getElement('.carousel-dots')
+
+		for (var i = 0 ; i < number ; i++)
+		{
+			dots.adopt(new Element('div.dot', { html: '&bull;', 'data-position': i }))
+		}
+
+		if (replaces)
+		{
+			dots.replaces(replaces)
+		}
+		else
+		{
+			this.element.adopt(dots)
+		}
+	},
+
 	setMethod: function(method)
 	{
 		if (typeOf(method) == 'string')
 		{
-			method = Brickrouge.Carousel.Methods[method]
+			var m = Brickrouge.Carousel.Methods[method]
+
+			if (m === undefined)
+			{
+				throw new Error('Carousel method is not defined: ' + method)
+			}
+
+			method = m
 		}
 
 		this.method = method
@@ -1494,25 +1597,31 @@ Brickrouge.Carousel = new Class({
 		this.play()
 	},
 
-	setPosition: function(position)
+	setPosition: function(position, direction)
 	{
 		position = position % this.limit
 
 		if (position == this.position) return
 
-		this.method.go.apply(this, [ position ])
+		this.method.go.apply(this, [ position, direction ])
+
+		if (this.dots)
+		{
+			this.dots.removeClass('active')
+			this.dots[position].addClass('active')
+		}
 
 		this.fireEvent('position', { position: this.position, slide: this.slides[this.position] })
 	},
 
 	prev: function()
 	{
-		this.setPosition(this.position ? this.position - 1 : this.limit - 1)
+		this.setPosition(this.position ? this.position - 1 : this.limit - 1, -1)
 	},
 
 	next: function()
 	{
-		this.setPosition(this.position == this.limit ? 0 : this.position + 1)
+		this.setPosition(this.position == this.limit ? 0 : this.position + 1, 1)
 	}
 })
 
@@ -1546,6 +1655,68 @@ Brickrouge.Carousel.Methods = {
 			slideIn.setStyles({ opacity: 0, visibility: 'visible' }).inject(slideOut, 'after').fade('in')
 
 			this.position = position
+		}
+	},
+
+	slide: {
+
+		initialize: function()
+		{
+			var size = this.inner.getSize()
+			, w = size.x
+			, h = size.y
+			, view = new Element('div', { styles: { position: 'absolute', left: 0, top: 0, width: w * 2, height: h }})
+
+			this.w = w
+			this.h = h
+			this.view = view
+
+			view.adopt(this.slides)
+			view.set('tween', { property: 'left', onComplete: Brickrouge.Carousel.Methods.slide.onComplete.bind(this) })
+
+			this.slides.each(function(slide, i) {
+
+				slide.setStyles({ position: 'absolute', left: w * i, top: 0 })
+
+				if (i)
+				{
+					slide.setStyle('display', 'none')
+				}
+			})
+
+			this.inner.adopt(view)
+		},
+
+		go: function(position, direction)
+		{
+			var slideIn = this.slides[position]
+			, slideOut = this.slides[this.position]
+
+			if (!direction)
+			{
+				direction = position - this.position
+			}
+
+			this.view.setStyle('left', 0)
+			slideOut.setStyle('left', 0)
+			slideIn.setStyles({ display: '', left: direction > 0 ? this.w : -this.w })
+
+			this.view.tween(direction > 0 ? -this.w : this.w)
+
+			this.position = position
+		},
+
+		onComplete: function(ev)
+		{
+			var current = this.slides[this.position]
+
+			this.slides.each(function(slide) {
+
+				if (slide == current) return
+
+				slide.setStyle('display', 'none')
+
+			})
 		}
 	},
 
@@ -1698,3 +1869,9 @@ Brickrouge.Carousel.Methods = {
 		}
 	}
 }
+
+Brickrouge.Widget.Carousel = new Class({
+
+	Extends: Brickrouge.Carousel
+
+})
