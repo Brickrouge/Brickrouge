@@ -204,6 +204,46 @@ function escape_all($str, $charset=CHARSET)
 	return htmlentities($str, ENT_COMPAT, $charset);
 }
 
+/**
+ * Shortens a string at a specified position.
+ *
+ * @param string $str The string to shorten.
+ * @param int $length The desired length of the string.
+ * @param float $position Position at which characters can be removed.
+ * @param bool $shortened `true` if the string was shortened, `false` otherwise.
+ *
+ * @return string
+ */
+function shorten($str, $length=32, $position=.75, &$shortened=null)
+{
+	$l = mb_strlen($str);
+
+	if ($l <= $length)
+	{
+		return $str;
+	}
+
+	$length--;
+	$position = (int) ($position * $length);
+
+	if ($position == 0)
+	{
+		$str = '…' . mb_substr($str, $l - $length);
+	}
+	else if ($position == $length)
+	{
+		$str = mb_substr($str, 0, $length) . '…';
+	}
+	else
+	{
+		$str = mb_substr($str, 0, $position) . '…' . mb_substr($str, $l - ($length - $position));
+	}
+
+	$shortened = true;
+
+	return $str;
+}
+
 function dump($value)
 {
 	if (function_exists('xdebug_var_dump'))

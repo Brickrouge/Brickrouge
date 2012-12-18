@@ -79,7 +79,8 @@ $phar->setStub(<<<EOT
 
 define('{$package_name}\ROOT', 'phar://' . __FILE__ . DIRECTORY_SEPARATOR);
 
-require_once {$package_name}\ROOT . 'startup.php';
+require_once {$package_name}\ROOT . 'bootstrap.php';
+require_once {$package_name}\ROOT . 'lib/helpers.php';
 
 __HALT_COMPILER();
 EOT

@@ -106,6 +106,7 @@ select {
 .input-prepend,
 .input-append {
   margin-bottom: 0;
+  vertical-align: middle;
 }
 .control-group {
   margin-bottom: 0;

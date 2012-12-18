@@ -649,9 +649,44 @@ class Form extends Element implements Validator
 		# process required elements
 		#
 
+		$this->validate_required_elements($this->required, $validators, $values, $errors);
+
+		#
+		# process elements validators
+		#
+		# note: If the value for the element is `null` and the value is not required the element's
+		# validator is *not* called.
+		#
+
+		foreach ($validators as $name => $element)
+		{
+			$value = isset($values[$name]) ? $values[$name] : null;
+
+			if (($value === null || $value === '') && empty($this->required[$name]))
+			{
+				continue;
+			}
+
+			$element->validate($value, $errors);
+		}
+
+		// FIXME-20111013: ICanBoogie won't save the errors in the session, so we have to do it ourselves for now.
+
+		store_form_errors($this->name, $errors);
+
+		if (count($errors))
+		{
+			return;
+		}
+
+		return parent::validate($values, $errors);
+	}
+
+	protected function validate_required_elements(array $required, array &$validators, array $values, Errors $errors)
+	{
 		$missing = array();
 
-		foreach ($this->required as $name => $label)
+		foreach ($required as $name => $label)
 		{
 			if (!isset($values[$name]) || (isset($values[$name]) && is_string($values[$name]) && !strlen(trim($values[$name]))))
 			{
@@ -685,36 +720,6 @@ class Form extends Element implements Validator
 				$errors[] = t('The fields %list and %last are required!', array('%list' => implode(', ', $missing), '%last' => $last));
 			}
 		}
-
-		#
-		# process elements validators
-		#
-		# note: If the value for the element is `null` and the value is not required the element's
-		# validator is *not* called.
-		#
-
-		foreach ($validators as $name => $element)
-		{
-			$value = isset($values[$name]) ? $values[$name] : null;
-
-			if (($value === null || $value === '') && empty($this->required[$name]))
-			{
-				continue;
-			}
-
-			$element->validate($value, $errors);
-		}
-
-		// FIXME-20111013: ICanBoogie won't save the errors in the session, so we have to do it ourselves for now.
-
-		store_form_errors($this->name, $errors);
-
-		if (count($errors))
-		{
-			return;
-		}
-
-		return parent::validate($values, $errors);
 	}
 
 	/*
@@ -778,7 +783,7 @@ class Form extends Element implements Validator
 						(
 							'The string %string is too long (maximum size is :size characters)', array
 							(
-								'%string' => $value,
+								'%string' => shorten($value, 32, 1),
 								':size' => $params
 							)
 						);

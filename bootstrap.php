@@ -71,27 +71,3 @@ if (!defined('Brickrouge\CHARSET'))
 {
 	define('Brickrouge\CHARSET', 'utf-8');
 }
-
-/*
- * Helpers
- */
-require_once ROOT . 'lib/helpers.php';
-
-/*
- * If the ICanBoogie framework is available we patch some of our functions to use his.
- */
-if (defined('ICanBoogie\VERSION'))
-{
-	Helpers::patch('t', 'ICanBoogie\I18n::translate');
-	Helpers::patch('render_exception', 'ICanBoogie\Debug::format_alert');
-
-	Helpers::patch('get_document', function()
-	{
-		return \ICanBoogie\Core::get()->document;
-	});
-
-	Helpers::patch('check_session', function()
-	{
-		return \ICanBoogie\Core::get()->session;
-	});
-}

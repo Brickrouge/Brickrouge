@@ -612,13 +612,29 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	/**
 	 * Renders the `class` attribute value.
 	 *
-	 * @param array $class_names
+	 * @param array $class_names An array of class names. Each key/value pair describe a class
+	 * name. The key is the identifier of the class name, the value is its value. If the value is
+	 * empty then the class name is discarted. If the value is `true` the identifier of the class
+	 * name is used as value.
 	 *
 	 * @return string
 	 */
 	protected function render_class(array $class_names)
 	{
-		return implode(' ', array_keys(array_filter($class_names)));
+		$class = '';
+		$class_names = array_filter($class_names);
+
+		foreach ($class_names as $name => $value)
+		{
+			if ($value === true)
+			{
+				$value = $name;
+			}
+
+			$class .= ' ' . $value;
+		}
+
+		return substr($class, 1);
 	}
 
 	/**
@@ -821,7 +837,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		# this is the 'template' child
 		#
 
-		$option = new Element('option');
+		$dummy_option = new Element('option');
 
 		#
 		# create the inner content of our element
@@ -834,6 +850,26 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		foreach ($options as $value => $label)
 		{
+			if ($label instanceof self)
+			{
+				$option = $label;
+			}
+			else
+			{
+				$option = $dummy_option;
+
+				if ($label)
+				{
+					$label = escape(t($label, array(), array('scope' => 'element.option')));
+				}
+				else
+				{
+					$label = '&nbsp;';
+				}
+
+				$option->inner_html = $label;
+			}
+
 			#
 			# value is casted to a string so that we can handle null value and compare '0' with 0
 			#
@@ -841,17 +877,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			$option['value'] = $value;
 			$option['selected'] = (string) $value === (string) $selected;
 			$option['disabled'] = !empty($disabled[$value]);
-
-			if ($label)
-			{
-				$label = escape(t($label, array(), array('scope' => 'element.option')));
-			}
-			else
-			{
-				$label = '&nbsp;';
-			}
-
-			$option->inner_html = $label;
 
 			$html .= $option;
 		}
@@ -938,7 +963,13 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		#
 
 		$name = $this['name'];
-		$selected = $this['value'] ?: $this[self::DEFAULT_VALUE];
+		$selected = $this['value'];
+
+		if ($selected === null)
+		{
+			$selected = $this[self::DEFAULT_VALUE];
+		}
+
 		$disabled = $this['disabled'] ?: false;
 		$readonly = $this['readonly'] ?: false;
 
@@ -967,7 +998,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		foreach ($this[self::OPTIONS] as $value => $label)
 		{
-			if ($label && $label{0} == '.')
+			if ($label && !is_object($label) && $label{0} == '.')
 			{
 				$label = t(substr($label, 1), array(), array('scope' => 'element.option'));
 			}
@@ -1323,34 +1354,25 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		switch ($this[self::LABEL_POSITION] ?: 'after')
 		{
-			case 'above':
-			{
-				$html = <<<EOT
+			case 'above': return <<<EOT
 <label class="$class above">$label</label>
 $html
 EOT;
-			}
-			break;
 
-			case 'before':
-			{
-				$html = <<<EOT
-<label class="$class">$label $html</label>
+			case 'below': return <<<EOT
+$html
+<label class="$class below">$label</label>
 EOT;
-			}
-			break;
+
+			case 'before': return <<<EOT
+<label class="$class wrapping before"><span class="label-text">$label</span> $html</label>
+EOT;
 
 			case 'after':
-			default:
-			{
-				$html = <<<EOT
-<label class="$class">$html $label</label>
+			default: return <<<EOT
+<label class="$class wrapping after">$html <span class="label-text">$label</span></label>
 EOT;
-			}
-			break;
 		}
-
-		return $html;
 	}
 
 	/**

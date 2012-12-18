@@ -334,6 +334,8 @@ textarea[class*="span"],
   margin-left: 0;
 }
 // Ensure input-prepend/append never wraps
+.input-append, // @brickrouge: same display as other controls
+.input-prepend, // @brickrouge: same display as other controls
 .input-append input[class*="span"],
 .input-append .uneditable-input[class*="span"],
 .input-prepend input[class*="span"],
@@ -534,6 +536,7 @@ select:focus:required:invalid {
 .input-prepend,
 .input-append {
   margin-bottom: 0;
+  vertical-align: middle; // @brickrouge: same alignment as other controls
 }
 //</brickrouge>
 

@@ -1126,6 +1126,8 @@ textarea[class*="span"],
   float: none;
   margin-left: 0;
 }
+.input-append,
+.input-prepend,
 .input-append input[class*="span"],
 .input-append .uneditable-input[class*="span"],
 .input-prepend input[class*="span"],
@@ -1502,6 +1504,7 @@ select:focus:required:invalid:focus {
 .input-prepend,
 .input-append {
   margin-bottom: 0;
+  vertical-align: middle;
 }
 .input-prepend .add-on,
 .input-prepend .btn {
