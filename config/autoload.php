@@ -38,6 +38,5 @@ return array
 )
 + (defined('ICanBoogie\VERSION') ? array() : array
 (
-	'ICanBoogie\Errors' => $icanboogie . 'errors.php',
-	'ICanBoogie\Object' => $icanboogie . 'object.php'
+	'ICanBoogie\Errors' => $icanboogie . 'errors.php'
 ));

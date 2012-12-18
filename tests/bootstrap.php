@@ -9,6 +9,4 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/../startup.php';
-
-Brickrouge\register_autoloader();
+require_once __DIR__ . '/../vendor/autoload.php';

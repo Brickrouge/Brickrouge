@@ -31,17 +31,46 @@ build:
 	@cat ./lib/brickrouge.js ./lib/form.js ./lib/alerts.js ./lib/dropdowns.js ./lib/navs.js ./lib/popover.js ./lib/tooltip.js ./lib/searchbox.js ./lib/carousel.js > ${BRICKROUGE_UNCOMPRESSED}.js
 	php ./build/compress.php ${BRICKROUGE_UNCOMPRESSED}.js ${BRICKROUGE}.js;
 
-phar:
-	@php -d phar.readonly=0 ./build/phar.php;
-
 watch:
 	echo "Watching less files..."
 	watchr -e "watch('lib/.*\.less') { system 'make' }"
 
-docs:
-	apigen --source ./ --destination docs/ --title Brickrouge \
-	--exclude "*/build/*" \
+install:
+	@if [ ! -f "composer.phar" ] ; then \
+		echo "Installing composer..." ; \
+		curl -s https://getcomposer.org/installer | php ; \
+	fi
+
+	@php composer.phar install
+
+test:
+	@if [ ! -d "vendor" ] ; then \
+		make install ; \
+	fi
+
+	@phpunit
+
+doc:
+	@if [ ! -d "vendor" ] ; then \
+		make install ; \
+	fi
+
+	@mkdir -p "docs"
+
+	@apigen \
+	--source ./ \
+	--destination docs/ --title Brickrouge \
+	--exclude "*/composer/*" \
 	--exclude "*/tests/*" \
 	--template-config /usr/share/php/data/ApiGen/templates/bootstrap/config.neon
+
+clean:
+	@rm -fR docs
+	@rm -fR vendor
+	@rm -f composer.lock
+	@rm -f composer.phar
+	
+phar:
+	@php -d phar.readonly=0 ./build/phar.php;
 
 .PHONY: build watch
