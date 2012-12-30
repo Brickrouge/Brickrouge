@@ -16,7 +16,7 @@ namespace Brickrouge;
  *
  * @var string
  */
-define('Brickrouge\VERSION', '1.1.2 (2012-10-03)');
+define('Brickrouge\VERSION', '1.1.4 (2012-12-30)');
 
 /**
  * The ROOT directory of the Brickrouge framework.
@@ -71,3 +71,8 @@ if (!defined('Brickrouge\CHARSET'))
 {
 	define('Brickrouge\CHARSET', 'utf-8');
 }
+
+/*
+ * Helpers
+ */
+require_once 'lib/helpers.php';

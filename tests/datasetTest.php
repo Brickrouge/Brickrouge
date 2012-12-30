@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Brickrouge\Tests;
+namespace Tests\Brickrouge;
 
 use Brickrouge\Element;
 

@@ -1,7 +1,4 @@
-Brickrouge
-==========
-
-[![Build Status](https://secure.travis-ci.org/ICanBoogie/Brickrouge.png?branch=master)](http://travis-ci.org/ICanBoogie/Brickrouge)
+# Brickrouge [![Build Status](https://secure.travis-ci.org/ICanBoogie/Brickrouge.png?branch=master)](http://travis-ci.org/ICanBoogie/Brickrouge)
 
 Brickrouge is an object-oriented toolkit for PHP5.3+ that helps you create inputs, widgets,
 forms and many other common elements, with all the CSS and JavaScript needed to make them
@@ -23,22 +20,80 @@ you'll have everything you need to create beautiful and clean web applications. 
 framework [ICanBoogie](http://icanboogie.org/), Brickrouge is one of the
 precious components that make the CMS [Icybee](http://icybee.org/).
 
-Homepage: [brickrouge.org](http://brickrouge.org/)  
-Author: Olivier Laviale [@olvlvl](https://twitter.com/olvlvl)
+Please, visit [brickrouge.org](http://brickrouge.org/) for more information.
 
 
 
 
-Usage
------
 
-Brickrouge doesn't need any configuration, simply include the "Brickrouge/startup.php" file
+## Requirements
+
+The package requires PHP 5.3 or later.  
+The following packages are also required: [icanboogie/prototype](https://packagist.org/packages/icanboogie/prototype)
+and [icanboogie/errors](https://packagist.org/packages/icanboogie/errors).
+
+
+
+
+
+## Installation
+
+The recommended way to install this package is through [composer](http://getcomposer.org/).
+Create a `composer.json` file and run `php composer.phar install` command to install it:
+
+```json
+{
+	"minimum-stability": "dev",
+	"require": {
+		"brickrouge/brickrouge": "*"
+	}
+}
+```
+
+
+
+
+
+### Cloning the repository
+
+The package is [available on GitHub](https://github.com/ICanBoogie/Brickrouge), its repository can
+be cloned with the following command line:
+
+	$ git clone git://github.com/ICanBoogie/Brickrouge.git
+	
+
+
+
+
+## Documentation
+
+You can generate the documentation for the package and its dependencies with the `make doc`
+command. The documentation is generated in the `docs` directory. You can later clean the directory
+with the `make clean` command. Note that [ApiGen](http://apigen.org/) is required.
+
+
+
+
+
+## Testing
+
+The test suite is ran with the `make test` command. [Composer](http://getcomposer.org/) is
+automatically installed as well as all dependencies required to run the suite. You can later
+clean the directory with the `make clean` command.
+
+
+
+
+
+## Usage
+
+Brickrouge doesn't need any configuration, simply include the "Brickrouge/bootstrap.php" file
 somewhere in your application:
 
 ```php
 <?php
 	
-require_once '/path/to/Brickrouge/startup.php';
+require_once '/path/to/Brickrouge/bootstrap.php';
 ```
 	
 Or, if you use it as a Phar:
@@ -90,8 +145,8 @@ Note: The directory must be writable by PHP.
 
 
 
-Patching Brickrouge
--------------------
+
+## Patching Brickrouge
 
 Brickrouge was initially designed to work with the framework
 [ICanBoogie](https://github.com/ICanBoogie/ICanBoogie). The project has evolved to
@@ -100,6 +155,7 @@ or form storing/retrieving. Fallback for each feature are provided so you can pa
 and leave the rest.
 
 Note: If Brickrouge detects ICanBoogie it will take full advantage of the framework.
+
 
 
 
@@ -118,20 +174,19 @@ As a side note, because calls are really handled by the  `Helpers` class, you ca
 
 
 
-### Patching with the ICanBoogie framework
 
-If you take a look at the "startup.php" file you'll notice how helpers are patched
-if the [ICanBoogie](https://github.com/ICanBoogie/ICanBoogie) framework is available.
+### Using ICanBoogie translator
 
-For instance, this is how the `t()` helper function is patched:
+For instance, this is how the `t()` helper function can be patched to use the
+translator of the framework [ICanBoogie](https://github.com/ICanBoogie/ICanBoogie):
 
 ```php
 <?php
 
-Brickrouge\Helpers::patch('t', 'ICanBoogie\I18n::translate');
+Brickrouge\Helpers::patch('t', 'ICanBoogie\I18n\t');
 ```
 	
-And this is how the `check_session()` helper function is patched:
+And this is how the `check_session()` helper function can be patched:
 
 ```php
 <?php
@@ -145,8 +200,7 @@ Brickrouge\Helpers::patch('check_session', function()
 
 
 
-Building Brickrouge
--------------------
+## Building Brickrouge
 
 Brickrouge comes with pre-built CSS and JavaScript files, compressed and non-compressed, but you
 might want to play with its source, or use it as a Phar, in which case you might probably want
@@ -176,6 +230,7 @@ files are compressed using the [online UglifyJS JavaScript minification](http://
 
 
 
+
 ### Creating a Phar
 
 To create a Phar, type the following commands in a terminal:
@@ -188,7 +243,15 @@ The Phar is created in the parent directory as "Brickrouge.phar".
 
 
 
-More information
-----------------
+
+## More information
 
 For more information and a demonstration please visit the [Brickrouge homepage](http://brickrouge.org/).
+
+
+
+
+
+## License
+
+Brickrouge is licensed under the New BSD License - See the LICENSE file for details.

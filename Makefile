@@ -61,6 +61,7 @@ doc:
 	--source ./ \
 	--destination docs/ --title Brickrouge \
 	--exclude "*/composer/*" \
+	--exclude "*/build/*" \
 	--exclude "*/tests/*" \
 	--template-config /usr/share/php/data/ApiGen/templates/bootstrap/config.neon
 
