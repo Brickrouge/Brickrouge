@@ -73,6 +73,14 @@ if (!defined('Brickrouge\CHARSET'))
 }
 
 /*
+ * Add package path to ICanBoogie so that it can discover our config and locale messages.
+ */
+if (class_exists('ICanBoogie\Core', true))
+{
+	\ICanBoogie\Core::add_path(__DIR__);
+}
+
+/*
  * Helpers
  */
 require_once 'lib/helpers.php';
