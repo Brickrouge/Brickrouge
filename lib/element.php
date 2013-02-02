@@ -858,7 +858,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			{
 				$option = $dummy_option;
 
-				if ($label)
+				if ($label || is_numeric($label))
 				{
 					$label = escape(t($label, array(), array('scope' => 'element.option')));
 				}
