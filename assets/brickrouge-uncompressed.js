@@ -525,6 +525,7 @@ Brickrouge.Form = new Class({
 		return this.operation = new Request.JSON
 		({
 			url: this.options.url || this.element.action,
+			method: this.element.get('method') || 'GET',
 
 			onRequest: this.request.bind(this),
 			onComplete: this.complete.bind(this),
