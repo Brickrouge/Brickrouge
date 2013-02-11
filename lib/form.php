@@ -107,7 +107,7 @@ class Form extends Element implements Validator
 	 *
 	 * @var string
 	 */
-	protected $name;
+	public $name;
 
 	/**
 	 * Default attributes are added to those provided using a union:
@@ -138,7 +138,7 @@ class Form extends Element implements Validator
 			unset($attributes['enctype']);
 		}
 
-		$this->name = $attributes['name'];
+		$this->name = $attributes['name'] ?: self::get_auto_name();
 
 		parent::__construct('form', $attributes);
 	}
@@ -335,19 +335,22 @@ class Form extends Element implements Validator
 	protected function render_inner_html()
 	{
 		$inner_html = parent::render_inner_html();
+		$hiddens = $this->render_hiddens($this->hiddens);
 
 		if (!$inner_html)
 		{
-			throw new ElementIsEmpty();
+			$this->add_class('has-no-content');
 		}
-
-		$rc = '';
-
-		$rc .= $this->render_hiddens($this->hiddens);
+		else
+		{
+			$this->remove_class('has-no-content');
+		}
 
 		#
 		# alert message
 		#
+
+		$alert = null;
 
 		if (!$this[self::NO_LOG])
 		{
@@ -356,13 +359,11 @@ class Form extends Element implements Validator
 
 			if ($errors)
 			{
-				$rc .= $this->render_errors($errors);
+				$alert = $this->render_errors($errors);
 
 				store_form_errors($name, array()); // reset form errors.
 			}
 		}
-
-		$rc .= $inner_html;
 
 		#
 		# actions
@@ -374,14 +375,19 @@ class Form extends Element implements Validator
 		{
 			$this->add_class('has-actions');
 
-			$rc .= $this->render_actions($actions);
+			$actions = $this->render_actions($actions);
 		}
 		else
 		{
 			$this->remove_class('has-actions');
 		}
 
-		return $rc;
+		if (!$inner_html && !$actions)
+		{
+			throw new ElementIsEmpty();
+		}
+
+		return $hiddens . $alert . $inner_html . $actions;
 	}
 
 	/**
@@ -806,7 +812,7 @@ class Form extends Element implements Validator
 		{
 			$message = implode('. ', $messages);
 
-			$message .= t(' for the %label input element', array('%label' => $element->label));
+			$message .= t(' for the %label input element.', array('%label' => $element->label));
 
 			$errors[$element->name] = t($message, $args);
 		}

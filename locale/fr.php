@@ -54,5 +54,8 @@ return array
 	=> 'La chaîne %string est trop courte (la taille minimale est de :size caractères)',
 
 	'Your message has been scored as spam. The score is %score. Please review your message.'
-	=> 'Votre message a été noté en tant qu\'indésirable. La note est %score. Merci de vérifier votre message.'
+	=> 'Votre message a été noté en tant qu\'indésirable. La note est %score. Merci de vérifier votre message.',
+
+	' for the %label input element.'
+	=> " pour le champ %label."
 );

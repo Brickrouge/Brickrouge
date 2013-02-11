@@ -36,6 +36,15 @@ class Alert extends Element
 	const HEADING = '#alert-heading';
 
 	/**
+	 * Set to `true` for undissmisable alerts.
+	 *
+	 * @var string
+	 */
+	const UNDISSMISABLE = '#alert-undissmisable';
+
+	const DISSMISS_BUTTON = '<button type="button" class="close" data-dismiss="alert">×</button>';
+
+	/**
 	 * Alert message.
 	 *
 	 * @var string|array|\ICanBoogie\Errors
@@ -83,14 +92,17 @@ class Alert extends Element
 	}
 
 	/**
-	 * Adds the alert context to the class names.
+	 * Adds the `alert-error`, `alert-info` and `alert-success` class names according to the
+	 * {@link CONTEXT} attribute.
 	 *
-	 * If the {@link HEADING} attribute is defined the `alert-block` class name is added.
+	 * Adds the `alert-block` class name if the {@link HEADING} attribute is defined.
 	 *
-	 * @see Element::render_class()
+	 * Adds the `undissmisable` class name if the {@link UNDISSMISABLE} attribute is true.
 	 */
-	protected function render_class(array $class_names)
+	protected function alter_class_names(array $class_names)
 	{
+		$class_names = parent::alter_class_names($class_names);
+
 		$context = $this[self::CONTEXT];
 
 		if ($context)
@@ -103,19 +115,16 @@ class Alert extends Element
 			$class_names['alert-block'] = true;
 		}
 
-		return parent::render_class($class_names);
+		if ($this[self::UNDISSMISABLE])
+		{
+			$class_names['undissmisable'] = true;
+		}
+
+		return $class_names;
 	}
 
 	/**
-	 * Renders the inner HTML of the element with the following template:
-	 *
-	 * <a href="javascript://" class="close">×</a>
-	 * [<h4>$heading</h4>]
-	 * <div class="content">$message</div>
-	 *
 	 * @throws ElementIsEmpty if the message is empty.
-	 *
-	 * @see Element::render_inner_html()
 	 */
 	public function render_inner_html()
 	{
@@ -158,6 +167,13 @@ class Alert extends Element
 			$message = '<p>' . implode('</p><p>', $message) . '</p>';
 		}
 
-		return '<a href="javascript://" class="close">×</a>' . $heading . '<div class="content">' . $message . '</div>';
+		$dismiss = '';
+
+		if (!$this[self::UNDISSMISABLE])
+		{
+			$dismiss = self::DISSMISS_BUTTON;
+		}
+
+		return $dismiss . $heading . '<div class="content">' . $message . '</div>';
 	}
 }

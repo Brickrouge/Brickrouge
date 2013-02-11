@@ -88,7 +88,8 @@ class Simple extends Element
 				self::DESCRIPTION => isset($group['description']) ? $group['description'] : null,
 				self::LEGEND => isset($group['title']) ? $group['title'] : null,
 
-				'class' => $class
+				'class' => $class,
+				'id' => isset($group['id']) ? $group['id'] : null
 			)
 		);
 

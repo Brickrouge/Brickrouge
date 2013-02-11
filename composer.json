@@ -20,7 +20,8 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.3.0",
-		"icanboogie/prototype": "1.0.*",
+		"icanboogie/common": "*",
+		"icanboogie/prototype": "*",
 		"icanboogie/errors": "*"
 	},
 	"autoload": {

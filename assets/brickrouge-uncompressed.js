@@ -431,7 +431,7 @@ Brickrouge.Form = new Class({
 					if (typeOf(el) == 'collection')
 					{
 						parent = document.id(el[0]).getParent('div.radio-group')
-						field = parent.getParent('.field')
+						field = parent.getParent('.control-group')
 
 						if (parent)
 						{
@@ -448,7 +448,7 @@ Brickrouge.Form = new Class({
 					else
 					{
 						el.addClass('error')
-						field = el.getParent('.field')
+						field = el.getParent('.control-group')
 					}
 
 					if (field)
@@ -605,6 +605,18 @@ document.body.addEvent('click:relay(.alert a.close)', function(ev, target) {
 	if (form) form.getElements('.error').removeClass('error')
 
 	target.getParent('.alert').destroy()
+})
+
+document.body.addEvent('click:relay([data-dismiss="alert"])', function(ev, target) {
+
+	var alert = target.getParent('.alert')
+	var form = alert.getParent('form')
+
+	ev.stop()
+
+	if (form) form.getElements('.error').removeClass('error')
+
+	alert.destroy()
 })/*
  * This file is part of the Brickrouge package.
  *

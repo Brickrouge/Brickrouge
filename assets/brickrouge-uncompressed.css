@@ -2656,11 +2656,17 @@ input[type="submit"].btn.btn-mini {
   border-radius: 4px;
   color: #c09853;
 }
+.alert.undissmisable {
+  padding-right: 14px;
+}
 .alert .content :first-child {
   margin-top: 0;
 }
 .alert .content :last-child {
   margin-bottom: 0;
+}
+.alert pre {
+  overflow-x: auto;
 }
 .alert p {
   margin: 0;
