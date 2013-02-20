@@ -392,24 +392,27 @@ Brickrouge.Form = new Class({
 		this.element = document.id(el)
 		this.setOptions(options)
 
+		if (this.options.replaceOnSuccess)
+		{
+			this.options.useXHR = true
+		}
+
 		if (this.options.useXHR || (options && (options.onRequest || options.onComplete || options.onFailure || options.onSuccess)))
 		{
-			this.element.addEvent
-			(
-				'submit', function(ev)
-				{
-					ev.stop()
-					this.submit()
-				}
-				.bind(this)
-			)
+			this.element.addEvent('submit', function(ev) {
+
+				ev.stop()
+				this.submit()
+			}
+			.bind(this))
 		}
 	},
 
 	alert: function(messages, type)
 	{
 		var original = messages
-		, alert = this.element.getElement('div.alert-' + type) || new Element('div.alert.alert-' + type, { html: '<a href="#close" class="close">×</a>'})
+		, alert = this.element.getElement('div.alert-' + type)
+		|| new Element('div.alert.alert-' + type, { html: '<button class="close" data-dismiss="alert">×</button>'})
 
 		if (typeOf(messages) == 'string')
 		{
@@ -487,6 +490,8 @@ Brickrouge.Form = new Class({
 	{
 		if (alert.hasClass('alert-success') && this.options.replaceOnSuccess)
 		{
+			alert.getElement('[data-dismiss="alert"]').dispose()
+			alert.addClass('undissmisable')
 			alert.inject(this.element, 'before')
 
 			this.element.addClass('hidden')
@@ -499,7 +504,9 @@ Brickrouge.Form = new Class({
 
 	clearAlert: function()
 	{
-		var alerts = this.element.getElements('div.alert')
+		var alerts = this.element.getElements('div.alert:not(.undissmisable)')
+
+		console.log('clear alerts:', alerts)
 
 		if (alerts)
 		{
@@ -576,7 +583,10 @@ Brickrouge.Form = new Class({
 				alert(response.exception)
 			}
 		}
-		catch (e) {}
+		catch (e)
+		{
+			alert(xhr.statusText)
+		}
 
 		this.fireEvent('failure', arguments)
 	}
