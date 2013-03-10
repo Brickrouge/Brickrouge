@@ -32,8 +32,6 @@ class Group extends Element
 	 * Creates a `<FIELDSET.group>` element.
 	 *
 	 * @param array $attributes
-	 *
-	 * @see Element::__construct()
 	 */
 	public function __construct(array $attributes=array())
 	{
@@ -43,17 +41,17 @@ class Group extends Element
 	/**
 	 * Adds the `no-legend` class name if the group has no legend (the {@link LEGEND} attribute
 	 * is empty).
-	 *
-	 * @see Element::render_class()
 	 */
-	protected function render_class(array $class_names)
+	protected function alter_class_names(array $class_names)
 	{
-		if (!$this[self::LEGEND])
-		{
-			$class_names['no-legend'] = true;
-		}
+		$name = $this['name'];
 
-		return parent::render_class($class_names);
+		return parent::alter_class_names($class_names) + array
+		(
+			'group' => true,
+			'group-name' => $name ? 'group--' . normalize($name) : null,
+			'no-legend' => !$this[self::LEGEND]
+		);
 	}
 
 	/**
@@ -63,8 +61,6 @@ class Group extends Element
 	 *     [<label for="{element_id}" class="input-label [required]">{element_form_label}</label>]
 	 *     <div class="input">{child}</div>
 	 * </div>
-	 *
-	 * @see Element::render_child()
 	 */
 	protected function render_child($child)
 	{
@@ -95,7 +91,7 @@ class Group extends Element
 		{
 			if (!($label instanceof Element))
 			{
-				$label = escape(t
+				$label = t
 				(
 					$label, array(), array
 					(
@@ -105,7 +101,7 @@ class Group extends Element
 							return t($label, array(), array('scope' => 'element.label'));
 						}
 					)
-				));
+				);
 			}
 
 			$label = '<label for="' . $child->id . '" class="controls-label">' . $label . '</label>' . PHP_EOL;
@@ -130,8 +126,6 @@ EOT;
 	 * is translated within the "group.legend" scope, then escaped.
 	 *
 	 * The legend element is rendered using the {@link render_group_legend()} method.
-	 *
-	 * @see Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -179,8 +173,6 @@ EOT;
 	/**
 	 * The description decoration is disabled because the {@link DESCRIPTION} attribute is rendered
 	 * by the {@link render_inner_html()} method to prepend the inner HTML.
-	 *
-	 * @see Element::decorate_with_legend()
 	 */
 	protected function decorate_with_description($html, $description)
 	{
@@ -190,8 +182,6 @@ EOT;
 	/**
 	 * The legend decoration is disabled because the {@link LEGEND} attribute is rendered
 	 * by the {@link render_inner_html()} method to prepend the inner HTML.
-	 *
-	 * @see Element::decorate_with_legend()
 	 */
 	protected function decorate_with_legend($html, $legend)
 	{

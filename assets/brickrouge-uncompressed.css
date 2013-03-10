@@ -1988,13 +1988,19 @@ ol.unstyled {
 /*
  * The "required" class is added to elements and their label when the T_REQUIRED tag
  * (or "required") is set to true.
- */label.required:after {
+ */label.required:after,
+label.required.wrapping > .label-text:after {
   content: '*';
   margin-left: .5ex;
   font-size: 0.83em;
 }
-label.required sup,
-label.required:after {
+label.required.wrapping:after {
+  content: '';
+  margin-left: 0;
+}
+label.required:after,
+label.required.wrapping > .label-text:after,
+label.required sup {
   color: #339BB9;
   vertical-align: text-top;
 }

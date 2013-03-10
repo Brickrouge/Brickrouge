@@ -30,7 +30,7 @@ class A extends Element
 	{
 		if (is_string($label))
 		{
-			$label = escape($label);
+			$label = escape(t($label));
 		}
 
 		parent::__construct

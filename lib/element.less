@@ -68,13 +68,21 @@ label.above {
  * (or "required") is set to true.
  */	 
 label.required {
-	&:after {
+	&:after,
+	&.wrapping > .label-text:after {
 		content: '*';
 		margin-left: .5ex;
 		font-size: 0.83em;
 	}
 	
-	sup, &:after {
+	&.wrapping:after {
+		content: '';
+		margin-left: 0;
+	}
+	
+	&:after,
+	&.wrapping > .label-text:after,
+	sup {
 		color: #339BB9;
 		vertical-align: text-top;
 	}

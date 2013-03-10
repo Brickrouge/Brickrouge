@@ -412,7 +412,7 @@ Brickrouge.Form = new Class({
 	{
 		var original = messages
 		, alert = this.element.getElement('div.alert-' + type)
-		|| new Element('div.alert.alert-' + type, { html: '<button class="close" data-dismiss="alert">×</button>'})
+		|| new Element('div.alert.alert-' + type, { html: '<button class="close" data-dismiss="alert">×</button>' })
 
 		if (typeOf(messages) == 'string')
 		{
@@ -427,7 +427,7 @@ Brickrouge.Form = new Class({
 				if (typeOf(id) == 'string' && id != '_base')
 				{
 					var parent
-					, field
+					, field = null
 					, el = document.id(this.element.elements[id])
 					, i
 
@@ -448,7 +448,7 @@ Brickrouge.Form = new Class({
 							}
 						}
 					}
-					else
+					else if (el)
 					{
 						el.addClass('error')
 						field = el.getParent('.control-group')
@@ -506,8 +506,6 @@ Brickrouge.Form = new Class({
 	{
 		var alerts = this.element.getElements('div.alert:not(.undissmisable)')
 
-		console.log('clear alerts:', alerts)
-
 		if (alerts)
 		{
 			alerts.destroy()
@@ -554,9 +552,9 @@ Brickrouge.Form = new Class({
 
 	success: function(response)
 	{
-		if (response.success)
+		if (response.message)
 		{
-			this.alert(response.success, 'success')
+			this.alert(response.message, 'success')
 		}
 
 		this.onSuccess(response)
@@ -569,11 +567,13 @@ Brickrouge.Form = new Class({
 
 	failure: function(xhr)
 	{
+		var response = {}
+
 		try
 		{
-			var response = JSON.decode(xhr.responseText)
+			response = JSON.decode(xhr.responseText)
 
-			if (response && response.errors)
+			if (response.errors)
 			{
 				this.alert(response.errors, 'error')
 			}
@@ -585,10 +585,15 @@ Brickrouge.Form = new Class({
 		}
 		catch (e)
 		{
+			if (console)
+			{
+				console.log(e)
+			}
+
 			alert(xhr.statusText)
 		}
 
-		this.fireEvent('failure', arguments)
+		this.fireEvent('failure', [ xhr, response ])
 	}
 })
 

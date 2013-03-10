@@ -306,8 +306,9 @@ input[type="text"][size],input[type="password"][size]{width:auto;}
 input.unstyled,input[type="text"].unstyled,input[type="password"].unstyled,select.unstyled,textarea.unstyled{background:transparent;border:none;box-shadow:none;}
 ul.unstyled,ol.unstyled{margin:0;padding:0;list-style:none;display:block;}
 label.above{display:block;margin-bottom:.2em;}
-label.required:after{content:'*';margin-left:.5ex;font-size:0.83em;}
-label.required sup,label.required:after{color:#339BB9;vertical-align:text-top;}
+label.required:after,label.required.wrapping>.label-text:after{content:'*';margin-left:.5ex;font-size:0.83em;}
+label.required.wrapping:after{content:'';margin-left:0;}
+label.required:after,label.required.wrapping>.label-text:after,label.required sup{color:#339BB9;vertical-align:text-top;}
 .widget-searchbox{border:2px inset ThreeDFace;background-color:Window;line-height:normal;display:inline-block;}.widget-searchbox input,.widget-searchbox button{border:none;font-family:inherit;font-size:inherit;padding:2px;background:transparent;box-shadow:none;width:auto;}.widget-searchbox input:focus,.widget-searchbox button:focus{box-shadow:none;}
 .widget-searchbox input:-moz-placeholder,.widget-searchbox input.placeholder{font-style:italic;}
 .widget-searchbox button{text-indent:-10000px;background:url(searchbox-search.png) center center no-repeat;width:20px;}.widget-searchbox button:hover{background-color:transparent;background-position:center;}
