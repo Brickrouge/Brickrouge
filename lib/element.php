@@ -1116,7 +1116,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			{
 				$value = $attribute;
 			}
-			else if (is_array($value) || (is_object($value) && !is_callable(array($value, '__toString'))))
+			else if (is_array($value) || (is_object($value) && !method_exists($value, '__toString')))
 			{
 				throw new \InvalidArgumentException(format('Invalid value for attribute %attribute: :value', array('attribute' => $attribute, 'value' => $value)));
 			}
