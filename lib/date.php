@@ -27,7 +27,7 @@ class Date extends Text
 
 	public function __toString()
 	{
-		$value = $this['value'];
+		$value = (string) $this['value'];
 
 		if (!(int) $value)
 		{

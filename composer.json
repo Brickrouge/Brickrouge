@@ -26,6 +26,6 @@
 	},
 	"autoload": {
 		"classmap": [ "lib/" ],
-		"files": [ "bootstrap.php" ]
+		"files": [ "bootstrap.php", "lib/helpers.php" ]
 	}
 }

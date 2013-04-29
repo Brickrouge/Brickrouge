@@ -12,18 +12,11 @@
 namespace Brickrouge;
 
 /**
- * Version string of the Brickrouge framework.
- *
- * @var string
- */
-define('Brickrouge\VERSION', '1.1.4 (2012-12-30)');
-
-/**
  * The ROOT directory of the Brickrouge framework.
  *
  * @var string
  */
-defined('Brickrouge\ROOT') or define('Brickrouge\ROOT', rtrim(__DIR__, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
+defined('Brickrouge\ROOT') or define('Brickrouge\ROOT', __DIR__ . DIRECTORY_SEPARATOR);
 
 /**
  * The DOCUMENT_ROOT directory used by the Brickrouge framework.
@@ -79,8 +72,3 @@ if (class_exists('ICanBoogie\Core', true))
 {
 	\ICanBoogie\Core::add_path(__DIR__);
 }
-
-/*
- * Helpers
- */
-require_once 'lib/helpers.php';

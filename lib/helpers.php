@@ -12,31 +12,6 @@
 namespace Brickrouge;
 
 /**
- * Registers a simple autoloader for Brickrouge classes.
- */
-function register_autoloader()
-{
-	spl_autoload_register
-	(
-		function($name)
-		{
-			static $index;
-
-			if ($index === null)
-			{
-				$path = ROOT; // the $path variable is used within the config file
-				$index = require $path . 'config/autoload.php';
-			}
-
-			if (isset($index[$name]))
-			{
-				require_once $index[$name];
-			}
-		}
-	);
-}
-
-/**
  * Inserts a value in a array before, or after, at given key.
  *
  * Numeric keys are not preserved.
