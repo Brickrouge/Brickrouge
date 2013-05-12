@@ -13,7 +13,7 @@ namespace Brickrouge;
 
 use ICanBoogie\Uploaded;
 
-class File extends Widget
+class File extends Element
 {
 	const FILE_WITH_LIMIT = '#file-with-limit';
 	const T_UPLOAD_URL = '#file-upload-url';
@@ -32,6 +32,8 @@ class File extends Widget
 		(
 			'div', $attributes + array
 			(
+				Element::WIDGET_CONSTRUCTOR => 'File',
+
 				'class' => 'widget-file'
 			)
 		);
@@ -95,9 +97,7 @@ class File extends Widget
 		$name = $this['name'];
 		$path = $this['value'];
 
-		$rc  = '<div class="input">';
-
-		$rc .= new Text
+		$rc = new Text
 		(
 			array
 			(
@@ -106,19 +106,20 @@ class File extends Widget
 				'name' => $name,
 				'class' => 'reminder'
 			)
-		);
+		)
 
-		$rc .= ' <span class="btn trigger"><i class="icon-file"></i> ' . t('choose_a_file', array(), array('scope' => array('fileupload', 'element'))) . '<input type="file" /></span>';
-
-		$rc .= '</div>';
+		. ' <div class="alert alert-error undissmisable"></div>'
+		. ' <label class="btn trigger"><i class="icon-file"></i> '
+		. t('choose_a_file', array(), array('scope' => 'fileupload.element'))
+		. '<input type="file" /></label>';
 
 		#
 		# uploading element
 		#
 
 		$rc .= '<div class="uploading">';
-		$rc .= '<span class="progress"><span class="position"><span class="label">&nbsp;</span></span></span> ';
-		$rc .= '<button type="button" class="btn-danger cancel">' . t('cancel', array(), array('scope' => 'button')) . '</button>';
+		$rc .= '<span class="progress like-input"><span class="position"><span class="text">&nbsp;</span></span></span> ';
+		$rc .= '<button type="button" class="btn btn-danger cancel">' . t('cancel', array(), array('scope' => 'button')) . '</button>';
 		$rc .= '</div>';
 
 		#
@@ -166,7 +167,6 @@ class File extends Widget
 		}
 
 		return $rc . <<<EOT
-<div class="alert alert-error"></div>
 <div class="infos">$infos</div>
 EOT;
 	}

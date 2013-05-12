@@ -1,142 +1,34 @@
-.widget-file div.infos
-{
-	font-size: .8em;
-	margin: 1em 0;
-	background-color: white;
-	padding: 1em;
-	border: 1px solid #cfcfcf;
-	border-radius: 4px;
-}
-
-.widget-file:not(.has-info) div.infos
-{
-	display: none;
-}
-
-/*
-.widget-file.uploading div.infos
-{
-	opacity: .6;
-}
-*/
-
-.widget-file ul.details,
-.widget-file div.preview
-{
-	display: inline-block;
-	vertical-align: top;
-	margin-right: 1em;
-}
-
-.widget-file ul.details
-{
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-	
-.widget-file div.preview img
-{
-	padding: 2px;
-	border: 1px solid #CCC;
-	background-color: white;
-}
-
-.widget-file div.preview a img:hover
-{
-	border-color: #A3C0E5;
-}
-	
-.widget-file div.preview a.download
-{
-	background: url(download-big.png) top center no-repeat;
-	height: 0;
-	width: 48px;
-	padding-top: 48px;
-	display: block;
-	overflow: hidden;
-}
-
-.widget-file input.file-reminder
-{
-	margin: 1em 0;
-}
-
-.widget-file .alert-error
-{
-	max-width: 76ex;
-}
-
-.widget-file:not(.has-error) .alert-error
-{
-	display: none;
-}
-
-
-
-
-
-
-
-
-.widget-file div.input .reminder,
-.widget-file div.input .trigger
-{
-	vertical-align: middle;
-}
-
-.widget-file .reminder:not([value])
-{
-	display: none;
-}
-
-
-
-
-
-
-
-
-.widget-file.uploading .input
-{
-	display: none;
-}
-
-.widget-file:not(.uploading) div.uploading
-{
-	display: none;
-}
-
-
-
-
-
-
-
-
-
-
-
-.widget-file span.trigger
-{
+.widget-file .trigger {
 	position: relative;
 	overflow: hidden;
 }
 
-.widget-file span.trigger input
-{
-	top: 0;
-	left: 0;
-	font-size: 200px;
-	opacity: 0;
-	position: absolute;
+.widget-file.dnd-hover .trigger {
+	border-color: rgba(82, 168, 236, 0.8);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(82, 168, 236, 0.6);
+	outline: 0 none;
 }
 
-.widget-file span.progress
-{
+.widget-file .trigger input {
+	position: fixed;
+	left: -8000px;
+}
+
+.widget-file .alert-error,
+.widget-file .reminder,
+.widget-file .trigger {
+	vertical-align: top;
+}
+
+.widget-file .reminder:not([value]),
+.widget-file.uploading .reminder,
+.widget-file.uploading .trigger,
+.widget-file:not(.uploading) .uploading {
+	display: none;
+}
+
+.widget-file .progress {
 	display: inline-block;
-	height: 1.5em;
-	line-height: 1.5em;
 	width: 32ex;
 	position: relative;
 	border: 1px solid #CFCFCF;
@@ -144,14 +36,12 @@
 	vertical-align: middle;
 }
 
-.widget-file span.progress,
-.widget-file span.progress span.position
-{
-	border-radius: 4px;
+.widget-file .progress,
+.widget-file .progress .position {
+	border-radius: 3px;
 }
 
-.widget-file span.progress span.position
-{
+.widget-file .progress .position {
 	display: block;
 	top: 0;
 	left: 0;
@@ -165,13 +55,69 @@
 	width: 0;
 }
 
-.widget-file.reading span.progress span.position
-{
-	color: #A3C0E5;
-	background: #F2F8FF;
+.widget-file .progress .position .text {
+	bottom: 0;
+	line-height: 1em;
+	margin-top: -0.5em;
+	position: absolute;
+	right: 1ex;
+	top: 50%;
 }
 
-.widget-file span.progress span.position span.label
-{
-	padding-right: 1ex;
+.widget-file:not(.has-error) .alert-error {
+	display: none;
+}
+
+.widget-file .alert-error {
+	display: inline-block;
+	margin-bottom: 0;
+	line-height: 20px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	max-width: 76ex;
+}
+
+.widget-file .infos {
+	font-size: .8em;
+	margin: 1em 0;
+	background-color: white;
+	padding: 1em;
+	border: 1px solid #cfcfcf;
+	border-radius: 4px;
+}
+
+.widget-file:not(.has-info) .infos {
+	display: none;
+}
+
+.widget-file ul.details,
+.widget-file div.preview {
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 1em;
+}
+
+.widget-file ul.details {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.widget-file div.preview img {
+	padding: 2px;
+	border: 1px solid #CCC;
+	background-color: white;
+}
+
+.widget-file div.preview a img:hover {
+	border-color: #A3C0E5;
+}
+
+.widget-file div.preview a.download {
+	background: url(download-big.png) top center no-repeat;
+	height: 0;
+	width: 48px;
+	padding-top: 48px;
+	display: block;
+	overflow: hidden;
 }
