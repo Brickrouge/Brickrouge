@@ -94,7 +94,6 @@ class File extends Element
 
 	protected function render_inner_html()
 	{
-		$name = $this['name'];
 		$path = $this['value'];
 
 		$rc = new Text
@@ -103,14 +102,14 @@ class File extends Element
 			(
 				'value' => $this['value'],
 				'readonly' => true,
-				'name' => $name,
+				'name' => $this['name'],
 				'class' => 'reminder'
 			)
 		)
 
 		. ' <div class="alert alert-error undissmisable"></div>'
 		. ' <label class="btn trigger"><i class="icon-file"></i> '
-		. t('choose_a_file', array(), array('scope' => 'fileupload.element'))
+		. t('Choose a file', array(), array('scope' => 'button'))
 		. '<input type="file" /></label>';
 
 		#
