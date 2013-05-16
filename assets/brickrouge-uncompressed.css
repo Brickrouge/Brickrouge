@@ -1740,7 +1740,7 @@ legend + .control-group {
   width: 0;
   height: 0;
   vertical-align: top;
-  border-top: 4px solid #000000;
+  border-top: 4px solid /*@black*/;
   border-right: 4px solid transparent;
   border-left: 4px solid transparent;
   content: "";
@@ -1850,7 +1850,7 @@ legend + .control-group {
 .dropup .caret,
 .navbar-fixed-bottom .dropdown .caret {
   border-top: 0;
-  border-bottom: 4px solid #000000;
+  border-bottom: 4px solid /*@black*/;
   content: "";
 }
 .dropup .dropdown-menu,
@@ -2600,18 +2600,23 @@ input[type="submit"].btn.btn-mini {
   border-top-width: 5px;
 }
 .dropup .btn-large .caret {
-  border-bottom: 5px solid #000000;
+  border-bottom: 5px solid;
   border-top: 0;
 }
-.btn-primary .caret,
-.btn-warning .caret,
-.btn-danger .caret,
-.btn-info .caret,
-.btn-success .caret,
-.btn-inverse .caret {
-  border-top-color: #ffffff;
-  border-bottom-color: #ffffff;
+/*@brickrouge: caret inherits text color
+// Account for other colors
+.btn-primary,
+.btn-warning,
+.btn-danger,
+.btn-info,
+.btn-success,
+.btn-inverse {
+  .caret {
+    border-top-color: @white;
+    border-bottom-color: @white;
+  }
 }
+*/
 .btn-group-vertical {
   display: inline-block;
   *display: inline;
