@@ -3252,7 +3252,7 @@ input[type="submit"].btn.btn-mini {
   background: rgba(0, 0, 0, 0.8);
   background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.8), #000000);
   background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.8), #000000);
-  background: linear-gradient(top, rgba(0, 0, 0, 0.8), #000000);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), #000000);
   border: 3px solid #000000;
   padding: 0;
 }
@@ -3260,7 +3260,7 @@ input[type="submit"].btn.btn-mini {
   background: #212121;
   background: -moz-linear-gradient(top, transparent, #000000);
   background: -webkit-linear-gradient(top, transparent, #000000);
-  background: linear-gradient(top, transparent, #000000);
+  background: linear-gradient(to bottom, transparent, #000000);
   border-bottom-color: #000000;
 }
 .popover.contrast .popover-content {
@@ -3270,7 +3270,7 @@ input[type="submit"].btn.btn-mini {
   background: #212121;
   background: -moz-linear-gradient(top, #212121, transparent);
   background: -webkit-linear-gradient(top, #212121, transparent);
-  background: linear-gradient(top, #222222, transparent);
+  background: linear-gradient(to bottom, #222222, transparent);
   border-top-color: #212121;
 }
 .popover.contrast input[type="text"],
@@ -3279,7 +3279,7 @@ input[type="submit"].btn.btn-mini {
   background: #333333;
   background: -webkit-linear-gradient(top, #212121 5%, #333333);
   background: -moz-linear-gradient(top, #212121 5%, #333333);
-  background: linear-gradient(top, #212121 5%, #333333);
+  background: linear-gradient(to bottom, #212121 5%, #333333);
   border-color: #454545;
   box-shadow: 0 0 1px #000000 inset;
 }
