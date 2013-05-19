@@ -17,6 +17,7 @@ class File extends Element
 {
 	const FILE_WITH_LIMIT = '#file-with-limit';
 	const T_UPLOAD_URL = '#file-upload-url';
+	const BUTTON_LABEL = '#file-button-label';
 
 	static protected function add_assets(Document $document)
 	{
@@ -33,6 +34,8 @@ class File extends Element
 			'div', $attributes + array
 			(
 				Element::WIDGET_CONSTRUCTOR => 'File',
+
+				self::BUTTON_LABEL => 'Choose a file',
 
 				'class' => 'widget-file'
 			)
@@ -109,7 +112,7 @@ class File extends Element
 
 		. ' <div class="alert alert-error undissmisable"></div>'
 		. ' <label class="btn trigger"><i class="icon-file"></i> '
-		. t('Choose a file', array(), array('scope' => 'button'))
+		. t($this[self::BUTTON_LABEL], array(), array('scope' => 'button'))
 		. '<input type="file" /></label>';
 
 		#
@@ -179,13 +182,11 @@ EOT;
 			$limit = ini_get('upload_max_filesize') * 1024;
 		}
 
-		return array
+		return parent::alter_dataset($dataset) + array
 		(
 			'name' => $this['name'],
 			'max-file-size' => $limit * 1024
-		)
-
-		+ parent::alter_dataset($dataset);
+		);
 	}
 
 	protected function render_outer_html()
