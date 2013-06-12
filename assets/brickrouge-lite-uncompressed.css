@@ -154,9 +154,13 @@ a[href].btn {
   text-align: center;
   background-color: #f5f5f5;
   border-top: 1px solid #bfbfbf;
+  padding: 10px;
 }
-.popover-actions button {
-  margin: .6em 1ex;
+.popover-actions .separator {
+  display: none;
+}
+.popover-actions .separator + button {
+  margin-left: 10px;
 }
 .popover.contrast,
 .popover.contrast input[type="text"],

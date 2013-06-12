@@ -490,13 +490,20 @@ button.btn.btn-mini,input[type="submit"].btn.btn-mini{*padding-top:1px;*padding-
 .popover.fit-content .popover-inner{width:auto;}
 .popover-title{padding:9px 15px;line-height:1;background-color:#f5f5f5;border-bottom:1px solid #eee;-webkit-border-radius:3px 3px 0 0;-moz-border-radius:3px 3px 0 0;border-radius:3px 3px 0 0;}
 .popover-title{margin:0;}
-.popover-content{padding:14px;background-color:#ffffff;-webkit-border-radius:0 0 3px 3px;-moz-border-radius:0 0 3px 3px;border-radius:0 0 3px 3px;-webkit-background-clip:padding-box;-moz-background-clip:padding-box;background-clip:padding-box;}.popover-content p,.popover-content ul,.popover-content ol{margin-bottom:0;}
+.popover-content{padding:14px;background-color:#ffffff;-webkit-border-radius:0 0 3px 3px;-moz-border-radius:0 0 3px 3px;border-radius:0 0 3px 3px;-webkit-background-clip:padding-box;-moz-background-clip:padding-box;background-clip:padding-box;*zoom:1;*zoom:1;*zoom:1;}.popover-content:before,.popover-content:after{display:table;content:"";line-height:0;}
+.popover-content:after{clear:both;}
+.popover-content:before,.popover-content:after{display:table;content:"";}
+.popover-content:after{clear:both;}
+.popover-content:before,.popover-content:after{display:table;content:"";}
+.popover-content:after{clear:both;}
+.popover-content p,.popover-content ul,.popover-content ol{margin-bottom:0;}
 .popover-content >:first-child{margin-top:0;}
 .popover-content >:last-child{margin-bottom:0;}
 .popover-title,.popover-content{-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;}
 .popover-inner >:first-child{border-top-left-radius:3px;border-top-right-radius:3px;}
 .popover-inner >:last-child{border-bottom-left-radius:3px;border-bottom-right-radius:3px;}
-.popover-actions{clear:both;text-align:center;background-color:#f5f5f5;border-top:1px solid #bfbfbf;}.popover-actions button{margin:.6em 1ex;}
+.popover-actions{clear:both;text-align:center;background-color:#f5f5f5;border-top:1px solid #bfbfbf;padding:10px;}.popover-actions .separator{display:none;}
+.popover-actions .separator+button{margin-left:10px;}
 .popover.contrast,.popover.contrast input[type="text"],.popover.contrast input[type="password"],.popover.contrast select,.popover.contrast textarea,.popover.contrast .field>label{color:#ffffff;}
 .popover.contrast label{color:#cccccc;}
 .popover.contrast .popover-inner{background:#000000;background:rgba(0, 0, 0, 0.8);background:-moz-linear-gradient(top, rgba(0, 0, 0, 0.8), #000000);background:-webkit-linear-gradient(top, rgba(0, 0, 0, 0.8), #000000);background:linear-gradient(to bottom, rgba(0, 0, 0, 0.8), #000000);border:3px solid #000000;padding:0;}

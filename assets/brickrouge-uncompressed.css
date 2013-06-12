@@ -3201,6 +3201,34 @@ input[type="submit"].btn.btn-mini {
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding-box;
   background-clip: padding-box;
+  *zoom: 1;
+  *zoom: 1;
+  *zoom: 1;
+}
+.popover-content:before,
+.popover-content:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.popover-content:after {
+  clear: both;
+}
+.popover-content:before,
+.popover-content:after {
+  display: table;
+  content: "";
+}
+.popover-content:after {
+  clear: both;
+}
+.popover-content:before,
+.popover-content:after {
+  display: table;
+  content: "";
+}
+.popover-content:after {
+  clear: both;
 }
 .popover-content p,
 .popover-content ul,
@@ -3232,9 +3260,13 @@ input[type="submit"].btn.btn-mini {
   text-align: center;
   background-color: #f5f5f5;
   border-top: 1px solid #bfbfbf;
+  padding: 10px;
 }
-.popover-actions button {
-  margin: .6em 1ex;
+.popover-actions .separator {
+  display: none;
+}
+.popover-actions .separator + button {
+  margin-left: 10px;
 }
 .popover.contrast,
 .popover.contrast input[type="text"],

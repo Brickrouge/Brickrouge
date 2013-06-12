@@ -114,6 +114,7 @@
   background-color: @white;
   .border-radius(0 0 3px 3px);
   .background-clip(padding-box);
+  .clearfix(); // @brickrouge
   p, ul, ol {
     margin-bottom: 0;
   }
@@ -159,9 +160,12 @@
   text-align: center;
   background-color: @formActionsBackground;
   border-top: 1px solid @grayLight;
-		
-  button {
-    margin: .6em 1ex;	
+  padding: 10px;
+  .separator {
+    display: none;
+  }
+  .separator + button {
+    margin-left: 10px;
   }
 }
 //</brickrouge>
