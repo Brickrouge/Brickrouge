@@ -22,6 +22,8 @@ class Pager extends Element
 	const T_URLBASE = '#pager-urlbase';
 	const T_USING = '#pager-using';
 	const T_WITH = '#pager-with';
+	const BROWSE_PREVIOUS_LABEL = '#pagination-browse-previous-label';
+	const BROWSE_NEXT_LABEL = '#pagination-browse-next-label';
 
 	public function __construct($type, $tags)
 	{
@@ -31,7 +33,7 @@ class Pager extends Element
 			(
 				self::T_LIMIT => 5,
 // 				self::T_SEPARATOR => '<span class="separator">,</span>',
-				self::T_GAP => '<span class="gap"> ... </span>',
+				self::T_GAP => '<span class="gap"> … </span>',
 				self::T_USING => 'page',
 
 				'class' => 'pagination'
@@ -140,8 +142,18 @@ class Pager extends Element
 			# add next (>) link
 			#
 
-			$next_text = t('Next', array(), array('scope' => 'pagination.label', 'default' => 'Next →'));
-			$previous_text = t('Previous', array(), array('scope' => 'pagination.label', 'default' => '← Previous'));
+			$next_text = $this[self::BROWSE_NEXT_LABEL];
+			$previous_text = $this[self::BROWSE_PREVIOUS_LABEL];
+
+			if (!$next_text)
+			{
+				$next_text = t('Next', array(), array('scope' => 'pagination.label', 'default' => 'Next →'));
+			}
+
+			if (!$previous_text)
+			{
+				$previous_text = t('Previous', array(), array('scope' => 'pagination.label', 'default' => '← Previous'));
+			}
 
 //			if ($this->reverse_arrows ? ($on_page > 1) : ($on_page < $pages))
 			if ($on_page < $pages)
@@ -258,7 +270,7 @@ class Pager extends Element
 		return $this->urlbase . $n;
 	}
 
-	protected function getLink($n, $label=null, $class=null)
+	protected function getLink($n, $label=null, $class='page')
 	{
 		$rc = '<li' . ($class ? ' class="' . $class . '"' : '') . '><a href="' . $this->getURL($n) . '">';
 		$rc .= $label ? $label : ($n + 1);
@@ -269,6 +281,6 @@ class Pager extends Element
 
 	protected function getPosition($n)
 	{
-		return '<li class="active"><a href="#">' . $n . '</a></li>';
+		return '<li class="page active"><a href="#">' . $n . '</a></li>';
 	}
 }
