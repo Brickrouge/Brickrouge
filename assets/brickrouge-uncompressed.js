@@ -797,6 +797,7 @@ Brickrouge.Popover = new Class({
 	{
 		anchor: null,
 		animate: false,
+		popoverClass: null,
 		placement: null,
 		visible: false,
 		fitContent: false,
@@ -838,6 +839,11 @@ Brickrouge.Popover = new Class({
 		if (options.loveContent)
 		{
 			el.addClass('love-content')
+		}
+
+		if (options.popoverClass)
+		{
+			el.addClass(options.popoverClass)
 		}
 
 		el.addEvent('click:relay(.popover-actions [data-action])', function(ev, target) {
