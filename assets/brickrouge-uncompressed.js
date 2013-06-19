@@ -744,7 +744,35 @@ document.body.addEvent('click:relay(.tabbable .nav-tabs a)', function(ev, el) {
 
 	pane.addClass('active')
 })
-/*
+
+/**
+ * Distributes the remaining space after the last tab between tabs.
+ *
+ * The distribution only applies to tabs which container have the `nav-tabs-fill` class.
+ */
+window.addEvent('brickrouge.update', function() {
+
+	document.body.getElements('.nav-tabs-fill').each(function(nav) {
+
+		var tabs = nav.getElements('a')
+		, last = tabs[tabs.length - 1]
+		, lastCoordinates = last.getCoordinates(nav)
+		, navSize = nav.getSize()
+		, remain = (navSize.x - (lastCoordinates.left + lastCoordinates.width))
+		, add = (remain / tabs.length / 2)|0
+		, addFinal = remain - (add * tabs.length * 2)
+
+		last.setStyle('padding-right', last.getStyle('padding-right').toInt() + addFinal)
+
+		tabs.each(function(tab) {
+
+			tab.setStyle('padding-left', tab.getStyle('padding-left').toInt() + add)
+			tab.setStyle('padding-right', tab.getStyle('padding-right').toInt() + add)
+
+		})
+	})
+
+})/*
  * This file is part of the Brickrouge package.
  *
  * (c) Olivier Laviale <olivier.laviale@gmail.com>

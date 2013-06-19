@@ -94,9 +94,14 @@
 .nav-pills > li > a {
   padding-right: 12px;
   padding-left: 12px;
-  margin-right: 2px;
+//  margin-right: 2px; @brickrouge: the next rule provides better margins
   line-height: 14px; // keeps the overall height an even number
   text-decoration: none !important; //@brickrouge: we don't force text decoration on A
+}
+
+.nav-tabs > li + li > a,
+.nav-pills > li + li > a {
+	margin-left: 2px;
 }
 
 // TABS
@@ -105,6 +110,9 @@
 // Give the tabs something to sit on
 .nav-tabs {
   border-bottom: 1px solid #ddd;
+}
+.nav-tabs.nav-tabs-fill { // @brickrouge
+  border-bottom: 0;
 }
 // Make the list-items overlay the bottom border
 .nav-tabs > li {

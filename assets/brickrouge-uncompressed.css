@@ -2836,12 +2836,18 @@ input[type="submit"].btn.btn-mini {
 .nav-pills > li > a {
   padding-right: 12px;
   padding-left: 12px;
-  margin-right: 2px;
   line-height: 14px;
   text-decoration: none !important;
 }
+.nav-tabs > li + li > a,
+.nav-pills > li + li > a {
+  margin-left: 2px;
+}
 .nav-tabs {
   border-bottom: 1px solid #ddd;
+}
+.nav-tabs.nav-tabs-fill {
+  border-bottom: 0;
 }
 .nav-tabs > li {
   margin-bottom: -1px;
