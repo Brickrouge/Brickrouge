@@ -96,10 +96,7 @@ class Group extends Element
 					$label, array(), array
 					(
 						'scope' => 'group.label',
-						'default' => function($label)
-						{
-							return t($label, array(), array('scope' => 'element.label'));
-						}
+						'default' => t($label, array(), array('scope' => 'element.label'))
 					)
 				);
 			}
