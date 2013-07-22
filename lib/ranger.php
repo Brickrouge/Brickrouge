@@ -22,9 +22,7 @@ class Ranger extends Element
 
 	public function __construct($type, $tags)
 	{
-		parent::__construct($type, $tags);
-
-		$this->add_class('wdranger');
+		parent::__construct($type, $tags + array('class' => 'wdranger'));
 	}
 
 	protected function render_inner_html()
