@@ -107,6 +107,7 @@
 	padding: 2px;
 	border: 1px solid #CCC;
 	background-color: white;
+	display: block;
 }
 
 .widget-file div.preview a img:hover {
