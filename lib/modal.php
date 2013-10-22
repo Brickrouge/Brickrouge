@@ -6,6 +6,11 @@ class Modal extends Element
 {
 	const ACTIONS = '#modal-actions';
 
+	static protected function add_assets(Document $document)
+	{
+		$document->js->add('modal.js');
+	}
+
 	public function __construct(array $attributes=array())
 	{
 		parent::__construct('div', $attributes);
