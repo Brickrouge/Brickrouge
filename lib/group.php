@@ -133,7 +133,7 @@ EOT;
 		if ($description)
 		{
 			$description = t($description, array(), array('scope' => 'group.description'));
-			$html = '<div class="group-description"><div class="group-description-inner">' . $description . '</div></div>' . $html;
+			$html = $this->render_group_description($description) . $html;
 		}
 
 		$legend = $this[self::LEGEND];
@@ -160,11 +160,23 @@ EOT;
 	 *
 	 * @param string $legend The legend to render.
 	 *
-	 * @return string a `<LEGEND.group-legend>` HTML element.
+	 * @return string a `legend.group-legend` HTML element.
 	 */
 	protected function render_group_legend($legend)
 	{
 		return '<legend class="group-legend">' . $legend . '</legend>';
+	}
+
+	/**
+	 * Renders the group description
+	 *
+	 * @param string $description
+	 *
+	 * @return string a `div.group-description>div.group-description-inner` element.
+	 */
+	protected function render_group_description($description)
+	{
+		return '<div class="group-description"><div class="group-description-inner">' . $description . '</div></div>';
 	}
 
 	/**
