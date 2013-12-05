@@ -461,6 +461,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		return new Iterator($this);
 	}
 
+	private $_dataset;
+
 	/**
 	 * Returns the {@link Dataset} of the element.
 	 *
@@ -468,7 +470,12 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 */
 	protected function get_dataset()
 	{
-		return new Dataset($this);
+		if (!$this->_dataset)
+		{
+			$this->_dataset = new Dataset($this);
+		}
+
+		return $this->_dataset;
 	}
 
 	/**
@@ -478,17 +485,17 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @return Dataset
 	 */
-	protected function set_dataset($properties)
+	protected function set_dataset($dataset)
 	{
-		if ($properties instanceof Dataset)
+		if (!($dataset instanceof Dataset))
 		{
-			return $properties;
+			$dataset = new Dataset($this, $dataset);
 		}
 
-		return new Dataset($this, $properties);
+		$this->_dataset = $dataset;
 	}
 
-	protected function volatile_get_attributes()
+	protected function get_attributes()
 	{
 		return $this->tags;
 	}
@@ -500,7 +507,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @return string
 	 */
-	protected function get_id()
+	protected function lazy_get_id()
 	{
 		$id = $this['id'];
 
@@ -535,7 +542,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @return string
 	 */
-	protected function volatile_get_class()
+	protected function get_class()
 	{
 		$class_names = $this->alter_class_names($this->class_names);
 
@@ -547,7 +554,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @param string $class
 	 */
-	protected function volatile_set_class($class)
+	protected function set_class($class)
 	{
 		$names = explode(' ', trim($class));
 		$names = array_map('trim', $names);

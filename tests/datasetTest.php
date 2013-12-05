@@ -34,6 +34,16 @@ class DatasetTest extends \PHPUnit_Framework_TestCase
 		));
 	}
 
+	public function test_get_same()
+	{
+		$d1 = $this->element->dataset;
+		$d2 = $this->element->dataset;
+
+		$this->assertInstanceOf('Brickrouge\Dataset', $d1);
+		$this->assertInstanceOf('Brickrouge\Dataset', $d2);
+		$this->assertEquals(spl_object_hash($d1), spl_object_hash($d2));
+	}
+
 	public function testRendering()
 	{
 		$rendered = (string) $this->element;

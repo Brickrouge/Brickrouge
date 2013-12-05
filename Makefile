@@ -96,32 +96,38 @@ watch:
 	echo "Watching less files..."
 	watchr -e "watch('lib/.*\.less') { system 'make' }"
 
+# customization
+
+PACKAGE_NAME = "Brickrouge"
+
+# do not edit the following lines
+
+usage:
+	@echo "test:  Runs the test suite.\ndoc:   Creates the documentation.\nclean: Removes the documentation, the dependencies and the Composer files."
+
 composer.phar:
-	echo "Installing composer..."
-	curl -s https://getcomposer.org/installer | php
+	@echo "Installing composer..."
+	@curl -s https://getcomposer.org/installer | php
 
-install: composer.phar
-	@php composer.phar install
+vendor: composer.phar
+	@php composer.phar install --prefer-source --dev
 
-test:
-	@if [ ! -d "vendor" ] ; then \
-		make install ; \
-	fi
+update: vendor
+	@php composer.phar update --prefer-source --dev
 
+autoload: vendor
+	@php composer.phar dump-autoload
+
+test: vendor
 	@phpunit
 
-doc:
-	@if [ ! -d "vendor" ] ; then \
-		make install ; \
-	fi
-
+doc: vendor
 	@mkdir -p "docs"
 
 	@apigen \
 	--source ./ \
-	--destination docs/ --title Brickrouge \
+	--destination docs/ --title $(PACKAGE_NAME) \
 	--exclude "*/composer/*" \
-	--exclude "*/build/*" \
 	--exclude "*/tests/*" \
 	--template-config /usr/share/php/data/ApiGen/templates/bootstrap/config.neon
 
@@ -130,8 +136,5 @@ clean:
 	@rm -fR vendor
 	@rm -f composer.lock
 	@rm -f composer.phar
-
-phar:
-	@php -d phar.readonly=0 ./build/phar.php;
 
 .PHONY: build watch
