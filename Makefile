@@ -43,6 +43,14 @@ CSS_COMPRESSOR = `which lessc`
 CSS_COMPRESSED = assets/brickrouge.css
 CSS_UNCOMPRESSED = assets/brickrouge-uncompressed.css
 
+CSS_RESPONSIVE_FILES = \
+	lib/responsive-1200px-min.less \
+	lib/responsive-767px-max.less \
+	lib/responsive-768px-979px.less 
+
+CSS_RESPONSIVE_COMPRESSED = assets/brickrouge-responsive.css
+CSS_RESPONSIVE_UNCOMPRESSED = assets/brickrouge-responsive-uncompressed.css
+
 # JavaScript
 
 JS_FILES = \
@@ -60,7 +68,13 @@ JS_COMPRESSOR = curl -X POST -s --data-urlencode 'js_code@$^' --data-urlencode '
 JS_COMPRESSED = assets/brickrouge.js
 JS_UNCOMPRESSED = assets/brickrouge-uncompressed.js
 
-all: $(JS_COMPRESSED) $(JS_UNCOMPRESSED) $(CSS_COMPRESSED) $(CSS_UNCOMPRESSED)
+all: \
+	$(JS_COMPRESSED) \
+	$(JS_UNCOMPRESSED) \
+	$(CSS_COMPRESSED) \
+	$(CSS_UNCOMPRESSED) \
+	$(CSS_RESPONSIVE_COMPRESSED) \
+	$(CSS_RESPONSIVE_UNCOMPRESSED)
 
 $(JS_COMPRESSED): $(JS_UNCOMPRESSED)
 	$(JS_COMPRESSOR) >$@
@@ -73,6 +87,12 @@ $(CSS_COMPRESSED): $(CSS_FILES)
 
 $(CSS_UNCOMPRESSED): $(CSS_FILES)
 	$(CSS_COMPRESSOR) lib/brickrouge.less >$@
+
+$(CSS_RESPONSIVE_COMPRESSED): $(CSS_RESPONSIVE_FILES)
+	$(CSS_COMPRESSOR) -x lib/responsive.less >$@
+
+$(CSS_RESPONSIVE_UNCOMPRESSED): $(CSS_RESPONSIVE_FILES)
+	$(CSS_COMPRESSOR) lib/responsive.less >$@
 
 #build:
 #	@@if test ! -z ${LESS_COMPILER}; then \
