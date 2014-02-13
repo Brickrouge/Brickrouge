@@ -45,7 +45,7 @@ Create a `composer.json` file and run `php composer.phar install` command to ins
 {
 	"minimum-stability": "dev",
 	"require": {
-		"brickrouge/brickrouge": "*"
+		"brickrouge/brickrouge": "2.x"
 	}
 }
 ```
