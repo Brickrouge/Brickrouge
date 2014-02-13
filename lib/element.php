@@ -32,7 +32,7 @@ namespace Brickrouge;
  *
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
-class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggregate
+class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggregate, HTMLStringInterface
 {
 	#
 	# special elements

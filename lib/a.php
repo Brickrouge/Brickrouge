@@ -28,7 +28,7 @@ class A extends Element
 	 */
 	public function __construct($label, $href='#', array $attributes=array())
 	{
-		if (is_string($label))
+		if (!($label instanceof HTMLStringInterface))
 		{
 			$label = escape(t($label));
 		}
