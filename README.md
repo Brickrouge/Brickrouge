@@ -1,4 +1,4 @@
-# Brickrouge [![Build Status](https://secure.travis-ci.org/ICanBoogie/Brickrouge.png?branch=master)](http://travis-ci.org/ICanBoogie/Brickrouge)
+# Brickrouge [![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.png?branch=master)](http://travis-ci.org/Brickrouge/Brickrouge)
 
 Brickrouge is an object-oriented toolkit for PHP5.3+ that helps you create inputs, widgets,
 forms and many other common elements, with all the CSS and JavaScript needed to make them
@@ -56,10 +56,10 @@ Create a `composer.json` file and run `php composer.phar install` command to ins
 
 ### Cloning the repository
 
-The package is [available on GitHub](https://github.com/ICanBoogie/Brickrouge), its repository can
+The package is [available on GitHub](https://github.com/Brickrouge/Brickrouge), its repository can
 be cloned with the following command line:
 
-	$ git clone git://github.com/ICanBoogie/Brickrouge.git
+	$ git clone git://github.com/Brickrouge/Brickrouge.git
 	
 
 
@@ -215,14 +215,14 @@ This consolidates the various CSS and JavaScript files and create compressed and
 files in the "assets/" directory. Files containing only the differences with Bootstrap
 are also created ("-lite-uncompressed.css" and "-lite.css"). The following files are created:
 
-* [brickrouge-lite-uncompressed.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge-lite-uncompressed.css)
-* [brickrouge-lite.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge-lite.css)
-* [brickrouge-uncompressed.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge-uncompressed.css)
-* [brickrouge-uncompressed.js](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge-uncompressed.js)
-* [brickrouge.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge.css)
-* [brickrouge.js](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/brickrouge.js)
-* [responsive-uncompressed.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/responsive-uncompressed.css)
-* [responsive.css](https://github.com/ICanBoogie/Brickrouge/blob/master/assets/responsive.css)
+* [brickrouge-lite-uncompressed.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge-lite-uncompressed.css)
+* [brickrouge-lite.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge-lite.css)
+* [brickrouge-uncompressed.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge-uncompressed.css)
+* [brickrouge-uncompressed.js](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge-uncompressed.js)
+* [brickrouge.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge.css)
+* [brickrouge.js](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge.js)
+* [responsive-uncompressed.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/responsive-uncompressed.css)
+* [responsive.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/responsive.css)
 
 Note that you need the [LESS](http://lesscss.org/) compiler to compile the CSS files. JavaScript
 files are compressed using the [online UglifyJS JavaScript minification](http://marijnhaverbeke.nl/uglifyjs/).

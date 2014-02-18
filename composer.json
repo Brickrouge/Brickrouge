@@ -14,8 +14,8 @@
 		}
 	],
 	"support": {
-		"issues": "https://github.com/ICanBoogie/Brickrouge/issues",
-		"source": "https://github.com/ICanBoogie/Brickrouge"
+		"issues": "https://github.com/Brickrouge/Brickrouge/issues",
+		"source": "https://github.com/Brickrouge/Brickrouge"
 	},
 	"minimum-stability": "dev",
 	"require": {
