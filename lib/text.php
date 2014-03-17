@@ -54,6 +54,25 @@ class Text extends Element
 	}
 
 	/**
+	 * Renders the addon.
+	 *
+	 * @param mixed $addon
+	 *
+	 * @return string|Element
+	 */
+	protected function render_addon($addon)
+	{
+		if ($addon instanceof Button || $addon instanceof DropdownMenu)
+		{
+			return $addon;
+		}
+
+		return <<<EOT
+<span class="add-on">{$addon}</span>
+EOT;
+	}
+
+	/**
 	 * Decorates the HTML with the add-on specified with the {@link ADDON} attribute.
 	 *
 	 * @see Element::decorate()
@@ -87,7 +106,7 @@ class Text extends Element
 	 */
 	protected function decorate_with_prepend($html, $addon)
 	{
-		return '<div class="input-prepend"><span class="add-on">' . $addon . '</span>' . $html . '</div>';
+		return '<div class="input-prepend">' . $this->render_addon($addon) . $html . '</div>';
 	}
 
 	/**
@@ -100,6 +119,6 @@ class Text extends Element
 	 */
 	protected function decorate_with_append($html, $addon)
 	{
-		return '<div class="input-append">' . $html . '<span class="add-on">' . $addon . '</span></div>';
+		return '<div class="input-append">' . $html . $this->render_addon($addon) . '</div>';
 	}
 }
