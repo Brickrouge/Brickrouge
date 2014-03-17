@@ -64,11 +64,3 @@ if (!defined('Brickrouge\CHARSET'))
 {
 	define('Brickrouge\CHARSET', 'utf-8');
 }
-
-/*
- * Add package path to ICanBoogie so that it can discover our config and locale messages.
- */
-if (class_exists('ICanBoogie\Core', true))
-{
-	\ICanBoogie\Core::add_path(__DIR__);
-}
