@@ -951,6 +951,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			$child['checked'] = !empty($selected[$option_name]);
 			$child['disabled'] = $disabled || !empty($disableds[$option_name]);
 			$child['data-key'] = $option_name;
+			$child['data-name'] = $name;
 
 			$html .= $child;
 		}
