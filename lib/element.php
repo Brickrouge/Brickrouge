@@ -1296,7 +1296,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		$label = $this[self::LABEL];
 
-		if ($label)
+		if ($label || $label === '0')
 		{
 			$label = t($label, array(), array('scope' => 'element.label'));
 			$html = $this->decorate_with_label($html, $label);
