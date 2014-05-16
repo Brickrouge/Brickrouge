@@ -152,17 +152,13 @@ Open a terminal, go to its directory and type "make":
 	$ cd /path/to/Brickrouge/
 	$ make
 
-This consolidates the various CSS and JavaScript files and create compressed and non-compressed
-files in the "assets/" directory. Files containing only the differences with Bootstrap
-are also created ("-lite-uncompressed.css" and "-lite.css"). The following files are created:
+This consolidates the various CSS and JavaScript files and create compressed files in the
+"assets/" directory. Files containing only the differences with Bootstrap are also
+created ("-lite.css"). The following files are created:
 
-* [brickrouge-lite-uncompressed.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge-lite-uncompressed.css)
 * [brickrouge-lite.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge-lite.css)
-* [brickrouge-uncompressed.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge-uncompressed.css)
-* [brickrouge-uncompressed.js](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge-uncompressed.js)
 * [brickrouge.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge.css)
 * [brickrouge.js](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge.js)
-* [responsive-uncompressed.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/responsive-uncompressed.css)
 * [responsive.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/responsive.css)
 
 Note that you need the [LESS](http://lesscss.org/) compiler to compile the CSS files. JavaScript

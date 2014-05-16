@@ -8,7 +8,14 @@ BRICKROUGE_LITE = ./assets/brickrouge-lite
 BRICKROUGE_LITE_UNCOMPRESSED = ./assets/brickrouge-lite-uncompressed
 BRICKROUGE_LITE_TMP = '/tmp/brickrouge-lite/'
 BRICKROUGE_LITE_LESS = ${BRICKROUGE_LITE_TMP}brickrouge.less
-LESS_COMPILER ?= `which lessc`
+
+JS_COMPRESSOR = curl -X POST -s --data-urlencode 'js_code@$^' --data-urlencode 'utf8=1' http://marijnhaverbeke.nl/uglifyjs
+#JS_COMPRESSOR = cat $^ # uncomment to create un compressed files
+
+CSS_COMPILER ?= `which lessc`
+CSS_COMPRESSOR = curl -X POST -s --data-urlencode 'input@$^' http://cssminifier.com/raw
+#CSS_COMPRESSOR = cat $^ # uncomment to create un compressed files
+
 WATCHR ?= `which watchr`
 
 # CSS
@@ -39,7 +46,6 @@ CSS_FILES = \
 	lib/responsive-1200px-min.less \
 	lib/variables.less
 
-CSS_COMPRESSOR = `which lessc`
 CSS_COMPRESSED = assets/brickrouge.css
 CSS_UNCOMPRESSED = assets/brickrouge-uncompressed.css
 
@@ -64,8 +70,6 @@ JS_FILES = \
 	lib/searchbox.js \
 	lib/carousel.js
 
-JS_COMPRESSOR = curl -X POST -s --data-urlencode 'js_code@$^' --data-urlencode 'utf8=1' http://marijnhaverbeke.nl/uglifyjs
-#JS_COMPRESSOR = cat $^ # uncomment to create un compressed files
 JS_COMPRESSED = assets/brickrouge.js
 JS_UNCOMPRESSED = assets/brickrouge-uncompressed.js
 
@@ -83,35 +87,17 @@ $(JS_COMPRESSED): $(JS_UNCOMPRESSED)
 $(JS_UNCOMPRESSED): $(JS_FILES)
 	cat $^ >$@
 
-$(CSS_COMPRESSED): $(CSS_FILES)
-	$(CSS_COMPRESSOR) -x lib/brickrouge.less >$@
+$(CSS_COMPRESSED): $(CSS_UNCOMPRESSED)
+	$(CSS_COMPRESSOR) >$@
 
 $(CSS_UNCOMPRESSED): $(CSS_FILES)
-	$(CSS_COMPRESSOR) lib/brickrouge.less >$@
+	$(CSS_COMPILER) lib/brickrouge.less >$@
 
-$(CSS_RESPONSIVE_COMPRESSED): $(CSS_RESPONSIVE_FILES)
-	$(CSS_COMPRESSOR) -x lib/responsive.less >$@
+$(CSS_RESPONSIVE_COMPRESSED): $(CSS_RESPONSIVE_UNCOMPRESSED)
+	$(CSS_COMPRESSOR) >$@
 
 $(CSS_RESPONSIVE_UNCOMPRESSED): $(CSS_RESPONSIVE_FILES)
-	$(CSS_COMPRESSOR) lib/responsive.less >$@
-
-#build:
-#	@@if test ! -z ${LESS_COMPILER}; then \
-#		lessc ${BRICKROUGE_LESS} > ${BRICKROUGE_UNCOMPRESSED}.css; \
-#		lessc -x ${BRICKROUGE_LESS} > ${BRICKROUGE}.css; \
-#		lessc ${BRICKROUGE_RESPONSIVE_LESS} > ${BRICKROUGE_RESPONSIVE_UNCOMPRESSED}.css; \
-#		lessc -x ${BRICKROUGE_RESPONSIVE_LESS} > ${BRICKROUGE_RESPONSIVE}.css; \
-#		rm -fR ${BRICKROUGE_LITE_TMP}; \
-#		mkdir ${BRICKROUGE_LITE_TMP}; \
-#		php ./build/diff.php ${BRICKROUGE_LITE_TMP}; \
-#		lessc ${BRICKROUGE_LITE_LESS} > ${BRICKROUGE_LITE_UNCOMPRESSED}.css; \
-#		lessc -x ${BRICKROUGE_LITE_LESS} > ${BRICKROUGE_LITE}.css; \
-#		echo "Brickrouge successfully built! - `date`"; \
-#	else \
-#		echo "You must have the LESS compiler installed in order to build Brickrouge."; \
-#		echo "You can install it by running: npm install less -g"; \
-#	fi
-#
+	$(CSS_COMPILER) lib/responsive.less >$@
 
 watch:
 	echo "Watching less files..."
