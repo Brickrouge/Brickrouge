@@ -65,7 +65,7 @@ JS_FILES = \
 	lib/carousel.js
 
 JS_COMPRESSOR = curl -X POST -s --data-urlencode 'js_code@$^' --data-urlencode 'utf8=1' http://marijnhaverbeke.nl/uglifyjs
-JS_COMPRESSOR = cat $^ # uncomment to create un compressed files
+#JS_COMPRESSOR = cat $^ # uncomment to create un compressed files
 JS_COMPRESSED = assets/brickrouge.js
 JS_UNCOMPRESSED = assets/brickrouge-uncompressed.js
 

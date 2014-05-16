@@ -1,4 +1,4 @@
-# Brickrouge [![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.png?branch=master)](http://travis-ci.org/Brickrouge/Brickrouge)
+# Brickrouge [![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.png?branch=2.1)](http://travis-ci.org/Brickrouge/Brickrouge)
 
 Brickrouge is an object-oriented toolkit for PHP5.3+ that helps you create inputs, widgets,
 forms and many other common elements, with all the CSS and JavaScript needed to make them
@@ -21,65 +21,6 @@ framework [ICanBoogie](http://icanboogie.org/), Brickrouge is one of the
 precious components that make the CMS [Icybee](http://icybee.org/).
 
 Please, visit [brickrouge.org](http://brickrouge.org/) for more information.
-
-
-
-
-
-## Requirements
-
-The package requires PHP 5.3 or later.  
-The following packages are also required: [icanboogie/prototype](https://packagist.org/packages/icanboogie/prototype)
-and [icanboogie/errors](https://packagist.org/packages/icanboogie/errors).
-
-
-
-
-
-## Installation
-
-The recommended way to install this package is through [composer](http://getcomposer.org/).
-Create a `composer.json` file and run `php composer.phar install` command to install it:
-
-```json
-{
-	"minimum-stability": "dev",
-	"require": {
-		"brickrouge/brickrouge": "2.x"
-	}
-}
-```
-
-
-
-
-
-### Cloning the repository
-
-The package is [available on GitHub](https://github.com/Brickrouge/Brickrouge), its repository can
-be cloned with the following command line:
-
-	$ git clone git://github.com/Brickrouge/Brickrouge.git
-	
-
-
-
-
-## Documentation
-
-You can generate the documentation for the package and its dependencies with the `make doc`
-command. The documentation is generated in the `docs` directory. You can later clean the directory
-with the `make clean` command. Note that [ApiGen](http://apigen.org/) is required.
-
-
-
-
-
-## Testing
-
-The test suite is ran with the `make test` command. [Composer](http://getcomposer.org/) is
-automatically installed as well as all dependencies required to run the suite. You can later
-clean the directory with the `make clean` command.
 
 
 
@@ -252,6 +193,104 @@ For more information and a demonstration please visit the [Brickrouge homepage](
 
 
 
+----------
+
+# JavaScript API
+
+
+
+
+
+## Events
+
+
+
+
+
+### brickrouge.widget
+
+The `brickrouge.widget` event is fired on the `window` object everytime a widget is constructed.
+The event is fired with the widget and its element as arguments.
+
+```js
+window.addEvent('brickrouge.widget', function(widget, el) {
+
+	console.log('widget constructed:', widget, el)
+
+})
+```
+
+
+
+
+
+----------
+
+
+
+
+
+## Requirements
+
+The package requires PHP 5.3 or later.  
+The following packages are also required: [icanboogie/prototype](https://packagist.org/packages/icanboogie/prototype)
+and [icanboogie/errors](https://packagist.org/packages/icanboogie/errors).
+
+
+
+
+
+## Installation
+
+The recommended way to install this package is through [composer](http://getcomposer.org/).
+Create a `composer.json` file and run `php composer.phar install` command to install it:
+
+```json
+{
+	"minimum-stability": "dev",
+	"require": {
+		"brickrouge/brickrouge": "2.x"
+	}
+}
+```
+
+
+
+
+
+### Cloning the repository
+
+The package is [available on GitHub](https://github.com/Brickrouge/Brickrouge), its repository can
+be cloned with the following command line:
+
+	$ git clone git://github.com/Brickrouge/Brickrouge.git
+	
+
+
+
+
+## Documentation
+
+You can generate the documentation for the package and its dependencies with the `make doc`
+command. The documentation is generated in the `docs` directory. You can later clean the directory
+with the `make clean` command. Note that [ApiGen](http://apigen.org/) is required.
+
+
+
+
+
+## Testing
+
+The test suite is ran with the `make test` command. [Composer](http://getcomposer.org/) is
+automatically installed as well as all dependencies required to run the suite. You can later
+clean the directory with the `make clean` command.
+
+[![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.png?branch=2.1)](http://travis-ci.org/Brickrouge/Brickrouge)
+
+
+
+
+
 ## License
 
-Brickrouge is licensed under the New BSD License - See the LICENSE file for details.
+Brickrouge is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
