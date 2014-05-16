@@ -1,6 +1,6 @@
 # Brickrouge [![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.png?branch=2.1)](http://travis-ci.org/Brickrouge/Brickrouge)
 
-Brickrouge is an object-oriented toolkit for PHP5.3+ that helps you create inputs, widgets,
+Brickrouge is an object-oriented toolkit for PHP5.4+ that helps you create inputs, widgets,
 forms and many other common elements, with all the CSS and JavaScript needed to make them
 beautiful and magical.
 
@@ -228,7 +228,7 @@ window.addEvent('brickrouge.widget', function(widget, el) {
 
 ## Requirements
 
-The package requires PHP 5.3 or later.  
+The package requires PHP 5.4 or later.  
 The following packages are also required: [icanboogie/prototype](https://packagist.org/packages/icanboogie/prototype)
 and [icanboogie/errors](https://packagist.org/packages/icanboogie/errors).
 
