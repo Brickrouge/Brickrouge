@@ -210,7 +210,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @var string
 	 */
-	const WIDGET_CONSTRUCTOR = '#widget-constructor';
+	const IS = 'brickrouge-is';
+	const WIDGET_CONSTRUCTOR = 'brickrouge-is'; // 2.0 COMPAT
 
 	static private $inputs = array('button', 'form', 'input', 'option', 'select', 'textarea');
 	static private $has_attribute_disabled = array('button', 'input', 'optgroup', 'option', 'select', 'textarea');
@@ -1140,7 +1141,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * The method is invoked before the dataset is rendered.
 	 *
-	 * The method might add the `default-value` and `widget-constructor` keys.
+	 * The method might add the `default-value` and {@link IS_ATTRIBUTE} keys.
 	 *
 	 * @param array $dataset
 	 *
@@ -1152,11 +1153,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		&& $this['data-default-value'] === null)
 		{
 			$dataset['default-value'] = $this[self::DEFAULT_VALUE];
-		}
-
-		if (!isset($dataset['widget-constructor']))
-		{
-			$dataset['widget-constructor'] = $this[self::WIDGET_CONSTRUCTOR];
 		}
 
 		return $dataset;

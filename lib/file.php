@@ -33,7 +33,7 @@ class File extends Element
 		(
 			'div', $attributes + array
 			(
-				Element::WIDGET_CONSTRUCTOR => 'File',
+				Element::IS => 'File',
 
 				self::BUTTON_LABEL => 'Choose a file',
 
