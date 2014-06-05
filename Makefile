@@ -38,6 +38,7 @@ CSS_FILES = \
 	lib/responsive-utilities.less \
 	lib/close.less \
 	lib/popovers.less \
+	lib/modal.less \
 	lib/searchbox.less \
 	lib/dropdowns.less \
 	lib/reset.less \
@@ -66,6 +67,7 @@ JS_FILES = \
 	lib/dropdowns.js \
 	lib/navs.js \
 	lib/popover.js \
+	lib/modal.js \
 	lib/tooltip.js \
 	lib/searchbox.js \
 	lib/carousel.js

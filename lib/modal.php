@@ -6,11 +6,6 @@ class Modal extends Element
 {
 	const ACTIONS = '#modal-actions';
 
-	static protected function add_assets(Document $document)
-	{
-		$document->js->add('modal.js');
-	}
-
 	public function __construct(array $attributes=array())
 	{
 		parent::__construct('div', $attributes);
@@ -34,7 +29,7 @@ class Modal extends Element
 
 		if ($header)
 		{
-			$header = '<h3>' . $header . '</h3>';
+			$header = '<div class="modal-title">' . $header . '</div>';
 		}
 
 		$html .= <<<EOT
@@ -68,7 +63,9 @@ EOT;
 EOT;
 		}
 
-		return $html;
+		return <<<EOT
+<div class="modal-dialog">$html</div>
+EOT;
 	}
 
 	protected function decorate_with_legend($html, $legend)
