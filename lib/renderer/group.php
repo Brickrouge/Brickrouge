@@ -4,9 +4,8 @@ namespace Brickrouge\Renderer;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
-use Brickrouge\Group;
 
-class Simple extends Element
+class Group extends Element
 {
 	const GROUP_CLASS = '#group-class';
 
@@ -95,4 +94,9 @@ class Simple extends Element
 
 		return (string) $group;
 	}
+}
+
+class Simple extends Group
+{
+
 }
