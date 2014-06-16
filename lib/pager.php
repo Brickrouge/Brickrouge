@@ -52,7 +52,7 @@ class Pager extends Element
 
 		$this->urlbase = $this->getURLBase();
 
-		$gap = $this[self::T_GAP];
+		$gap = '<li class="disabled">' . $this[self::T_GAP] . '</li>';
 		$separator = $this[self::T_SEPARATOR];
 
 		#
