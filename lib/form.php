@@ -682,7 +682,7 @@ class Form extends Element implements Validator
 
 		if (count($errors))
 		{
-			return;
+			return false;
 		}
 
 		return parent::validate($values, $errors);
