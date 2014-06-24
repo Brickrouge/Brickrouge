@@ -1,12 +1,12 @@
 # Brickrouge [![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.png?branch=2.1)](http://travis-ci.org/Brickrouge/Brickrouge)
 
-Brickrouge is an object-oriented toolkit for PHP5.4+ that helps you create inputs, widgets,
-forms and many other common elements, with all the CSS and JavaScript needed to make them
-beautiful and magical.
+Brickrouge helps you create HTML elements and custom HTML elements such as inputs, forms,
+dropdowns, popover, calendars… with all the CSS and JavaScript required to make them beautiful
+and magical.
 
 Here are some of its features:
 
-* Can create any kind of HTML element
+* Create any kind of HTML element as well as custom HTML elements.
 * Compatible with Bootstrap
 * Standalone and patchable
 * Object-oriented
@@ -27,7 +27,7 @@ Please, visit [brickrouge.org](http://brickrouge.org/) for more information.
 
 ## Creating elements
 
-With the [Element][] class you can create any kind of HTML elements. The attributes are defined
+With the [Element][] class you can create any kind of HTML element. The attributes are defined
 using an array and custom attributes are used to define custom properties.
 
 ```php
@@ -111,7 +111,7 @@ echo new Element('div', [
 
 
 
-### Specific classes
+## Specific classes
 
 Altought any HTML element can be created with the [Element][] class, specific classes are
 available for specific element types. They usually help in creating complex elements.
@@ -236,10 +236,10 @@ window.addEvent('brickrouge.update', function(fragment) {
 ### Constructing widgets _en masse_
 
 Widgets are first created when the `domready` event is fired. Later, if the document is updated
-with possibly new widgets, the `Brickrouge.updateDocument()` is used to construct new widgets.
+with possibly new widgets, the `Brickrouge.updateDocument()` is used to construct the new widgets.
 
 ```js
-// considering that `fagment` contains the new elements that were added to the DOM
+// considering that `fragment` contains the new elements that were added to the DOM
 
 Brickrouge.updateDocument(fragment)
 ```
