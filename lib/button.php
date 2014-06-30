@@ -21,20 +21,26 @@ class Button extends Element
 	 * the following values:
 	 *
 	 * - `type`: "button"
-	 * - {@link INNER_HTML}: The translated and escaped label. The label is translated with the "button" scope.
+	 * - {@link INNER_HTML}: The translated and escaped label. The label is translated with
+	 * the "button" scope. If an {@link HTMLString} instance is provided, it is used as is.
 	 *
 	 * @param string $label Label of the button (inner text).
 	 * @param array $attributes Optional attributes used to create the element.
 	 */
 	public function __construct($label, array $attributes=array())
 	{
+		if (!($label instanceof HTMLString))
+		{
+			$label = escape(t($label, array(), array('scope' => 'button')));
+		}
+
 		parent::__construct
 		(
 			'button', $attributes + array
 			(
 				'type' => 'button',
 
-				self::INNER_HTML => escape(t($label, array(), array('scope' => 'button')))
+				self::INNER_HTML => $label
 			)
 		);
 	}
