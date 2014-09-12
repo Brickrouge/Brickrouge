@@ -54,8 +54,13 @@ EOT;
 
 		$footer = $this->render_modal_footer();
 
-		if ($footer)
+		if ($footer instanceof Actions)
 		{
+			$html .= $footer->add_class('modal-footer');
+		}
+		else if ($footer)
+		{
+
 			$html .= <<<EOT
 <div class="modal-footer">
 	{$footer}
