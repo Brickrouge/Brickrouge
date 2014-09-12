@@ -1491,6 +1491,11 @@ EOT;
 
 		if ($validator)
 		{
+			if ($validator instanceof \Closure)
+			{
+				return $validator($errors, $this, $value);
+			}
+
 			list($callback, $params) = $validator + array(1 => array());
 
 			return call_user_func($callback, $errors, $this, $value, $params);
