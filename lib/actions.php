@@ -79,7 +79,7 @@ class Actions extends Element
 				$action['name'] = $name;
 			}
 
-			$actions = implode('<span class="separator">&nbsp;</span>', $actions);
+			$actions = implode($actions);
 		}
 		else if ($actions === true)
 		{
