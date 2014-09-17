@@ -1,4 +1,4 @@
-# Brickrouge [![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.png?branch=2.1)](http://travis-ci.org/Brickrouge/Brickrouge)
+# Brickrouge [![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.svg?branch=2.1)](http://travis-ci.org/Brickrouge/Brickrouge)
 
 Brickrouge helps you create HTML elements and custom HTML elements such as inputs, forms,
 dropdowns, popover, calendars… with all the CSS and JavaScript required to make them beautiful
@@ -560,7 +560,7 @@ The test suite is ran with the `make test` command. [Composer](http://getcompose
 automatically installed as well as all dependencies required to run the suite. You can later
 clean the directory with the `make clean` command.
 
-[![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.png?branch=2.1)](http://travis-ci.org/Brickrouge/Brickrouge)
+[![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.svg?branch=2.1)](http://travis-ci.org/Brickrouge/Brickrouge)
 
 
 
