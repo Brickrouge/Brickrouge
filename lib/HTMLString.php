@@ -12,14 +12,6 @@
 namespace Brickrouge;
 
 /**
- * Indicates that instances can be rendered into an safe HTML string.
- */
-interface HTMLStringInterface
-{
-	public function __toString();
-}
-
-/**
  * Representation of an HTML string.
  *
  * An HTML string is considered safe to use and is not escaped after it has been rendered.

@@ -95,8 +95,3 @@ class Group extends Element
 		return (string) $group;
 	}
 }
-
-class Simple extends Group
-{
-
-}

@@ -25,7 +25,9 @@
 		"icanboogie/errors": "*"
 	},
 	"autoload": {
-		"classmap": [ "lib/" ],
-		"files": [ "bootstrap.php", "lib/helpers.php" ]
+		"psr-4": {
+			"Brickrouge\\": "lib/"
+		},
+		"files": [ "bootstrap.php", "helpers.php" ]
 	}
 }
