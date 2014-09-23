@@ -21,7 +21,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals
 		(
 			'<div class="alert">'
-			. Alert::DISSMISS_BUTTON
+			. Alert::DISMISS_BUTTON
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
@@ -34,7 +34,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals
 		(
 			'<div class="alert alert-error">'
-			. Alert::DISSMISS_BUTTON
+			. Alert::DISMISS_BUTTON
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
@@ -47,7 +47,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals
 		(
 			'<div class="alert alert-info">'
-			. Alert::DISSMISS_BUTTON
+			. Alert::DISMISS_BUTTON
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
@@ -60,7 +60,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals
 		(
 			'<div class="alert alert-success">'
-			. Alert::DISSMISS_BUTTON
+			. Alert::DISMISS_BUTTON
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
@@ -77,7 +77,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals
 		(
 			'<div class="alert alert-block">'
-			. Alert::DISSMISS_BUTTON
+			. Alert::DISMISS_BUTTON
 			. '<h4 class="alert-heading">' . self::HEADING . '</h4>'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
@@ -91,7 +91,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals
 		(
 			'<div class="alert alert-error alert-block">'
-			. Alert::DISSMISS_BUTTON
+			. Alert::DISMISS_BUTTON
 			. '<h4 class="alert-heading">' . self::HEADING . '</h4>'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
@@ -105,7 +105,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals
 		(
 			'<div class="alert alert-info alert-block">'
-			. Alert::DISSMISS_BUTTON
+			. Alert::DISMISS_BUTTON
 			. '<h4 class="alert-heading">' . self::HEADING . '</h4>'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
@@ -119,7 +119,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals
 		(
 			'<div class="alert alert-success alert-block">'
-			. Alert::DISSMISS_BUTTON
+			. Alert::DISMISS_BUTTON
 			. '<h4 class="alert-heading">' . self::HEADING . '</h4>'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
@@ -135,7 +135,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals
 		(
 			'<div class="alert alert-block">'
-			. Alert::DISSMISS_BUTTON
+			. Alert::DISMISS_BUTTON
 			. '<h4 class="alert-heading">' . escape($heading) . '</h4>'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
@@ -145,54 +145,54 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/*
-	 * undissmisable
+	 * undismissable
 	 */
 
-	public function test_undissmisable_alert()
+	public function test_undismissable_alert()
 	{
 		$this->assertEquals
 		(
-			'<div class="alert undissmisable">'
+			'<div class="alert undismissable">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::UNDISSMISABLE => true))
+			(string) new Alert(self::MESSAGE, array(Alert::UNDISMISSABLE => true))
 		);
 	}
 
-	public function test_undissmisable_alert_error()
+	public function test_undismissable_alert_error()
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-error undissmisable">'
+			'<div class="alert alert-error undismissable">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_ERROR, Alert::UNDISSMISABLE => true))
+			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_ERROR, Alert::UNDISMISSABLE => true))
 		);
 	}
 
-	public function test_undissmisable_alert_info()
+	public function test_undismissable_alert_info()
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-info undissmisable">'
+			'<div class="alert alert-info undismissable">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_INFO, Alert::UNDISSMISABLE => true))
+			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_INFO, Alert::UNDISMISSABLE => true))
 		);
 	}
 
-	public function test_undissmisable_alert_success()
+	public function test_undismissable_alert_success()
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-success undissmisable">'
+			'<div class="alert alert-success undismissable">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_SUCCESS, Alert::UNDISSMISABLE => true))
+			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_SUCCESS, Alert::UNDISMISSABLE => true))
 		);
 	}
 }

@@ -36,13 +36,13 @@ class Alert extends Element
 	const HEADING = '#alert-heading';
 
 	/**
-	 * Set to `true` for undissmisable alerts.
+	 * Set to `true` for undismissable alerts.
 	 *
 	 * @var string
 	 */
-	const UNDISSMISABLE = '#alert-undissmisable';
+	const UNDISMISSABLE = '#alert-undismissable';
 
-	const DISSMISS_BUTTON = '<button type="button" class="close" data-dismiss="alert">×</button>';
+	const DISMISS_BUTTON = '<button type="button" class="close" data-dismiss="alert">×</button>';
 
 	/**
 	 * Alert message.
@@ -97,7 +97,7 @@ class Alert extends Element
 	 *
 	 * Adds the `alert-block` class name if the {@link HEADING} attribute is defined.
 	 *
-	 * Adds the `undissmisable` class name if the {@link UNDISSMISABLE} attribute is true.
+	 * Adds the `undismissable` class name if the {@link UNDISMISSABLE} attribute is true.
 	 */
 	protected function alter_class_names(array $class_names)
 	{
@@ -115,9 +115,9 @@ class Alert extends Element
 			$class_names['alert-block'] = true;
 		}
 
-		if ($this[self::UNDISSMISABLE])
+		if ($this[self::UNDISMISSABLE])
 		{
-			$class_names['undissmisable'] = true;
+			$class_names['undismissable'] = true;
 		}
 
 		return $class_names;
@@ -169,9 +169,9 @@ class Alert extends Element
 
 		$dismiss = '';
 
-		if (!$this[self::UNDISSMISABLE])
+		if (!$this[self::UNDISMISSABLE])
 		{
-			$dismiss = self::DISSMISS_BUTTON;
+			$dismiss = self::DISMISS_BUTTON;
 		}
 
 		return $dismiss . $heading . '<div class="content">' . $message . '</div>';
