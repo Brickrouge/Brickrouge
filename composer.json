@@ -2,7 +2,7 @@
 	"name": "brickrouge/brickrouge",
 	"type": "library",
 	"description": "A toolkit to create HTML elements",
-	"keywords": ["html", "element", "form", "widget", "bootstrap"], 
+	"keywords": ["html", "element", "form", "widget", "bootstrap"],
 	"homepage": "http://brickrouge.org/",
 	"license": "BSD-3-Clause",
 	"authors": [
@@ -29,5 +29,14 @@
 			"Brickrouge\\": "lib/"
 		},
 		"files": [ "bootstrap.php", "helpers.php" ]
+	},
+
+	"extra": {
+
+		"icanboogie": {
+
+			"locale-path": "locale"
+
+		}
 	}
 }
