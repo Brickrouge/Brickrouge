@@ -316,23 +316,13 @@ abstract class AssetsCollector
 	 */
 	public function get()
 	{
-		$by_priority = array();
+		$sorted = \ICanBoogie\sort_by_weight($this->collected, function($v, $k) {
 
-		foreach ($this->collected as $url => $priority)
-		{
-			$by_priority[$priority][] = $url;
-		}
+			return $v;
 
-		ksort($by_priority);
+		});
 
-		$sorted = array();
-
-		foreach ($by_priority as $urls)
-		{
-			$sorted = array_merge($sorted, $urls);
-		}
-
-		return $sorted;
+		return array_keys($sorted);
 	}
 
 	/**
