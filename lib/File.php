@@ -11,8 +11,6 @@
 
 namespace Brickrouge;
 
-use ICanBoogie\Uploaded;
-
 class File extends Element
 {
 	const FILE_WITH_LIMIT = '#file-with-limit';
