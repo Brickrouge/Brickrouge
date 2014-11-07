@@ -517,16 +517,10 @@ and [icanboogie/errors](https://packagist.org/packages/icanboogie/errors).
 
 ## Installation
 
-The recommended way to install this package is through [composer](http://getcomposer.org/).
-Create a `composer.json` file and run `php composer.phar install` command to install it:
+The recommended way to install this package is through [composer](http://getcomposer.org/):
 
-```json
-{
-	"minimum-stability": "dev",
-	"require": {
-		"brickrouge/brickrouge": "2.x"
-	}
-}
+```
+$ composer require brickrouge/brickrouge:~2.1
 ```
 
 
@@ -538,7 +532,7 @@ Create a `composer.json` file and run `php composer.phar install` command to ins
 The package is [available on GitHub](https://github.com/Brickrouge/Brickrouge), its repository can
 be cloned with the following command line:
 
-	$ git clone git://github.com/Brickrouge/Brickrouge.git
+	$ git clone https://github.com/Brickrouge/Brickrouge.git
 
 
 
