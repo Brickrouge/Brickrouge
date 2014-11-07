@@ -607,7 +607,7 @@ class Form extends Element implements Validator
 		# remove HTML markups from the label
 		#
 
-		$label = t($label, array(), array('scope' => 'element.label'));
+		$label = $this->t($label, array(), array('scope' => 'element.label'));
 		$label = strip_tags($label);
 
 		return $label;
@@ -696,7 +696,7 @@ class Form extends Element implements Validator
 		{
 			if (!isset($values[$name]) || (isset($values[$name]) && is_string($values[$name]) && !strlen(trim($values[$name]))))
 			{
-				$missing[$name] = t($label);
+				$missing[$name] = $this->t($label);
 
 				#
 				# The value for this required element is missing.
@@ -712,7 +712,7 @@ class Form extends Element implements Validator
 		{
 			if (count($missing) == 1)
 			{
-				$errors[key($missing)] = t('The field %field is required!', array('%field' => t(current($missing))));
+				$errors[key($missing)] = $this->t('The field %field is required!', array('%field' => $this->t(current($missing))));
 			}
 			else
 			{
@@ -723,7 +723,7 @@ class Form extends Element implements Validator
 
 				$last = array_pop($missing);
 
-				$errors[] = t('The fields %list and %last are required!', array('%list' => implode(', ', $missing), '%last' => $last));
+				$errors[] = $this->t('The fields %list and %last are required!', array('%list' => implode(', ', $missing), '%last' => $last));
 			}
 		}
 	}
@@ -739,7 +739,7 @@ class Form extends Element implements Validator
 			return true;
 		}
 
-		$errors[$element->name] = t('Invalid email address %value for the %label element.', array('value' => $value, 'label' => $element->label));
+		$errors[$element->name] = $this->t('Invalid email address %value for the %label element.', array('value' => $value, 'label' => $element->label));
 
 		return false;
 	}
@@ -751,7 +751,7 @@ class Form extends Element implements Validator
 			return true;
 		}
 
-		$errors[$element->name] = t('Invalid URL %value for the %label element.', array('value' => $value, 'label' => $element->label));
+		$errors[$element->name] = $this->t('Invalid URL %value for the %label element.', array('value' => $value, 'label' => $element->label));
 
 		return false;
 	}
@@ -801,7 +801,7 @@ class Form extends Element implements Validator
 				{
 					if (!preg_match($params, $value))
 					{
-						$messages[] = t('Invalid format of value %value', array('%value' => $value));
+						$messages[] = $this->t('Invalid format of value %value', array('%value' => $value));
 					}
 				}
 				break;
@@ -812,9 +812,9 @@ class Form extends Element implements Validator
 		{
 			$message = implode('. ', $messages);
 
-			$message .= t(' for the %label input element.', array('%label' => $element->label));
+			$message .= $this->t(' for the %label input element.', array('%label' => $element->label));
 
-			$errors[$element->name] = t($message, $args);
+			$errors[$element->name] = $this->t($message, $args);
 		}
 
 		return empty($messages);
@@ -828,7 +828,7 @@ class Form extends Element implements Validator
 
 		if (!$rc)
 		{
-			$errors[$element->name] = t
+			$errors[$element->name] = $this->t
 			(
 				'@wdform.errors.range', array
 				(

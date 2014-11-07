@@ -88,7 +88,7 @@ class File extends Element
 
 	protected function preview($path)
 	{
-		$rc = '<a class="download" href="' . $path . '">' . t('download', array(), array('scope' => array('fileupload', 'element'))) . '</a>';
+		$rc = '<a class="download" href="' . $path . '">' . $this->t('download', array(), array('scope' => array('fileupload', 'element'))) . '</a>';
 
 		return $rc;
 	}
@@ -110,7 +110,7 @@ class File extends Element
 
 		. ' <div class="alert alert-error undismissable"></div>'
 		. ' <label class="btn trigger"><i class="icon-file"></i> '
-		. t($this[self::BUTTON_LABEL], array(), array('scope' => 'button'))
+		. $this->t($this[self::BUTTON_LABEL], array(), array('scope' => 'button'))
 		. '<input type="file" /></label>';
 
 		#
@@ -119,7 +119,7 @@ class File extends Element
 
 		$rc .= '<div class="uploading">';
 		$rc .= '<span class="progress like-input"><span class="position"><span class="text">&nbsp;</span></span></span> ';
-		$rc .= '<button type="button" class="btn btn-danger cancel">' . t('cancel', array(), array('scope' => 'button')) . '</button>';
+		$rc .= '<button type="button" class="btn btn-danger cancel">' . $this->t('cancel', array(), array('scope' => 'button')) . '</button>';
 		$rc .= '</div>';
 
 		#
@@ -139,7 +139,7 @@ class File extends Element
 			$limit = format_size($limit * 1024);
 
 			$rc .= PHP_EOL . '<div class="file-size-limit small" style="margin-top: .5em">';
-			$rc .= t('The maximum file size must be less than :size.', array(':size' => $limit));
+			$rc .= $this->t('The maximum file size must be less than :size.', array(':size' => $limit));
 			$rc .= '</div>';
 		}
 
@@ -153,7 +153,9 @@ class File extends Element
 		{
 			if (!is_file(DOCUMENT_ROOT . $path))
 			{
-				$infos = '<span class="warn">' . t('The file %file is missing !', array('%file' => basename($path))) . '</span>';
+				$this->app->logger->debug("path: $path");
+
+				$infos = '<span class="warn">' . $this->t('The file %file is missing !', array('%file' => basename($path))) . '</span>';
 			}
 			else
 			{

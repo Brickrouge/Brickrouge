@@ -24,7 +24,7 @@ class Salutation extends Element
 
 		array_walk($options, function(&$v) {
 
-			$v = t($v, array(), array('scope' => 'salutation'));
+			$v = $this->t($v, array(), array('scope' => 'salutation'));
 
 		});
 

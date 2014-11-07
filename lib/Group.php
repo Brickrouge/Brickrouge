@@ -91,12 +91,12 @@ class Group extends Element
 		{
 			if (!($label instanceof Element))
 			{
-				$label = t
+				$label = $this->t
 				(
 					$label, array(), array
 					(
 						'scope' => 'group.label',
-						'default' => t($label, array(), array('scope' => 'element.label'))
+						'default' => $this->t($label, array(), array('scope' => 'element.label'))
 					)
 				);
 			}

@@ -187,6 +187,13 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	const STATE = '#state';
 
 	/**
+	 * Specifies the translator used to translate strings.
+	 *
+	 * @var mixed
+	 */
+	const TRANSLATOR = '#translator';
+
+	/**
 	 * Used to define the validator of an element. The validator is defined using an array made of
 	 * a callback and a possible userdata array.
 	 *
@@ -1009,7 +1016,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		{
 			if ($label && !is_object($label) && $label{0} == '.')
 			{
-				$label = t(substr($label, 1), array(), array('scope' => 'element.option'));
+				$label = $this->t(substr($label, 1), array(), array('scope' => 'element.option'));
 			}
 
 			$child[self::LABEL] = $label;
@@ -1078,7 +1085,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 			if ($attribute == 'title')
 			{
-				$attributes[$attribute] = t($value, array(), array('scope' => 'element.title'));
+				$attributes[$attribute] = $this->t($value, array(), array('scope' => 'element.title'));
 			}
 		}
 
@@ -1294,7 +1301,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if ($label || $label === '0')
 		{
-			$label = t($label, array(), array('scope' => 'element.label'));
+			$label = $this->t($label, array(), array('scope' => 'element.label'));
 			$html = $this->decorate_with_label($html, $label);
 		}
 
@@ -1306,7 +1313,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if ($help)
 		{
-			$help = t($help, array(), array('scope' => 'element.inline_help'));
+			$help = $this->t($help, array(), array('scope' => 'element.inline_help'));
 			$html = $this->decorate_with_inline_help($html, $help);
 		}
 
@@ -1318,7 +1325,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if ($description)
 		{
-			$description = t($description, array(), array('scope' => 'element.description'));
+			$description = $this->t($description, array(), array('scope' => 'element.description'));
 			$html = $this->decorate_with_description($html, $description);
 		}
 
@@ -1330,7 +1337,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if ($legend)
 		{
-			$legend = t($legend, array(), array('scope' => 'element.legend'));
+			$legend = $this->t($legend, array(), array('scope' => 'element.legend'));
 			$html = $this->decorate_with_legend($html, $legend);
 		}
 
@@ -1520,7 +1527,7 @@ EOT;
 
 					if (count($value) > $limit)
 					{
-						$errors[$this->name] = t('Le nombre de choix possible pour le champ %name est limité à :limit', array
+						$errors[$this->name] = $this->t('Le nombre de choix possible pour le champ %name est limité à :limit', array
 						(
 							'name' => Form::select_element_label($this),
 							'limit' => $limit
@@ -1534,6 +1541,21 @@ EOT;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Translates and formates a string.
+	 *
+	 * The method uses the translator specified by {@link TRANSLATOR} or the {@link t()} function
+	 * if it is not specified.
+	 *
+	 * @see \Brickrouge\t
+	 */
+	public function t($pattern, array $args=[], array $options=[])
+	{
+		$translator = $this[self::TRANSLATOR];
+
+		return $translator ? $translator($pattern, $args, $options) : t($pattern, $args, $options);
 	}
 }
 

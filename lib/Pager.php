@@ -147,12 +147,12 @@ class Pager extends Element
 
 			if (!$next_text)
 			{
-				$next_text = t('Next', array(), array('scope' => 'pagination.label', 'default' => 'Next →'));
+				$next_text = $this->t('Next', array(), array('scope' => 'pagination.label', 'default' => 'Next →'));
 			}
 
 			if (!$previous_text)
 			{
-				$previous_text = t('Previous', array(), array('scope' => 'pagination.label', 'default' => '← Previous'));
+				$previous_text = $this->t('Previous', array(), array('scope' => 'pagination.label', 'default' => '← Previous'));
 			}
 
 //			if ($this->reverse_arrows ? ($on_page > 1) : ($on_page < $pages))
