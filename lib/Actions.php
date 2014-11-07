@@ -50,8 +50,6 @@ class Actions extends Element
 	 * `<span class="separator">&nbsp;</span>`.
 	 *
 	 * Otherwise actions are used as is.
-	 *
-	 * @see Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{

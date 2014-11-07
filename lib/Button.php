@@ -45,8 +45,6 @@ class Button extends Element
 
 	/**
 	 * Adds the `btn` class name.
-	 *
-	 * @see Brickrouge.Element::alter_class_names()
 	 */
 	protected function alter_class_names(array $class_names)
 	{

@@ -39,8 +39,6 @@ class Text extends Element
 	 * - type: 'text'
 	 *
 	 * @param array $attributes
-	 *
-	 * @see Element::__construct()
 	 */
 	public function __construct(array $attributes=[])
 	{
@@ -72,8 +70,6 @@ EOT;
 
 	/**
 	 * Decorates the HTML with the add-on specified with the {@link ADDON} attribute.
-	 *
-	 * @see Element::decorate()
 	 */
 	protected function decorate($html)
 	{

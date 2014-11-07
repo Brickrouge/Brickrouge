@@ -13,9 +13,9 @@ namespace Brickrouge;
 
 class DateTime extends Date
 {
-	public function __construct(array $tags)
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct($tags + [
+		parent::__construct($attributes + [
 
 			'size' => 24,
 			'class' => 'datetime'

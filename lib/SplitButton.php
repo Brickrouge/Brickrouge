@@ -35,8 +35,6 @@ class SplitButton extends Element
 	 *
 	 * The `btn-primary`, `btn-danger`, `btn-success` and `btn-info` class names are forwarded to
 	 * the buttons.
-	 *
-	 * @see Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -91,8 +89,6 @@ EOT;
 	/**
 	 * Removes the `btn-primary`, `btn-danger`, `btn-success` and `btn-info` class names and adds
 	 * the `btn-group` class.
-	 *
-	 * @see Element::render_class()
 	 */
 	protected function render_class(array $class_names)
 	{

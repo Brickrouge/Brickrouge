@@ -67,7 +67,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	const TYPE_RADIO_GROUP = '#radio-group';
 
 	#
-	# special tags
+	# special attributes
 	#
 
 	/**
@@ -289,11 +289,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	public $children = [];
 
 	/**
-	 * Tags of the element, including HTML and special attributes.
+	 * Attributes of the element, including HTML and special attributes.
 	 *
 	 * @var array[string]mixed
 	 */
-	protected $tags = [];
+	private $attributes = [];
 
 	/**
 	 * Inner HTML of the element.
@@ -310,7 +310,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @param array $attributes HTML and custom attributes.
 	 */
-	public function __construct($type, $attributes=[])
+	public function __construct($type, array $attributes=[])
 	{
 		$this->type = $type;
 
@@ -395,7 +395,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 */
 	public function offsetExists($attribute)
 	{
-		return isset($this->tags[$attribute]);
+		return isset($this->attributes[$attribute]);
 	}
 
 	/**
@@ -408,7 +408,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 */
 	public function offsetGet($attribute, $default=null)
 	{
-		return isset($this->tags[$attribute]) ? $this->tags[$attribute] : $default;
+		return isset($this->attributes[$attribute]) ? $this->attributes[$attribute] : $default;
 	}
 
 	/**
@@ -447,7 +447,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			break;
 		}
 
-		$this->tags[$attribute] = $value;
+		$this->attributes[$attribute] = $value;
 	}
 
 	/**
@@ -457,7 +457,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 */
 	public function offsetUnset($attribute)
 	{
-		unset($this->tags[$attribute]);
+		unset($this->attributes[$attribute]);
 	}
 
 	/**
@@ -506,13 +506,13 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 	protected function get_attributes()
 	{
-		return $this->tags;
+		return $this->attributes;
 	}
 
 	/**
 	 * Returns the element's id.
 	 *
-	 * If the element's id is empty, a unique id is generated and added to its tags.
+	 * If the element's id is empty, a unique id is generated and added to its attributes.
 	 *
 	 * @return string
 	 */
@@ -1225,7 +1225,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		$attributes = [];
 		$dataset = [];
 
-		foreach ($this->tags as $attribute => $value)
+		foreach ($this->attributes as $attribute => $value)
 		{
 			if (strpos($attribute, 'data-') === 0)
 			{

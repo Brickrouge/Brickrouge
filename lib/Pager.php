@@ -25,9 +25,9 @@ class Pager extends Element
 	const BROWSE_PREVIOUS_LABEL = '#pagination-browse-previous-label';
 	const BROWSE_NEXT_LABEL = '#pagination-browse-next-label';
 
-	public function __construct($type, $tags)
+	public function __construct($type, array $attributes=[])
 	{
-		parent::__construct($type, $tags + [
+		parent::__construct($type, $attributes + [
 
 			self::T_LIMIT => 5,
 // 			self::T_SEPARATOR => '<span class="separator">,</span>',

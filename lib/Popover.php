@@ -70,11 +70,11 @@ class Popover extends Element
 	 *
 	 * The element is created as a DIV element.
 	 *
-	 * @param array $tags
+	 * @param array $attributes
 	 */
-	public function __construct(array $tags=[])
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct('div', $tags + [
+		parent::__construct('div', $attributes + [
 
 			'class' => 'popover'
 
@@ -83,8 +83,6 @@ class Popover extends Element
 
 	/**
 	 * Adds the 'fit-content' class name if the {@link FIT_CONTENT} attribute is truthy.
-	 *
-	 * @see Brickrouge.Element::alter_class_names()
 	 */
 	protected function alter_class_names(array $class_names)
 	{
@@ -101,8 +99,6 @@ class Popover extends Element
 	/**
 	 * Adds the anchor specified using the {@link ANCHOR} special attribute to the dataset before
 	 * it is rendered.
-	 *
-	 * @see Brickrouge.Element::alter_dataset()
 	 */
 	protected function alter_dataset(array $dataset)
 	{
@@ -117,8 +113,6 @@ class Popover extends Element
 	/**
 	 * The inner HTML is wrapped in a number of DIV elements, and the title is used a the popover
 	 * title.
-	 *
-	 * @see Brickrouge.Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -159,53 +153,5 @@ EOT;
 	protected function render_actions($actions)
 	{
 		return new Actions($actions, [ 'class' => 'popover-actions' ]);
-	}
-}
-
-/**
- * A popover element with automatically attached behaviour.
- */
-class PopoverWidget extends Popover
-{
-	/**
-	 * Whether the widget should be made visible once elements are ready.
-	 *
-	 * @var bool
-	 */
-	const VISIBLE = '#visible';
-
-	/**
-	 * Overrides the {@link Popover} initial attribute `class` with the value
-	 * "widget-popover popover". The "widget-popover" class is used to automatically attach
-	 * popover behaviour to the element, while the "popover" class is used to style the element.
-	 *
-	 * If you override the `class` attribute, remember to define this two class names, unless
-	 * you want to use a different behaviour or style.
-	 *
-	 * @param array $tags
-	 */
-	public function __construct(array $tags)
-	{
-		parent::__construct($tags + [
-
-			self::IS => 'Popover',
-
-			'class' => 'widget-popover popover'
-
-		]);
-	}
-
-	/**
-	 * Adds the `visible` property to the dataset.
-	 *
-	 * @see Brickrouge.Popover::alter_dataset()
-	 */
-	protected function alter_dataset(array $dataset)
-	{
-		return parent::alter_dataset($dataset + [
-
-			'visible' => $this[self::VISIBLE]
-
-		]);
 	}
 }

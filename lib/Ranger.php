@@ -20,9 +20,9 @@ class Ranger extends Element
 	const T_EDITABLE = '#ranger-editable';
 	const T_NO_ARROWS = '#ranger-no-arrows';
 
-	public function __construct($type, $tags)
+	public function __construct($type, array $attributes=[])
 	{
-		parent::__construct($type, $tags + [ 'class' => 'wdranger' ]);
+		parent::__construct($type, $attributes + [ 'class' => 'wdranger' ]);
 	}
 
 	protected function render_inner_html()
@@ -45,7 +45,7 @@ class Ranger extends Element
 			]);
 		}
 
-		$rc = $this-t('From :start to :finish on :max', [
+		$rc = $this->t('From :start to :finish on :max', [
 
 			':start' => $start_final,
 			':finish' => $start + $limit > $count ? $count : $start + $limit - 1,

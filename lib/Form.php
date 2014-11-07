@@ -120,8 +120,6 @@ class Form extends Element implements Validator
 	 * If `method` is different than "POST" then the `enctype` attribute is unset.
 	 *
 	 * @param array $attributes
-	 *
-	 * @see Element::__construct
 	 */
 	public function __construct(array $attributes=[])
 	{
@@ -149,8 +147,6 @@ class Form extends Element implements Validator
 	 *
 	 * Before rendering the object form elements are altered according to the {@link VALUES} and
 	 * {@link DISABLED} tags and previous validation errors.
-	 *
-	 * @see Element::__toString()
 	 */
 	public function __toString()
 	{
@@ -185,8 +181,6 @@ class Form extends Element implements Validator
 
 	/**
 	 * Override the method to map the {@link HIDDENS} tag to the {@link $hiddens} property.
-	 *
-	 * @see Element::offsetSet()
 	 */
 	public function offsetSet($offset, $value)
 	{
@@ -206,8 +200,6 @@ class Form extends Element implements Validator
 	 * The recursive iterator is created with the {@link SELF_FIRST} mode.
 	 *
 	 * @return \RecursiveIteratorIterator
-	 *
-	 * @see IteratorAggregate::getIterator()
 	 */
 	public function getIterator()
 	{
@@ -300,8 +292,6 @@ class Form extends Element implements Validator
 	 * If a rendered is defined it is used to render the children.
 	 *
 	 * The rendered is defined using the {@link RENDERER} attribute.
-	 *
-	 * @see Element::render_children()
 	 */
 	protected function render_children(array $children)
 	{
@@ -330,8 +320,6 @@ class Form extends Element implements Validator
 	/**
 	 * Add hidden input elements and log messages to the inner HTML of the element
 	 * being converted to a string.
-	 *
-	 * @see Element::render_inner_html()
 	 */
 	protected function render_inner_html()
 	{
@@ -608,7 +596,7 @@ class Form extends Element implements Validator
 		# remove HTML markups from the label
 		#
 
-		$label = $this->t($label, [], [ 'scope' => 'element.label' ]);
+		$label = t($label, [], [ 'scope' => 'element.label' ]);
 		$label = strip_tags($label);
 
 		return $label;
@@ -616,8 +604,6 @@ class Form extends Element implements Validator
 
 	/**
 	 * Validates the form using the provided values.
-	 *
-	 * @see Element::validate()
 	 */
 	public function validate($values, Errors $errors)
 	{

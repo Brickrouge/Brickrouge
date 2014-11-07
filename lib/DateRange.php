@@ -16,12 +16,12 @@ class DateRange extends Element
 	const T_START_TAGS = '#daterange-start-tags';
 	const T_FINISH_TAGS = '#daterange-finish-tags';
 
-	public function __construct($tags=[], $dummy=null)
+	public function __construct(array $attributes=[])
 	{
-		$start_tags = isset($tags[self::T_START_TAGS]) ? $tags[self::T_START_TAGS] : [];
-		$finish_tags = isset($tags[self::T_FINISH_TAGS]) ? $tags[self::T_FINISH_TAGS] : [];
+		$start_tags = isset($attributes[self::T_START_TAGS]) ? $attributes[self::T_START_TAGS] : [];
+		$finish_tags = isset($attributes[self::T_FINISH_TAGS]) ? $attributes[self::T_FINISH_TAGS] : [];
 
-		parent::__construct('div', $tags + [
+		parent::__construct('div', $attributes + [
 
 				self::CHILDREN => [
 

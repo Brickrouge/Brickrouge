@@ -13,9 +13,9 @@ namespace Brickrouge;
 
 class Date extends Text
 {
-	public function __construct($tags, $dummy=null)
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct($tags + [
+		parent::__construct($attributes + [
 
 			'size' => 16,
 			'class' => 'date'

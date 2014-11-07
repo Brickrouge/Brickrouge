@@ -13,11 +13,11 @@ namespace Brickrouge;
 
 class Searchbox extends Element
 {
-	private $elements=[];
+	private $elements = [];
 
-	public function __construct($tags)
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct('div', $tags + [
+		parent::__construct('div', $attributes + [
 
 			self::CHILDREN => [
 
