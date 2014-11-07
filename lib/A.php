@@ -26,21 +26,19 @@ class A extends Element
 	 *
 	 * <?php echo new A('Brickrouge', 'http://brickrouge.org');
 	 */
-	public function __construct($label, $href='#', array $attributes=array())
+	public function __construct($label, $href='#', array $attributes=[])
 	{
 		if (!($label instanceof HTMLStringInterface))
 		{
 			$label = escape(t($label));
 		}
 
-		parent::__construct
-		(
-			'a', $attributes + array
-			(
-				'href' => $href,
+		parent::__construct('a', $attributes + [
 
-				self::INNER_HTML => $label
-			)
-		);
+			'href' => $href,
+
+			self::INNER_HTML => $label
+
+		]);
 	}
 }

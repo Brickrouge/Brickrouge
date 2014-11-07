@@ -22,7 +22,7 @@ class Ranger extends Element
 
 	public function __construct($type, $tags)
 	{
-		parent::__construct($type, $tags + array('class' => 'wdranger'));
+		parent::__construct($type, $tags + [ 'class' => 'wdranger' ]);
 	}
 
 	protected function render_inner_html()
@@ -35,29 +35,23 @@ class Ranger extends Element
 
 		if ($this[self::T_EDITABLE] && $count > $limit)
 		{
-			$start_final = (string) new Text
-			(
-				array
-				(
-					'name' => 'start',
-					'value' => $start,
-					'size' => 4,
-					'class' => 'measure'
-				)
-			);
+			$start_final = (string) new Text([
+
+				'name' => 'start',
+				'value' => $start,
+				'size' => 4,
+				'class' => 'measure'
+
+			]);
 		}
 
-		$rc = t
-		(
-			'From :start to :finish on :max', array
-			(
-				':start' => $start_final,
-				':finish' => $start + $limit > $count ? $count : $start + $limit - 1,
-				':max' => $count
-			),
+		$rc = $this-t('From :start to :finish on :max', [
 
-			array('scope' => 'ranger.element')
-		);
+			':start' => $start_final,
+			':finish' => $start + $limit > $count ? $count : $start + $limit - 1,
+			':max' => $count
+
+		], [ 'scope' => 'ranger.element' ]);
 
 		if ($count > $limit && !$this[self::T_NO_ARROWS])
 		{
@@ -94,7 +88,7 @@ class Ranger extends Element
 		}
 		else
 		{
-			$parts = array();
+			$parts = [];
 		}
 
 		#

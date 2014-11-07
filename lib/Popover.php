@@ -72,15 +72,13 @@ class Popover extends Element
 	 *
 	 * @param array $tags
 	 */
-	public function __construct(array $tags=array())
+	public function __construct(array $tags=[])
 	{
-		parent::__construct
-		(
-			'div', $tags + array
-			(
-				'class' => 'popover'
-			)
-		);
+		parent::__construct('div', $tags + [
+
+			'class' => 'popover'
+
+		]);
 	}
 
 	/**
@@ -108,14 +106,12 @@ class Popover extends Element
 	 */
 	protected function alter_dataset(array $dataset)
 	{
-		return parent::alter_dataset
-		(
-			$dataset + array
-			(
-				'anchor' => $this[self::ANCHOR],
-				'placement' => $this[self::PLACEMENT]
-			)
-		);
+		return parent::alter_dataset($dataset + [
+
+			'anchor' => $this[self::ANCHOR],
+			'placement' => $this[self::PLACEMENT]
+
+		]);
 	}
 
 	/**
@@ -162,7 +158,7 @@ EOT;
 	 */
 	protected function render_actions($actions)
 	{
-		return new Actions($actions, array('class' => 'popover-actions'));
+		return new Actions($actions, [ 'class' => 'popover-actions' ]);
 	}
 }
 
@@ -190,15 +186,13 @@ class PopoverWidget extends Popover
 	 */
 	public function __construct(array $tags)
 	{
-		parent::__construct
-		(
-			$tags + array
-			(
-				self::IS => 'Popover',
+		parent::__construct($tags + [
 
-				'class' => 'widget-popover popover'
-			)
-		);
+			self::IS => 'Popover',
+
+			'class' => 'widget-popover popover'
+
+		]);
 	}
 
 	/**
@@ -208,12 +202,10 @@ class PopoverWidget extends Popover
 	 */
 	protected function alter_dataset(array $dataset)
 	{
-		return parent::alter_dataset
-		(
-			$dataset + array
-			(
-				'visible' => $this[self::VISIBLE]
-			)
-		);
+		return parent::alter_dataset($dataset + [
+
+			'visible' => $this[self::VISIBLE]
+
+		]);
 	}
 }

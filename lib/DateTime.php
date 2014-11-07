@@ -15,13 +15,11 @@ class DateTime extends Date
 {
 	public function __construct(array $tags)
 	{
-		parent::__construct
-		(
-			$tags + array
-			(
-				'size' => 24,
-				'class' => 'datetime'
-			)
-		);
+		parent::__construct($tags + [
+
+			'size' => 24,
+			'class' => 'datetime'
+
+		]);
 	}
 }

@@ -15,14 +15,12 @@ class Date extends Text
 {
 	public function __construct($tags, $dummy=null)
 	{
-		parent::__construct
-		(
-			$tags + array
-			(
-				'size' => 16,
-				'class' => 'date'
-			)
-		);
+		parent::__construct($tags + [
+
+			'size' => 16,
+			'class' => 'date'
+
+		]);
 	}
 
 	public function __toString()

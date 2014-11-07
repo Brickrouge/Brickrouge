@@ -30,7 +30,7 @@ namespace Brickrouge;
  * - {@link t()}
  *
  * @method void check_session() check_session()
- * @method string format() format(string $str, array $args=array())
+ * @method string format() format(string $str, array $args=[])
  * @method string format_size() format_size(number $size)
  * @method string get_accessible_file() get_accessible_file(string $path, $suffix=null)
  * @method Document get_document() get_document()
@@ -40,25 +40,26 @@ namespace Brickrouge;
  * @method \ICanboogie\Errors retrieve_form_errors() retrieve_form_errors(string $name)
  * @method string store_form() store_form(Form $form)
  * @method void store_form_errors() store_form_errors(string $name, \ICanBoogie\Errors $errors)
- * @method string t() t(string $str, array $args=array(), array $options=array())
+ * @method string t() t(string $str, array $args=[], array $options=[])
  */
 class Helpers
 {
-	static private $jumptable = array
-	(
-		'check_session' => array(__CLASS__, 'check_session'),
-		'format' => array(__CLASS__, 'format'),
-		'format_size' => array(__CLASS__, 'format_size'),
-		'get_accessible_file' => array(__CLASS__, 'get_accessible_file'),
-		'get_document' => array(__CLASS__, 'get_document'),
-		'normalize' => array(__CLASS__, 'normalize'),
-		'render_exception' => array(__CLASS__, 'render_exception'),
-		'retrieve_form' => array(__CLASS__, 'retrieve_form'),
-		'retrieve_form_errors' => array(__CLASS__, 'retrieve_form_errors'),
-		'store_form' => array(__CLASS__, 'store_form'),
-		'store_form_errors' => array(__CLASS__, 'store_form_errors'),
-		't' => array(__CLASS__, 't')
-	);
+	static private $jumptable = [
+
+		'check_session'        => [ __CLASS__, 'check_session' ],
+		'format'               => [ __CLASS__, 'format' ],
+		'format_size'          => [ __CLASS__, 'format_size' ],
+		'get_accessible_file'  => [ __CLASS__, 'get_accessible_file' ],
+		'get_document'         => [ __CLASS__, 'get_document' ],
+		'normalize'            => [ __CLASS__, 'normalize' ],
+		'render_exception'     => [ __CLASS__, 'render_exception' ],
+		'retrieve_form'        => [ __CLASS__, 'retrieve_form' ],
+		'retrieve_form_errors' => [ __CLASS__, 'retrieve_form_errors' ],
+		'store_form'           => [ __CLASS__, 'store_form' ],
+		'store_form_errors'    => [ __CLASS__, 'store_form_errors' ],
+		't'                    => [ __CLASS__, 't' ]
+
+	];
 
 	/**
 	 * Calls the callback of a patchable function.
@@ -98,14 +99,14 @@ class Helpers
 	/**
 	 * This method is the fallback for the {@link format()} function.
 	 */
-	static private function format($str, array $args=array())
+	static private function format($str, array $args=[])
 	{
 		if (!$args)
 		{
 			return $str;
 		}
 
-		$holders = array();
+		$holders = [];
 		$i = 0;
 
 		foreach ($args as $key => $value)
@@ -181,7 +182,7 @@ class Helpers
 			$size = $size / (1024 * 1024 * 1024);
 		}
 
-		return t($str, array(':size' => round($size)));
+		return t($str, [ ':size' => round($size) ]);
 	}
 
 	/**
@@ -209,7 +210,7 @@ class Helpers
 	 * We usually rely on the ICanBoogie framework I18n features to translate our string, if it is
 	 * not available we simply format the string using the {@link Brickrouge\format()} function.
 	 */
-	static private function t($str, array $args=array(), array $options=array())
+	static private function t($str, array $args=[], array $options=[])
 	{
 		return format($str, $args);
 	}
@@ -318,7 +319,7 @@ class Helpers
 	 */
 	static private function retrieve_form_errors($name)
 	{
-		return isset(self::$errors[$name]) ? self::$errors[$name] : array();
+		return isset(self::$errors[$name]) ? self::$errors[$name] : [];
 	}
 
 	/**
@@ -351,7 +352,7 @@ class Helpers
 
 		if (!is_writable($replacement_path))
 		{
-			throw new \Exception(format('Unable to make the file %path web accessible, the destination directory %replacement_path is not writtable.', array('path' => $path, 'replacement_path' => $replacement_path)));
+			throw new \Exception(format('Unable to make the file %path web accessible, the destination directory %replacement_path is not writtable.', [ 'path' => $path, 'replacement_path' => $replacement_path ]));
 		}
 
 		if (!file_exists($replacement) || filemtime($path) > filemtime($replacement))

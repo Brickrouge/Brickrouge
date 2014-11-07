@@ -27,18 +27,16 @@ class Pager extends Element
 
 	public function __construct($type, $tags)
 	{
-		parent::__construct
-		(
-			$type, $tags + array
-			(
-				self::T_LIMIT => 5,
-// 				self::T_SEPARATOR => '<span class="separator">,</span>',
-				self::T_GAP => '<span class="gap"> … </span>',
-				self::T_USING => 'page',
+		parent::__construct($type, $tags + [
 
-				'class' => 'pagination'
-			)
-		);
+			self::T_LIMIT => 5,
+// 			self::T_SEPARATOR => '<span class="separator">,</span>',
+			self::T_GAP => '<span class="gap"> … </span>',
+			self::T_USING => 'page',
+
+			'class' => 'pagination'
+
+		]);
 	}
 
 	protected $urlbase;
@@ -147,12 +145,12 @@ class Pager extends Element
 
 			if (!$next_text)
 			{
-				$next_text = $this->t('Next', array(), array('scope' => 'pagination.label', 'default' => 'Next →'));
+				$next_text = $this->t('Next', [], [ 'scope' => 'pagination.label', 'default' => 'Next →' ]);
 			}
 
 			if (!$previous_text)
 			{
-				$previous_text = $this->t('Previous', array(), array('scope' => 'pagination.label', 'default' => '← Previous'));
+				$previous_text = $this->t('Previous', [], [ 'scope' => 'pagination.label', 'default' => '← Previous' ]);
 			}
 
 //			if ($this->reverse_arrows ? ($on_page > 1) : ($on_page < $pages))
@@ -240,7 +238,7 @@ class Pager extends Element
 		}
 		else
 		{
-			$parts = array();
+			$parts = [];
 		}
 
 		#

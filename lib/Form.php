@@ -100,7 +100,7 @@ class Form extends Element implements Validator
 	 *
 	 * @var array[string]string
 	 */
-	public $hiddens = array();
+	public $hiddens = [];
 
 	/**
 	 * Name of the form.
@@ -123,15 +123,16 @@ class Form extends Element implements Validator
 	 *
 	 * @see Element::__construct
 	 */
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
-		$attributes += array
-		(
+		$attributes += [
+
 			'action' => isset($attributes['id']) ? '#' . $attributes['id'] : '',
 			'method' => 'POST',
 			'enctype' => 'multipart/form-data',
 			'name' => isset($attributes['id']) ? $attributes['id'] : self::get_auto_name()
-		);
+
+		];
 
 		if (strtoupper($attributes['method']) != 'POST')
 		{
@@ -216,17 +217,17 @@ class Form extends Element implements Validator
 	/**
 	 * @var array[string]Element The required elements of the form.
 	 */
-	protected $required = array();
+	protected $required = [];
 
 	/**
 	 * @var array[string] Booleans found in the form.
 	 */
-	protected $booleans = array();
+	protected $booleans = [];
 
 	/**
 	 * @var array[string]Element Elements of the form with a validator.
 	 */
-	protected $validators = array();
+	protected $validators = [];
 
 	/**
 	 * @var callable Validator callback of the form.
@@ -243,9 +244,9 @@ class Form extends Element implements Validator
 	 */
 	public function __sleep()
 	{
-		$required = array();
-		$booleans = array();
-		$validators = array();
+		$required = [];
+		$booleans = [];
+		$validators = [];
 
 		foreach ($this as $element)
 		{
@@ -292,7 +293,7 @@ class Form extends Element implements Validator
 		# validation.
 		#
 
-		return array('name', 'required', 'booleans', 'validators', 'validator');
+		return [ 'name', 'required', 'booleans', 'validators', 'validator' ];
 	}
 
 	/**
@@ -361,7 +362,7 @@ class Form extends Element implements Validator
 			{
 				$alert = $this->render_errors($errors);
 
-				store_form_errors($name, array()); // reset form errors.
+				store_form_errors($name, []); // reset form errors.
 			}
 		}
 
@@ -413,7 +414,7 @@ class Form extends Element implements Validator
 	 */
 	protected function render_actions($actions)
 	{
-		return (string) new Actions($actions, array('class' => 'form-actions'));
+		return (string) new Actions($actions, [ 'class' => 'form-actions' ]);
 	}
 
 	/**
@@ -607,7 +608,7 @@ class Form extends Element implements Validator
 		# remove HTML markups from the label
 		#
 
-		$label = $this->t($label, array(), array('scope' => 'element.label'));
+		$label = $this->t($label, [], [ 'scope' => 'element.label' ]);
 		$label = strip_tags($label);
 
 		return $label;
@@ -690,7 +691,7 @@ class Form extends Element implements Validator
 
 	protected function validate_required_elements(array $required, array &$validators, array $values, Errors $errors)
 	{
-		$missing = array();
+		$missing = [];
 
 		foreach ($required as $name => $label)
 		{
@@ -712,7 +713,7 @@ class Form extends Element implements Validator
 		{
 			if (count($missing) == 1)
 			{
-				$errors[key($missing)] = $this->t('The field %field is required!', array('%field' => $this->t(current($missing))));
+				$errors[key($missing)] = $this->t('The field %field is required!', [ '%field' => $this->t(current($missing)) ]);
 			}
 			else
 			{
@@ -723,7 +724,7 @@ class Form extends Element implements Validator
 
 				$last = array_pop($missing);
 
-				$errors[] = $this->t('The fields %list and %last are required!', array('%list' => implode(', ', $missing), '%last' => $last));
+				$errors[] = $this->t('The fields %list and %last are required!', [ '%list' => implode(', ', $missing), '%last' => $last ]);
 			}
 		}
 	}
@@ -739,7 +740,7 @@ class Form extends Element implements Validator
 			return true;
 		}
 
-		$errors[$element->name] = $this->t('Invalid email address %value for the %label element.', array('value' => $value, 'label' => $element->label));
+		$errors[$element->name] = t('Invalid email address %value for the %label element.', [ 'value' => $value, 'label' => $element->label ]);
 
 		return false;
 	}
@@ -751,15 +752,15 @@ class Form extends Element implements Validator
 			return true;
 		}
 
-		$errors[$element->name] = $this->t('Invalid URL %value for the %label element.', array('value' => $value, 'label' => $element->label));
+		$errors[$element->name] = t('Invalid URL %value for the %label element.', [ 'value' => $value, 'label' => $element->label ]);
 
 		return false;
 	}
 
 	static public function validate_string(Errors $errors, $element, $value, $rules)
 	{
-		$messages = array();
-		$args = array();
+		$messages = [];
+		$args = [];
 
 		foreach ($rules as $rule => $params)
 		{
@@ -769,14 +770,12 @@ class Form extends Element implements Validator
 				{
 					if (strlen($value) < $params)
 					{
-						$messages[] = t
-						(
-							'The string %string is too short (minimum size is :size characters)', array
-							(
-								'%string' => $value,
-								':size' => $params
-							)
-						);
+						$messages[] = t('The string %string is too short (minimum size is :size characters)', [
+
+							'%string' => $value,
+							':size' => $params
+
+						]);
 					}
 				}
 				break;
@@ -785,14 +784,12 @@ class Form extends Element implements Validator
 				{
 					if (strlen($value) > $params)
 					{
-						$messages[] = t
-						(
-							'The string %string is too long (maximum size is :size characters)', array
-							(
-								'%string' => shorten($value, 32, 1),
-								':size' => $params
-							)
-						);
+						$messages[] = t('The string %string is too long (maximum size is :size characters)', [
+
+							'%string' => shorten($value, 32, 1),
+							':size' => $params
+
+						]);
 					}
 				}
 				break;
@@ -801,7 +798,7 @@ class Form extends Element implements Validator
 				{
 					if (!preg_match($params, $value))
 					{
-						$messages[] = $this->t('Invalid format of value %value', array('%value' => $value));
+						$messages[] = $this->t('Invalid format of value %value', [ '%value' => $value ]);
 					}
 				}
 				break;
@@ -812,9 +809,9 @@ class Form extends Element implements Validator
 		{
 			$message = implode('. ', $messages);
 
-			$message .= $this->t(' for the %label input element.', array('%label' => $element->label));
+			$message .= t(' for the %label input element.', [ '%label' => $element->label ]);
 
-			$errors[$element->name] = $this->t($message, $args);
+			$errors[$element->name] = t($message, $args);
 		}
 
 		return empty($messages);
@@ -828,15 +825,13 @@ class Form extends Element implements Validator
 
 		if (!$rc)
 		{
-			$errors[$element->name] = $this->t
-			(
-				'@wdform.errors.range', array
-				(
-					'%label' => $element->label,
-					':min' => $min,
-					':max' => $max
-				)
-			);
+			$errors[$element->name] = t('@wdform.errors.range', [
+
+				'%label' => $element->label,
+				':min' => $min,
+				':max' => $max
+
+			]);
 		}
 
 		return $rc;

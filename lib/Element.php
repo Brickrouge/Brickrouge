@@ -220,11 +220,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	const IS = 'brickrouge-is';
 	const WIDGET_CONSTRUCTOR = 'brickrouge-is'; // 2.0 COMPAT
 
-	static private $inputs = array('button', 'form', 'input', 'option', 'select', 'textarea');
-	static private $has_attribute_disabled = array('button', 'input', 'optgroup', 'option', 'select', 'textarea');
-	static private $has_attribute_value = array('button', 'input', 'option');
-	static private $has_attribute_required = array('input', 'select', 'textarea');
-	static private $handled_assets = array();
+	static private $inputs = [ 'button', 'form', 'input', 'option', 'select', 'textarea' ];
+	static private $has_attribute_disabled = [ 'button', 'input', 'optgroup', 'option', 'select', 'textarea' ];
+	static private $has_attribute_value = [ 'button', 'input', 'option' ];
+	static private $has_attribute_required = [ 'input', 'select', 'textarea' ];
+	static private $handled_assets = [];
 
 	static protected function handle_assets()
 	{
@@ -286,14 +286,14 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @var array
 	 */
-	public $children = array();
+	public $children = [];
 
 	/**
 	 * Tags of the element, including HTML and special attributes.
 	 *
 	 * @var array[string]mixed
 	 */
-	protected $tags = array();
+	protected $tags = [];
 
 	/**
 	 * Inner HTML of the element.
@@ -310,7 +310,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @param array $attributes HTML and custom attributes.
 	 */
-	public function __construct($type, $attributes=array())
+	public function __construct($type, $attributes=[])
 	{
 		$this->type = $type;
 
@@ -320,7 +320,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if (!empty($attributes[self::CHILDREN]))
 		{
-			$this->children = array();
+			$this->children = [];
 			$this->adopt($attributes[self::CHILDREN]);
 
 			unset($attributes[self::CHILDREN]);
@@ -335,11 +335,12 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			case self::TYPE_CHECKBOX:
 			case self::TYPE_RADIO:
 			{
-				static $translate = array
-				(
-					self::TYPE_CHECKBOX => array('input', 'checkbox'),
-					self::TYPE_RADIO => array('input', 'radio'),
-				);
+				static $translate = [
+
+					self::TYPE_CHECKBOX => [ 'input', 'checkbox' ],
+					self::TYPE_RADIO => [ 'input', 'radio' ],
+
+				];
 
 				$this->tag_name = $translate[$type][0];
 				$attributes['type'] = $translate[$type][1];
@@ -362,7 +363,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			{
 				$this->tag_name = 'textarea';
 
-				$attributes += array('rows' => 10, 'cols' => 76);
+				$attributes += [ 'rows' => 10, 'cols' => 76 ];
 			}
 			break;
 
@@ -422,7 +423,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		{
 			case self::CHILDREN:
 			{
-				$this->children = array();
+				$this->children = [];
 				$this->adopt($value);
 			}
 			break;
@@ -543,7 +544,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @var array
 	 */
-	protected $class_names = array();
+	protected $class_names = [];
 
 	/**
 	 * Returns the value of the "class" attribute.
@@ -705,11 +706,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	{
 		if (!$this->children)
 		{
-			return array();
+			return [];
 		}
 
-		$by_weight = array();
-		$with_relative_positions = array();
+		$by_weight = [];
+		$with_relative_positions = [];
 
 		foreach ($this->children as $name => $child)
 		{
@@ -732,7 +733,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		ksort($by_weight);
 
-		$rc = array();
+		$rc = [];
 
 		foreach ($by_weight as $children)
 		{
@@ -747,7 +748,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		{
 			foreach ($with_relative_positions as $child)
 			{
-				list($target, $position) = explode(':', $child[self::WEIGHT]) + array(1 => 'after');
+				list($target, $position) = explode(':', $child[self::WEIGHT]) + [ 1 => 'after' ];
 
 				$rc = array_insert($rc, $target, $child, $child['name'], $position == 'after');
 			}
@@ -860,7 +861,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		$html = '';
 
-		$options = $this[self::OPTIONS] ?: array();
+		$options = $this[self::OPTIONS] ?: [];
 		$disabled = $this[self::OPTIONS_DISABLED];
 
 		foreach ($options as $value => $label)
@@ -936,14 +937,12 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		# this is the 'template' child
 		#
 
-		$child = new Element
-		(
-			'input', array
-			(
-				'type' => 'checkbox',
-				'readonly' => $readonly
-			)
-		);
+		$child = new Element('input', [
+
+			'type' => 'checkbox',
+			'readonly' => $readonly
+
+		]);
 
 		#
 		# create the inner content of our element
@@ -993,15 +992,13 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		# this is the 'template' child
 		#
 
-		$child = new Element
-		(
-			'input', array
-			(
-				'type' => 'radio',
-				'name' => $name,
-				'readonly' => $readonly
-			)
-		);
+		$child = new Element('input', [
+
+			'type' => 'radio',
+			'name' => $name,
+			'readonly' => $readonly
+
+		]);
 
 		#
 		# create the inner content of our element
@@ -1016,7 +1013,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		{
 			if ($label && !is_object($label) && $label{0} == '.')
 			{
-				$label = $this->t(substr($label, 1), array(), array('scope' => 'element.option'));
+				$label = $this->t(substr($label, 1), [], [ 'scope' => 'element.option' ]);
 			}
 
 			$child[self::LABEL] = $label;
@@ -1085,7 +1082,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 			if ($attribute == 'title')
 			{
-				$attributes[$attribute] = $this->t($value, array(), array('scope' => 'element.title'));
+				$attributes[$attribute] = $this->t($value, [], [ 'scope' => 'element.title' ]);
 			}
 		}
 
@@ -1134,7 +1131,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			}
 			else if (is_array($value) || (is_object($value) && !method_exists($value, '__toString')))
 			{
-				throw new \InvalidArgumentException(format('Invalid value for attribute %attribute: :value', array('attribute' => $attribute, 'value' => $value)));
+				throw new \InvalidArgumentException(format('Invalid value for attribute %attribute: :value', [ 'attribute' => $attribute, 'value' => $value ]));
 			}
 
 			$html .= ' ' . $attribute . '="' . (is_numeric($value) ? $value : escape($value)) . '"';
@@ -1225,8 +1222,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	protected function render_outer_html()
 	{
 		$inner = $this->render_inner_html();
-		$attributes = array();
-		$dataset = array();
+		$attributes = [];
+		$dataset = [];
 
 		foreach ($this->tags as $attribute => $value)
 		{
@@ -1301,7 +1298,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if ($label || $label === '0')
 		{
-			$label = $this->t($label, array(), array('scope' => 'element.label'));
+			$label = $this->t($label, [], [ 'scope' => 'element.label' ]);
 			$html = $this->decorate_with_label($html, $label);
 		}
 
@@ -1313,7 +1310,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if ($help)
 		{
-			$help = $this->t($help, array(), array('scope' => 'element.inline_help'));
+			$help = $this->t($help, [], [ 'scope' => 'element.inline_help' ]);
 			$html = $this->decorate_with_inline_help($html, $help);
 		}
 
@@ -1325,7 +1322,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if ($description)
 		{
-			$description = $this->t($description, array(), array('scope' => 'element.description'));
+			$description = $this->t($description, [], [ 'scope' => 'element.description' ]);
 			$html = $this->decorate_with_description($html, $description);
 		}
 
@@ -1337,7 +1334,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 		if ($legend)
 		{
-			$legend = $this->t($legend, array(), array('scope' => 'element.legend'));
+			$legend = $this->t($legend, [], [ 'scope' => 'element.legend' ]);
 			$html = $this->decorate_with_legend($html, $legend);
 		}
 
@@ -1503,7 +1500,7 @@ EOT;
 				return $validator($errors, $this, $value);
 			}
 
-			list($callback, $params) = $validator + array(1 => array());
+			list($callback, $params) = $validator + [ 1 => [] ];
 
 			return call_user_func($callback, $errors, $this, $value, $params);
 		}
@@ -1527,11 +1524,12 @@ EOT;
 
 					if (count($value) > $limit)
 					{
-						$errors[$this->name] = $this->t('Le nombre de choix possible pour le champ %name est limité à :limit', array
-						(
+						$errors[$this->name] = $this->t('Le nombre de choix possible pour le champ %name est limité à :limit', [
+
 							'name' => Form::select_element_label($this),
 							'limit' => $limit
-						));
+
+						]);
 
 						return false;
 					}

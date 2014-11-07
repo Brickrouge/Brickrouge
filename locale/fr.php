@@ -1,39 +1,43 @@
 <?php
 
-return array
-(
-	'button' => array
-	(
+return [
+
+	'button' => [
+
 		'Cancel' => 'Annuler',
 		'Choose a file' => 'Choisir un fichier',
 		'Continue' => 'Continuer',
 		'Save' => 'Enregistrer',
 		'Send' => 'Envoyer',
 		'Use' => 'Utiliser'
-	),
 
-	'label' => array
-	(
+	],
+
+	'label' => [
+
 		'cancel' => 'Annuler',
 		'continue' => 'Continuer',
 		'save' => 'Enregistrer',
 		'use' => 'Utiliser',
 
 		'Salutation' => 'Civilité'
-	),
 
-	'pagination.label' => array
-	(
+	],
+
+	'pagination.label' => [
+
 		'Next' => 'Suiv.',
 		'Previous' => 'Préc.',
-	),
 
-	'salutation' => array
-	(
+	],
+
+	'salutation' => [
+
 		'Misses' => 'Madame',
 		'Miss' => 'Mademoiselle',
 		'Mister' => 'Monsieur'
-	),
+
+	],
 
 	'From :start to :finish on :max' => 'De :start à :finish sur :max',
 	'The maximum file size must be less than :size.' => 'La taille du fichier doit être inférieure à :size.',
@@ -59,4 +63,5 @@ return array
 
 	' for the %label input element.'
 	=> " pour le champ %label."
-);
+
+];

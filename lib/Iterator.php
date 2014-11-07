@@ -18,12 +18,12 @@ namespace Brickrouge;
  */
 class Iterator implements \Iterator
 {
-	protected $children = array();
+	protected $children = [];
 	protected $left;
 
 	public function __construct(Element $element)
 	{
-		$children = array();
+		$children = [];
 
 		foreach ($element->children as $key => $child)
 		{

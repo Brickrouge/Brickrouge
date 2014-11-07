@@ -13,35 +13,28 @@ namespace Brickrouge;
 
 class Salutation extends Element
 {
-	public function __construct(array $tags=array(), $type=self::TYPE_RADIO_GROUP)
+	public function __construct(array $tags=[], $type=self::TYPE_RADIO_GROUP)
 	{
-		$options = array
-		(
-			'Misses',
-			'Miss',
-			'Mister'
-		);
+		$options = [ 'Misses', 'Miss', 'Mister' ];
 
 		array_walk($options, function(&$v) {
 
-			$v = $this->t($v, array(), array('scope' => 'salutation'));
+			$v = $this->t($v, [], [ 'scope' => 'salutation' ]);
 
 		});
 
 		if ($type == 'select' && !empty($tags[self::REQUIRED]))
 		{
-			$options = array(null => '') + $options;
+			$options = [ null => '' ] + $options;
 		}
 
-		parent::__construct
-		(
-			$type, $tags + array
-			(
-				Form::LABEL => 'Salutation',
-				Element::OPTIONS => $options,
+		parent::__construct($type, $tags + [
 
-				'class' => 'inline-inputs'
-			)
-		);
+			Form::LABEL => 'Salutation',
+			Element::OPTIONS => $options,
+
+			'class' => 'inline-inputs'
+
+		]);
 	}
 }

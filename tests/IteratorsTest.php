@@ -21,134 +21,82 @@ class IteratorsTest extends \PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		$this->children = $children = array
-		(
-			'one' => new Element
-			(
-				'div', array
-				(
-					Element::CHILDREN => array
-					(
-						'one-one' => new Element
-						(
-							'div', array
-							(
-								Element::CHILDREN => array
-								(
-									'one-one-one' => new Element
-									(
-										'div'
-									)
-								)
-							)
-						)
-					)
-				)
-			),
+		$this->children = $children = [
+
+			'one' => new Element('div', [
+
+				Element::CHILDREN => [
+
+					'one-one' => new Element('div', [
+
+						Element::CHILDREN => [
+
+							'one-one-one' => new Element('div')
+
+						]
+					])
+				]
+			]),
 
 			'text0' => 'text0',
 
-			'two' => new Element
-			(
-				'div', array
-				(
-					Element::CHILDREN => array
-					(
-						'two-one' => new Element
-						(
-							'div', array
-							(
-								Element::CHILDREN => array
-								(
-									'two-one-one' => new Element
-									(
-										'div'
-									)
-								)
-							)
-						),
+			'two' => new Element('div', [
 
-						'two-two' => new Element
-						(
-							'div', array
-							(
-								Element::CHILDREN => array
-								(
-									'two-two-one' => new Element
-									(
-										'div'
-									),
+				Element::CHILDREN => [
 
-									'text220',
+					'two-one' => new Element('div', [
 
-									'two-two-two' => new Element
-									(
-										'div'
-									)
-								)
-							)
-						)
-					)
-				)
-			),
+						Element::CHILDREN => [
+
+							'two-one-one' => new Element('div')
+
+						]
+					]),
+
+					'two-two' => new Element('div', [
+
+						Element::CHILDREN => [
+
+							'two-two-one' => new Element('div'),
+							'text220',
+							'two-two-two' => new Element('div')
+
+						]
+					])
+				]
+			]),
 
 			'text1' => 'text1',
 
-			'three' => new Element
-			(
-				'div', array
-				(
-					Element::CHILDREN => array
-					(
-						'three-one' => new Element
-						(
-							'div'
-						),
+			'three' => new Element('div', [
 
-						'three-two' => new Element
-						(
-							'div'
-						),
+				Element::CHILDREN => [
 
-						'three-three' => new Element
-						(
-							'div', array
-							(
-								Element::CHILDREN => array
-								(
-									'three-three-one' => new Element
-									(
-										'div'
-									),
+					'three-one' => new Element('div'),
+					'three-two' => new Element('div'),
+					'three-three' => new Element('div', [
 
-									'text330',
+						Element::CHILDREN => [
 
-									'three-three-two' => new Element
-									(
-										'div'
-									),
+							'three-three-one' => new Element('div'),
+							'text330',
+							'three-three-two' => new Element('div'),
+							'text330',
+							'three-three-three' => new Element('div')
 
-									'text330',
-
-									'three-three-three' => new Element
-									(
-										'div'
-									)
-								)
-							)
-						)
-					)
-				)
-			),
+						]
+					])
+				]
+			]),
 
 			'text3' => 'text3'
-		);
+		];
 	}
 
 	public function testElementIterator()
 	{
 		$str = '';
-		$element = new Element('div', array(Element::CHILDREN => $this->children));
+		$element = new Element('div', [ Element::CHILDREN => $this->children ]);
 
 		foreach ($element as $child)
 		{
@@ -161,7 +109,7 @@ class IteratorsTest extends \PHPUnit_Framework_TestCase
 	public function testElementRecusiveIterator()
 	{
 		$str = '';
-		$element = new Element('div', array(Element::CHILDREN => $this->children));
+		$element = new Element('div', [ Element::CHILDREN => $this->children ]);
 		$iterator = new \RecursiveIteratorIterator(new RecursiveIterator($element), \RecursiveIteratorIterator::SELF_FIRST);
 
 		foreach ($iterator as $child)
@@ -175,7 +123,7 @@ class IteratorsTest extends \PHPUnit_Framework_TestCase
 	public function testFormIterator()
 	{
 		$str = '';
-		$element = new Form(array(Element::CHILDREN => $this->children));
+		$element = new Form([ Element::CHILDREN => $this->children ]);
 
 		foreach ($element as $child)
 		{
@@ -188,7 +136,7 @@ class IteratorsTest extends \PHPUnit_Framework_TestCase
 	public function testFormRecusiveIterator()
 	{
 		$str = '';
-		$element = new Form(array(Element::CHILDREN => $this->children));
+		$element = new Form([ Element::CHILDREN => $this->children ]);
 
 		foreach ($element as $child)
 		{

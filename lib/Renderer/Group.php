@@ -14,7 +14,7 @@ class Group extends Element
 	/**
 	 * Circumvent Element constructor.
 	 */
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
 		parent::__construct('div', $attributes);
 	}
@@ -48,7 +48,7 @@ class Group extends Element
 
 	protected function group_children()
 	{
-		$groups = $this->form[self::GROUPS] ?: array();
+		$groups = $this->form[self::GROUPS] ?: [];
 
 		\Brickrouge\stable_sort($groups, function($v) { return isset($v['weight']) ? $v['weight'] : 0; });
 
@@ -79,18 +79,16 @@ class Group extends Element
 
 		$constructor = $this[self::GROUP_CLASS] ?: 'Brickrouge\Group';
 
-		$group = new $constructor
-		(
-			array
-			(
-				self::CHILDREN => $group[self::CHILDREN],
-				self::DESCRIPTION => isset($group['description']) ? $group['description'] : null,
-				self::LEGEND => isset($group['title']) ? $group['title'] : null,
+		$group = new $constructor([
 
-				'class' => $class,
-				'id' => isset($group['id']) ? $group['id'] : null
-			)
-		);
+			self::CHILDREN => $group[self::CHILDREN],
+			self::DESCRIPTION => isset($group['description']) ? $group['description'] : null,
+			self::LEGEND => isset($group['title']) ? $group['title'] : null,
+
+			'class' => $class,
+			'id' => isset($group['id']) ? $group['id'] : null
+
+		]);
 
 		return (string) $group;
 	}

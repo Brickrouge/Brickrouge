@@ -1,13 +1,14 @@
 <?php
 
-return array
-(
-	'salutation' => array
-	(
+return [
+
+	'salutation' => [
+
 		'Misses' => 'Señora',
 		'Miss' => 'Señorita',
 		'Mister' => 'Señor'
-	),
+
+	],
 
 	# wdelement
 
@@ -17,4 +18,5 @@ return array
 
 	'The field %field is required!' => '¡El campo %field es requerido!',
 	'The fields %list and %last are required!' => '¡Los campos %list y %last son requeridos!'
-);
+
+];

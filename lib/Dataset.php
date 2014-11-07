@@ -42,7 +42,7 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 	 * @param Element $element The target element.
 	 * @param array $properties[optional] The initial properties of the dataset.
 	 */
-	public function __construct(Element $element, array $properties=array())
+	public function __construct(Element $element, array $properties=[])
 	{
 		$this->element = $element;
 
@@ -94,7 +94,7 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function to_a()
 	{
-		$properties = array();
+		$properties = [];
 
 		foreach ($this->element->attributes as $attribute => $value)
 		{

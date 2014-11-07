@@ -25,19 +25,17 @@ class File extends Element
 		$document->css->add('file.css');
 	}
 
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct
-		(
-			'div', $attributes + array
-			(
-				Element::IS => 'File',
+		parent::__construct('div', $attributes + [
 
-				self::BUTTON_LABEL => 'Choose a file',
+			Element::IS => 'File',
 
-				'class' => 'widget-file'
-			)
-		);
+			self::BUTTON_LABEL => 'Choose a file',
+
+			'class' => 'widget-file'
+
+		]);
 	}
 
 	protected function infos()
@@ -88,7 +86,7 @@ class File extends Element
 
 	protected function preview($path)
 	{
-		$rc = '<a class="download" href="' . $path . '">' . $this->t('download', array(), array('scope' => array('fileupload', 'element'))) . '</a>';
+		$rc = '<a class="download" href="' . $path . '">' . $this->t('download', [], [ 'scope' => [ 'fileupload', 'element' ] ]) . '</a>';
 
 		return $rc;
 	}
@@ -97,20 +95,18 @@ class File extends Element
 	{
 		$path = $this['value'];
 
-		$rc = new Text
-		(
-			array
-			(
-				'value' => $this['value'],
-				'readonly' => true,
-				'name' => $this['name'],
-				'class' => 'reminder'
-			)
-		)
+		$rc = new Text([
+
+			'value' => $this['value'],
+			'readonly' => true,
+			'name' => $this['name'],
+			'class' => 'reminder'
+
+		])
 
 		. ' <div class="alert alert-error undismissable"></div>'
 		. ' <label class="btn trigger"><i class="icon-file"></i> '
-		. $this->t($this[self::BUTTON_LABEL], array(), array('scope' => 'button'))
+		. $this->t($this[self::BUTTON_LABEL], [], [ 'scope' => 'button' ])
 		. '<input type="file" /></label>';
 
 		#
@@ -119,7 +115,7 @@ class File extends Element
 
 		$rc .= '<div class="uploading">';
 		$rc .= '<span class="progress like-input"><span class="position"><span class="text">&nbsp;</span></span></span> ';
-		$rc .= '<button type="button" class="btn btn-danger cancel">' . $this->t('cancel', array(), array('scope' => 'button')) . '</button>';
+		$rc .= '<button type="button" class="btn btn-danger cancel">' . $this->t('cancel', [], [ 'scope' => 'button' ]) . '</button>';
 		$rc .= '</div>';
 
 		#
@@ -139,7 +135,7 @@ class File extends Element
 			$limit = format_size($limit * 1024);
 
 			$rc .= PHP_EOL . '<div class="file-size-limit small" style="margin-top: .5em">';
-			$rc .= $this->t('The maximum file size must be less than :size.', array(':size' => $limit));
+			$rc .= $this->t('The maximum file size must be less than :size.', [ ':size' => $limit ]);
 			$rc .= '</div>';
 		}
 
@@ -155,7 +151,7 @@ class File extends Element
 			{
 				$this->app->logger->debug("path: $path");
 
-				$infos = '<span class="warn">' . $this->t('The file %file is missing !', array('%file' => basename($path))) . '</span>';
+				$infos = '<span class="warn">' . $this->t('The file %file is missing !', [ '%file' => basename($path) ]) . '</span>';
 			}
 			else
 			{
@@ -182,11 +178,12 @@ EOT;
 			$limit = ini_get('upload_max_filesize') * 1024;
 		}
 
-		return parent::alter_dataset($dataset) + array
-		(
+		return parent::alter_dataset($dataset) + [
+
 			'name' => $this['name'],
 			'max-file-size' => $limit * 1024
-		);
+
+		];
 	}
 
 	protected function render_outer_html()

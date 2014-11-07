@@ -27,22 +27,20 @@ class Button extends Element
 	 * @param string $label Label of the button (inner text).
 	 * @param array $attributes Optional attributes used to create the element.
 	 */
-	public function __construct($label, array $attributes=array())
+	public function __construct($label, array $attributes=[])
 	{
 		if (!($label instanceof HTMLString))
 		{
-			$label = escape(t($label, array(), array('scope' => 'button')));
+			$label = escape(t($label, [], [ 'scope' => 'button' ]));
 		}
 
-		parent::__construct
-		(
-			'button', $attributes + array
-			(
-				'type' => 'button',
+		parent::__construct('button', $attributes + [
 
-				self::INNER_HTML => $label
-			)
-		);
+			'type' => 'button',
+
+			self::INNER_HTML => $label
+
+		]);
 	}
 
 	/**
@@ -52,9 +50,9 @@ class Button extends Element
 	 */
 	protected function alter_class_names(array $class_names)
 	{
-		return parent::alter_class_names($class_names) + array
-		(
+		return parent::alter_class_names($class_names) + [
+
 			'btn' => true
-		);
+		];
 	}
 }

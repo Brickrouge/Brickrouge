@@ -13,35 +13,31 @@ namespace Brickrouge;
 
 class Searchbox extends Element
 {
-	private $elements=array();
+	private $elements=[];
 
 	public function __construct($tags)
 	{
-		parent::__construct
-		(
-			'div', $tags + array
-			(
-				self::CHILDREN => array
-				(
-					'q' => $this->elements['q'] = new Text(),
+		parent::__construct('div', $tags + [
 
-					$this->elements['trigger'] = new Button
-					(
-						'Search', array
-						(
-							'type' => 'submit'
-						)
-					)
-				),
+			self::CHILDREN => [
 
-				'class' => 'widget-searchbox'
-			)
-		);
+				'q' => $this->elements['q'] = new Text(),
+
+				$this->elements['trigger'] = new Button('Search', [
+
+					'type' => 'submit'
+
+				])
+			],
+
+			'class' => 'widget-searchbox'
+
+		]);
 	}
 
 	public function offsetSet($offset, $value)
 	{
-		if (in_array($offset, array('name', 'value', 'placeholder')))
+		if (in_array($offset, [ 'name', 'value', 'placeholder' ]))
 		{
 			$this->elements['q'][$offset] = $value;
 		}

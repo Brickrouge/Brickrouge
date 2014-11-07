@@ -19,7 +19,7 @@ class DatasetTest extends \PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		$this->element = new Element('div', array(
+		$this->element = new Element('div', [
 
 			'class' => 'testing',
 
@@ -31,7 +31,7 @@ class DatasetTest extends \PHPUnit_Framework_TestCase
 			'data-null' => null,
 			'data-numeric' => 1
 
-		));
+		]);
 	}
 
 	public function test_get_same()
@@ -95,20 +95,17 @@ EOT
 	{
 		$array = $this->element->dataset->to_a();
 
-		$this->assertEquals
-		(
-			array
-			(
-				'one' => 'one',
-				'two' => 'two',
-				'three' => 'three',
-				'true' => true,
-				'false' => false,
-				'null' => null,
-				'numeric' => 1
-			),
+		$this->assertEquals([
 
-			$array
-		);
+			'one' => 'one',
+			'two' => 'two',
+			'three' => 'three',
+			'true' => true,
+			'false' => false,
+			'null' => null,
+			'numeric' => 1
+
+
+		], $array);
 	}
 }

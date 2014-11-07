@@ -42,15 +42,13 @@ class Text extends Element
 	 *
 	 * @see Element::__construct()
 	 */
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct
-		(
-			'input', $attributes + array
-			(
-				'type' => 'text'
-			)
-		);
+		parent::__construct('input', $attributes + [
+
+			'type' => 'text'
+
+		]);
 	}
 
 	/**

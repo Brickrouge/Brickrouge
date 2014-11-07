@@ -76,19 +76,17 @@ class Alert extends Element
 	 *
 	 * @param array $attributes Additional attributes.
 	 */
-	public function __construct($message, array $attributes=array())
+	public function __construct($message, array $attributes=[])
 	{
 		$this->message = $message;
 
-		parent::__construct
-		(
-			'div', $attributes + array
-			(
-				self::CONTEXT => $message instanceof Errors ? 'error' : null,
+		parent::__construct('div', $attributes + [
 
-				'class' => 'alert'
-			)
-		);
+			self::CONTEXT => $message instanceof Errors ? 'error' : null,
+
+			'class' => 'alert'
+
+		]);
 	}
 
 	/**

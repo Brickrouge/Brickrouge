@@ -38,7 +38,7 @@ function array_insert($array, $relative, $value, $key=null, $after=false)
 
 	if ($key !== null)
 	{
-		$array = array_merge($array, array($key => $value));
+		$array = array_merge($array, [ $key => $value ]);
 	}
 	else
 	{
@@ -131,7 +131,7 @@ function stable_sort(&$array, $picker=null)
 	{
 		$transform = function(&$v, $k) use (&$i)
 		{
-			$v = array($v, ++$i, $k, $v);
+			$v = [ $v, ++$i, $k, $v ];
 		};
 
 		$restore = function(&$v, $k)
@@ -142,13 +142,11 @@ function stable_sort(&$array, $picker=null)
 
 	if ($picker)
 	{
-		array_walk
-		(
-			$array, function(&$v, $k) use (&$i, $picker)
-			{
-				$v = array($picker($v), ++$i, $k, $v);
-			}
-		);
+		array_walk($array, function(&$v, $k) use (&$i, $picker) {
+
+			$v = [ $picker($v), ++$i, $k, $v ];
+
+		});
 	}
 	else
 	{
@@ -277,7 +275,7 @@ function get_accessible_file($path, $suffix=null)
  *
  * @return string
  */
-function format($str, array $args=array())
+function format($str, array $args=[])
 {
 	return Helpers::format($str, $args);
 }
@@ -333,7 +331,7 @@ function normalize($str, $separator='-', $charset=CHARSET)
  *
  * @see ICanBoogie\I18n\Translator
  */
-function t($str, array $args=array(), array $options=array())
+function t($str, array $args=[], array $options=[])
 {
 	return Helpers::t($str, $args, $options);
 }

@@ -38,7 +38,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_ERROR))
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_ERROR ])
 		);
 	}
 
@@ -51,7 +51,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_INFO))
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_INFO ])
 		);
 	}
 
@@ -64,7 +64,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_SUCCESS))
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_SUCCESS ])
 		);
 	}
 
@@ -82,7 +82,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::HEADING => self::HEADING))
+			(string) new Alert(self::MESSAGE, [ Alert::HEADING => self::HEADING ])
 		);
 	}
 
@@ -96,7 +96,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_ERROR, Alert::HEADING => self::HEADING))
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_ERROR, Alert::HEADING => self::HEADING ])
 		);
 	}
 
@@ -110,7 +110,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_INFO, Alert::HEADING => self::HEADING))
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_INFO, Alert::HEADING => self::HEADING ])
 		);
 	}
 
@@ -124,7 +124,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_SUCCESS, Alert::HEADING => self::HEADING))
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_SUCCESS, Alert::HEADING => self::HEADING ])
 		);
 	}
 
@@ -140,7 +140,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::HEADING => $heading))
+			(string) new Alert(self::MESSAGE, [ Alert::HEADING => $heading ])
 		);
 	}
 
@@ -156,7 +156,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::UNDISMISSABLE => true))
+			(string) new Alert(self::MESSAGE, [ Alert::UNDISMISSABLE => true ])
 		);
 	}
 
@@ -168,7 +168,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_ERROR, Alert::UNDISMISSABLE => true))
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_ERROR, Alert::UNDISMISSABLE => true ])
 		);
 	}
 
@@ -180,7 +180,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_INFO, Alert::UNDISMISSABLE => true))
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_INFO, Alert::UNDISMISSABLE => true ])
 		);
 	}
 
@@ -192,7 +192,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, array(Alert::CONTEXT => Alert::CONTEXT_SUCCESS, Alert::UNDISMISSABLE => true))
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_SUCCESS, Alert::UNDISMISSABLE => true ])
 		);
 	}
 }

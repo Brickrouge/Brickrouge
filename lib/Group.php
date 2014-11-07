@@ -33,9 +33,9 @@ class Group extends Element
 	 *
 	 * @param array $attributes
 	 */
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
-		parent::__construct('fieldset', $attributes + array('class' => 'group'));
+		parent::__construct('fieldset', $attributes + [ 'class' => 'group' ]);
 	}
 
 	/**
@@ -46,12 +46,13 @@ class Group extends Element
 	{
 		$name = $this['name'];
 
-		return parent::alter_class_names($class_names) + array
-		(
+		return parent::alter_class_names($class_names) + [
+
 			'group' => true,
 			'group-name' => $name ? 'group--' . normalize($name) : null,
 			'no-legend' => !$this[self::LEGEND]
-		);
+
+		];
 	}
 
 	/**
@@ -91,14 +92,12 @@ class Group extends Element
 		{
 			if (!($label instanceof Element))
 			{
-				$label = $this->t
-				(
-					$label, array(), array
-					(
-						'scope' => 'group.label',
-						'default' => $this->t($label, array(), array('scope' => 'element.label'))
-					)
-				);
+				$label = $this->t($label, [], [
+
+					'scope' => 'group.label',
+					'default' => $this->t($label, [], [ 'scope' => 'element.label' ])
+
+				]);
 			}
 
 			$label = '<label for="' . $child->id . '" class="controls-label">' . $label . '</label>' . PHP_EOL;
@@ -132,7 +131,7 @@ EOT;
 
 		if ($description)
 		{
-			$description = t($description, array(), array('scope' => 'group.description'));
+			$description = $this->t($description, [], [ 'scope' => 'group.description' ]);
 			$html = $this->render_group_description($description) . $html;
 		}
 
@@ -146,7 +145,7 @@ EOT;
 			}
 			else
 			{
-				$legend = escape(t($legend, array(), array('scope' => 'group.legend')));
+				$legend = escape($this->t($legend, [], [ 'scope' => 'group.legend' ]));
 			}
 
 			$html = $this->render_group_legend($legend) . $html;

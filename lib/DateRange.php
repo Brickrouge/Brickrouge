@@ -16,44 +16,39 @@ class DateRange extends Element
 	const T_START_TAGS = '#daterange-start-tags';
 	const T_FINISH_TAGS = '#daterange-finish-tags';
 
-	public function __construct($tags=array(), $dummy=null)
+	public function __construct($tags=[], $dummy=null)
 	{
-		$start_tags = isset($tags[self::T_START_TAGS]) ? $tags[self::T_START_TAGS] : array();
-		$finish_tags = isset($tags[self::T_FINISH_TAGS]) ? $tags[self::T_FINISH_TAGS] : array();
+		$start_tags = isset($tags[self::T_START_TAGS]) ? $tags[self::T_START_TAGS] : [];
+		$finish_tags = isset($tags[self::T_FINISH_TAGS]) ? $tags[self::T_FINISH_TAGS] : [];
 
-		parent::__construct
-		(
-			'div', $tags + array
-			(
-				self::CHILDREN => array
-				(
-					new Date
-					(
-						$start_tags + array
-						(
-							self::LABEL => 'Début',
-							self::LABEL_POSITION => 'before',
+		parent::__construct('div', $tags + [
 
-							'name' => 'start'
-						)
-					),
+				self::CHILDREN => [
+
+					new Date($start_tags + [
+
+						self::LABEL => 'Début',
+						self::LABEL_POSITION => 'before',
+
+						'name' => 'start'
+
+					]),
 
 					' &nbsp; ',
 
-					new Date
-					(
-						$finish_tags + array
-						(
-							self::LABEL => 'Fin',
-							self::LABEL_POSITION => 'before',
+					new Date($finish_tags + [
 
-							'name' => 'finish'
-						)
-					)
-				),
+						self::LABEL => 'Fin',
+						self::LABEL_POSITION => 'before',
+
+						'name' => 'finish'
+
+
+					])
+				],
 
 				'class' => 'wd-daterange'
-			)
+			]
 		);
 	}
 }

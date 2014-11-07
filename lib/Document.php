@@ -55,11 +55,12 @@ class Document extends \ICanBoogie\Object
 	 */
 	protected function get_assets()
 	{
-		return array
-		(
+		return [
+
 			'css' => $this->css->get(),
 			'js' => $this->js->get()
-		);
+
+		];
 	}
 
 	/**
@@ -190,7 +191,7 @@ class Document extends \ICanBoogie\Object
 			}
 			else
 			{
-				trigger_error(format('Phar file %path does not exists.', array('%path' => $path)));
+				trigger_error(format('Phar file %path does not exists.', [ '%path' => $path ]));
 
 				return;
 			}
@@ -200,7 +201,7 @@ class Document extends \ICanBoogie\Object
 
 		# trying from directory
 
-		$tried = array($path);
+		$tried = [ $path ];
 		$realpath = realpath($path);
 
 		# trying from relative
@@ -230,7 +231,7 @@ class Document extends \ICanBoogie\Object
 
 		if (!$realpath)
 		{
-			trigger_error(format('Unable to resolve path %path to an URL, tried: !tried', array('path' => $path, 'tried' => implode(', ', $tried))));
+			trigger_error(format('Unable to resolve path %path to an URL, tried: !tried', [ 'path' => $path, 'tried' => implode(', ', $tried) ]));
 
 			return;
 		}
@@ -274,7 +275,7 @@ abstract class AssetsCollector
 	 *
 	 * @var array
 	 */
-	protected $collected = array();
+	protected $collected = [];
 
 	/**
 	 * Whether the collected assets should be cached.
@@ -330,7 +331,7 @@ abstract class AssetsCollector
 	 */
 	public function clear()
 	{
-		$this->collected = array();
+		$this->collected = [];
 	}
 
 	abstract public function cache_construct(FileCache $cache, $key, array $userdata);
@@ -359,18 +360,16 @@ class CSSCollector extends AssetsCollector
 					$recent = max($recent, filemtime($root . $file));
 				}
 
-				$cache = new FileCache
-				(
-					array
-					(
-						FileCache::T_REPOSITORY => $core->config['repository.files'] . '/assets',
-						FileCache::T_MODIFIED_TIME => $recent
-					)
-				);
+				$cache = new FileCache([
+
+					FileCache::T_REPOSITORY => $core->config['repository.files'] . '/assets',
+					FileCache::T_MODIFIED_TIME => $recent
+
+				]);
 
 				$key = sha1(implode(',', $collected)) . '.css';
 
-				$rc = $cache->get($key, array($this, 'cache_construct'), array($collected));
+				$rc = $cache->get($key, [ $this, 'cache_construct' ], [ $collected ]);
 
 				if ($rc)
 				{
@@ -485,18 +484,16 @@ class JSCollector extends AssetsCollector
 					$recent = max($recent, filemtime($root . $file));
 				}
 
-				$cache = new FileCache
-				(
-					array
-					(
-						FileCache::T_REPOSITORY => $core->config['repository.files'] . '/assets',
-						FileCache::T_MODIFIED_TIME => $recent
-					)
-				);
+				$cache = new FileCache([
+
+					FileCache::T_REPOSITORY => $core->config['repository.files'] . '/assets',
+					FileCache::T_MODIFIED_TIME => $recent
+
+				]);
 
 				$key = sha1(implode(',', $collected)) . '.js';
 
-				$rc = $cache->get($key, array($this, 'cache_construct'), array($collected));
+				$rc = $cache->get($key, [ $this, 'cache_construct' ], [ $collected ]);
 
 				if ($rc)
 				{

@@ -1,18 +1,21 @@
 <?php
 
-return array
-(
-	'label' => array
-	(
-		'Salutation' => 'Oslovljavanje'
-	),
+return [
 
-	'salutation' => array
-	(
+	'label' => [
+
+		'Salutation' => 'Oslovljavanje'
+
+	],
+
+	'salutation' => [
+
 		'Misses' => 'Gospođa',
 		'Miss' => 'Gospođica',
 		'Mister' => 'Gospodin'
-	),
+
+	],
 
 	'The maximum file size must be less than :size.' => 'Dokument ne smije biti veći od :size.'
-);
+
+];

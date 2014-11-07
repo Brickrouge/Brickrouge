@@ -29,11 +29,11 @@ class Actions extends Element
 	 *
 	 * @param array $attributes
 	 */
-	public function __construct($actions, array $attributes=array())
+	public function __construct($actions, array $attributes=[])
 	{
 		$this->actions = $actions;
 
-		parent::__construct('div', $attributes + array('class' => 'actions'));
+		parent::__construct('div', $attributes + [ 'class' => 'actions' ]);
 	}
 
 	/**
@@ -60,11 +60,12 @@ class Actions extends Element
 
 		if ($actions == 'boolean')
 		{
-			$actions = array
-			(
-				new Button('Cancel', array('data-action' => 'cancel')),
-				new Button('Ok', array('data-action' => 'ok', 'type' => 'submit', 'class' => 'btn-primary')),
-			);
+			$actions = [
+
+				new Button('Cancel', [ 'data-action' => 'cancel' ]),
+				new Button('Ok', [ 'data-action' => 'ok', 'type' => 'submit', 'class' => 'btn-primary' ]),
+
+			];
 		}
 
 		if (is_array($actions))
@@ -83,7 +84,7 @@ class Actions extends Element
 		}
 		else if ($actions === true)
 		{
-			$actions = new Button('Ok', array('dataset' => array('action' => 'ok'), 'type' => 'submit', 'class' => 'btn-primary'));
+			$actions = new Button('Ok', [ 'dataset' => [ 'action' => 'ok' ], 'type' => 'submit', 'class' => 'btn-primary' ]);
 		}
 
 		return $html . $actions;

@@ -16,20 +16,18 @@ namespace Brickrouge;
  */
 class SplitButton extends Element
 {
-	public function __construct($label, array $attributes=array())
+	public function __construct($label, array $attributes=[])
 	{
 		if (is_string($label))
 		{
-			$label = escape(t($label, array(), array('scope' => 'button')));
+			$label = escape(t($label, [], [ 'scope' => 'button' ]));
 		}
 
-		parent::__construct
-		(
-			'div', $attributes + array
-			(
-				self::INNER_HTML => $label
-			)
-		);
+		parent::__construct('div', $attributes + [
+
+			self::INNER_HTML => $label
+
+		]);
 	}
 
 	/**
@@ -44,18 +42,14 @@ class SplitButton extends Element
 	{
 		$label = parent::render_inner_html();
 
-		$class_names = array_intersect_key
-		(
-			array
-			(
-				'btn-primary' => true,
-				'btn-danger' => true,
-				'btn-success' => true,
-				'btn-info' => true
-			),
+		$class_names = array_intersect_key([
 
-			$this->class_names
-		);
+			'btn-primary' => true,
+			'btn-danger' => true,
+			'btn-success' => true,
+			'btn-info' => true
+
+		], $this->class_names);
 
 		$class = implode(' ', array_keys(array_filter($class_names)));
 
@@ -102,18 +96,14 @@ EOT;
 	 */
 	protected function render_class(array $class_names)
 	{
-		return parent::render_class
-		(
-			array
-			(
-				'btn-primary' => false,
-				'btn-danger' => false,
-				'btn-success' => false,
-				'btn-info' => false
-			)
+		return parent::render_class([
 
-			+ $class_names + array('btn-group' => true)
-		);
+			'btn-primary' => false,
+			'btn-danger' => false,
+			'btn-success' => false,
+			'btn-info' => false
+
+		] + $class_names + [ 'btn-group' => true ]);
 	}
 
 	/**
@@ -130,12 +120,18 @@ EOT;
 	{
 		if (is_array($options))
 		{
-			$options = new DropdownMenu(array(Element::OPTIONS => $options, 'value' => $this['value'] ?: $this[self::DEFAULT_VALUE]));
+			$options = new DropdownMenu([
+
+				Element::OPTIONS => $options,
+
+				'value' => $this['value'] ?: $this[self::DEFAULT_VALUE]
+
+			]);
 		}
 
 		if (!($options instanceof DropdownMenu))
 		{
-			throw new \UnexpectedValueException(format('OPTIONS should be either an array or a Brickrouge\DropDownMenu instance, %type given.', array('type' => gettype($options))));
+			throw new \UnexpectedValueException(format('OPTIONS should be either an array or a Brickrouge\DropDownMenu instance, %type given.', [ 'type' => gettype($options) ]));
 		}
 
 		return $options;

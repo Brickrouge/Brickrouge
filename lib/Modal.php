@@ -6,19 +6,20 @@ class Modal extends Element
 {
 	const ACTIONS = '#modal-actions';
 
-	public function __construct(array $attributes=array())
+	public function __construct(array $attributes=[])
 	{
 		parent::__construct('div', $attributes);
 	}
 
 	protected function alter_class_names(array $class_names)
 	{
-		return parent::alter_class_names($class_names) + array
-		(
+		return parent::alter_class_names($class_names) + [
+
 			'modal' => true,
 			'hide' => true,
 			'fade' => true
-		);
+
+		];
 	}
 
 	protected function render_inner_html()
