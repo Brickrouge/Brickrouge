@@ -17,12 +17,11 @@
 		"issues": "https://github.com/Brickrouge/Brickrouge/issues",
 		"source": "https://github.com/Brickrouge/Brickrouge"
 	},
-	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.4.0",
-		"icanboogie/common": ">=1.2",
-		"icanboogie/prototype": "2.x",
-		"icanboogie/errors": ">=1.0"
+		"icanboogie/common": "~1.2",
+		"icanboogie/prototype": "~2.0",
+		"icanboogie/errors": "~1.0"
 	},
 	"autoload": {
 		"psr-4": {
