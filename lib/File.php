@@ -78,7 +78,6 @@ class File extends Element
 		}
 
 		$rc[] = '<span title="Path: ' . $path . '">' . $file . '</span>';
-		$rc[] = Uploaded::getMIME(DOCUMENT_ROOT . $path);
 		$rc[] = format_size(filesize(DOCUMENT_ROOT . $path));
 
 		return $rc;

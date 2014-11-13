@@ -39,9 +39,12 @@ class Document extends \ICanBoogie\Object
 	 */
 	public function __construct()
 	{
-		global $core;
+		$use_cache = false;
 
-		$use_cache = !empty($core->config['cache assets']);
+		if (function_exists('ICanBoogie\app'))
+		{
+			$use_cache = !empty(\ICanBoogie\app()->config['cache assets']);
+		}
 
 		$this->body = new Element('body');
 		$this->js = new JSCollector($use_cache);
@@ -221,7 +224,7 @@ class Document extends \ICanBoogie\Object
 
 		if (!$realpath)
 		{
-			$tries[] = $root . $path;
+			$tried[] = $root . $path;
 			$realpath = realpath($root . $path);
 		}
 
@@ -344,8 +347,6 @@ class CSSCollector extends AssetsCollector
 {
 	public function __toString()
 	{
-		global $core;
-
 		$collected = $this->get();
 
 		try
@@ -362,7 +363,7 @@ class CSSCollector extends AssetsCollector
 
 				$cache = new FileCache([
 
-					FileCache::T_REPOSITORY => $core->config['repository.files'] . '/assets',
+					FileCache::T_REPOSITORY => \ICanBoogie\app()->config['repository.files'] . '/assets',
 					FileCache::T_MODIFIED_TIME => $recent
 
 				]);
@@ -433,40 +434,7 @@ class JSCollector extends AssetsCollector
 {
 	public function __toString()
 	{
-		global $core;
-
 		$collected = $this->get();
-
-		#
-		# exchange with minified versions
-		#
-
-		if (0)
-		{
-			$root = DOCUMENT_ROOT;
-			$repository = $core->config['repository.files'] . '/assets/minified/';
-
-			foreach ($collected as $file)
-			{
-				$minified_key = md5($file);
-
-				if (!file_exists($root . $repository . $minified_key))
-				{
-					echo "<code>create minified ($minified_key) for $file</code><br />";
-
-					$cmd = "java -jar /users/serveurweb/Sites/yuicompressor-2.4.6.jar {$root}{$file} -o {$root}{$repository}{$minified_key}.js --charset utf-8";
-
-					echo "<code><strong>cmd:</strong> $cmd</code>";
-
-					$output = null;
-					$return_var = null;
-
-					exec($cmd, $output, $return_var);
-
-					var_dump($output, $return_var);
-				}
-			}
-		}
 
 		#
 		# cached ouput
@@ -486,7 +454,7 @@ class JSCollector extends AssetsCollector
 
 				$cache = new FileCache([
 
-					FileCache::T_REPOSITORY => $core->config['repository.files'] . '/assets',
+					FileCache::T_REPOSITORY => \ICanBoogie\app()->config['repository.files'] . '/assets',
 					FileCache::T_MODIFIED_TIME => $recent
 
 				]);

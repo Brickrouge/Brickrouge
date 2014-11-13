@@ -784,7 +784,7 @@ class Form extends Element implements Validator
 				{
 					if (!preg_match($params, $value))
 					{
-						$messages[] = $this->t('Invalid format of value %value', [ '%value' => $value ]);
+						$messages[] = t('Invalid format of value %value', [ '%value' => $value ]);
 					}
 				}
 				break;
