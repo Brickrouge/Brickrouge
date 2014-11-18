@@ -30,66 +30,114 @@ class Group extends Element
 
 	protected function render_inner_html()
 	{
-		$html = '';
-		$groups = $this->group_children();
+		$groups = $this->form[self::GROUPS] ?: [];
+		$groups = $this->resolve_groups($groups);
+		$groups = $this->dispatch_children($groups);
 
-		foreach ($groups as $group_id => $group)
+		return implode($groups);
+	}
+
+	/**
+	 * Normalize former group definition to use {@link Element} attributes.
+	 *
+	 * @param array $attributes
+	 *
+	 * @return array
+	 */
+	protected function normalize_group_attributes(array $attributes=[])
+	{
+		static $transform = [
+
+			'description' => self::DESCRIPTION,
+			'title' => self::LEGEND,
+			'weight' => self::WEIGHT
+
+		];
+
+		$normalized_attributes = [];
+
+		foreach ($attributes as $attribute => $value)
 		{
-			if (empty($group[self::CHILDREN]))
+			if (isset($transform[$attribute]))
 			{
-				continue;
+				$attribute = $transform[$attribute];
 			}
 
-			$html .= PHP_EOL . $this->render_group($group, $group_id) . PHP_EOL;
+			$normalized_attributes[$attribute] = $value;
 		}
 
-		return $html;
+		return $normalized_attributes;
 	}
 
-	protected function group_children()
+	/**
+	 * Resolve a group definition into an {@link Element} instance.
+	 *
+	 * @param mixed $group
+	 *
+	 * @return Element
+	 */
+	protected function resolve_group($group)
 	{
-		$groups = $this->form[self::GROUPS] ?: [];
-
-		\Brickrouge\stable_sort($groups, function($v) { return isset($v['weight']) ? $v['weight'] : 0; });
-
-		#
-		# dispatch children into groups
-		#
-
-		foreach ($this->children as $name => $element)
+		if ($group instanceof Element)
 		{
-			if (!$element) continue;
-
-			$group = is_object($element) ? ($element[self::GROUP] ?: 'primary') : 'primary';
-
-			$groups[$group][self::CHILDREN][$name] = $element;
-		}
-
-		return $groups;
-	}
-
-	protected function render_group(array $group, $key)
-	{
-		$class = isset($group['class']) ? $group['class'] : null;
-
-		if ($key && !is_numeric($key))
-		{
-			$class .= ' group--' . \Brickrouge\normalize($key);
+			return $group;
 		}
 
 		$constructor = $this[self::GROUP_CLASS] ?: 'Brickrouge\Group';
+		$attributes = $this->normalize_group_attributes($group) + [
 
-		$group = new $constructor([
+			self::CHILDREN => []
 
-			self::CHILDREN => $group[self::CHILDREN],
-			self::DESCRIPTION => isset($group['description']) ? $group['description'] : null,
-			self::LEGEND => isset($group['title']) ? $group['title'] : null,
+		];
 
-			'class' => $class,
-			'id' => isset($group['id']) ? $group['id'] : null
+		return new $constructor($attributes);
+	}
 
-		]);
+	/**
+	 * Resolve group definitions into {@link Element} instances and sort them according to their
+	 * {@link WEIGHT}.
+	 *
+	 * @param array $groups
+	 *
+	 * @return Element[]
+	 */
+	protected function resolve_groups(array $groups)
+	{
+		foreach ($groups as $group_id => &$group)
+		{
+			$group = $this->resolve_group($group);
 
-		return (string) $group;
+			if ($group_id && !is_numeric($group_id))
+			{
+				$group->add_class('group--' . \Brickrouge\normalize($group_id));
+			}
+		}
+
+		return \ICanBoogie\sort_by_weight($groups, function($v) {
+
+			return $v[self::WEIGHT];
+
+		});
+	}
+
+	/**
+	 * Dispatch children into groups.
+	 *
+	 * @param Element[] $groups
+	 *
+	 * @return Element[]
+	 */
+	protected function dispatch_children(array $groups)
+	{
+		foreach ($this->children as $name => $child)
+		{
+			if (!$child) continue;
+
+			$group_name = $child instanceof Element ? ($child[self::GROUP] ?: 'primary') : 'primary';
+
+			$groups[$group_name]->children[$name] = $child;
+		}
+
+		return $groups;
 	}
 }
