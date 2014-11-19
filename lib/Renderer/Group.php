@@ -30,7 +30,12 @@ class Group extends Element
 
 	protected function render_inner_html()
 	{
-		$groups = $this->form[self::GROUPS] ?: [];
+		$groups = ($this->form[self::GROUPS] ?: []) + [
+
+			'primary' => []
+
+		];
+
 		$groups = $this->resolve_groups($groups);
 		$groups = $this->dispatch_children($groups);
 
@@ -133,7 +138,17 @@ class Group extends Element
 		{
 			if (!$child) continue;
 
-			$group_name = $child instanceof Element ? ($child[self::GROUP] ?: 'primary') : 'primary';
+			$group_name = 'primary';
+
+			if ($child instanceof Element && $child[self::GROUP])
+			{
+				$group_name = $child[self::GROUP];
+			}
+
+			if (empty($groups[$group_name]))
+			{
+				throw new \InvalidArgumentException("There is no group with id $group_name.");
+			}
 
 			$groups[$group_name]->children[$name] = $child;
 		}
