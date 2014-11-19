@@ -11,6 +11,9 @@
 
 namespace Brickrouge;
 
+/**
+ * @deprecated
+ */
 class Pager extends Element
 {
 	const T_COUNT = '#pager-count';
