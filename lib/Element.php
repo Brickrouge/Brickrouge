@@ -709,52 +709,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			return [];
 		}
 
-		$by_weight = [];
-		$with_relative_positions = [];
+		return sort_by_weight($this->children, function($v) {
 
-		foreach ($this->children as $name => $child)
-		{
-			$weight = is_object($child) ? $child[self::WEIGHT] : 0;
+			return $v instanceof self ? ($v[self::WEIGHT] ?: 0) : 0;
 
-			if (is_string($weight) && !is_numeric($weight)) // FIXME: is is_numeric() not enough ?
-			{
-				$with_relative_positions[] = $child;
-
-				continue;
-			}
-
-			$by_weight[(int) $weight][$name] = $child;
-		}
-
-		if (count($by_weight) == 1 && !$with_relative_positions)
-		{
-			return $this->children;
-		}
-
-		ksort($by_weight);
-
-		$rc = [];
-
-		foreach ($by_weight as $children)
-		{
-			$rc += $children;
-		}
-
-		#
-		# now we deal with the relative positions
-		#
-
-		if ($with_relative_positions)
-		{
-			foreach ($with_relative_positions as $child)
-			{
-				list($target, $position) = explode(':', $child[self::WEIGHT]) + [ 1 => 'after' ];
-
-				$rc = array_insert($rc, $target, $child, $child['name'], $position == 'after');
-			}
-		}
-
-		return $rc;
+		});
 	}
 
 	/**

@@ -159,6 +159,89 @@ function stable_sort(&$array, $picker=null)
 }
 
 /**
+ * Sort an array according to the weight of its items.
+ *
+ * The weight of the items is defined as an integer; a position relative to another member of the
+ * array `before:<key>` or `after:<key>`; the special words `top` and `bottom`.
+ *
+ * @param array $array
+ * @param callable $weight_picker The callback function used to pick the weight of the item. The
+ * function is called with the following arguments: `$value`, `$key`.
+ *
+ * @return array A sorted copy of the array.
+ */
+function sort_by_weight(array $array, $weight_picker)
+{
+	if (!$array)
+	{
+		return $array;
+	}
+
+	$order = array();
+
+	foreach ($array as $k => $v)
+	{
+		$order[$k] = $weight_picker($v, $k);
+	}
+
+	$n = count($order);
+	$top = min($order) - $n;
+	$bottom = max($order) + $n;
+
+	foreach ($order as &$weight)
+	{
+		if ($weight === 'top')
+		{
+			$weight = --$top;
+		}
+		else if ($weight === 'bottom')
+		{
+			$weight = ++$bottom;
+		}
+	}
+
+	foreach ($order as $k => &$weight)
+	{
+		if (strpos($weight, 'before:') === 0)
+		{
+			$target = substr($weight, 7);
+
+			if (isset($order[$target]))
+			{
+				$order = array_insert($order, $target, $order[$target], $k);
+			}
+			else
+			{
+				$weight = 0;
+			}
+		}
+		else if (strpos($weight, 'after:') === 0)
+		{
+			$target = substr($weight, 6);
+
+			if (isset($order[$target]))
+			{
+				$order = array_insert($order, $target, $order[$target], $k, true);
+			}
+			else
+			{
+				$weight = 0;
+			}
+		}
+	}
+
+	stable_sort($order);
+
+	array_walk($order, function(&$v, $k) use($array) {
+
+		$v = $array[$k];
+
+	});
+
+	return $order;
+}
+
+/**
  * Convert special characters to HTML entities.
  *
  * @param string $str The string being converted.
