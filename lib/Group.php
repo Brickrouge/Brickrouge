@@ -127,6 +127,11 @@ EOT;
 	{
 		$html = parent::render_inner_html();
 
+		if ($html === null)
+		{
+			throw new ElementIsEmpty;
+		}
+
 		$description = $this[self::DESCRIPTION];
 
 		if ($description)
