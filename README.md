@@ -1,4 +1,11 @@
-# Brickrouge [![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.svg?branch=2.1)](http://travis-ci.org/Brickrouge/Brickrouge)
+# Brickrouge
+
+[![Release](https://img.shields.io/packagist/v/Brickrouge/Brickrouge.svg)](https://github.com/Brickrouge/Brickrouge/releases)
+[![Build Status](https://img.shields.io/travis/Brickrouge/Brickrouge.svg)](http://travis-ci.org/Brickrouge/Brickrouge)
+[![HHVM](https://img.shields.io/hhvm/brickrouge/brickrouge.svg)](http://hhvm.h4cc.de/package/brickrouge/brickrouge)
+[![Code Quality](https://img.shields.io/scrutinizer/g/Brickrouge/Brickrouge.svg)](https://scrutinizer-ci.com/g/Brickrouge/Brickrouge)
+[![Code Coverage](https://img.shields.io/coveralls/Brickrouge/Brickrouge.svg)](https://coveralls.io/r/Brickrouge/Brickrouge)
+[![Packagist](https://img.shields.io/packagist/dt/brickrouge/brickrouge.svg)](https://packagist.org/packages/brickrouge/brickrouge)
 
 Brickrouge helps you create HTML elements and custom HTML elements such as inputs, forms,
 dropdowns, popover, calendars… with all the CSS and JavaScript required to make them beautiful
@@ -520,7 +527,7 @@ and [icanboogie/errors](https://packagist.org/packages/icanboogie/errors).
 The recommended way to install this package is through [composer](http://getcomposer.org/):
 
 ```
-$ composer require brickrouge/brickrouge:~2.1
+$ composer require brickrouge/brickrouge:
 ```
 
 
@@ -540,9 +547,7 @@ be cloned with the following command line:
 
 ## Documentation
 
-You can generate the documentation for the package and its dependencies with the `make doc`
-command. The documentation is generated in the `docs` directory. You can later clean the directory
-with the `make clean` command. Note that [ApiGen](http://apigen.org/) is required.
+You can generate the documentation for the package and its dependencies with the `make doc` command. The documentation is generated in the `build/docs` directory. [ApiGen](http://apigen.org/) is required. The directory can later be cleaned with the `make clean` command.
 
 
 
@@ -550,19 +555,19 @@ with the `make clean` command. Note that [ApiGen](http://apigen.org/) is require
 
 ## Testing
 
-The test suite is ran with the `make test` command. [Composer](http://getcomposer.org/) is
-automatically installed as well as all dependencies required to run the suite. You can later
-clean the directory with the `make clean` command.
+The test suite is ran with the `make test` command. [PHPUnit](https://phpunit.de/) and [Composer](http://getcomposer.org/) need to be globally available to run the suite. The command installs dependencies as required. The `make test-coverage` command runs test suite and also creates an HTML coverage report in "build/coverage". The directory can later be cleaned with the `make clean` command.
 
-[![Build Status](https://secure.travis-ci.org/Brickrouge/Brickrouge.svg?branch=2.1)](http://travis-ci.org/Brickrouge/Brickrouge)
+The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
+[![Build Status](https://img.shields.io/travis/Brickrouge/Brickrouge.svg)](https://travis-ci.org/Brickrouge/Brickrouge)
+[![Code Coverage](https://img.shields.io/coveralls/Brickrouge/Brickrouge.svg)](https://coveralls.io/r/Brickrouge/Brickrouge)
 
 
 
 
 ## License
 
-Brickrouge is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
+**Brickrouge** is licensed under the New BSD License. See the [LICENSE](LICENSE) file for details.
 
 
 

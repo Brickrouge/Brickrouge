@@ -53,7 +53,7 @@ CSS_UNCOMPRESSED = assets/brickrouge-uncompressed.css
 CSS_RESPONSIVE_FILES = \
 	lib/responsive-1200px-min.less \
 	lib/responsive-767px-max.less \
-	lib/responsive-768px-979px.less 
+	lib/responsive-768px-979px.less
 
 CSS_RESPONSIVE_COMPRESSED = assets/brickrouge-responsive.css
 CSS_RESPONSIVE_UNCOMPRESSED = assets/brickrouge-responsive-uncompressed.css
@@ -108,6 +108,7 @@ watch:
 # customization
 
 PACKAGE_NAME = "Brickrouge"
+PACKAGE_VERSION = 2.1.4
 
 # do not edit the following lines
 
@@ -115,10 +116,10 @@ usage:
 	@echo "test:  Runs the test suite.\ndoc:   Creates the documentation.\nclean: Removes the documentation, the dependencies and the Composer files."
 
 vendor:
-	@composer install --dev
+	@composer install
 
 update:
-	@composer update --dev
+	@composer update
 
 autoload: vendor
 	@composer dump-autoload
@@ -126,18 +127,20 @@ autoload: vendor
 test: vendor
 	@phpunit
 
-doc: vendor
-	@mkdir -p "docs"
+test-coverage: vendor
+	@mkdir -p build/coverage
+	@phpunit --coverage-html build/coverage
 
-	@apigen \
-	--source ./ \
-	--destination docs/ --title $(PACKAGE_NAME) \
-	--exclude "*/composer/*" \
-	--exclude "*/tests/*" \
-	--template-config /usr/share/php/data/ApiGen/templates/bootstrap/config.neon
+doc: vendor
+	@mkdir -p build/docs
+	@apigen generate \
+	--source lib \
+	--destination build/docs/ \
+	--title "$(PACKAGE_NAME) $(PACKAGE_VERSION)" \
+	--template-theme "bootstrap"
 
 clean:
-	@rm -fR docs
+	@rm -fR build
 	@rm -fR vendor
 	@rm -f composer.lock
 

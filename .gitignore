@@ -1,7 +1,7 @@
-.README.md.html
 assets/brickrouge-responsive-uncompressed.css
 assets/brickrouge-uncompressed.css
 assets/brickrouge-uncompressed.js
+build/coverage
 composer.lock
 docs
 vendor
