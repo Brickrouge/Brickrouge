@@ -2,11 +2,14 @@
 
 namespace Brickrouge;
 
+/**
+ * A modal element.
+ */
 class Modal extends Element
 {
 	const ACTIONS = '#modal-actions';
 
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct('div', $attributes);
 	}

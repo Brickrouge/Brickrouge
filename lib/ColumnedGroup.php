@@ -18,15 +18,11 @@ class ColumnedGroup extends Group
 {
 	/**
 	 * Defines the number of columns.
-	 *
-	 * @var int
 	 */
 	const COLUMNS = '#columned-group-columns';
 
 	/**
 	 * Defines the total number of columns.
-	 *
-	 * @var int
 	 */
 	const COLUMNS_TOTAL = '#columned-group-columns-total';
 
@@ -38,7 +34,7 @@ class ColumnedGroup extends Group
 	 *
 	 * @param array $attribute
 	 */
-	public function __construct(array $attribute=[])
+	public function __construct(array $attribute = [])
 	{
 		parent::__construct($attribute + [
 
@@ -58,7 +54,6 @@ class ColumnedGroup extends Group
 		$columns = [];
 		$children = $this->ordered_children;
 		$columns_n = $this[self::COLUMNS];
-		$by_column = ceil(count($children) / $columns_n);
 		$i = 0;
 
 		foreach ($children as $child_id => $child)

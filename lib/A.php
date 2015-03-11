@@ -12,7 +12,15 @@
 namespace Brickrouge;
 
 /**
- * A `<A>` element.
+ * An `<A>` element.
+ *
+ * ```php
+ * <?php
+ *
+ * use Brickrouge\A;
+ *
+ * echo new A('Brickrouge', 'http://brickrouge.org');
+ * ```
  */
 class A extends Element
 {
@@ -21,12 +29,8 @@ class A extends Element
 	 * a {@link Element} instance it is escaped.
 	 * @param string $href URI for linked resource.
 	 * @param array $attributes Optional attributes.
-	 *
-	 * @example
-	 *
-	 * <?php echo new A('Brickrouge', 'http://brickrouge.org');
 	 */
-	public function __construct($label, $href='#', array $attributes=[])
+	public function __construct($label, $href = '#', array $attributes = [])
 	{
 		if (!($label instanceof HTMLStringInterface))
 		{

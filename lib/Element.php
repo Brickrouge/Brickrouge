@@ -30,6 +30,10 @@ namespace Brickrouge;
  * @property string $id Assigns an identifier to an element. This identifier mush be unique in
  * a document.
  *
+ * @property-read array $ordered_children Children ordered according to their {@link WEIGHT}.
+ *
+ * @property-read array $attributes Element's attributes.
+ *
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
 class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggregate, HTMLStringInterface
@@ -40,29 +44,21 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 	/**
 	 * Custom type used to create checkbox elements.
-	 *
-	 * @var string
 	 */
 	const TYPE_CHECKBOX = '#checkbox';
 
 	/**
 	 * Custom type used to create checkbox group elements.
-	 *
-	 * @var string
 	 */
 	const TYPE_CHECKBOX_GROUP = '#checkbox-group';
 
 	/**
 	 * Custom type used to create radio elements.
-	 *
-	 * @var string
 	 */
 	const TYPE_RADIO = '#radio';
 
 	/**
 	 * Custom type used to create radio group elements.
-	 *
-	 * @var string
 	 */
 	const TYPE_RADIO_GROUP = '#radio-group';
 
@@ -72,8 +68,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 	/**
 	 * Used to define the children of an element.
-	 *
-	 * @var string
 	 */
 	const CHILDREN = '#children';
 
@@ -81,15 +75,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * Used to define the default value of an element.
 	 *
 	 * The default value is added to the dataset as 'default-value'.
-	 *
-	 * @var string
 	 */
 	const DEFAULT_VALUE = '#default-value';
 
 	/**
 	 * Used to define the description block of an element.
-	 *
-	 * @var string
 	 *
 	 * @see Element::decorate_with_description()
 	 */
@@ -97,22 +87,16 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 
 	/**
 	 * Used to define the group of an element.
-	 *
-	 * @var string
 	 */
 	const GROUP = '#group';
 
 	/**
 	 * Used to define the groups that can be used by children elements.
-	 *
-	 * @var string
 	 */
 	const GROUPS = '#groups';
 
 	/**
 	 * Used to define the inline help of an element.
-	 *
-	 * @var string
 	 *
 	 * @see Element::decorate_with_inline_help()
 	 */
@@ -121,15 +105,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	/**
 	 * Used to define the inner HTML of an element. If the value of the tag is null, the markup
 	 * will be self-closing.
-	 *
-	 * @var string
 	 */
 	const INNER_HTML = '#inner-html';
 
 	/**
 	 * Used to define the label of an element.
-	 *
-	 * @var string
 	 *
 	 * @see Element::decorate_with_label()
 	 */
@@ -138,8 +118,6 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	/**
 	 * Used to define the position of the label. Possible positions are "before", "after" and
 	 * "above". Defaults to "after".
-	 *
-	 * @var string
 	 */
 	const LABEL_POSITION = '#label-position';
 	const LABEL_MISSING = '#label-missing';
@@ -148,16 +126,12 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * Used to define the legend of an element. If the legend is defined the element is wrapped
 	 * into a fieldset when it is rendered.
 	 *
-	 * @var string
-	 *
 	 * @see Element::decorate_with_legend()
 	 */
 	const LEGEND = '#element-legend';
 
 	/**
 	 * Used to define the required state of an element.
-	 *
-	 * @var string
 	 *
 	 * @see Form::validate()
 	 * @see http://dev.w3.org/html5/spec/Overview.html#the-required-attribute
@@ -167,37 +141,27 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	/**
 	 * Used to define the options of the following element types: "select",
 	 * {@link TYPE_RADIO_GROUP} and {@link TYPE_CHECKBOX_GROUP}.
-	 *
-	 * @var string
 	 */
 	const OPTIONS = '#options';
 
 	/**
 	 * Used to define which options are disabled.
-	 *
-	 * @var string
 	 */
 	const OPTIONS_DISABLED = '#options-disabled';
 
 	/**
 	 * Used to define the state of the element: "success", "warning" or "error".
-	 *
-	 * @var string
 	 */
 	const STATE = '#state';
 
 	/**
 	 * Specifies the translator used to translate strings.
-	 *
-	 * @var mixed
 	 */
 	const TRANSLATOR = '#translator';
 
 	/**
 	 * Used to define the validator of an element. The validator is defined using an array made of
 	 * a callback and a possible userdata array.
-	 *
-	 * @var string
 	 */
 	const VALIDATOR = '#validator';
 	const VALIDATOR_OPTIONS = '#validator-options';
@@ -206,18 +170,18 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * Use to define the weight of an element. This attribute can be used to reorder children when
 	 * a parent element is rendered.
 	 *
-	 * @var string
-	 *
 	 * @see Element::get_ordered_children()
 	 */
 	const WEIGHT = '#weight';
 
 	/**
 	 * The name of the Javascript constructor that should be used to construct the widget.
-	 *
-	 * @var string
 	 */
 	const IS = 'brickrouge-is';
+
+	/**
+	 * @deprecated use Element::IS
+	 */
 	const WIDGET_CONSTRUCTOR = 'brickrouge-is'; // 2.0 COMPAT
 
 	static private $inputs = [ 'button', 'form', 'input', 'option', 'select', 'textarea' ];
@@ -310,7 +274,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @param array $attributes HTML and custom attributes.
 	 */
-	public function __construct($type, array $attributes=[])
+	public function __construct($type, array $attributes = [])
 	{
 		$this->type = $type;
 
@@ -406,7 +370,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @return mixed|null The value of the attribute, or null if is not set.
 	 */
-	public function offsetGet($attribute, $default=null)
+	public function offsetGet($attribute, $default = null)
 	{
 		return isset($this->attributes[$attribute]) ? $this->attributes[$attribute] : $default;
 	}
@@ -488,9 +452,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	}
 
 	/**
-	 * Sets the datset of the element.
+	 * Sets the dataset of the element.
 	 *
-	 * @param array|Dataset $properties
+	 * @param array|Dataset #dataset
 	 *
 	 * @return Dataset
 	 */
@@ -630,7 +594,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 *
 	 * @param array $class_names An array of class names. Each key/value pair describe a class
 	 * name. The key is the identifier of the class name, the value is its value. If the value is
-	 * empty then the class name is discarted. If the value is `true` the identifier of the class
+	 * empty then the class name is discarded. If the value is `true` the identifier of the class
 	 * name is used as value.
 	 *
 	 * @return string
@@ -661,9 +625,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * used to set its `name` attribute, unless the attribute is already defined.
 	 *
 	 * @param string|Element|array $child The child or children to add.
-	 * @param string|Element $other[optional] Other child.
+	 * @param string|Element $other ... children.
 	 */
-	public function adopt($child, $other=null)
+	public function adopt($child, $other = null)
 	{
 		if (func_num_args() > 1)
 		{
@@ -700,7 +664,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	/**
 	 * Returns the children of the element ordered according to their weight.
 	 *
-	 * @return array[int]Element|string
+	 * @return array
 	 */
 	public function get_ordered_children()
 	{
@@ -908,14 +872,14 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		#
 
 		$html = '';
-		$disableds = $this[self::OPTIONS_DISABLED];
+		$disabled_list = $this[self::OPTIONS_DISABLED];
 
 		foreach ($this[self::OPTIONS] as $option_name => $label)
 		{
 			$child[self::LABEL] = $label;
 			$child['name'] = $name . '[' . $option_name . ']';
 			$child['checked'] = !empty($selected[$option_name]);
-			$child['disabled'] = $disabled || !empty($disableds[$option_name]);
+			$child['disabled'] = $disabled || !empty($disabled_list[$option_name]);
 			$child['data-key'] = $option_name;
 			$child['data-name'] = $name;
 
@@ -966,7 +930,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		#
 
 		$html = '';
-		$disableds = $this[self::OPTIONS_DISABLED];
+		$disabled_list = $this[self::OPTIONS_DISABLED];
 
 		foreach ($this[self::OPTIONS] as $value => $label)
 		{
@@ -978,7 +942,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 			$child[self::LABEL] = $label;
 			$child['value'] = $value;
 			$child['checked'] = (string) $value === (string) $selected;
-			$child['disabled'] = $disabled || !empty($disableds[$value]);
+			$child['disabled'] = $disabled || !empty($disabled_list[$value]);
 
 			$html .= $child;
 		}
@@ -1064,7 +1028,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	/**
 	 * Renders attributes.
 	 *
-	 * Attributes with `false` or `null` values as well as custom attributes are discarted.
+	 * Attributes with `false` or `null` values as well as custom attributes are discarded.
 	 * Attributes with the `true` value are translated to XHTML standard e.g. readonly="readonly".
 	 *
 	 * @param array $attributes
@@ -1125,7 +1089,7 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * Renders dataset.
 	 *
 	 * The dataset is rendered as a series of "data-*" attributes. Values of type array are
-	 * encoded using the {@link json_encode()} function. Attributes with null values are discarted,
+	 * encoded using the {@link json_encode()} function. Attributes with null values are discarded,
 	 * but unlike classic attributes boolean values are converted to integers.
 	 *
 	 * @param array $dataset
@@ -1387,7 +1351,7 @@ EOT;
 	 * Before the element is rendered the method  {@link handle_assets()} is invoked.
 	 *
 	 * The inner HTML is rendered by the {@link render_inner_html()} method. The outer HTML is
-	 * rendered by the {@link render_outer_html()} method. Finaly, the HTML is decorated by
+	 * rendered by the {@link render_outer_html()} method. Finally, the HTML is decorated by
 	 * the {@link decorate()} method.
 	 *
 	 * If the {@link ElementIsEmpty} exception is caught during the rendering
@@ -1501,30 +1465,27 @@ EOT;
 	}
 
 	/**
-	 * Translates and formates a string.
+	 * Translates and formats a string.
 	 *
 	 * The method uses the translator specified by {@link TRANSLATOR} or the {@link t()} function
 	 * if it is not specified.
 	 *
 	 * @see \Brickrouge\t
+	 *
+	 * @param string $pattern The native string to translate.
+	 * @param array $args An array of replacements to make after the translation. The replacement is
+	 * handled by the {@link format()} function.
+	 * @param array $options An array of additional options, with the following elements:
+	 * - 'default': The default string to use if the translation failed.
+	 * - 'scope': The scope of the translation.
+	 *
+	 * @return mixed
 	 */
-	public function t($pattern, array $args=[], array $options=[])
+	public function t($pattern, array $args = [], array $options =  [])
 	{
+		/* @var $translator callable */
 		$translator = $this[self::TRANSLATOR];
 
 		return $translator ? $translator($pattern, $args, $options) : t($pattern, $args, $options);
-	}
-}
-
-/**
- * Exception thrown when one wants to cancel the whole rendering of an empty element. The
- * {@link Element} class takes care of this special case and instead of rendering the exception
- * only returns an empty string as the result of its {@link Element::render()} method.
- */
-class ElementIsEmpty extends \Exception
-{
-	public function __construct($message="The element is empty.", $code=200, \Exception $previous=null)
-	{
-		parent::__construct($message, $code, $previous);
 	}
 }

@@ -42,7 +42,7 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 	 * @param Element $element The target element.
 	 * @param array $properties[optional] The initial properties of the dataset.
 	 */
-	public function __construct(Element $element, array $properties=[])
+	public function __construct(Element $element, array $properties = [])
 	{
 		$this->element = $element;
 
@@ -56,6 +56,9 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 	 * Sets the value of a property.
 	 *
 	 * The attribute corresponding to the property is set.
+	 *
+	 * @param string $property
+	 * @param mixed $value
 	 */
 	public function offsetSet($property, $value)
 	{
@@ -66,22 +69,44 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 	 * Returns the value of a property,
 	 *
 	 * The value is gotten from the attribute corresponding to the property.
+	 *
+	 * @param string $property
+	 * @param null $default
+	 *
+	 * @return mixed|null
 	 */
-	public function offsetGet($property, $default=null)
+	public function offsetGet($property, $default = null)
 	{
 		return $this->element->offsetGet(self::serialize_property($property), $default);
 	}
 
+	/**
+	 * Checks if a data attribute exists.
+	 *
+	 * @param string $property
+	 *
+	 * @return bool
+	 */
 	public function offsetExists($property)
 	{
 		return $this->element->offsetExists(self::serialize_property($property));
 	}
 
+	/**
+	 * Unset a data attribute.
+	 *
+	 * @param string $property
+	 */
 	public function offsetUnset($property)
 	{
-		return $this->element->offsetUnset(self::serialize_property($property));
+		$this->element->offsetUnset(self::serialize_property($property));
 	}
 
+	/**
+	 * Returns an iterator for the data attributes.
+	 *
+	 * @return \ArrayIterator
+	 */
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->to_a());

@@ -29,7 +29,7 @@ class Actions extends Element
 	 *
 	 * @param array $attributes
 	 */
-	public function __construct($actions, array $attributes=[])
+	public function __construct($actions, array $attributes = [])
 	{
 		$this->actions = $actions;
 

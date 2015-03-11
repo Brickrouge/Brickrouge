@@ -27,7 +27,7 @@ class Button extends Element
 	 * @param string $label Label of the button (inner text).
 	 * @param array $attributes Optional attributes used to create the element.
 	 */
-	public function __construct($label, array $attributes=[])
+	public function __construct($label, array $attributes = [])
 	{
 		if (!($label instanceof HTMLString))
 		{
@@ -45,6 +45,8 @@ class Button extends Element
 
 	/**
 	 * Adds the `btn` class name.
+	 *
+	 * @inheritdoc
 	 */
 	protected function alter_class_names(array $class_names)
 	{

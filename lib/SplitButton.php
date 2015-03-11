@@ -16,7 +16,7 @@ namespace Brickrouge;
  */
 class SplitButton extends Element
 {
-	public function __construct($label, array $attributes=[])
+	public function __construct($label, array $attributes = [])
 	{
 		if (is_string($label))
 		{

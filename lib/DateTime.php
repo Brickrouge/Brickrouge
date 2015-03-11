@@ -13,7 +13,7 @@ namespace Brickrouge;
 
 class DateTime extends Date
 {
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct($attributes + [
 

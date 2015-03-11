@@ -78,7 +78,7 @@ class Helpers
 	 * Patches a patchable function.
 	 *
 	 * @param string $name Name of the function.
-	 * @param collable $callback Callback.
+	 * @param callable $callback Callback.
 	 *
 	 * @throws \RuntimeException is attempt to patch an undefined function.
 	 */
@@ -99,7 +99,7 @@ class Helpers
 	/**
 	 * This method is the fallback for the {@link format()} function.
 	 */
-	static private function format($str, array $args=[])
+	static private function format($str, array $args = [])
 	{
 		if (!$args)
 		{
@@ -188,14 +188,14 @@ class Helpers
 	/**
 	 * This method is the fallback for the {@link normalize()} function.
 	 */
-	static private function normalize($str, $separator='-', $charset=CHARSET)
+	static private function normalize($str, $separator = '-', $charset = CHARSET)
 	{
 		$str = str_replace('\'', '', $str);
 
 		$str = htmlentities($str, ENT_NOQUOTES, $charset);
 		$str = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str);
-		$str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str); // pour les ligatures e.g. '&oelig;'
-		$str = preg_replace('#&[^;]+;#', '', $str); // supprime les autres caractères
+		$str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str);
+		$str = preg_replace('#&[^;]+;#', '', $str);
 
 		$str = strtolower($str);
 		$str = preg_replace('#[^a-z0-9]+#', $separator, $str);
@@ -210,7 +210,7 @@ class Helpers
 	 * We usually rely on the ICanBoogie framework I18n features to translate our string, if it is
 	 * not available we simply format the string using the {@link Brickrouge\format()} function.
 	 */
-	static private function t($str, array $args=[], array $options=[])
+	static private function t($str, array $args = [], array $options = [])
 	{
 		return format($str, $args);
 	}
@@ -344,7 +344,7 @@ class Helpers
 	 *
 	 * @throws \Exception if the replacement file could not be created.
 	 */
-	static private function get_accessible_file($path, $suffix=null)
+	static private function get_accessible_file($path, $suffix = null)
 	{
 		$key = sprintf('%s-%04x%s.%s', md5($path), strlen($path), ($suffix ? '-' . $suffix : ''), pathinfo($path, PATHINFO_EXTENSION));
 		$replacement_path = ACCESSIBLE_ASSETS;

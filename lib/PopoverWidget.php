@@ -33,7 +33,7 @@ class PopoverWidget extends Popover
 	 *
 	 * @param array $attributes
 	 */
-	public function __construct(array $attributes)
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct($attributes + [
 
@@ -46,6 +46,8 @@ class PopoverWidget extends Popover
 
 	/**
 	 * Adds the `visible` property to the dataset.
+	 *
+	 * @inheritdoc
 	 */
 	protected function alter_dataset(array $dataset)
 	{

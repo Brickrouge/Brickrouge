@@ -20,8 +20,6 @@ class Alert extends Element
 {
 	/**
 	 * The context of the alert, one of "error", "success" or "info".
-	 *
-	 * @var string
 	 */
 	const CONTEXT = '#alert-context';
 	const CONTEXT_SUCCESS = 'success';
@@ -30,15 +28,11 @@ class Alert extends Element
 
 	/**
 	 * The heading of the alert.
-	 *
-	 * @var string
 	 */
 	const HEADING = '#alert-heading';
 
 	/**
 	 * Set to `true` for undismissable alerts.
-	 *
-	 * @var string
 	 */
 	const UNDISMISSABLE = '#alert-undismissable';
 
@@ -46,23 +40,19 @@ class Alert extends Element
 
 	/**
 	 * Alert message.
-	 *
-	 * @var string|array|\ICanBoogie\Errors
 	 */
 	protected $message;
 
 	/**
 	 * Alert type, one of "error", "success" or "info".
-	 *
-	 * @var string
 	 */
 	protected $alert_type;
 
 	/**
 	 * Creates a `<DIV.alert>` element.
 	 *
-	 * @param string|array|\ICanBoogie\Errors $message The alert message is provided as a string,
-	 * an array of strings or a {@link \ICanBoogie\Errors} object.
+	 * @param string|array|Errors $message The alert message is provided as a string,
+	 * an array of strings or a {@link Errors} object.
 	 *
 	 * If the message is provided as a string it is used as is. If the message is provided as an
 	 * array each value of the array is considered as a message. If the message is provided as
@@ -71,12 +61,12 @@ class Alert extends Element
 	 * Each message is wrapped in a `<P>` element and they are concatenated to create the final
 	 * message.
 	 *
-	 * If the message is an instance of {@link \ICanBoogie\Errors} the {@link CONTEXT} attribute is
+	 * If the message is an instance of {@link Errors} the {@link CONTEXT} attribute is
 	 * set to "error" in the initial attributes.
 	 *
 	 * @param array $attributes Additional attributes.
 	 */
-	public function __construct($message, array $attributes=[])
+	public function __construct($message, array $attributes = [])
 	{
 		$this->message = $message;
 
@@ -96,6 +86,8 @@ class Alert extends Element
 	 * Adds the `alert-block` class name if the {@link HEADING} attribute is defined.
 	 *
 	 * Adds the `undismissable` class name if the {@link UNDISMISSABLE} attribute is true.
+	 *
+	 * @inheritdoc
 	 */
 	protected function alter_class_names(array $class_names)
 	{
@@ -123,6 +115,8 @@ class Alert extends Element
 
 	/**
 	 * @throws ElementIsEmpty if the message is empty.
+	 *
+	 * @inheritdoc
 	 */
 	public function render_inner_html()
 	{

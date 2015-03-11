@@ -14,25 +14,21 @@ namespace Brickrouge;
 /**
  * Creates a popover element.
  *
- * Brickrouge provides the Brickrouge.Popover Javascript class that can be used to give behaviour
+ * Brickrouge provides the `Brickrouge.Popover` Javascript class that can be used to give behaviour
  * to the element, but because the element is not a widget this is not automatic and left up to
  * you.
  *
- * Use the Brickrouge\PopoverWidget to create elements with automatically attached behaviour.
+ * Use the {@link PopoverWidget} to create elements with automatically attached behaviour.
  */
 class Popover extends Element
 {
 	/**
 	 * Popover actions.
-	 *
-	 * @var string|array
 	 */
 	const ACTIONS = '#actions';
 
 	/**
 	 * Anchor ID or CSS selector.
-	 *
-	 * @var string
 	 */
 	const ANCHOR = '#anchor';
 
@@ -41,23 +37,17 @@ class Popover extends Element
 	 *
 	 * By default the popover element have a width of 280px. Setting this attribute to true adds
 	 * the 'fit-content' class to the element which remove the width constraint.
-	 *
-	 * @var bool
 	 */
 	const FIT_CONTENT = '#fit-content';
 
 	/**
 	 * Placement of the popover relative to its anchor, one of `before`, `after`, `above`,
 	 * `below`, `vertical`, `horizontal` or `auto`.
-	 *
-	 * @var string
 	 */
 	const PLACEMENT = '#placement';
 
 	/**
 	 * Optional title of the popover.
-	 *
-	 * @var string
 	 */
 	const TITLE = '#title';
 

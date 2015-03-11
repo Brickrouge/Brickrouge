@@ -33,7 +33,7 @@ class Group extends Element
 	 *
 	 * @param array $attributes
 	 */
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct('fieldset', $attributes + [ 'class' => 'group' ]);
 	}
@@ -41,6 +41,8 @@ class Group extends Element
 	/**
 	 * Adds the `no-legend` class name if the group has no legend (the {@link LEGEND} attribute
 	 * is empty).
+	 *
+	 * @inheritdoc
 	 */
 	protected function alter_class_names(array $class_names)
 	{
@@ -56,12 +58,16 @@ class Group extends Element
 	}
 
 	/**
-	 * Override the method to render the child in a `<DIV.field>` wrapper:
+	 * Overrides the method to render the child in a `<DIV.field>` wrapper:
 	 *
+	 * ```html
 	 * <div class="field [{normalized_field_name}][required]">
 	 *     [<label for="{element_id}" class="input-label [required]">{element_form_label}</label>]
 	 *     <div class="input">{child}</div>
 	 * </div>
+	 * ```
+	 *
+	 * @inheritdoc
 	 */
 	protected function render_child($child)
 	{
@@ -117,11 +123,13 @@ EOT;
 	 * `DIV.group-description>DIV.group-description-inner` element. The description is translated
 	 * within the "group.description" scope. The description is not escaped.
 	 *
-	 * If the {@link LEGEND} attribute is defined the HTML is prenpend with a `<LEGEND>` element.
+	 * If the {@link LEGEND} attribute is defined the HTML is prepend with a `<LEGEND>` element.
 	 * The legend can be provided as an object in which it is used _as is_, otherwise the legend
 	 * is translated within the "group.legend" scope, then escaped.
 	 *
 	 * The legend element is rendered using the {@link render_group_legend()} method.
+	 *
+	 * @inheritdoc
 	 */
 	protected function render_inner_html()
 	{
@@ -186,6 +194,8 @@ EOT;
 	/**
 	 * The description decoration is disabled because the {@link DESCRIPTION} attribute is rendered
 	 * by the {@link render_inner_html()} method to prepend the inner HTML.
+	 *
+	 * @inheritdoc
 	 */
 	protected function decorate_with_description($html, $description)
 	{
@@ -195,6 +205,8 @@ EOT;
 	/**
 	 * The legend decoration is disabled because the {@link LEGEND} attribute is rendered
 	 * by the {@link render_inner_html()} method to prepend the inner HTML.
+	 *
+	 * @inheritdoc
 	 */
 	protected function decorate_with_legend($html, $legend)
 	{

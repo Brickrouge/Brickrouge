@@ -20,7 +20,7 @@ class Ranger extends Element
 	const T_EDITABLE = '#ranger-editable';
 	const T_NO_ARROWS = '#ranger-no-arrows';
 
-	public function __construct($type, array $attributes=[])
+	public function __construct($type, array $attributes = [])
 	{
 		parent::__construct($type, $attributes + [ 'class' => 'wdranger' ]);
 	}

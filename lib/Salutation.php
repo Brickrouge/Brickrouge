@@ -11,9 +11,12 @@
 
 namespace Brickrouge;
 
+/**
+ * @deprecated
+ */
 class Salutation extends Element
 {
-	public function __construct(array $attributes=[], $type=self::TYPE_RADIO_GROUP)
+	public function __construct(array $attributes = [], $type = Element::TYPE_RADIO_GROUP)
 	{
 		$options = [ 'Misses', 'Miss', 'Mister' ];
 
@@ -23,7 +26,7 @@ class Salutation extends Element
 
 		});
 
-		if ($type == 'select' && !empty($attributes[self::REQUIRED]))
+		if ($type == 'select' && !empty($attributes[Element::REQUIRED]))
 		{
 			$options = [ null => '' ] + $options;
 		}

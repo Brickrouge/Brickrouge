@@ -16,7 +16,7 @@ namespace Brickrouge;
  */
 class DropdownMenu extends Element
 {
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct('ul', $attributes);
 	}

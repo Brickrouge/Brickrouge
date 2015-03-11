@@ -15,7 +15,7 @@ class Searchbox extends Element
 {
 	private $elements = [];
 
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct('div', $attributes + [
 
@@ -35,13 +35,16 @@ class Searchbox extends Element
 		]);
 	}
 
-	public function offsetSet($offset, $value)
+	/**
+	 * @inheritdoc
+	 */
+	public function offsetSet($attribute, $value)
 	{
-		if (in_array($offset, [ 'name', 'value', 'placeholder' ]))
+		if (in_array($attribute, [ 'name', 'value', 'placeholder' ]))
 		{
-			$this->elements['q'][$offset] = $value;
+			$this->elements['q'][$attribute] = $value;
 		}
 
-		return parent::offsetSet($offset, $value);
+		parent::offsetSet($attribute, $value);
 	}
 }

@@ -20,16 +20,12 @@ class Form extends Element implements Validator
 {
 	/**
 	 * Set to true to disable all the elements of the form.
-	 *
-	 * @var boolean
 	 */
 	const DISABLED = '#form-disabled';
 
 	/**
 	 * Used to provide hidden values. Each key/value pair of the array is used to create
 	 * an hidden input element with key as `name` attribute and value as `value` attribute.
-	 *
-	 * @var array[string]mixed
 	 */
 	const HIDDENS = '#form-hiddens';
 
@@ -37,50 +33,41 @@ class Form extends Element implements Validator
 	 * Used by elements to define a form label, this is different from the
 	 * {@link Element::LABEL}, which wraps the element in a `<LABEL>` element, the form label is
 	 * associated with the element but its layout depend on the form renderer.
-	 *
-	 * @var string
 	 */
 	const LABEL = '#form-label';
 
 	/**
 	 * Complement to the {@link LABEL} tag. Its layout depends on the form renderer.
-	 *
-	 * @var string
 	 */
 	const LABEL_COMPLEMENT = '#form-label-complement';
 
 	/**
 	 * If true possible alert messages are not displayed.
-	 *
-	 * @var boolean
 	 */
 	const NO_LOG = '#form-no-log';
 
 	/**
 	 * Values for the elements of the form. The form recursively iterates through its
 	 * children to set their values, if their values it not already set (e.g. non null).
-	 *
-	 * @var array
 	 */
 	const VALUES = '#form-values';
 
 	/**
 	 * The class name of the renderer to use to render the children of the form. If no
 	 * renderer is defined, children are simply concatenated.
-	 *
-	 * @var string
 	 */
 	const RENDERER = '#form-renderer';
 
 	/**
 	 * Defines the actions of the form.
 	 *
-	 * @var bool|array|string
-	 *
 	 * @see render_actions()
 	 */
 	const ACTIONS = '#form-actions';
 
+	/**
+	 * Defines form errors.
+	 */
 	const ERRORS = '#form-errors';
 
 	/**
@@ -181,12 +168,14 @@ class Form extends Element implements Validator
 
 	/**
 	 * Override the method to map the {@link HIDDENS} tag to the {@link $hiddens} property.
+	 *
+	 * @inheritdoc
 	 */
-	public function offsetSet($offset, $value)
+	public function offsetSet($attribute, $value)
 	{
-		parent::offsetSet($offset, $value);
+		parent::offsetSet($attribute, $value);
 
-		if ($offset == self::HIDDENS)
+		if ($attribute == self::HIDDENS)
 		{
 			$this->hiddens = $value;
 		}
@@ -207,17 +196,17 @@ class Form extends Element implements Validator
 	}
 
 	/**
-	 * @var array[string]Element The required elements of the form.
+	 * @var Element[] The required elements of the form.
 	 */
 	protected $required = [];
 
 	/**
-	 * @var array[string] Booleans found in the form.
+	 * @var string[] Booleans found in the form.
 	 */
 	protected $booleans = [];
 
 	/**
-	 * @var array[string]Element Elements of the form with a validator.
+	 * @var Element[] Elements of the form with a validator.
 	 */
 	protected $validators = [];
 
@@ -292,9 +281,13 @@ class Form extends Element implements Validator
 	 * If a rendered is defined it is used to render the children.
 	 *
 	 * The rendered is defined using the {@link RENDERER} attribute.
+	 *
+	 * @inheritdoc
 	 */
 	protected function render_children(array $children)
 	{
+		/* @var $renderer callable*/
+
 		$renderer = $this[self::RENDERER];
 
 		if ($renderer)
@@ -320,6 +313,8 @@ class Form extends Element implements Validator
 	/**
 	 * Add hidden input elements and log messages to the inner HTML of the element
 	 * being converted to a string.
+	 *
+	 * @inheritdoc
 	 */
 	protected function render_inner_html()
 	{
@@ -528,7 +523,7 @@ class Form extends Element implements Validator
 	/**
 	 * Loads a form previously saved in session.
 	 *
-	 * @param $string $key The key used to identify the form to load, or an array in which
+	 * @param string $key The key used to identify the form to load, or an array in which
 	 * {@link STORED_KEY_NAME} defines the key.
 	 *
 	 * @return Form
@@ -604,6 +599,8 @@ class Form extends Element implements Validator
 
 	/**
 	 * Validates the form using the provided values.
+	 *
+	 * @inheritdoc
 	 */
 	public function validate($values, Errors $errors)
 	{

@@ -21,15 +21,11 @@ class Text extends Element
 	/**
 	 * Text inputs—with appended or prepended text—provide an easy way to give more context for
 	 * your inputs. Great examples include the `@` sign for Twitter usernames or `€` for finances.
-	 *
-	 * @var string
 	 */
 	const ADDON = '#addon';
 
 	/**
 	 * Defines the position of the add-on: `before` or `after`. Defaults to `after`.
-	 *
-	 * @var string
 	 */
 	const ADDON_POSITION = '#addon-position';
 
@@ -40,7 +36,7 @@ class Text extends Element
 	 *
 	 * @param array $attributes
 	 */
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct('input', $attributes + [
 
@@ -70,6 +66,8 @@ EOT;
 
 	/**
 	 * Decorates the HTML with the add-on specified with the {@link ADDON} attribute.
+	 *
+	 * @inheritdoc
 	 */
 	protected function decorate($html)
 	{

@@ -25,7 +25,7 @@ class Pagination extends Element
 	const BROWSE_PREVIOUS_LABEL = '#pagination-browse-previous-label';
 	const BROWSE_NEXT_LABEL = '#pagination-browse-next-label';
 
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct('ul', $attributes + [
 
