@@ -57,6 +57,9 @@ return [
 
 	'The string %string is too short (minimum size is :size characters)'
 	=> 'La chaîne %string est trop courte (la taille minimale est de :size caractères)',
+	
+	'Invalid format of value %value'
+	=> 'Format invalide de la valeur %value',
 
 	'Your message has been scored as spam. The score is %score. Please review your message.'
 	=> 'Votre message a été noté en tant qu\'indésirable. La note est %score. Merci de vérifier votre message.',
