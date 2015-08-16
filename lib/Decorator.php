@@ -12,23 +12,6 @@
 namespace Brickrouge;
 
 /**
- * An interface to a _Decorator_ design pattern used to decorate HTML strings and objects that
- * render as HTML strings.
- */
-interface DecoratorInterface
-{
-	/**
-	 * Renders the component.
-	 */
-	public function render();
-
-	/**
-	 * Renders the component into a string.
-	 */
-	public function __toString();
-}
-
-/**
  * Decorates the specified component.
  */
 abstract class Decorator implements DecoratorInterface

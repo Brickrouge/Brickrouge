@@ -11,6 +11,9 @@
 
 namespace Brickrouge;
 
+/**
+ * @deprecated
+ */
 class DateRange extends Element
 {
 	const T_START_TAGS = '#daterange-start-tags';
@@ -23,32 +26,32 @@ class DateRange extends Element
 
 		parent::__construct('div', $attributes + [
 
-				self::CHILDREN => [
+			self::CHILDREN => [
 
-					new Date($start_tags + [
+				new Date($start_tags + [
 
-						self::LABEL => 'Début',
-						self::LABEL_POSITION => 'before',
+					self::LABEL => 'Début',
+					self::LABEL_POSITION => 'before',
 
-						'name' => 'start'
+					'name' => 'start'
 
-					]),
+				]),
 
-					' &nbsp; ',
+				' &nbsp; ',
 
-					new Date($finish_tags + [
+				new Date($finish_tags + [
 
-						self::LABEL => 'Fin',
-						self::LABEL_POSITION => 'before',
+					self::LABEL => 'Fin',
+					self::LABEL_POSITION => 'before',
 
-						'name' => 'finish'
+					'name' => 'finish'
 
 
-					])
-				],
+				])
+			],
 
-				'class' => 'wd-daterange'
-			]
-		);
+			'class' => 'wd-daterange'
+
+		]);
 	}
 }

@@ -85,7 +85,7 @@ class Form extends Element implements Validator
 	/**
 	 * Hidden values, initialized with the {@link HIDDENS} tag.
 	 *
-	 * @var array[string]string
+	 * @var array
 	 */
 	public $hiddens = [];
 
@@ -108,7 +108,7 @@ class Form extends Element implements Validator
 	 *
 	 * @param array $attributes
 	 */
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		$attributes += [
 
@@ -184,9 +184,8 @@ class Form extends Element implements Validator
 	/**
 	 * Returns a recursive iterator.
 	 *
-	 * A {@link RecursiveIterator} iterator is created to traverse the children of the form.
-	 *
-	 * The recursive iterator is created with the {@link SELF_FIRST} mode.
+	 * A recursive iterator is created to traverse the children of the form, with the
+	 * {@link SELF_FIRST} mode.
 	 *
 	 * @return \RecursiveIteratorIterator
 	 */
@@ -196,22 +195,30 @@ class Form extends Element implements Validator
 	}
 
 	/**
-	 * @var Element[] The required elements of the form.
+	 * The required elements of the form.
+	 *
+	 * @var Element[]
 	 */
 	protected $required = [];
 
 	/**
-	 * @var string[] Booleans found in the form.
+	 * Booleans found in the form.
+	 *
+	 * @var string[]
 	 */
 	protected $booleans = [];
 
 	/**
-	 * @var Element[] Elements of the form with a validator.
+	 * Elements of the form with a validator.
+	 *
+	 * @var Element[]
 	 */
 	protected $validators = [];
 
 	/**
-	 * @var callable Validator callback of the form.
+	 * Validator callback of the form.
+	 *
+	 * @var callable
 	 */
 	protected $validator;
 
@@ -379,7 +386,7 @@ class Form extends Element implements Validator
 	 *
 	 * An {@link Alert} object is used to render the provided errors.
 	 *
-	 * @param string|\ICanBoogie\Errors $errors.
+	 * @param string|\ICanBoogie\Errors $errors
 	 *
 	 * @return string
 	 */
@@ -568,7 +575,16 @@ class Form extends Element implements Validator
 		return !empty($_SESSION['brickrouge.saved_forms'][$key]);
 	}
 
-	static public function select_element_label($element)
+	/**
+	 * Returns the best label for an element.
+	 *
+	 * **Note:** The label is also translated in the scope `element.label`.
+	 *
+	 * @param Element $element
+	 *
+	 * @return string
+	 */
+	static public function select_element_label(Element $element)
 	{
 		$label = $element[self::LABEL_MISSING];
 
@@ -620,8 +636,6 @@ class Form extends Element implements Validator
 
 		$values = array_flatten($values);
 
-		$this->values = $values;
-
 		#
 		# process required values
 		#
@@ -672,6 +686,14 @@ class Form extends Element implements Validator
 		return parent::validate($values, $errors);
 	}
 
+	/**
+	 * Validates required elements.
+	 *
+	 * @param array $required
+	 * @param array $validators
+	 * @param array $values
+	 * @param Errors $errors
+	 */
 	protected function validate_required_elements(array $required, array &$validators, array $values, Errors $errors)
 	{
 		$missing = [];
@@ -716,6 +738,15 @@ class Form extends Element implements Validator
 	 * Validators
 	 */
 
+	/**
+	 * Validates an email address.
+	 *
+	 * @param Errors $errors
+	 * @param Element $element
+	 * @param string $value
+	 *
+	 * @return bool
+	 */
 	static public function validate_email(Errors $errors, $element, $value)
 	{
 		if (filter_var($value, FILTER_VALIDATE_EMAIL))
@@ -728,6 +759,15 @@ class Form extends Element implements Validator
 		return false;
 	}
 
+	/**
+	 * Validates a URL.
+	 *
+	 * @param Errors $errors
+	 * @param Element $element
+	 * @param string $value
+	 *
+	 * @return bool
+	 */
 	static public function validate_url(Errors $errors, $element, $value)
 	{
 		if (filter_var($value, FILTER_VALIDATE_URL))
@@ -740,6 +780,16 @@ class Form extends Element implements Validator
 		return false;
 	}
 
+	/**
+	 * Validates a string.
+	 *
+	 * @param Errors $errors
+	 * @param Element $element
+	 * @param string $value
+	 * @param array $rules
+	 *
+	 * @return bool
+	 */
 	static public function validate_string(Errors $errors, $element, $value, $rules)
 	{
 		$messages = [];
@@ -800,6 +850,16 @@ class Form extends Element implements Validator
 		return empty($messages);
 	}
 
+	/**
+	 * Validates a range.
+	 *
+	 * @param Errors $errors
+	 * @param Element $element
+	 * @param string $value
+	 * @param array $rules
+	 *
+	 * @return bool
+	 */
 	static public function validate_range(Errors $errors, $element, $value, $rules)
 	{
 		list($min, $max) = $rules;

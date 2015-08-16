@@ -18,6 +18,9 @@ namespace Brickrouge;
  */
 class ElementIsEmpty extends \Exception
 {
+	/**
+	 * @inheritdoc
+	 */
 	public function __construct($message = "The element is empty.", $code = 200, \Exception $previous = null)
 	{
 		parent::__construct($message, $code, $previous);

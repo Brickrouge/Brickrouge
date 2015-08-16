@@ -9,11 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\Brickrouge;
-
-use Brickrouge\Element;
-use Brickrouge\Form;
-use Brickrouge\RecursiveIterator;
+namespace Brickrouge;
 
 class IteratorsTest extends \PHPUnit_Framework_TestCase
 {

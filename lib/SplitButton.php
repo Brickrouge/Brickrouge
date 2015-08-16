@@ -16,6 +16,10 @@ namespace Brickrouge;
  */
 class SplitButton extends Element
 {
+	/**
+	 * @param string $label
+	 * @param array $attributes
+	 */
 	public function __construct($label, array $attributes = [])
 	{
 		if (is_string($label))
@@ -89,6 +93,10 @@ EOT;
 	/**
 	 * Removes the `btn-primary`, `btn-danger`, `btn-success` and `btn-info` class names and adds
 	 * the `btn-group` class.
+	 *
+	 * @param array $class_names
+	 *
+	 * @return string
 	 */
 	protected function render_class(array $class_names)
 	{

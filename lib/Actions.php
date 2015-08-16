@@ -82,7 +82,13 @@ class Actions extends Element
 		}
 		else if ($actions === true)
 		{
-			$actions = new Button('Ok', [ 'dataset' => [ 'action' => 'ok' ], 'type' => 'submit', 'class' => 'btn-primary' ]);
+			$actions = new Button('Ok', [
+
+				'dataset' => [ 'action' => 'ok' ],
+				'type' => 'submit',
+				'class' => 'btn-primary'
+
+			]);
 		}
 
 		return $html . $actions;

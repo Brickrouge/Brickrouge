@@ -25,7 +25,7 @@ namespace Brickrouge;
 class A extends Element
 {
 	/**
- 	 * @param string|Element $label Defines the content of the element. If `$label` is not
+	 * @param string|Element $label Defines the content of the element. If `$label` is not
 	 * a {@link Element} instance it is escaped.
 	 * @param string $href URI for linked resource.
 	 * @param array $attributes Optional attributes.

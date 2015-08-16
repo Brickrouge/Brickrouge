@@ -11,6 +11,9 @@
 
 namespace Brickrouge;
 
+/**
+ * @deprecated
+ */
 class DateTime extends Date
 {
 	public function __construct(array $attributes = [])

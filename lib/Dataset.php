@@ -11,19 +11,31 @@
 
 namespace Brickrouge;
 
+use ICanBoogie\ToArray;
+
 /**
  * Custom data attributes are intended to store custom data private to the page or application,
  * for which there are no more appropriate attributes or elements.
  *
  * @see http://www.w3.org/TR/html5/elements.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
-class Dataset implements \ArrayAccess, \IteratorAggregate
+class Dataset implements \ArrayAccess, \IteratorAggregate, ToArray
 {
+	/**
+	 * @param string $property
+	 *
+	 * @return string
+	 */
 	static protected function serialize_property($property)
 	{
 		return 'data-' . $property;
 	}
 
+	/**
+	 * @param string $property
+	 *
+	 * @return string
+	 */
 	static protected function unserialize_property($property)
 	{
 		return substr($property, 5);
@@ -40,7 +52,7 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 	 * Constructor.
 	 *
 	 * @param Element $element The target element.
-	 * @param array $properties[optional] The initial properties of the dataset.
+	 * @param array $properties The initial properties of the dataset.
 	 */
 	public function __construct(Element $element, array $properties = [])
 	{
@@ -71,9 +83,9 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 	 * The value is gotten from the attribute corresponding to the property.
 	 *
 	 * @param string $property
-	 * @param null $default
+	 * @param mixed|null $default
 	 *
-	 * @return mixed|null
+	 * @return mixed
 	 */
 	public function offsetGet($property, $default = null)
 	{
@@ -109,15 +121,15 @@ class Dataset implements \ArrayAccess, \IteratorAggregate
 	 */
 	public function getIterator()
 	{
-		return new \ArrayIterator($this->to_a());
+		return new \ArrayIterator($this->to_array());
 	}
 
 	/**
 	 * Returns an array representation of the dataset.
 	 *
-	 * @return array[string]mixed
+	 * @return array
 	 */
-	public function to_a()
+	public function to_array()
 	{
 		$properties = [];
 

@@ -11,6 +11,9 @@
 
 namespace Brickrouge;
 
+/**
+ * @deprecated
+ */
 class File extends Element
 {
 	const FILE_WITH_LIMIT = '#file-with-limit';
@@ -77,10 +80,12 @@ class File extends Element
 			$file = substr($file, 0, 16) . '…' . substr($file, -16, 16);
 		}
 
-		$rc[] = '<span title="Path: ' . $path . '">' . $file . '</span>';
-		$rc[] = format_size(filesize(DOCUMENT_ROOT . $path));
+		return [
 
-		return $rc;
+			'<span title="Path: ' . $path . '">' . $file . '</span>',
+			format_size(filesize(DOCUMENT_ROOT . $path))
+
+		];
 	}
 
 	protected function preview($path)

@@ -11,6 +11,9 @@
 
 namespace Brickrouge;
 
+/**
+ * @deprecated
+ */
 class Date extends Text
 {
 	public function __construct(array $attributes = [])

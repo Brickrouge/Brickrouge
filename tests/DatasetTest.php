@@ -9,12 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\Brickrouge;
-
-use Brickrouge\Element;
+namespace Brickrouge;
 
 class DatasetTest extends \PHPUnit_Framework_TestCase
 {
+	/**
+	 * @var Element
+	 */
 	private $element;
 
 	public function setUp()
@@ -93,7 +94,7 @@ EOT
 
 	public function testArrayConversion()
 	{
-		$array = $this->element->dataset->to_a();
+		$array = $this->element->dataset->to_array();
 
 		$this->assertEquals([
 

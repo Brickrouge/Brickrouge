@@ -177,7 +177,7 @@ function sort_by_weight(array $array, $weight_picker)
 		return $array;
 	}
 
-	$order = array();
+	$order = [];
 
 	foreach ($array as $k => $v)
 	{
@@ -502,7 +502,7 @@ function retrieve_form($key)
  * Note: Calls to this function are forwarded to {@link Helpers::store_form_errors()}.
  *
  * @param string $name The name of the form.
- * @param array $errors The validation errors of the form.
+ * @param mixed $errors The validation errors of the form.
  */
 function store_form_errors($name, $errors)
 {

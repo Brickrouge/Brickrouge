@@ -11,6 +11,8 @@
 
 namespace Brickrouge;
 
+use ICanBoogie\Errors;
+
 /**
  * Brickrouge helpers.
  *
@@ -37,9 +39,9 @@ namespace Brickrouge;
  * @method string normalize() normalize(string $str)
  * @method string render_exception() render_exception(\Exception $exception)
  * @method Form retrieve_form() retrieve_form(string $name)
- * @method \ICanboogie\Errors retrieve_form_errors() retrieve_form_errors(string $name)
+ * @method Errors retrieve_form_errors() retrieve_form_errors(string $name)
  * @method string store_form() store_form(Form $form)
- * @method void store_form_errors() store_form_errors(string $name, \ICanBoogie\Errors $errors)
+ * @method void store_form_errors() store_form_errors(string $name, Errors $errors)
  * @method string t() t(string $str, array $args=[], array $options=[])
  */
 class Helpers
@@ -294,7 +296,7 @@ class Helpers
 
 		if (empty($_SESSION[self::STORE_KEY][$key]))
 		{
-			return;
+			return null;
 		}
 
 		$form = unserialize($_SESSION[self::STORE_KEY][$key]);

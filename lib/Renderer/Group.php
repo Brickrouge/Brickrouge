@@ -1,10 +1,22 @@
 <?php
 
+/*
+ * This file is part of the Brickrouge package.
+ *
+ * (c) Olivier Laviale <olivier.laviale@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Brickrouge\Renderer;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
 
+/**
+ * Renders form's children in groups.
+ */
 class Group extends Element
 {
 	const GROUP_CLASS = '#group-class';
@@ -13,21 +25,32 @@ class Group extends Element
 
 	/**
 	 * Circumvent Element constructor.
+	 *
+	 * @param array $attributes
 	 */
-	public function __construct(array $attributes=[])
+	public function __construct(array $attributes = [])
 	{
 		parent::__construct('div', $attributes);
 	}
 
+	/**
+	 * Renders form's children in groups.
+	 *
+	 * @param Form $form
+	 *
+	 * @return string
+	 */
 	public function __invoke(Form $form)
 	{
 		$this->form = $form;
 		$this->children = $form->get_ordered_children();
-		$this->contents = null;
 
 		return $this->render_inner_html();
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected function render_inner_html()
 	{
 		$groups = ($this->form[self::GROUPS] ?: []) + [
@@ -43,13 +66,13 @@ class Group extends Element
 	}
 
 	/**
-	 * Normalize former group definition to use {@link Element} attributes.
+	 * Normalizes former group definition to use {@link Element} attributes.
 	 *
 	 * @param array $attributes
 	 *
 	 * @return array
 	 */
-	protected function normalize_group_attributes(array $attributes=[])
+	protected function normalize_group_attributes(array $attributes = [])
 	{
 		static $transform = [
 
@@ -75,7 +98,7 @@ class Group extends Element
 	}
 
 	/**
-	 * Resolve a group definition into an {@link Element} instance.
+	 * Resolves a group definition into an {@link Element} instance.
 	 *
 	 * @param mixed $group
 	 *
@@ -99,7 +122,7 @@ class Group extends Element
 	}
 
 	/**
-	 * Resolve group definitions into {@link Element} instances and sort them according to their
+	 * Resolves group definitions into {@link Element} instances and sort them according to their
 	 * {@link WEIGHT}.
 	 *
 	 * @param array $groups
@@ -126,7 +149,7 @@ class Group extends Element
 	}
 
 	/**
-	 * Dispatch children into groups.
+	 * Dispatches children into groups.
 	 *
 	 * @param Element[] $groups
 	 *

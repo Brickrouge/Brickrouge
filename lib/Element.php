@@ -11,6 +11,9 @@
 
 namespace Brickrouge;
 
+use ICanBoogie\Errors;
+use ICanBoogie\Object;
+
 /**
  * An HTML element.
  *
@@ -19,6 +22,8 @@ namespace Brickrouge;
  * a legend and a description.
  *
  * This is the base class to all element types.
+ *
+ * @property-read array $attributes Element's attributes.
  *
  * @property string $class Assigns a class name or set of class names to an element. Any number of
  * elements may be assigned the same class name or names. Multiple class names must be separated
@@ -30,13 +35,14 @@ namespace Brickrouge;
  * @property string $id Assigns an identifier to an element. This identifier mush be unique in
  * a document.
  *
+ * @property string $name Assigned by {@link Form} during validation.
+ *
  * @property-read array $ordered_children Children ordered according to their {@link WEIGHT}.
  *
- * @property-read array $attributes Element's attributes.
  *
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
-class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggregate, HTMLStringInterface
+class Element extends Object implements \ArrayAccess, \IteratorAggregate, HTMLStringInterface
 {
 	#
 	# special elements
@@ -366,9 +372,9 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * Returns the value of an attribute.
 	 *
 	 * @param string $attribute
-	 * @param null $default The default value of the attribute.
+	 * @param mixed|null $default The default value of the attribute.
 	 *
-	 * @return mixed|null The value of the attribute, or null if is not set.
+	 * @return mixed The value of the attribute, or null if is not set.
 	 */
 	public function offsetGet($attribute, $default = null)
 	{
@@ -468,6 +474,11 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 		$this->_dataset = $dataset;
 	}
 
+	/**
+	 * Returns the attributes of the element.
+	 *
+	 * @return array
+	 */
 	protected function get_attributes()
 	{
 		return $this->attributes;
@@ -625,9 +636,8 @@ class Element extends \ICanBoogie\Object implements \ArrayAccess, \IteratorAggre
 	 * used to set its `name` attribute, unless the attribute is already defined.
 	 *
 	 * @param string|Element|array $child The child or children to add.
-	 * @param string|Element $other ... children.
 	 */
-	public function adopt($child, $other = null)
+	public function adopt($child)
 	{
 		if (func_num_args() > 1)
 		{
@@ -1411,7 +1421,7 @@ EOT;
 	 *
 	 * @return boolean `true` if  the validation succeed, `false` otherwise.
 	 */
-	public function validate($value, \ICanBoogie\Errors $errors)
+	public function validate($value, Errors $errors)
 	{
 		$validator = $this[self::VALIDATOR];
 		$options = $this[self::VALIDATOR_OPTIONS];
@@ -1479,9 +1489,9 @@ EOT;
 	 * - 'default': The default string to use if the translation failed.
 	 * - 'scope': The scope of the translation.
 	 *
-	 * @return mixed
+	 * @return string
 	 */
-	public function t($pattern, array $args = [], array $options =  [])
+	public function t($pattern, array $args = [], array $options = [])
 	{
 		/* @var $translator callable */
 		$translator = $this[self::TRANSLATOR];
