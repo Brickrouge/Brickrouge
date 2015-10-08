@@ -348,7 +348,7 @@ class Helpers
 	 */
 	static private function get_accessible_file($path, $suffix = null)
 	{
-		$key = sprintf('%s-%04x%s.%s', md5($path), strlen($path), ($suffix ? '-' . $suffix : ''), pathinfo($path, PATHINFO_EXTENSION));
+		$key = ($suffix ? '-' . $suffix : '') . self::hash_file($path) . '.' . pathinfo($path, PATHINFO_EXTENSION);
 		$replacement_path = ACCESSIBLE_ASSETS;
 		$replacement = $replacement_path . $key;
 
@@ -357,11 +357,28 @@ class Helpers
 			throw new \Exception(format('Unable to make the file %path web accessible, the destination directory %replacement_path is not writtable.', [ 'path' => $path, 'replacement_path' => $replacement_path ]));
 		}
 
-		if (!file_exists($replacement) || filemtime($path) > filemtime($replacement))
+		if (!file_exists($replacement))
 		{
 			file_put_contents($replacement, file_get_contents($path));
 		}
 
 		return $replacement;
+	}
+
+	/**
+	 * Hash a file using SHA-384 and returns a base64url string.
+	 *
+	 * @param string $pathname Absolute pathname of the file to hash.
+	 *
+	 * @return string A base64url string.
+	 */
+	static private function hash_file($pathname)
+	{
+		return strtr(base64_encode(hash_file('sha384', $pathname, true)), [
+
+			'+' => '-',
+			'/' => '_'
+
+		]);
 	}
 }
