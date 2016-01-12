@@ -457,16 +457,6 @@ translator of the framework [ICanBoogie](https://github.com/ICanBoogie/ICanBoogi
 Brickrouge\Helpers::patch('t', 'ICanBoogie\I18n\t');
 ```
 
-And this is how the `check_session()` helper function can be patched:
-
-```php
-<?php
-
-Brickrouge\Helpers::patch('check_session', function()
-{
-	return \ICanBoogie\Core::get()->session;
-});
-```
 
 
 

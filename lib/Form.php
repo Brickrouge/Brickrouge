@@ -145,7 +145,7 @@ class Form extends Element implements Validator
 
 		if ($name)
 		{
-			$errors = retrieve_form_errors($name);
+			$errors = $this[self::ERRORS];
 		}
 
 		if ($values || $disabled || $errors)
@@ -345,14 +345,11 @@ class Form extends Element implements Validator
 
 		if (!$this[self::NO_LOG])
 		{
-			$name = $this->name;
-			$errors = retrieve_form_errors($name);
+			$errors = $this[self::ERRORS];
 
 			if ($errors)
 			{
 				$alert = $this->render_errors($errors);
-
-				store_form_errors($name, []); // reset form errors.
 			}
 		}
 
@@ -507,74 +504,6 @@ class Form extends Element implements Validator
 		}
 	}
 
-	/*
-	 * Save and restore.
-	 */
-
-	const STORED_KEY_NAME = '_brickrouge_form_key';
-
-	/**
-	 * Save the form in the session for future validation.
-	 *
-	 * @return string The key used to identify the form save in the session.
-	 */
-	public function save()
-	{
-		$key = store_form($this);
-
-		$this->hiddens[self::STORED_KEY_NAME] = $key;
-
-		return $this;
-	}
-
-	/**
-	 * Loads a form previously saved in session.
-	 *
-	 * @param string $key The key used to identify the form to load, or an array in which
-	 * {@link STORED_KEY_NAME} defines the key.
-	 *
-	 * @return Form
-	 *
-	 * @throws \Exception if the form cannot be retrieved.
-	 */
-	static public function load($key)
-	{
-		if (is_array($key))
-		{
-			if (empty($key[self::STORED_KEY_NAME]))
-			{
-				throw new \Exception('The key to retrieve the form is missing.');
-			}
-
-			$key = $key[self::STORED_KEY_NAME];
-		}
-
-		$form = retrieve_form($key);
-
-		if (!$form)
-		{
-			throw new \Exception('The form has expired.');
-		}
-
-		$form[self::VALIDATOR] = $form->validator;
-
-		return $form;
-	}
-
-	/**
-	 * Checks if a previously saved form exists for a given key.
-	 *
-	 * @param string $key The key used to identify the form.
-	 *
-	 * @return boolean Return `true` if the form exists.
-	 */
-	static public function exists($key)
-	{
-		check_session();
-
-		return !empty($_SESSION['brickrouge.saved_forms'][$key]);
-	}
-
 	/**
 	 * Returns the best label for an element.
 	 *
@@ -618,16 +547,13 @@ class Form extends Element implements Validator
 	 *
 	 * @inheritdoc
 	 */
-	public function validate($values, Errors $errors)
+	public function validate($values, Errors $errors = null)
 	{
 		#
 		# validation without prior save
 		#
 
-		if (empty($values[self::STORED_KEY_NAME]))
-		{
-			$this->__sleep();
-		}
+		$this->__sleep();
 
 		#
 		# we flatten the array so that we can easily get values
@@ -673,10 +599,6 @@ class Form extends Element implements Validator
 
 			$element->validate($value, $errors);
 		}
-
-		// FIXME-20111013: ICanBoogie won't save the errors in the session, so we have to do it ourselves for now.
-
-		store_form_errors($this->name, $errors);
 
 		if (count($errors))
 		{
