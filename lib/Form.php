@@ -380,7 +380,7 @@ class Form extends Element implements Validator
 	 *
 	 * An {@link Alert} object is used to render the provided errors.
 	 *
-	 * @param Validate\Errors|array|string $errors
+	 * @param string|\ICanBoogie\Errors $errors
 	 *
 	 * @return string
 	 */
@@ -439,7 +439,7 @@ class Form extends Element implements Validator
 	 *
 	 * @param array $values
 	 * @param bool $disabled true if the form is disabled, false otherwise.
-	 * @param array|Validate\Errors $errors The validation errors.
+	 * @param array|\ICanBoogie\Errors $errors The validation errors.
 	 */
 	protected function alter_elements($values, $disabled, $errors)
 	{

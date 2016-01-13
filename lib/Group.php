@@ -100,7 +100,7 @@ class Group extends Element
 		if ($state)
 		{
 			$control_group_class .= " has-$state";
-
+			$child = clone $child;
 			$child->add_class("form-control-$state");
 		}
 
