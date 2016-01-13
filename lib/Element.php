@@ -156,7 +156,7 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 	const OPTIONS_DISABLED = '#options-disabled';
 
 	/**
-	 * Used to define the state of the element: "success", "warning" or "error".
+	 * Used to define the state of the element: "success", "warning" or "danger".
 	 */
 	const STATE = '#state';
 

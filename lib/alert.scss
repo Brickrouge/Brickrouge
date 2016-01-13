@@ -1,0 +1,9 @@
+.alert {
+  p {
+    margin-bottom: 0;
+  }
+
+  p + p {
+    margin-top: 1rem;
+  }
+}

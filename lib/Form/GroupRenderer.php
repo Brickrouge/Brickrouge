@@ -53,6 +53,10 @@ class GroupRenderer extends Element
 		$this->form = $form;
 		$this->children = $form->get_ordered_children();
 
+		foreach ($form as $element) {
+			$element->add_class('form-control');
+		}
+
 		return $this->render_inner_html();
 	}
 

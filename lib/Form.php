@@ -453,12 +453,12 @@ class Form extends Element implements Validator
 			}
 
 			#
-			# if the element is referenced in the errors, we set its state to 'error'
+			# if the element is referenced in the errors, we set its state to 'danger'
 			#
 
 			if (isset($errors[$name]))
 			{
-				$element[Element::STATE] = 'error';
+				$element[Element::STATE] = 'danger';
 			}
 
 			#

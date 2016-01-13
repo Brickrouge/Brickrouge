@@ -12,51 +12,18 @@ BRICKROUGE_LITE_LESS = ${BRICKROUGE_LITE_TMP}brickrouge.less
 JS_COMPRESSOR = curl -X POST -s --data-urlencode 'js_code@$^' --data-urlencode 'utf8=1' http://marijnhaverbeke.nl/uglifyjs
 #JS_COMPRESSOR = cat $^ # uncomment to create uncompressed files
 
-CSS_COMPILER ?= `which lessc`
+CSS_COMPILER ?= `which sass`
 CSS_COMPRESSOR = curl -X POST -s --data-urlencode 'input@$^' http://cssminifier.com/raw
-#CSS_COMPRESSOR = cat $^ # uncomment to create uncompressed files
-
-WATCHR ?= `which watchr`
+CSS_COMPRESSOR = cat $^ # uncomment to create uncompressed files
 
 # CSS
 
 CSS_FILES = \
-	lib/alert.less \
-	lib/brickrouge.less \
-	lib/button.less \
-	lib/button-groups.less \
-	lib/carousel.less \
-	lib/close.less \
-	lib/dropdowns.less \
-	lib/element.less \
-	lib/form.less \
-	lib/grid.less \
-	lib/layouts.less \
-	lib/mixins.less \
-	lib/modal.less \
-	lib/navs.less \
-	lib/popover.less \
-	lib/reset.less \
-	lib/responsive.less \
-	lib/responsive-1200px-min.less \
-	lib/responsive-767px-max.less \
-	lib/responsive-768px-979px.less \
-	lib/responsive-navbar.less \
-	lib/responsive-utilities.less \
-	lib/searchbox.less \
-	lib/utilities.less \
-	lib/variables.less
+	lib/alert.scss \
+	lib/brickrouge.scss
 
 CSS_COMPRESSED = assets/brickrouge.css
 CSS_UNCOMPRESSED = assets/brickrouge-uncompressed.css
-
-CSS_RESPONSIVE_FILES = \
-	lib/responsive-1200px-min.less \
-	lib/responsive-767px-max.less \
-	lib/responsive-768px-979px.less
-
-CSS_RESPONSIVE_COMPRESSED = assets/brickrouge-responsive.css
-CSS_RESPONSIVE_UNCOMPRESSED = assets/brickrouge-responsive-uncompressed.css
 
 # JavaScript
 
@@ -79,9 +46,7 @@ all: \
 	$(JS_COMPRESSED) \
 	$(JS_UNCOMPRESSED) \
 	$(CSS_COMPRESSED) \
-	$(CSS_UNCOMPRESSED) \
-	$(CSS_RESPONSIVE_COMPRESSED) \
-	$(CSS_RESPONSIVE_UNCOMPRESSED)
+	$(CSS_UNCOMPRESSED)
 
 $(JS_COMPRESSED): $(JS_UNCOMPRESSED)
 	$(JS_COMPRESSOR) >$@
@@ -93,22 +58,16 @@ $(CSS_COMPRESSED): $(CSS_UNCOMPRESSED)
 	$(CSS_COMPRESSOR) >$@
 
 $(CSS_UNCOMPRESSED): $(CSS_FILES)
-	$(CSS_COMPILER) lib/brickrouge.less >$@
-
-$(CSS_RESPONSIVE_COMPRESSED): $(CSS_RESPONSIVE_UNCOMPRESSED)
-	$(CSS_COMPRESSOR) >$@
-
-$(CSS_RESPONSIVE_UNCOMPRESSED): $(CSS_RESPONSIVE_FILES)
-	$(CSS_COMPILER) lib/responsive.less >$@
+	$(CSS_COMPILER) lib/brickrouge.scss >$@
 
 watch:
-	echo "Watching less files..."
-	watchr -e "watch('lib/.*\.less') { system 'make' }"
+	echo "Watching SCSS files..."
+	$(CSS_COMPILER) --watch lib/brickrouge.scss:assets/brickrouge.css
 
 # customization
 
-PACKAGE_NAME = "Brickrouge"
-PACKAGE_VERSION = 2.1.4
+PACKAGE_NAME = brickrouge/brickrouge
+PACKAGE_VERSION = 2.3.0
 
 # do not edit the following lines
 

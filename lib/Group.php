@@ -50,8 +50,8 @@ class Group extends Element
 
 		return parent::alter_class_names($class_names) + [
 
-			'group' => true,
-			'group-name' => $name ? 'group--' . normalize($name) : null,
+			'form-group' => true,
+			'form-group-name' => $name ? 'group--' . normalize($name) : null,
 			'no-legend' => !$this[self::LEGEND]
 
 		];
@@ -71,13 +71,13 @@ class Group extends Element
 	 */
 	protected function render_child($child)
 	{
-		$control_group_class = 'control-group';
+		$control_group_class = 'form-group';
 
 		$name = $child['name'];
 
 		if ($name)
 		{
-			$control_group_class .= ' control-group--' . normalize($name);
+			$control_group_class .= ' form-group--' . normalize($name);
 		}
 
 		if ($child[self::REQUIRED])
@@ -89,10 +89,12 @@ class Group extends Element
 
 		if ($state)
 		{
-			$control_group_class .= ' ' . $state;
+			$control_group_class .= " has-$state";
+			$child = clone $child;
+			$child->add_class("form-control-$state");
 		}
 
-		$label = $child[Form::LABEL];
+		$label = $child[Group::LABEL];
 
 		if ($label)
 		{
@@ -106,12 +108,13 @@ class Group extends Element
 				]);
 			}
 
-			$label = '<label for="' . $child->id . '" class="controls-label">' . $label . '</label>' . PHP_EOL;
+			$label = '<label for="' . $child->id . '" class="form-control-label">' . $label . '</label>' . PHP_EOL;
 		}
 
 		return <<<EOT
 <div class="$control_group_class">
-	$label<div class="controls">$child</div>
+	$label
+	$child
 </div>
 EOT;
 	}

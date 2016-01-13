@@ -1,7 +1,6 @@
-assets/brickrouge-responsive-uncompressed.css
+.sass-cache
 assets/brickrouge-uncompressed.css
 assets/brickrouge-uncompressed.js
-build/coverage
+build
 composer.lock
-docs
 vendor

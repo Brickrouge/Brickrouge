@@ -64,11 +64,11 @@
 	top: 50%;
 }
 
-.widget-file:not(.has-error) .alert-error {
+.widget-file:not(.has-danger) .alert-danger {
 	display: none;
 }
 
-.widget-file .alert-error {
+.widget-file .alert-danger {
 	display: inline-block;
 	margin-bottom: 0;
 	line-height: 20px;

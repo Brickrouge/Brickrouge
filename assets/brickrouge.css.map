@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AACE,QAAE;EACA,aAAa,EAAE,CAAC;AAGlB,YAAM;EACJ,UAAU,EAAE,IAAI",
+"sources": ["../lib/alert.scss"],
+"names": [],
+"file": "brickrouge.css"
+}
