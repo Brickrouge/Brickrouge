@@ -9,18 +9,22 @@
  * file that was distributed with this source code.
  */
 
-namespace Brickrouge\Renderer;
+namespace Brickrouge\Form;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
+use Brickrouge\Group;
 
 /**
  * Renders form's children in groups.
  */
-class Group extends Element
+class GroupRenderer extends Element
 {
 	const GROUP_CLASS = '#group-class';
 
+	/**
+	 * @var Form
+	 */
 	protected $form;
 
 	/**
@@ -30,7 +34,11 @@ class Group extends Element
 	 */
 	public function __construct(array $attributes = [])
 	{
-		parent::__construct('div', $attributes);
+		parent::__construct('div', $attributes + [
+
+			self::GROUP_CLASS => Group::class
+
+		]);
 	}
 
 	/**
@@ -100,7 +108,7 @@ class Group extends Element
 	/**
 	 * Resolves a group definition into an {@link Element} instance.
 	 *
-	 * @param mixed $group
+	 * @param Element|array $group
 	 *
 	 * @return Element
 	 */
@@ -111,14 +119,13 @@ class Group extends Element
 			return $group;
 		}
 
-		$constructor = $this[self::GROUP_CLASS] ?: 'Brickrouge\Group';
-		$attributes = $this->normalize_group_attributes($group) + [
+		$constructor = $this[self::GROUP_CLASS];
+
+		return new $constructor($this->normalize_group_attributes($group) + [
 
 			self::CHILDREN => []
 
-		];
-
-		return new $constructor($attributes);
+		]);
 	}
 
 	/**

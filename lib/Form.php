@@ -293,7 +293,7 @@ class Form extends Element implements Validator
 	 */
 	protected function render_children(array $children)
 	{
-		/* @var $renderer callable*/
+		/* @var $renderer callable */
 
 		$renderer = $this[self::RENDERER];
 
@@ -301,14 +301,7 @@ class Form extends Element implements Validator
 		{
 			if (is_string($renderer))
 			{
-				$class = $renderer;
-
-				if (!class_exists($class))
-				{
-					$class = 'Brickrouge\Renderer\\' . $class;
-				}
-
-				$renderer = new $class();
+				$renderer = new $renderer();
 			}
 
 			return $renderer($this);

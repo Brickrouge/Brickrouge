@@ -272,7 +272,7 @@ use Brickrouge\Text;
 
 echo new Form([
 
-	Form::RENDERER => 'Group',
+	Form::RENDERER => Form\GroupRenderer::class,
 
 	Form::HIDDENS => [
 
@@ -517,7 +517,7 @@ and [icanboogie/errors](https://packagist.org/packages/icanboogie/errors).
 The recommended way to install this package is through [composer](http://getcomposer.org/):
 
 ```
-$ composer require brickrouge/brickrouge:
+$ composer require brickrouge/brickrouge
 ```
 
 
