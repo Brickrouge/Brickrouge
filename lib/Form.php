@@ -392,7 +392,7 @@ class Form extends Element implements Validator
 	 */
 	protected function render_errors($errors)
 	{
-		return (string) new Alert($errors);
+		return (string) new Alert($errors, [ Alert::CONTEXT => Alert::CONTEXT_DANGER ]);
 	}
 
 	/**
