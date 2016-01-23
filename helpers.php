@@ -325,18 +325,17 @@ function dump($value)
  *
  * The directory where the files are copied is defined by the {@link ACCESSIBLE_ASSETS} constant.
  *
- * Note: Calls to this function are forwarded to {@link Helpers::get_accessible_file()}.
+ * **Note:** Calls to this function are forwarded to {@link Helpers::get_accessible_file()}.
  *
  * @param string $path Absolute path to the web inaccessible file.
- * @param string $suffix Optional suffix for the web accessible filename.
  *
  * @return string The pathname of the replacement.
  *
  * @throws \Exception if the replacement file could not be created.
  */
-function get_accessible_file($path, $suffix=null)
+function get_accessible_file($path)
 {
-	return Helpers::get_accessible_file($path, $suffix);
+	return Helpers::get_accessible_file($path);
 }
 
 /**

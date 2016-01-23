@@ -37,15 +37,15 @@ use Brickrouge\Helpers\PublishAssets;
  */
 class Helpers
 {
-	static private $jumptable = [
+	static private $mapping = [
 
-		'format'               => [ __CLASS__, 'format' ],
-		'format_size'          => [ __CLASS__, 'format_size' ],
+		'format'               => [ __CLASS__, 'default_format' ],
+		'format_size'          => [ __CLASS__, 'default_format_size' ],
 		'get_accessible_file'  => [ __CLASS__, 'default_get_accessible_file' ],
-		'get_document'         => [ __CLASS__, 'get_document' ],
-		'normalize'            => [ __CLASS__, 'normalize' ],
-		'render_exception'     => [ __CLASS__, 'render_exception' ],
-		't'                    => [ __CLASS__, 't' ]
+		'get_document'         => [ __CLASS__, 'default_get_document' ],
+		'normalize'            => [ __CLASS__, 'default_normalize' ],
+		'render_exception'     => [ __CLASS__, 'default_render_exception' ],
+		't'                    => [ __CLASS__, 'default_t' ]
 
 	];
 
@@ -59,7 +59,7 @@ class Helpers
 	 */
 	static public function __callStatic($name, array $arguments)
 	{
-		return call_user_func_array(self::$jumptable[$name], $arguments);
+		return call_user_func_array(self::$mapping[$name], $arguments);
 	}
 
 	/**
@@ -72,12 +72,12 @@ class Helpers
 	 */
 	static public function patch($name, $callback)
 	{
-		if (empty(self::$jumptable[$name]))
+		if (empty(self::$mapping[$name]))
 		{
 			throw new \RuntimeException("Undefined patchable: $name.");
 		}
 
-		self::$jumptable[$name] = $callback;
+		self::$mapping[$name] = $callback;
 	}
 
 	/*
@@ -86,69 +86,29 @@ class Helpers
 
 	/**
 	 * This method is the fallback for the {@link format()} function.
+	 *
+	 * @param string $str
+	 * @param array $args
+	 *
+	 * @return string
+	 *
+	 * @see \Brickrouge\format()
 	 */
-	static private function format($str, array $args = [])
+	static protected function default_format($str, array $args = [])
 	{
-		if (!$args)
-		{
-			return $str;
-		}
-
-		$holders = [];
-		$i = 0;
-
-		foreach ($args as $key => $value)
-		{
-			++$i;
-
-			if (is_array($value) || is_object($value))
-			{
-				$value = dump($value);
-			}
-			else if (is_bool($value))
-			{
-				$value = $value ? '<em>true</em>' : '<em>false</em>';
-			}
-			else if (is_null($value))
-			{
-				$value = '<em>null</em>';
-			}
-
-			if (is_string($key))
-			{
-				switch ($key{0})
-				{
-					case ':': break;
-					case '!': $value = escape($value); break;
-					case '%': $value = '<q>' . escape($value) . '</q>'; break;
-
-					default:
-					{
-						$escaped_value = escape($value);
-
-						$holders['!' . $key] = $escaped_value;
-						$holders['%' . $key] = '<q>' . $escaped_value . '</q>';
-
-						$key = ':' . $key;
-					}
-				}
-			}
-			else if (is_numeric($key))
-			{
-				$key = '\\' . $i;
-				$holders['{' . $i . '}'] = $value;
-			}
-
-			$holders[$key] = $value;
-		}
-
-		return strtr($str, $holders);
+		return \ICanBoogie\format($str, $args);
 	}
 
 	/**
 	 * This method is the fallback for the {@link format_size()} function.
+	 *
+	 * @param int $size
+	 *
+	 * @return string
+	 *
+	 * @see \Brickrouge\format_size()
 	 */
-	static private function format_size($size)
+	static protected function default_format_size($size)
 	{
 		if ($size < 1024)
 		{
@@ -175,8 +135,16 @@ class Helpers
 
 	/**
 	 * This method is the fallback for the {@link normalize()} function.
+	 *
+	 * @param string $str
+	 * @param string $separator
+	 * @param string $charset
+	 *
+	 * @return string
+	 *
+	 * @see \Brickrouge\normalize()
 	 */
-	static private function normalize($str, $separator = '-', $charset = CHARSET)
+	static protected function default_normalize($str, $separator = '-', $charset = CHARSET)
 	{
 		$str = str_replace('\'', '', $str);
 
@@ -197,16 +165,25 @@ class Helpers
 	 *
 	 * We usually rely on the ICanBoogie framework I18n features to translate our string, if it is
 	 * not available we simply format the string using the {@link Brickrouge\format()} function.
+	 *
+	 * @param string $str
+	 * @param array $args
+	 *
+	 * @return string
+	 *
+	 * @see \Brickrouge\t()
 	 */
-	static private function t($str, array $args = [], array $options = [])
+	static protected function default_t($str, array $args = [])
 	{
 		return format($str, $args);
 	}
 
 	/**
 	 * This method is the fallback for the {@link get_document()} function.
+	 *
+	 * @see \Brickrouge\get_document()
 	 */
-	static private function get_document()
+	static protected function default_get_document()
 	{
 		if (self::$document === null)
 		{
@@ -224,8 +201,10 @@ class Helpers
 	 * @param \Exception $exception
 	 *
 	 * @return string
+	 *
+	 * @see \Brickrouge\render_exception()
 	 */
-	static private function render_exception(\Exception $exception)
+	static protected function default_render_exception(\Exception $exception)
 	{
 		return (string) $exception;
 	}
@@ -238,6 +217,8 @@ class Helpers
 	 * @return string The pathname of the replacement.
 	 *
 	 * @throws \Exception if the replacement file could not be created.
+	 *
+	 * @see \Brickrouge\get_accessible_file()
 	 */
 	static protected function default_get_accessible_file($path)
 	{
