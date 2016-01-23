@@ -12,37 +12,33 @@
 namespace Brickrouge;
 
 use ICanBoogie\Errors;
+use Brickrouge\Helpers\PublishAssets;
 
 /**
  * Brickrouge helpers.
  *
  * The following helpers are patchable:
  *
- * - {@link check_session()}
  * - {@link format()}
  * - {@link format_size()}
  * - {@link get_accessible_file()}
  * - {@link get_document()}
  * - {@link normalize()}
  * - {@link render_exception()}
- * - {@link retrieve_form()}
- * - {@link retrieve_form_errors()}
- * - {@link store_form()}
- * - {@link store_form_errors()}
  * - {@link t()}
  *
- * @method void check_session() check_session()
- * @method string format() format(string $str, array $args=[])
- * @method string format_size() format_size(number $size)
- * @method string get_accessible_file() get_accessible_file(string $path, $suffix=null)
- * @method Document get_document() get_document()
- * @method string normalize() normalize(string $str)
- * @method string render_exception() render_exception(\Exception $exception)
- * @method Form retrieve_form() retrieve_form(string $name)
- * @method Errors retrieve_form_errors() retrieve_form_errors(string $name)
- * @method string store_form() store_form(Form $form)
- * @method void store_form_errors() store_form_errors(string $name, Errors $errors)
- * @method string t() t(string $str, array $args=[], array $options=[])
+ * @method static void check_session() check_session()
+ * @method static string format() format(string $str, array $args=[])
+ * @method static string format_size() format_size(number $size)
+ * @method static string get_accessible_file() get_accessible_file(string $path, $suffix=null)
+ * @method static Document get_document() get_document()
+ * @method static string normalize() normalize(string $str)
+ * @method static string render_exception() render_exception(\Exception $exception)
+ * @method static Form retrieve_form() retrieve_form(string $name)
+ * @method static Errors retrieve_form_errors() retrieve_form_errors(string $name)
+ * @method static string store_form() store_form(Form $form)
+ * @method static void store_form_errors() store_form_errors(string $name, Errors $errors)
+ * @method static string t() t(string $str, array $args=[], array $options=[])
  */
 class Helpers
 {
@@ -51,7 +47,7 @@ class Helpers
 		'check_session'        => [ __CLASS__, 'check_session' ],
 		'format'               => [ __CLASS__, 'format' ],
 		'format_size'          => [ __CLASS__, 'format_size' ],
-		'get_accessible_file'  => [ __CLASS__, 'get_accessible_file' ],
+		'get_accessible_file'  => [ __CLASS__, 'default_get_accessible_file' ],
 		'get_document'         => [ __CLASS__, 'get_document' ],
 		'normalize'            => [ __CLASS__, 'normalize' ],
 		'render_exception'     => [ __CLASS__, 'render_exception' ],
@@ -71,7 +67,7 @@ class Helpers
 	 *
 	 * @return mixed
 	 */
-	static public function __callstatic($name, array $arguments)
+	static public function __callStatic($name, array $arguments)
 	{
 		return call_user_func_array(self::$jumptable[$name], $arguments);
 	}
@@ -340,45 +336,20 @@ class Helpers
 	 * This method is the fallback for the {@link get_accessible_file()} function.
 	 *
 	 * @param string $path Absolute path to the web inaccessible file.
-	 * @param string $suffix Optional suffix for the web accessible filename.
 	 *
 	 * @return string The pathname of the replacement.
 	 *
 	 * @throws \Exception if the replacement file could not be created.
 	 */
-	static private function get_accessible_file($path, $suffix = null)
+	static protected function default_get_accessible_file($path)
 	{
-		$key = ($suffix ? '-' . $suffix : '') . self::hash_file($path) . '.' . pathinfo($path, PATHINFO_EXTENSION);
-		$replacement_path = ACCESSIBLE_ASSETS;
-		$replacement = $replacement_path . $key;
+		static $publish_assets;
 
-		if (!is_writable($replacement_path))
+		if (!$publish_assets)
 		{
-			throw new \Exception(format('Unable to make the file %path web accessible, the destination directory %replacement_path is not writtable.', [ 'path' => $path, 'replacement_path' => $replacement_path ]));
+			$publish_assets = new PublishAssets(ACCESSIBLE_ASSETS);
 		}
 
-		if (!file_exists($replacement))
-		{
-			file_put_contents($replacement, file_get_contents($path));
-		}
-
-		return $replacement;
-	}
-
-	/**
-	 * Hash a file using SHA-384 and returns a base64url string.
-	 *
-	 * @param string $pathname Absolute pathname of the file to hash.
-	 *
-	 * @return string A base64url string.
-	 */
-	static private function hash_file($pathname)
-	{
-		return strtr(base64_encode(hash_file('sha384', $pathname, true)), [
-
-			'+' => '-',
-			'/' => '_'
-
-		]);
+		return $publish_assets($path);
 	}
 }
