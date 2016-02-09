@@ -53,7 +53,20 @@ class GroupRenderer extends Element
 		$this->form = $form;
 		$this->children = $form->get_ordered_children();
 
-		foreach ($form as $element) {
+		foreach ($form as $element)
+		{
+			$tag = $element->tag_name;
+
+			if (!in_array($tag, [ 'input', 'select', 'textarea' ]))
+			{
+				continue;
+			}
+
+			if ($tag == 'input' && in_array($element['type'], [ 'radio', 'checkbox' ]))
+			{
+				continue;
+			}
+
 			$element->add_class('form-control');
 		}
 

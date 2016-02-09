@@ -108,7 +108,7 @@ class File extends Element
 
 		])
 
-		. ' <div class="alert alert-error undismissable"></div>'
+		. ' <div class="alert alert-danger"></div>'
 		. ' <label class="btn trigger"><i class="icon-file"></i> '
 		. $this->t($this[self::BUTTON_LABEL], [], [ 'scope' => 'button' ])
 		. '<input type="file" /></label>';

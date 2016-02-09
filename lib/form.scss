@@ -1,0 +1,65 @@
+@import "variables";
+
+.form-group {
+	margin-bottom: 0;
+}
+
+.form-group + .form-group {
+	margin-top: $form-group-margin-bottom;
+}
+
+.form-group:not(.row) > .form-control-label {
+	padding-top: 0;
+}
+
+.form-control.form-control-inline {
+	display: inline-block;
+	width: auto;
+}
+
+// element
+
+.element-label.disabled {
+	cursor: not-allowed;
+}
+
+// help-inline
+
+.help-inline,
+.element-description {
+	padding: $input-padding-y $input-padding-x 0 $input-padding-x;
+	font-size: $font-size-sm;
+}
+
+.has-danger .help-inline {
+	color: $brand-danger;
+}
+
+.has-success .help-inline {
+	color: $brand-success;
+}
+
+.has-warning .help-inline {
+	color: $brand-warning;
+}
+
+// input
+
+input.measure {
+	text-align: right;
+}
+
+// checkbox & radio
+
+.checkbox-group:not(.inline-inputs) > label,
+.radio-group:not(.inline-inputs) > label {
+	display: block;
+}
+
+.inline-inputs > label {
+	margin-bottom: 0;
+}
+
+.inline-inputs > label + label {
+	margin-left: $input-padding-x;
+}

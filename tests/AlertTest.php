@@ -145,54 +145,54 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/*
-	 * undismissable
+	 * undismissible
 	 */
 
-	public function test_undismissable_alert()
+	public function test_undismissible_alert()
 	{
 		$this->assertEquals
 		(
-			'<div class="alert undismissable">'
+			'<div class="alert undismissible">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::UNDISMISSABLE => true ])
+			(string) new Alert(self::MESSAGE, [ Alert::DISMISSIBLE => true ])
 		);
 	}
 
-	public function test_undismissable_alert_error()
+	public function test_undismissible_alert_error()
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-error undismissable">'
+			'<div class="alert alert-error undismissible">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_ERROR, Alert::UNDISMISSABLE => true ])
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_ERROR, Alert::DISMISSIBLE => true ])
 		);
 	}
 
-	public function test_undismissable_alert_info()
+	public function test_undismissible_alert_info()
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-info undismissable">'
+			'<div class="alert alert-info undismissible">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_INFO, Alert::UNDISMISSABLE => true ])
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_INFO, Alert::DISMISSIBLE => true ])
 		);
 	}
 
-	public function test_undismissable_alert_success()
+	public function test_undismissible_alert_success()
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-success undismissable">'
+			'<div class="alert alert-success undismissible">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_SUCCESS, Alert::UNDISMISSABLE => true ])
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_SUCCESS, Alert::DISMISSIBLE => true ])
 		);
 	}
 }

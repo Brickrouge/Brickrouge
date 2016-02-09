@@ -19,8 +19,11 @@ CSS_COMPRESSOR = cat $^ # uncomment to create uncompressed files
 # CSS
 
 CSS_FILES = \
+	lib/actions.scss \
 	lib/alert.scss \
-	lib/brickrouge.scss
+	lib/brickrouge.scss \
+	lib/form.scss \
+	lib/popover.scss
 
 CSS_COMPRESSED = assets/brickrouge.css
 CSS_UNCOMPRESSED = assets/brickrouge-uncompressed.css
