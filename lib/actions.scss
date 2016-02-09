@@ -1,0 +1,18 @@
+.form-actions,
+.popover-actions {
+  margin-top: 1rem;
+}
+
+.popover-actions {
+  text-align: center;
+  background-color: #f7f7f7;
+  border-top: 1px solid #ebebeb;
+  padding: 8px 14px;
+}
+
+.actions > * + *,
+.form-actions > * + *,
+.popover-actions > * + * {
+  margin-left: 2ex;
+}
+

@@ -12,10 +12,12 @@
 namespace Brickrouge;
 
 /**
- * An actions element that can be used with forms or popovers.
+ * An actions element that may be used with forms and popovers.
  */
 class Actions extends Element
 {
+	const ACTIONS_BOOLEAN = 'boolean';
+
 	/**
 	 * Actions.
 	 *
@@ -40,7 +42,7 @@ class Actions extends Element
 	 * Renders the actions.
 	 *
 	 * If actions are defined as the string "boolean" they are replaced by an array with the
-	 * buttons `button[data-action="cancel"]` and
+	 * buttons `button[data-action="cancel"].btn-secondary` and
 	 * `button[data-action="ok"][type=submit].btn-primary`.
 	 *
 	 * If actions are defined as a boolean, they are replaced by a
@@ -53,15 +55,24 @@ class Actions extends Element
 	 */
 	protected function render_inner_html()
 	{
-		$html = parent::render_inner_html();
-		$actions = $this->actions;
+		return parent::render_inner_html() . $this->render_actions($this->actions);
+	}
 
-		if ($actions == 'boolean')
+	/**
+	 * Renders actions.
+	 *
+	 * @param mixed $actions
+	 *
+	 * @return string
+	 */
+	protected function render_actions($actions)
+	{
+		if ($actions == self::ACTIONS_BOOLEAN)
 		{
 			$actions = [
 
-				new Button('Cancel', [ 'data-action' => 'cancel' ]),
-				new Button('Ok', [ 'data-action' => 'ok', 'type' => 'submit', 'class' => 'btn-primary' ]),
+				new Button("Cancel", [ 'data-action' => 'cancel', 'class' => 'btn-secondary' ]),
+				new Button("Ok", [ 'data-action' => 'ok', 'class' => 'btn-primary', 'type' => 'submit' ]),
 
 			];
 		}
@@ -70,7 +81,7 @@ class Actions extends Element
 		{
 			foreach ($actions as $name => $action)
 			{
-				if (!is_string($name) || !($action instanceof Element) || $action['name'] !== null)
+				if (!is_string($name) || !$action instanceof Element || $action['name'] !== null)
 				{
 					continue;
 				}
@@ -78,19 +89,14 @@ class Actions extends Element
 				$action['name'] = $name;
 			}
 
-			$actions = implode($actions);
+			return implode($actions);
 		}
-		else if ($actions === true)
+
+		if ($actions === true)
 		{
-			$actions = new Button('Ok', [
-
-				'dataset' => [ 'action' => 'ok' ],
-				'type' => 'submit',
-				'class' => 'btn-primary'
-
-			]);
+			return new Button("Ok", [ 'data-action' => 'ok', 'class' => 'btn-primary', 'type' => 'submit' ]);
 		}
 
-		return $html . $actions;
+		return $actions;
 	}
 }
