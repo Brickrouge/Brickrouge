@@ -1,14 +1,7 @@
+
 <?php
 
 return [
-
-	'salutation' => [
-
-		'Misses' => 'Señora',
-		'Miss' => 'Señorita',
-		'Mister' => 'Señor'
-
-	],
 
 	# wdelement
 

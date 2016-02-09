@@ -9,14 +9,6 @@ return [
 
 	],
 
-	'salutation' => [
-
-		'Misses' => 'Paní',
-		'Miss' => 'Slečna',
-		'Mister' => 'Pan'
-
-	],
-
 	'Invalid email address %value for the %label element.' => 'Neplatná e-mailová adres: %email.',
 	'The field %field is required!' => 'Údaj %field je povinný!',
 	'The fields %list and %last are required!' => 'Údaje %list a %last jsou povinné!',

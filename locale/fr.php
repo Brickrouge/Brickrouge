@@ -18,9 +18,7 @@ return [
 		'cancel' => 'Annuler',
 		'continue' => 'Continuer',
 		'save' => 'Enregistrer',
-		'use' => 'Utiliser',
-
-		'Salutation' => 'Civilité'
+		'use' => 'Utiliser'
 
 	],
 
@@ -28,14 +26,6 @@ return [
 
 		'Next' => 'Suiv.',
 		'Previous' => 'Préc.',
-
-	],
-
-	'salutation' => [
-
-		'Misses' => 'Madame',
-		'Miss' => 'Mademoiselle',
-		'Mister' => 'Monsieur'
 
 	],
 
@@ -57,7 +47,7 @@ return [
 
 	'The string %string is too short (minimum size is :size characters)'
 	=> 'La chaîne %string est trop courte (la taille minimale est de :size caractères)',
-	
+
 	'Invalid format of value %value'
 	=> 'Format invalide de la valeur %value',
 

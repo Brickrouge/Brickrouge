@@ -2,14 +2,6 @@
 
 return [
 
-	'salutation' => [
-
-		'Misses' => 'Pani',
-		'Miss' => 'Slečna',
-		'Mister' => 'Pán'
-
-	],
-
 	'The maximum file size must be less than :size.' => 'Súbor nesmie byť väčší ako :size.',
 
 	'Invalid email address: %email.' => 'Neplatná e-mailová adresa : %email.',
