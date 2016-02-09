@@ -33,8 +33,12 @@ class Form extends Element implements Validator
 	 * Used by elements to define a form label, this is different from the
 	 * {@link Element::LABEL}, which wraps the element in a `<LABEL>` element, the form label is
 	 * associated with the element but its layout depend on the form renderer.
+	 *
+	 * @deprecated
+	 *
+	 * @see Group::LABEL
 	 */
-	const LABEL = '#form-label';
+	const LABEL = '#group-label';
 
 	/**
 	 * Complement to the {@link LABEL} tag. Its layout depends on the form renderer.
@@ -376,13 +380,18 @@ class Form extends Element implements Validator
 	 *
 	 * An {@link Alert} object is used to render the provided errors.
 	 *
-	 * @param string|\ICanBoogie\Errors $errors
+	 * @param Validate\Errors|array|string $errors
 	 *
 	 * @return string
 	 */
 	protected function render_errors($errors)
 	{
-		return (string) new Alert($errors, [ Alert::CONTEXT => Alert::CONTEXT_DANGER ]);
+		return (string) new Alert($errors, [
+
+			Alert::CONTEXT => Alert::CONTEXT_DANGER,
+			Alert::DISMISSIBLE => true
+
+		]);
 	}
 
 	/**
@@ -430,7 +439,7 @@ class Form extends Element implements Validator
 	 *
 	 * @param array $values
 	 * @param bool $disabled true if the form is disabled, false otherwise.
-	 * @param array|\ICanBoogie\Errors $errors The validation errors.
+	 * @param array|Validate\Errors $errors The validation errors.
 	 */
 	protected function alter_elements($values, $disabled, $errors)
 	{
@@ -453,12 +462,12 @@ class Form extends Element implements Validator
 			}
 
 			#
-			# if the element is referenced in the errors, we set its state to 'danger'
+			# if the element is referenced in the errors, we set its state to STATE_DANGER
 			#
 
 			if (isset($errors[$name]))
 			{
-				$element[Element::STATE] = 'danger';
+				$element[Element::STATE] = Element::STATE_DANGER;
 			}
 
 			#
@@ -512,7 +521,7 @@ class Form extends Element implements Validator
 
 		if (!$label)
 		{
-			$label = $element[Form::LABEL];
+			$label = $element[Group::LABEL];
 		}
 
 		if (!$label)
