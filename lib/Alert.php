@@ -19,12 +19,13 @@ use ICanBoogie\Errors;
 class Alert extends Element
 {
 	/**
-	 * The context of the alert, one of "error", "success" or "info".
+	 * The context of the alert, one of `CONTEXT_*`.
 	 */
 	const CONTEXT = '#alert-context';
-	const CONTEXT_SUCCESS = 'success';
+	const CONTEXT_DANGER = 'danger';
 	const CONTEXT_INFO = 'info';
-	const CONTEXT_ERROR = 'error';
+	const CONTEXT_SUCCESS = 'success';
+	const CONTEXT_WARNING = 'warning';
 
 	/**
 	 * The heading of the alert.
@@ -32,21 +33,14 @@ class Alert extends Element
 	const HEADING = '#alert-heading';
 
 	/**
-	 * Set to `true` for undismissable alerts.
+	 * Set to `true` for dismissible alerts.
 	 */
-	const UNDISMISSABLE = '#alert-undismissable';
-
-	const DISMISS_BUTTON = '<button type="button" class="close" data-dismiss="alert">×</button>';
+	const DISMISSIBLE = '#alert-dismissible';
 
 	/**
 	 * Alert message.
 	 */
 	protected $message;
-
-	/**
-	 * Alert type, one of "error", "success" or "info".
-	 */
-	protected $alert_type;
 
 	/**
 	 * Creates a `<DIV.alert>` element.
@@ -62,7 +56,7 @@ class Alert extends Element
 	 * message.
 	 *
 	 * If the message is an instance of {@link Errors} the {@link CONTEXT} attribute is
-	 * set to "error" in the initial attributes.
+	 * set to {@link CONTEXT_DANGER} in the initial attributes.
 	 *
 	 * @param array $attributes Additional attributes.
 	 */
@@ -72,20 +66,19 @@ class Alert extends Element
 
 		parent::__construct('div', $attributes + [
 
-			self::CONTEXT => $message instanceof Errors ? 'error' : null,
+			self::CONTEXT => $message instanceof Errors ? self::CONTEXT_DANGER : self::CONTEXT_WARNING,
 
-			'class' => 'alert'
+			'class' => 'alert',
+			'role' => 'alert'
 
 		]);
 	}
 
 	/**
-	 * Adds the `alert-error`, `alert-info` and `alert-success` class names according to the
+	 * Adds the `alert-danger`, `alert-info`, or `alert-success` class names according to the
 	 * {@link CONTEXT} attribute.
 	 *
-	 * Adds the `alert-block` class name if the {@link HEADING} attribute is defined.
-	 *
-	 * Adds the `undismissable` class name if the {@link UNDISMISSABLE} attribute is true.
+	 * Adds the `alert-dismissible` class name if the {@link DISMISSIBLE} attribute is true.
 	 *
 	 * @inheritdoc
 	 */
@@ -100,14 +93,9 @@ class Alert extends Element
 			$class_names['alert-' . $context] = true;
 		}
 
-		if ($this[self::HEADING])
+		if ($this[self::DISMISSIBLE])
 		{
-			$class_names['alert-block'] = true;
-		}
-
-		if ($this[self::UNDISMISSABLE])
-		{
-			$class_names['undismissable'] = true;
+			$class_names['alert-dismissible'] = true;
 		}
 
 		return $class_names;
@@ -120,52 +108,117 @@ class Alert extends Element
 	 */
 	public function render_inner_html()
 	{
-		$heading = $this[self::HEADING];
-
-		if ($heading)
-		{
-			$heading = '<h4 class="alert-heading">' . escape($heading) . '</h4>';
-		}
-
 		$message = $this->message;
 
 		if (!$message)
 		{
 			throw new ElementIsEmpty;
 		}
-		if ($message instanceof Errors)
-		{
-			$errors = $message;
 
-			if (!count($errors))
+		return
+			$this->render_alert_dismiss($this[self::DISMISSIBLE]) .
+			$this->render_alert_heading($this[self::HEADING]) .
+			$this->render_alert_content($this->render_alert_message($message));
+	}
+
+	/**
+	 * Renders dismiss button.
+	 *
+	 * @param bool $dismissible
+	 *
+	 * @return string|null
+	 */
+	protected function render_alert_dismiss($dismissible)
+	{
+		if (!$dismissible)
+		{
+			return null;
+		}
+
+		$aria_label = escape($this->t("Close", [], [ 'scope' => 'alert' ]));
+
+		return <<<EOT
+<button type="button" class="close" data-dismiss="alert" aria-label="$aria_label">
+    <span aria-hidden="true">&times;</span>
+</button>
+EOT;
+	}
+
+	/**
+	 * Renders alert heading.
+	 *
+	 * @param string|null $heading
+	 *
+	 * @return string|null
+	 */
+	protected function render_alert_heading($heading)
+	{
+		if (!$heading)
+		{
+			return null;
+		}
+
+		return '<h4 class="alert-heading">' . escape($heading) . '</h4>';
+	}
+
+	/**
+	 * Renders alert message.
+	 *
+	 * @param mixed $message
+	 *
+	 * @return string
+	 *
+	 * @throws \InvalidArgumentException if the message cannot be rendered.
+	 */
+	protected function render_alert_message($message)
+	{
+		if (is_array($message) || $message instanceof \Traversable)
+		{
+			return $this->render_errors($message);
+		}
+		else if (is_object($message))
+		{
+			throw new \InvalidArgumentException("Don't know how to render message of type: " . get_class($message));
+		}
+
+		return $message;
+	}
+
+	/**
+	 * Renders alert content.
+	 *
+	 * @param string $message
+	 *
+	 * @return string
+	 */
+	protected function render_alert_content($message)
+	{
+		return <<<EOT
+<div class="content">$message</div>
+EOT;
+	}
+
+	/**
+	 * Renders errors as an HTML string.
+	 *
+	 * @param Errors $errors
+	 *
+	 * @return string
+	 */
+	protected function render_errors(Errors $errors)
+	{
+		$message = '';
+
+		foreach ($errors as $error)
+		{
+			if ($error === '')
 			{
-				throw new ElementIsEmpty;
+				continue;
 			}
 
-			$message = '';
-
-			foreach ($errors as $error)
-			{
-				if ($error === true)
-				{
-					continue;
-				}
-
-				$message .= '<p>' . $error . '</p>';
-			}
-		}
-		else if (is_array($message))
-		{
-			$message = '<p>' . implode('</p><p>', $message) . '</p>';
+			$message .= '<p>' . $error . '</p>';
 		}
 
-		$dismiss = '';
-
-		if (!$this[self::UNDISMISSABLE])
-		{
-			$dismiss = self::DISMISS_BUTTON;
-		}
-
-		return $dismiss . $heading . '<div class="content">' . $message . '</div>';
+		return $message;
 	}
 }
