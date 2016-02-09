@@ -19,14 +19,14 @@ namespace Brickrouge;
  *
  * Localization:
  *
- * - Labels defined using the {@link Form::LABEL} attribute are translated within the
+ * - Labels defined using the {@link Group::LABEL} attribute are translated within the
  * 'group.label|element.label' scope.
  * - Legends defined using the {@link LEGEND} attribute are translated within the 'group.legend'
  * scope.
  */
 class Group extends Element
 {
-	const LABEL = '#form-label';
+	const LABEL = '#group-label';
 
 	/**
 	 * Creates a `<FIELDSET.group>` element.
@@ -85,12 +85,22 @@ class Group extends Element
 			$control_group_class .= ' required';
 		}
 
+		$child = clone $child;
+
+		if (in_array($child->tag_name, [ 'input', 'select', 'textarea' ]))
+		{
+			if ($child->tag_name == 'input' && !in_array($child['type'], [ 'radio', 'checkbox' ]))
+			{
+				$child->add_class('form-control');
+			}
+		}
+
 		$state = $child[Element::STATE];
 
 		if ($state)
 		{
 			$control_group_class .= " has-$state";
-			$child = clone $child;
+
 			$child->add_class("form-control-$state");
 		}
 
