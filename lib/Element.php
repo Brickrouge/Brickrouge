@@ -73,63 +73,69 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 	#
 
 	/**
-	 * Used to define the children of an element.
+	 * Defines the children of an element.
 	 */
 	const CHILDREN = '#children';
 
 	/**
-	 * Used to define the default value of an element.
+	 * Defines the default value of an element.
 	 *
 	 * The default value is added to the dataset as 'default-value'.
 	 */
 	const DEFAULT_VALUE = '#default-value';
 
 	/**
-	 * Used to define the description block of an element.
+	 * Defines the description block of an element.
 	 *
 	 * @see Element::decorate_with_description()
 	 */
 	const DESCRIPTION = '#description';
 
 	/**
-	 * Used to define the group of an element.
+	 * Defines the group of an element.
 	 */
 	const GROUP = '#group';
 
 	/**
-	 * Used to define the groups that can be used by children elements.
+	 * Defines the groups that can be used by children elements.
 	 */
 	const GROUPS = '#groups';
 
 	/**
-	 * Used to define the inline help of an element.
+	 * Defines the inline help of an element.
 	 *
 	 * @see Element::decorate_with_inline_help()
 	 */
 	const INLINE_HELP = '#inline-help';
 
 	/**
-	 * Used to define the inner HTML of an element. If the value of the tag is null, the markup
-	 * will be self-closing.
+	 * Defines the inner HTML of an element. If the value of the tag is null, the markup will be
+	 * self-closing.
 	 */
 	const INNER_HTML = '#inner-html';
 
 	/**
-	 * Used to define the label of an element.
+	 * Defines the label of an element.
 	 *
 	 * @see Element::decorate_with_label()
 	 */
 	const LABEL = '#label';
 
 	/**
-	 * Used to define the position of the label. Possible positions are "before", "after" and
-	 * "above". Defaults to "after".
+	 * Defines the position of the label. Defaults to {@link LABEL_POSITION_AFTER}.
 	 */
 	const LABEL_POSITION = '#label-position';
+	const LABEL_POSITION_BEFORE = 'before';
+	const LABEL_POSITION_AFTER = 'after';
+	const LABEL_POSITION_ABOVE = 'above';
+
+	/**
+	 * Defines the label to use to format validation message.
+	 */
 	const LABEL_MISSING = '#label-missing';
 
 	/**
-	 * Used to define the legend of an element. If the legend is defined the element is wrapped
+	 * Defines the legend of an element. If the legend is defined the element is wrapped
 	 * into a fieldset when it is rendered.
 	 *
 	 * @see Element::decorate_with_legend()
@@ -137,7 +143,7 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 	const LEGEND = '#element-legend';
 
 	/**
-	 * Used to define the required state of an element.
+	 * Defines the required state of an element.
 	 *
 	 * @see Form::validate()
 	 * @see http://dev.w3.org/html5/spec/Overview.html#the-required-attribute
@@ -145,50 +151,51 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 	const REQUIRED = 'required';
 
 	/**
-	 * Used to define the options of the following element types: "select",
-	 * {@link TYPE_RADIO_GROUP} and {@link TYPE_CHECKBOX_GROUP}.
+	 * Defines the options of the following element types: "select", {@link TYPE_RADIO_GROUP}
+	 * and {@link TYPE_CHECKBOX_GROUP}.
 	 */
 	const OPTIONS = '#options';
 
 	/**
-	 * Used to define which options are disabled.
+	 * Defines which options are disabled.
 	 */
 	const OPTIONS_DISABLED = '#options-disabled';
 
 	/**
-	 * Used to define the state of the element: "success", "warning" or "danger".
+	 * Defines the state of the element.
 	 */
 	const STATE = '#state';
+	const STATE_DEFAULT = null;
+	const STATE_DANGER = 'danger';
+	const STATE_SUCCESS = 'success';
+	const STATE_WARNING = 'warning';
 
 	/**
-	 * Specifies the translator used to translate strings.
+	 * Defines the translator used to translate strings.
 	 */
 	const TRANSLATOR = '#translator';
 
 	/**
-	 * Used to define the validator of an element. The validator is defined using an array made of
-	 * a callback and a possible userdata array.
+	 * Defines the validator of an element. The validator is defined using an array made of a
+	 * callback and a possible userdata array.
 	 */
 	const VALIDATOR = '#validator';
 	const VALIDATOR_OPTIONS = '#validator-options';
 
 	/**
-	 * Use to define the weight of an element. This attribute can be used to reorder children when
+	 * Defines the weight of an element. This attribute can be used to reorder children when
 	 * a parent element is rendered.
 	 *
 	 * @see Element::get_ordered_children()
 	 */
 	const WEIGHT = '#weight';
+	const WEIGHT_BEFORE_PREFIX = 'before:';
+	const WEIGHT_AFTER_PREFIX = 'after:';
 
 	/**
-	 * The name of the Javascript constructor that should be used to construct the widget.
+	 * Defines the factory name for the widget.
 	 */
 	const IS = 'brickrouge-is';
-
-	/**
-	 * @deprecated use Element::IS
-	 */
-	const WIDGET_CONSTRUCTOR = 'brickrouge-is'; // 2.0 COMPAT
 
 	static private $inputs = [ 'button', 'form', 'input', 'option', 'select', 'textarea' ];
 	static private $has_attribute_disabled = [ 'button', 'input', 'optgroup', 'option', 'select', 'textarea' ];
@@ -887,11 +894,11 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 		foreach ($this[self::OPTIONS] as $option_name => $label)
 		{
 			$child[self::LABEL] = $label;
-			$child['name'] = $name . '[' . $option_name . ']';
+			$child['name'] = $name ? $name . '[' . $option_name . ']' : $option_name;
 			$child['checked'] = !empty($selected[$option_name]);
 			$child['disabled'] = $disabled || !empty($disabled_list[$option_name]);
 			$child['data-key'] = $option_name;
-			$child['data-name'] = $name;
+			$child['data-name'] = $name ?: $option_name;
 
 			$html .= $child;
 		}
@@ -1155,6 +1162,12 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 	protected function render_outer_html()
 	{
 		$inner = $this->render_inner_html();
+
+		if ($inner === null && $this->tag_name === 'div')
+		{
+			throw new ElementIsEmpty;
+		}
+
 		$attributes = [];
 		$dataset = [];
 
@@ -1293,6 +1306,11 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 			$class .= ' required';
 		}
 
+		if ($this['disabled'])
+		{
+			$class .= ' disabled';
+		}
+
 		switch ($this[self::LABEL_POSITION] ?: 'after')
 		{
 			case 'above': return <<<EOT
@@ -1339,7 +1357,7 @@ EOT;
 	 */
 	protected function decorate_with_inline_help($html, $help)
 	{
-		return $html . '<span class="help-inline">' . $help . '</span>';
+		return $html . '<div class="help-inline text-muted">' . $help . '</div>';
 	}
 
 	/**
@@ -1352,7 +1370,7 @@ EOT;
 	 */
 	protected function decorate_with_description($html, $description)
 	{
-		return $html . '<div class="element-description help-block">' . $description . '</div>';
+		return $html . '<div class="element-description text-muted">' . $description . '</div>';
 	}
 
 	/**
@@ -1428,7 +1446,12 @@ EOT;
 
 		if ($validator)
 		{
-			if ($validator instanceof \Closure)
+			if (is_string($validator) && class_exists($validator))
+			{
+				$validator = new $validator;
+			}
+
+			if ($validator instanceof \Closure || $validator instanceof Validator)
 			{
 				return $validator($errors, $this, $value);
 			}
