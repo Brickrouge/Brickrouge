@@ -45,7 +45,7 @@ class DropdownMenu extends Element
 				continue;
 			}
 
-			$html .= '<li' . ((string) $key === (string) $value ? ' class="active"' : '') . '>';
+			$html .= '<li' . ((string) $key === (string) $value ? ' class="dropdown-item active"' : ' class="dropdown-item"') . '>';
 
 			if ($option instanceof Element)
 			{
