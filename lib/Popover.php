@@ -41,10 +41,16 @@ class Popover extends Element
 	const FIT_CONTENT = '#fit-content';
 
 	/**
-	 * Placement of the popover relative to its anchor, one of `before`, `after`, `above`,
-	 * `below`, `vertical`, `horizontal` or `auto`.
+	 * Placement of the popover relative to its anchor, one of `PLACEMENT_*`.
 	 */
 	const PLACEMENT = '#placement';
+	const PLACEMENT_TOP = 'top';
+	const PLACEMENT_RIGHT = 'right';
+	const PLACEMENT_BOTTOM = 'bottom';
+	const PLACEMENT_LEFT = 'left';
+	const PLACEMENT_VERTICAL = 'vertical';
+	const PLACEMENT_HORIZONTAL = 'horizontal';
+	const PLACEMENT_AUTO = 'auto';
 
 	/**
 	 * Optional title of the popover.
@@ -73,6 +79,8 @@ class Popover extends Element
 
 	/**
 	 * Adds the 'fit-content' class name if the {@link FIT_CONTENT} attribute is truthy.
+	 *
+	 * @inheritdoc
 	 */
 	protected function alter_class_names(array $class_names)
 	{
@@ -89,6 +97,8 @@ class Popover extends Element
 	/**
 	 * Adds the anchor specified using the {@link ANCHOR} special attribute to the dataset before
 	 * it is rendered.
+	 *
+	 * @inheritdoc
 	 */
 	protected function alter_dataset(array $dataset)
 	{
@@ -103,6 +113,8 @@ class Popover extends Element
 	/**
 	 * The inner HTML is wrapped in a number of DIV elements, and the title is used a the popover
 	 * title.
+	 *
+	 * @inheritdoc
 	 */
 	protected function render_inner_html()
 	{
@@ -123,7 +135,7 @@ class Popover extends Element
 		}
 
 		return <<<EOT
-<div class="arrow"></div>
+<div class="popover-arrow"></div>
 <div class="popover-inner">$title<div class="popover-content">$content</div>$actions</div>
 EOT;
 	}
