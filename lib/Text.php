@@ -60,7 +60,7 @@ class Text extends Element
 		}
 
 		return <<<EOT
-<span class="add-on">{$addon}</span>
+<span class="input-group-addon">{$addon}</span>
 EOT;
 	}
 
@@ -98,7 +98,7 @@ EOT;
 	 */
 	protected function decorate_with_prepend($html, $addon)
 	{
-		return '<div class="input-prepend">' . $this->render_addon($addon) . $html . '</div>';
+		return '<div class="input-group">' . $this->render_addon($addon) . $html . '</div>';
 	}
 
 	/**
@@ -111,6 +111,6 @@ EOT;
 	 */
 	protected function decorate_with_append($html, $addon)
 	{
-		return '<div class="input-append">' . $html . $this->render_addon($addon) . '</div>';
+		return '<div class="input-group">' . $html . $this->render_addon($addon) . '</div>';
 	}
 }
