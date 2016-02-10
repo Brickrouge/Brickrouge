@@ -1,20 +1,13 @@
 BRICKROUGE = ./assets/brickrouge
-BRICKROUGE_LESS = ./lib/brickrouge.less
-BRICKROUGE_UNCOMPRESSED = ./assets/brickrouge-uncompressed
-BRICKROUGE_RESPONSIVE_LESS = ./lib/responsive.less
-BRICKROUGE_RESPONSIVE = ./assets/responsive
-BRICKROUGE_RESPONSIVE_UNCOMPRESSED = ./assets/responsive-uncompressed
-BRICKROUGE_LITE = ./assets/brickrouge-lite
-BRICKROUGE_LITE_UNCOMPRESSED = ./assets/brickrouge-lite-uncompressed
-BRICKROUGE_LITE_TMP = '/tmp/brickrouge-lite/'
-BRICKROUGE_LITE_LESS = ${BRICKROUGE_LITE_TMP}brickrouge.less
+BRICKROUGE_UNCOMPRESSED = ./build/tmp/brickrouge-uncompressed
 
+JS_COMPILER = cat
 JS_COMPRESSOR = curl -X POST -s --data-urlencode 'js_code@$^' --data-urlencode 'utf8=1' http://marijnhaverbeke.nl/uglifyjs
 #JS_COMPRESSOR = cat $^ # uncomment to create uncompressed files
 
 CSS_COMPILER ?= `which sass`
 CSS_COMPRESSOR = curl -X POST -s --data-urlencode 'input@$^' http://cssminifier.com/raw
-CSS_COMPRESSOR = cat $^ # uncomment to create uncompressed files
+#CSS_COMPRESSOR = cat $^ # uncomment to create uncompressed files
 
 # CSS
 
@@ -25,8 +18,8 @@ CSS_FILES = \
 	lib/form.scss \
 	lib/popover.scss
 
-CSS_COMPRESSED = assets/brickrouge.css
-CSS_UNCOMPRESSED = assets/brickrouge-uncompressed.css
+CSS_COMPRESSED = $(BRICKROUGE).css
+CSS_UNCOMPRESSED = $(BRICKROUGE_UNCOMPRESSED).css
 
 # JavaScript
 
@@ -42,8 +35,8 @@ JS_FILES = \
 	lib/searchbox.js \
 	lib/carousel.js
 
-JS_COMPRESSED = assets/brickrouge.js
-JS_UNCOMPRESSED = assets/brickrouge-uncompressed.js
+JS_COMPRESSED = $(BRICKROUGE).js
+JS_UNCOMPRESSED = $(BRICKROUGE_UNCOMPRESSED).js
 
 all: \
 	$(JS_COMPRESSED) \
@@ -55,22 +48,24 @@ $(JS_COMPRESSED): $(JS_UNCOMPRESSED)
 	$(JS_COMPRESSOR) >$@
 
 $(JS_UNCOMPRESSED): $(JS_FILES)
-	cat $^ >$@
+	@mkdir -p ./build/tmp
+	$(JS_COMPILER) $^ >$@
 
 $(CSS_COMPRESSED): $(CSS_UNCOMPRESSED)
 	$(CSS_COMPRESSOR) >$@
 
 $(CSS_UNCOMPRESSED): $(CSS_FILES)
+	@mkdir -p ./build/tmp
 	$(CSS_COMPILER) lib/brickrouge.scss >$@
 
 watch:
 	echo "Watching SCSS files..."
-	$(CSS_COMPILER) --watch lib/brickrouge.scss:assets/brickrouge.css
+	$(CSS_COMPILER) --watch lib/brickrouge.scss:$(BRICKROUGE).css
 
 # customization
 
 PACKAGE_NAME = brickrouge/brickrouge
-PACKAGE_VERSION = 2.3.0
+PACKAGE_VERSION = 3.0.0
 
 # do not edit the following lines
 
