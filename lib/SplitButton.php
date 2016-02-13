@@ -37,27 +37,36 @@ class SplitButton extends Element
 	/**
 	 * Renders the button and drop down trigger button.
 	 *
-	 * The `btn-primary`, `btn-danger`, `btn-success` and `btn-info` class names are forwarded to
-	 * the buttons.
+	 * The `btn-*` class names are forwarded to the buttons.
+	 *
+	 * @inheritdoc
 	 */
 	protected function render_inner_html()
 	{
 		$label = parent::render_inner_html();
+		$class = parent::render_class(array_filter($this->class_names, function ($class_name) {
 
-		$class_names = array_intersect_key([
+			return strpos($class_name, 'btn-') === 0 || $class_name === 'disabled';
 
-			'btn-primary' => true,
-			'btn-danger' => true,
-			'btn-success' => true,
-			'btn-info' => true
-
-		], $this->class_names);
-
-		$class = implode(' ', array_keys(array_filter($class_names)));
+		}, ARRAY_FILTER_USE_KEY));
 
 		return $this->render_splitbutton_label($label, $class)
 		. $this->render_splitbutton_toggle($class)
 		. $this->resolve_options($this[self::OPTIONS]);
+	}
+
+	/**
+	 * Removes the `btn-*` class names and adds the `btn-group` class.
+	 *
+	 * @inheritdoc
+	 */
+	protected function render_class(array $class_names)
+	{
+		return parent::render_class(array_filter($class_names, function ($class_name) {
+
+				return strpos($class_name, 'btn-') === false;
+
+			}, ARRAY_FILTER_USE_KEY) + [ 'btn-group' => true ]);
 	}
 
 	/**
@@ -72,7 +81,7 @@ class SplitButton extends Element
 	protected function render_splitbutton_label($label, $class)
 	{
 		return <<<EOT
-<a href="javascript:void()" class="btn $class">$label</a>
+<button class="btn $class">$label</button>
 EOT;
 	}
 
@@ -86,28 +95,8 @@ EOT;
 	protected function render_splitbutton_toggle($class)
 	{
 		return <<<EOT
-<a href="javascript:void()" class="btn dropdown-toggle $class" data-toggle="dropdown"><span class="caret"></span></a>
+<button class="btn dropdown-toggle $class" data-toggle="dropdown"><span class="sr-only">Toggle Dropdown</span></button>
 EOT;
-	}
-
-	/**
-	 * Removes the `btn-primary`, `btn-danger`, `btn-success` and `btn-info` class names and adds
-	 * the `btn-group` class.
-	 *
-	 * @param array $class_names
-	 *
-	 * @return string
-	 */
-	protected function render_class(array $class_names)
-	{
-		return parent::render_class([
-
-			'btn-primary' => false,
-			'btn-danger' => false,
-			'btn-success' => false,
-			'btn-info' => false
-
-		] + $class_names + [ 'btn-group' => true ]);
 	}
 
 	/**
