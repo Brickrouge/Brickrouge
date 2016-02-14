@@ -136,7 +136,7 @@ class Popover extends Element
 
 		return <<<EOT
 <div class="popover-arrow"></div>
-<div class="popover-inner">$title<div class="popover-content">$content</div>$actions</div>
+<div class="popover-inner">$title<div class="popover-content clearfix">$content</div>$actions</div>
 EOT;
 	}
 
