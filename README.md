@@ -141,10 +141,13 @@ Here is a list of the classes included with Brickrouge:
 
 ## Widgets
 
-Brickrouge's widgets are what is generally called [custom HTML elements](https://www.google.com/search?q=html+custome+elements).
-Widget types are associated with a JavaScript constructor and Brickrouge makes sure that widgets
-are constructed when the DOM is ready or updated, or when the `widget` custom property of an
-element is obtained.
+Brickrouge's widgets are what is generally called [custom HTML
+elements](https://www.google.com/search?q=html+custome+elements). Widget types are associated with a
+JavaScript constructor and Brickrouge makes sure that widgets are constructed when the DOM is ready
+or updated, or when the `widget` custom property of an element is obtained.
+
+> All widgets mechanisms are handled by the [Brickrouge.js][] library, you might want to check it
+out.
 
 The following is an example of a very simple widget, when it is constructed its background is set
 to the color defined by the data attribute `color`:
@@ -177,16 +180,27 @@ The widget constructor always takes as arguments the element for which the widge
 and the normalized data attributes of that element.
 
 ```js
-Brickrouge.Widget.Color = new Class({
+!function (Brickrouge) {
 
-	initialize: function(el, options)
-	{
-		el = document.id(el)
-		el.setStyle('background', options.color)
-		el.innerHTML = options.colorName
-	}
+	var Color = new Class({
 
-});
+		initialize: function(el, options) {
+
+			el = document.id(el)
+			el.setStyle('background', options.color)
+			el.innerHTML = options.colorName
+
+		}
+
+	})
+
+	Brickrouge.register('Color', function (element, options) {
+
+		return new Color(element, options)
+
+	})
+
+} (Brickrouge);
 ```
 
 
@@ -196,12 +210,15 @@ Brickrouge.Widget.Color = new Class({
 ### Obtaining the widget associated with an element
 
 The `widget` custom property is used to obtain the widget associated with an element (if any). If
-the widget has not yet been created, getting the property creates it. The element
-associated with a widget is always available through its `element` property.
+the widget has not yet been created, getting the property creates it. The element associated with a
+widget is always available through its `element` property.
 
 ```js
 var color = document.id('my-color').get('widget')
-, element = color.element
+// or
+var color = Brickrouge.from(document.id('my-color'))
+
+console.log('element and options:', color.element, color.options)
 ```
 
 
@@ -210,10 +227,10 @@ var color = document.id('my-color').get('widget')
 
 ### When a widget is constructed
 
-When a widget is constructed the `brickrouge.widget` event is fired on the window object.
+The `widget` event is fired after a widget has been constructed.
 
 ```js
-window.addEvent('brickrouge.widget', function(widget) {
+Brickrouge.attachObserver('widget', function(widget) {
 
 	console.log('A widget has just been constructed:', widget)
 
@@ -226,13 +243,13 @@ window.addEvent('brickrouge.widget', function(widget) {
 
 ### When the document is updated
 
-The `brickrouge.update` event is fired when the `Brickrouge.updateDocument()` method is invoked.
-The event is fired just before widgets are constructed.
+The `parse` event is fired by the `Brickrouge.parse()` method, after the fragment has been parsed.
 
 ```js
-window.addEvent('brickrouge.update', function(fragment) {
+Brickrouge.attachObserver('parse', function(fragment, widgets) {
 
-	console.log('The document was updated by the following element:', fargement)
+	console.log('The document was updated by the following element:', fragment)
+	console.log('The following widgets were created:', widgets)
 
 })
 ```
@@ -243,12 +260,12 @@ window.addEvent('brickrouge.update', function(fragment) {
 ### Constructing widgets _en masse_
 
 Widgets are first created when the `domready` event is fired. Later, if the document is updated
-with possibly new widgets, the `Brickrouge.updateDocument()` is used to construct the new widgets.
+with possibly new widgets, the `Brickrouge.parse()` is used to construct the new widgets.
 
 ```js
 // considering that `fragment` contains the new elements that were added to the DOM
 
-Brickrouge.updateDocument(fragment)
+Brickrouge.parse(fragment)
 ```
 
 
@@ -264,11 +281,7 @@ For convenience, hidden values can be specified using `HIDDEN`.
 ```php
 <?php
 
-use Brickrouge\Button;
-use Brickrouge\Element;
-use Brickrouge\Form;
-use Brickrouge\Group;
-use Brickrouge\Text;
+namespace Brickrouge;
 
 echo new Form([
 
@@ -322,15 +335,15 @@ The produced HTML, formatted for readability:
 	<input type="hidden" name="hidden2" value="two" />
 
 	<fieldset class="group--primary group no-legend">
-		<div class="control-group control-group--sender-name required">
-			<label for="autoid--sender-name" class="controls-label">Sender's name</label>
+		<div class="form-group form-group--sender-name required">
+			<label for="autoid--sender-name" class="form-control-label">Sender's name</label>
 			<div class="controls">
 				<input required="required" type="text" name="sender_name" id="autoid--sender-name" />
 			</div>
 		</div>
 
-		<div class="control-group control-group--sender-email required">
-			<label for="autoid--sender-email" class="controls-label">Sender's e-mail</label>
+		<div class="form-group form-group--sender-email required">
+			<label for="autoid--sender-email" class="form-control-label">Sender's e-mail</label>
 			<div class="controls">
 				<input required="required" type="text" name="sender_email" id="autoid--sender-email" />
 			</div>
@@ -411,7 +424,7 @@ define('Brickrouge\ACCESSIBLE_ASSETS', __DIR__ . DIRECTORY_SEPARATOR . 'public' 
 <link rel="stylesheet" href="<?= Brickrouge\Document::resolve_url(Brickrouge\ASSETS . 'responsive.css') ?>" type="text/css">
 ```
 
-Note: The directory must be writable by PHP.
+> **Note:** The directory must be writable by PHP.
 
 
 
@@ -419,13 +432,10 @@ Note: The directory must be writable by PHP.
 
 ## Patching Brickrouge
 
-Brickrouge was initially designed to work with the framework
-[ICanBoogie](https://github.com/ICanBoogie/ICanBoogie). The project has evolved to
-stand alone and now provides means to patch critical features such as translation, errors handling
-or form storing/retrieving. Fallback for each feature are provided so you can patch what you need
-and leave the rest.
-
-Note: If Brickrouge detects ICanBoogie it will take full advantage of the framework.
+Brickrouge was initially designed to work with the framework [ICanBoogie][]. The project has evolved
+to stand alone and now provides means to patch critical features such as translation, errors
+handling or form storing/retrieving. Fallback for each feature are provided so you can patch what
+you need and leave the rest.
 
 
 
@@ -463,26 +473,25 @@ Brickrouge\Helpers::patch('t', 'ICanBoogie\I18n\t');
 
 ## Building Brickrouge
 
-Brickrouge comes with pre-built CSS and JavaScript files, compressed and non-compressed, but you
-might want to play with its source, or use it as a Phar, in which case you might probably want
-to build it yourself. A Makefile is available for this purpose.
+Brickrouge comes with pre-built compressed CSS and JavaScript files, but you might want to play with
+its source, in which case you might probably want to build it yourself. A Makefile is available for
+this purpose.
 
-Open a terminal, go to its directory and type "make":
+Open a terminal, go to Brickrouge directory, and type "make":
 
-	$ cd /path/to/Brickrouge/
-	$ make
+```bash
+$ cd /path/to/Brickrouge/
+$ make
+```
 
-This consolidates the various CSS and JavaScript files and create compressed files in the
-"assets/" directory. Files containing only the differences with Bootstrap are also
-created ("-lite.css"). The following files are created:
+This consolidates the various CSS and JavaScript files and create compressed files in the "assets/"
+directory. The following files are created:
 
-* [brickrouge-lite.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge-lite.css)
 * [brickrouge.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge.css)
 * [brickrouge.js](https://github.com/Brickrouge/Brickrouge/blob/master/assets/brickrouge.js)
-* [responsive.css](https://github.com/Brickrouge/Brickrouge/blob/master/assets/responsive.css)
 
-Note that you need the [LESS](http://lesscss.org/) compiler to compile the CSS files. JavaScript
-files are compressed using the [online UglifyJS JavaScript minification](http://marijnhaverbeke.nl/uglifyjs/).
+Note that you need the [SASS](http://sass-lang.com/) compiler to compile the CSS files. JavaScript
+files are compressed using the online [Closure](https://developers.google.com/closure/) compiler.
 
 
 
@@ -504,7 +513,7 @@ For more information and a demonstration please visit the [Brickrouge homepage](
 
 ## Requirements
 
-The package requires PHP 5.4 or later.
+The package requires PHP 5.5 or later.
 The following packages are also required: [icanboogie/prototype](https://packagist.org/packages/icanboogie/prototype)
 and [icanboogie/errors](https://packagist.org/packages/icanboogie/errors).
 
@@ -537,7 +546,9 @@ be cloned with the following command line:
 
 ## Documentation
 
-You can generate the documentation for the package and its dependencies with the `make doc` command. The documentation is generated in the `build/docs` directory. [ApiGen](http://apigen.org/) is required. The directory can later be cleaned with the `make clean` command.
+You can generate the documentation for the package and its dependencies with the `make doc` command.
+The documentation is generated in the `build/docs` directory. [ApiGen](http://apigen.org/) is
+required. The directory can later be cleaned with the `make clean` command.
 
 
 
@@ -545,7 +556,11 @@ You can generate the documentation for the package and its dependencies with the
 
 ## Testing
 
-The test suite is ran with the `make test` command. [PHPUnit](https://phpunit.de/) and [Composer](http://getcomposer.org/) need to be globally available to run the suite. The command installs dependencies as required. The `make test-coverage` command runs test suite and also creates an HTML coverage report in "build/coverage". The directory can later be cleaned with the `make clean` command.
+The test suite is ran with the `make test` command. [PHPUnit](https://phpunit.de/) and
+[Composer](http://getcomposer.org/) need to be globally available to run the suite. The command
+installs dependencies as required. The `make test-coverage` command runs test suite and also creates
+an HTML coverage report in "build/coverage". The directory can later be cleaned with the `make
+clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
@@ -574,4 +589,5 @@ The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 [Searchbox]: http://brickrouge.org/docs/class-Brickrouge.Searchbox.html
 [Text]: http://brickrouge.org/docs/class-Brickrouge.Text.html
 
-[ICanBoogie]: http://icanboogie.org/
+[ICanBoogie]: https://github.com/ICanBoogie/ICanBoogie
+[Brickrouge.js]: https://github.com/Brickrouge/Brickrouge.js

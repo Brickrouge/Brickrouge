@@ -8,7 +8,7 @@ use Brickrouge\Text;
 
 echo new Form([
 
-	Form::RENDERER => 'Group',
+	Form::RENDERER => Form\GroupRenderer::class,
 
 	Form::HIDDENS => [
 
