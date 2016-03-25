@@ -55,6 +55,16 @@ class Ranger extends Element
 
 		], [ 'scope' => 'ranger.element' ]);
 
+/*
+		$rc = <<<EOT
+<div class="input-group">
+	<span class="input-group-addon">From</span>
+	$start_final
+	<span class="input-group-addon">to $finish on $count</span>
+</div>
+EOT;
+*/
+
 		if ($count > $limit && !$this[self::T_NO_ARROWS])
 		{
 			$url = $this->getURLBase();

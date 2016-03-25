@@ -9,6 +9,11 @@
 	outline: 0 none;
 }
 
+.widget-file .alert {
+	padding: .375rem 1rem;
+	line-height: 1.5;
+}
+
 .widget-file .trigger input {
 	position: fixed;
 	left: -8000px;
@@ -71,9 +76,6 @@
 .widget-file .alert-danger {
 	display: inline-block;
 	margin-bottom: 0;
-	line-height: 20px;
-	padding-top: 4px;
-	padding-bottom: 4px;
 	max-width: 76ex;
 }
 

@@ -214,7 +214,7 @@ the widget has not yet been created, getting the property creates it. The elemen
 widget is always available through its `element` property.
 
 ```js
-var color = document.id('my-color').get('widget')
+var color = Brickrouge.Widget.from(document.id('my-color'))
 // or
 var color = Brickrouge.from(document.id('my-color'))
 
@@ -225,14 +225,14 @@ console.log('element and options:', color.element, color.options)
 
 
 
-### When a widget is constructed
+### When a widget has been built
 
-The `widget` event is fired after a widget has been constructed.
+The `widget` event is fired after a widget has been built.
 
 ```js
-Brickrouge.attachObserver('widget', function(widget) {
+Brickrouge.observe('widget', function(widget) {
 
-	console.log('A widget has just been constructed:', widget)
+	console.log('A widget has been built:', widget)
 
 })
 ```
@@ -241,32 +241,21 @@ Brickrouge.attachObserver('widget', function(widget) {
 
 
 
-### When the document is updated
+### When the DOM is updated
 
-The `parse` event is fired by the `Brickrouge.parse()` method, after the fragment has been parsed.
+The `update` event is fired after the DOM was updated.
 
 ```js
-Brickrouge.attachObserver('parse', function(fragment, widgets) {
+Brickrouge.observe('update', function(fragment, elements, widgets) {
 
-	console.log('The document was updated by the following element:', fragment)
-	console.log('The following widgets were created:', widgets)
+    console.log('This fragment updated the DOM:', fragment)
+    console.log('These elements are new to:', elements)
+    console.log('These widgets have been built:', widgets)
 
 })
 ```
 
-
-
-
-### Constructing widgets _en masse_
-
-Widgets are first created when the `domready` event is fired. Later, if the document is updated
-with possibly new widgets, the `Brickrouge.parse()` is used to construct the new widgets.
-
-```js
-// considering that `fragment` contains the new elements that were added to the DOM
-
-Brickrouge.parse(fragment)
-```
+> **Note:** The event is fired a first time after **Brickrouge** is ran.
 
 
 

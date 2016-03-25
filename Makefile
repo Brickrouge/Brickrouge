@@ -1,9 +1,9 @@
 BRICKROUGE = ./assets/brickrouge
-BRICKROUGE_UNCOMPRESSED = ./build/tmp/brickrouge-uncompressed
+BRICKROUGE_JS = ./node_modules/brickrouge/dist/brickrouge.js
+BRICKROUGE_JS_VERSION = master
 
-JS_COMPILER = cat
-JS_COMPRESSOR = curl -X POST -s --data-urlencode 'js_code@$^' --data-urlencode 'utf8=1' http://marijnhaverbeke.nl/uglifyjs
-#JS_COMPRESSOR = cat $^ # uncomment to create uncompressed files
+JS_COMPILER = `which webpack`
+JS_COMPILER_OPTIONS = -p                    # comment to disable compression
 CSS_COMPILER = `which sass`
 CSS_COMPILER_OPTIONS = --style compressed   # comment to disable compression
 
@@ -15,23 +15,25 @@ JS_FILES = $(shell ls lib/*.js)
 CSS_FILES = $(shell ls lib/*.scss)
 
 all: \
+	$(BRICKROUGE_JS) \
 	$(JS_COMPRESSED) \
-	$(JS_UNCOMPRESSED) \
 	$(CSS_COMPRESSED)
 
-$(JS_COMPRESSED): $(JS_UNCOMPRESSED)
-	$(JS_COMPRESSOR) >$@
-
-$(JS_UNCOMPRESSED): $(JS_FILES)
-	@mkdir -p ./build/tmp
-	$(JS_COMPILER) $^ >$@
+$(JS_COMPRESSED): $(JS_FILES)
+	$(JS_COMPILER) $(JS_COMPILER_OPTIONS)
 
 $(CSS_COMPRESSED): $(CSS_FILES)
 	$(CSS_COMPILER) $(CSS_COMPILER_OPTIONS) lib/Brickrouge.scss:$@
 
+$(BRICKROUGE_JS): node_modules
+
+node_modules:
+	npm install
+
 watch:
-	echo "Watching SCSS files..."
-	$(CSS_COMPILER) --watch lib/Brickrouge.scss:$(BRICKROUGE).css
+	echo "Watching files..."
+	$(CSS_COMPILER) --watch lib/Brickrouge.scss:$(BRICKROUGE).css && \
+	$(JS_COMPILER)  --watch --progress --colors
 
 # customization
 
@@ -71,5 +73,3 @@ clean:
 	@rm -fR build
 	@rm -fR vendor
 	@rm -f composer.lock
-
-.PHONY: build watch

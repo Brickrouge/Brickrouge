@@ -1,4 +1,5 @@
 .sass-cache
 build
 composer.lock
+node_modules
 vendor
