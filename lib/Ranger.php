@@ -40,15 +40,17 @@ class Ranger extends Element
 				'name' => 'start',
 				'value' => $start,
 				'size' => 4,
-				'class' => 'measure'
+				'class' => 'measure form-control form-control-inline'
 
 			]);
 		}
 
+		$finish = $start + $limit > $count ? $count : $start + $limit - 1;
+
 		$rc = $this->t('From :start to :finish on :max', [
 
 			':start' => $start_final,
-			':finish' => $start + $limit > $count ? $count : $start + $limit - 1,
+			':finish' => $finish,
 			':max' => $count
 
 		], [ 'scope' => 'ranger.element' ]);
