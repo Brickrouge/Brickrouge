@@ -156,10 +156,15 @@ class Document extends Object
 	static private function resolve_root()
 	{
 		$stack = debug_backtrace();
+		$excluded = [
+
+			__FILE__,
+			__DIR__ . DIRECTORY_SEPARATOR . 'AssetsCollector.php'
+		];
 
 		foreach ($stack as $trace)
 		{
-			if (empty($trace['file']) || $trace['file'] == __FILE__)
+			if (empty($trace['file']) || in_array($trace['file'], $excluded))
 			{
 				continue;
 			}
