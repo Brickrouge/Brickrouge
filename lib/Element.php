@@ -12,7 +12,7 @@
 namespace Brickrouge;
 
 use ICanBoogie\Errors;
-use ICanBoogie\Object;
+use ICanBoogie\Prototyped;
 
 /**
  * An HTML element.
@@ -42,7 +42,7 @@ use ICanBoogie\Object;
  *
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
  */
-class Element extends Object implements \ArrayAccess, \IteratorAggregate, HTMLStringInterface
+class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HTMLStringInterface
 {
 	#
 	# special elements

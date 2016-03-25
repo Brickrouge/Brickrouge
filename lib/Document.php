@@ -11,15 +11,14 @@
 
 namespace Brickrouge;
 
-use ICanBoogie\FileCache;
-use ICanBoogie\Object;
+use ICanBoogie\Prototyped;
 
 /**
  * An HTML document.
  *
  * @property $assets array The Javascript and CSS assets used by the document.
  */
-class Document extends Object
+class Document extends Prototyped
 {
 	public $body;
 
