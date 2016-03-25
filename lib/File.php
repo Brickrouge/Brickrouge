@@ -109,7 +109,7 @@ class File extends Element
 		])
 
 		. ' <div class="alert alert-danger"></div>'
-		. ' <label class="btn trigger"><i class="icon-file"></i> '
+		. ' <label class="btn btn-secondary trigger"><i class="icon-file"></i> '
 		. $this->t($this[self::BUTTON_LABEL], [], [ 'scope' => 'button' ])
 		. '<input type="file" /></label>';
 
