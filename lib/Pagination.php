@@ -17,7 +17,12 @@ class Pagination extends Element
 	const LIMIT = '#pagination-limit';
 	const GAP = '#pagination-gap';
 	const NO_ARROWS = '#pagination-no-arrows';
-	const POSITION = '#pagination-position';
+
+	/**
+	 * @deprecated
+	 */
+	const POSITION = '#pagination-page';
+	const PAGE = '#pagination-page';
 	const SEPARATOR = '#pagination-separator';
 	const URLBASE = '#pagination-urlbase';
 	const USING = '#pagination-using';
@@ -52,7 +57,7 @@ class Pagination extends Element
 		$gap = '<li class="disabled">' . $this[self::GAP] . '</li>';
 		$separator = $this[self::SEPARATOR];
 
-		$on_page = $this[self::POSITION] + 1;
+		$on_page = $this[self::PAGE] + 1;
 
 		$html = '';
 
