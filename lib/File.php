@@ -24,8 +24,8 @@ class File extends Element
 	{
 		parent::add_assets($document);
 
-		$document->js->add('file.js');
-		$document->css->add('file.css');
+		$document->js->add(__DIR__ . '/File.js');
+		$document->css->add(__DIR__ . '/File.css');
 	}
 
 	public function __construct(array $attributes = [])

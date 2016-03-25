@@ -27,11 +27,11 @@ $(JS_UNCOMPRESSED): $(JS_FILES)
 	$(JS_COMPILER) $^ >$@
 
 $(CSS_COMPRESSED): $(CSS_FILES)
-	$(CSS_COMPILER) $(CSS_COMPILER_OPTIONS) lib/brickrouge.scss:$@
+	$(CSS_COMPILER) $(CSS_COMPILER_OPTIONS) lib/Brickrouge.scss:$@
 
 watch:
 	echo "Watching SCSS files..."
-	$(CSS_COMPILER) --watch lib/brickrouge.scss:$(BRICKROUGE).css
+	$(CSS_COMPILER) --watch lib/Brickrouge.scss:$(BRICKROUGE).css
 
 # customization
 
