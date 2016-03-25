@@ -70,6 +70,8 @@ doc: vendor
 	--template-theme "bootstrap"
 
 clean:
+	@rm -fR .sass-cache
 	@rm -fR build
 	@rm -fR vendor
 	@rm -f composer.lock
+	@rm -fR node_modules
