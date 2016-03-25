@@ -38,7 +38,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_ERROR ])
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_DANGER ])
 		);
 	}
 
@@ -96,7 +96,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_ERROR, Alert::HEADING => self::HEADING ])
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_DANGER, Alert::HEADING => self::HEADING ])
 		);
 	}
 
@@ -168,7 +168,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_ERROR, Alert::DISMISSIBLE => true ])
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_DANGER, Alert::DISMISSIBLE => true ])
 		);
 	}
 
