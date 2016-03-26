@@ -1,5 +1,5 @@
 BRICKROUGE = ./assets/brickrouge
-BRICKROUGE_JS = ./node_modules/brickrouge/dist/brickrouge.js
+BRICKROUGE_JS = ./node_modules/brickrouge/dist/brickrouge-uncompressed.js
 BRICKROUGE_JS_VERSION = master
 
 JS_COMPILER = `which webpack`
