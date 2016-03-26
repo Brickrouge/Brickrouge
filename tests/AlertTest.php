@@ -33,7 +33,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-error">'
+			'<div class="alert alert-danger">'
 			. Alert::DISMISS_BUTTON
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
@@ -90,7 +90,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-error alert-block">'
+			'<div class="alert alert-danger">'
 			. Alert::DISMISS_BUTTON
 			. '<h4 class="alert-heading">' . self::HEADING . '</h4>'
 			. '<div class="content">' . self::MESSAGE . '</div>'
@@ -152,11 +152,11 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals
 		(
-			'<div class="alert undismissible">'
+			'<div class="alert alert-warning" role="alert">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::DISMISSIBLE => true ])
+			(string) new Alert(self::MESSAGE)
 		);
 	}
 
@@ -164,11 +164,11 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-error undismissible">'
+			'<div class="alert alert-danger" role="alert">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_DANGER, Alert::DISMISSIBLE => true ])
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_DANGER ])
 		);
 	}
 
@@ -176,11 +176,11 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-info undismissible">'
+			'<div class="alert alert-info" role="alert">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_INFO, Alert::DISMISSIBLE => true ])
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_INFO ])
 		);
 	}
 
@@ -188,11 +188,11 @@ class AlertTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals
 		(
-			'<div class="alert alert-success undismissible">'
+			'<div class="alert alert-success" role="alert">'
 			. '<div class="content">' . self::MESSAGE . '</div>'
 			. '</div>',
 
-			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_SUCCESS, Alert::DISMISSIBLE => true ])
+			(string) new Alert(self::MESSAGE, [ Alert::CONTEXT => Alert::CONTEXT_SUCCESS ])
 		);
 	}
 }

@@ -11,8 +11,6 @@
 
 namespace Brickrouge;
 
-use ICanBoogie\Errors;
-
 /**
  * A `<DIV.alert>` element.
  */
@@ -45,7 +43,7 @@ class Alert extends Element
 	/**
 	 * Creates a `<DIV.alert>` element.
 	 *
-	 * @param string|array|Errors $message The alert message is provided as a string,
+	 * @param \Traversable|array|string $message The alert message is provided as a string,
 	 * an array of strings or a {@link Errors} object.
 	 *
 	 * If the message is provided as a string it is used as is. If the message is provided as an
@@ -55,9 +53,6 @@ class Alert extends Element
 	 * Each message is wrapped in a `<P>` element and they are concatenated to create the final
 	 * message.
 	 *
-	 * If the message is an instance of {@link Errors} the {@link CONTEXT} attribute is
-	 * set to {@link CONTEXT_DANGER} in the initial attributes.
-	 *
 	 * @param array $attributes Additional attributes.
 	 */
 	public function __construct($message, array $attributes = [])
@@ -66,7 +61,7 @@ class Alert extends Element
 
 		parent::__construct('div', $attributes + [
 
-			self::CONTEXT => $message instanceof Errors ? self::CONTEXT_DANGER : self::CONTEXT_WARNING,
+			self::CONTEXT => self::CONTEXT_WARNING,
 
 			'class' => 'alert',
 			'role' => 'alert'
@@ -201,11 +196,11 @@ EOT;
 	/**
 	 * Renders errors as an HTML string.
 	 *
-	 * @param Errors $errors
+	 * @param \Traversable|array $errors
 	 *
 	 * @return string
 	 */
-	protected function render_errors(Errors $errors)
+	protected function render_errors($errors)
 	{
 		$message = '';
 
