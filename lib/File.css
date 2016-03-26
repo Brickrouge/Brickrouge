@@ -14,7 +14,7 @@
 	left: -8000px;
 }
 
-.widget-file .alert-error,
+.widget-file .alert-danger,
 .widget-file .reminder,
 .widget-file .trigger {
 	vertical-align: top;
