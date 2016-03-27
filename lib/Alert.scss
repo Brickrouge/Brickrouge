@@ -1,12 +1,13 @@
 .alert {
+	.alert-heading {
+		margin-top: 0;
+	}
 
-  padding: calc(1rem - 1px);
+	p {
+		margin-bottom: 0;
+	}
 
-  p {
-    margin-bottom: 0;
-  }
-
-  p + p {
-    margin-top: 1rem;
-  }
+	p + p {
+		margin-top: 1rem;
+	}
 }
