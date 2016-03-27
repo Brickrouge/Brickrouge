@@ -11,7 +11,6 @@
 
 namespace Brickrouge;
 
-use ICanBoogie\Errors;
 use ICanBoogie\Prototyped;
 
 /**
@@ -176,11 +175,9 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 	const TRANSLATOR = '#translator';
 
 	/**
-	 * Defines the validator of an element. The validator is defined using an array made of a
-	 * callback and a possible userdata array.
+	 * Defines validation rules.
 	 */
-	const VALIDATOR = '#validator';
-	const VALIDATOR_OPTIONS = '#validator-options';
+	const VALIDATION = '#validation';
 
 	/**
 	 * Defines the weight of an element. This attribute can be used to reorder children when
@@ -1426,75 +1423,6 @@ EOT;
 		{
 			return render_exception($e);
 		}
-	}
-
-	/**
-	 * Validates the specified value.
-	 *
-	 * This function uses the validator defined using the {@link VALIDATOR} special attribute to
-	 * validate its value.
-	 *
-	 * @param $value
-	 * @param \ICanBoogie\Errors $errors
-	 *
-	 * @return boolean `true` if  the validation succeed, `false` otherwise.
-	 */
-	public function validate($value, Errors $errors)
-	{
-		$validator = $this[self::VALIDATOR];
-		$options = $this[self::VALIDATOR_OPTIONS];
-
-		if ($validator)
-		{
-			if (is_string($validator) && class_exists($validator))
-			{
-				$validator = new $validator;
-			}
-
-			if ($validator instanceof \Closure || $validator instanceof Validator)
-			{
-				return $validator($errors, $this, $value);
-			}
-
-			list($callback, $params) = $validator + [ 1 => [] ];
-
-			return call_user_func($callback, $errors, $this, $value, $params);
-		}
-
-		#
-		# default validator
-		#
-
-		if (!$options)
-		{
-			return true;
-		}
-
-		switch ($this->type)
-		{
-			case self::TYPE_CHECKBOX_GROUP:
-			{
-				if (isset($options['max-checked']))
-				{
-					$limit = $options['max-checked'];
-
-					if (count($value) > $limit)
-					{
-						$errors[$this->name] = $this->t('Le nombre de choix possible pour le champ %name est limité à :limit', [
-
-							'name' => Form::select_element_label($this),
-							'limit' => $limit
-
-						]);
-
-						return false;
-					}
-				}
-			}
-			break;
-		}
-
-		return true;
 	}
 
 	/**

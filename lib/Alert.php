@@ -11,6 +11,8 @@
 
 namespace Brickrouge;
 
+use ICanBoogie\ErrorCollection;
+
 /**
  * A `<DIV.alert>` element.
  */
@@ -61,7 +63,7 @@ class Alert extends Element
 
 		parent::__construct('div', $attributes + [
 
-			self::CONTEXT => self::CONTEXT_WARNING,
+			self::CONTEXT => $message instanceof ErrorCollection ? self::CONTEXT_DANGER : self::CONTEXT_WARNING,
 
 			'class' => 'alert',
 			'role' => 'alert'
@@ -206,7 +208,7 @@ EOT;
 
 		foreach ($errors as $error)
 		{
-			if ($error === '')
+			if ((string) $error === '')
 			{
 				continue;
 			}

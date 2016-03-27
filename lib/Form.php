@@ -11,12 +11,17 @@
 
 namespace Brickrouge;
 
-use ICanBoogie\Errors;
+use Brickrouge\Validate\FormValidator;
+use Brickrouge\Validate\RenderError;
+use ICanBoogie\ErrorCollection;
+use ICanBoogie\ErrorCollectionIterator;
 
 /**
  * A `<FORM>` element.
+ *
+ * @property FormValidator $validator
  */
-class Form extends Element implements Validator
+class Form extends Element
 {
 	/**
 	 * Set to true to disable all the elements of the form.
@@ -46,11 +51,6 @@ class Form extends Element implements Validator
 	const LABEL_COMPLEMENT = '#form-label-complement';
 
 	/**
-	 * If true possible alert messages are not displayed.
-	 */
-	const NO_LOG = '#form-no-log';
-
-	/**
 	 * Values for the elements of the form. The form recursively iterates through its
 	 * children to set their values, if their values it not already set (e.g. non null).
 	 */
@@ -73,6 +73,11 @@ class Form extends Element implements Validator
 	 * Defines form errors.
 	 */
 	const ERRORS = '#form-errors';
+
+	/**
+	 * Defines form validator.
+	 */
+	const VALIDATOR = '#form-validator';
 
 	/**
 	 * Returns a unique form name.
@@ -143,25 +148,13 @@ class Form extends Element implements Validator
 	{
 		$values = $this[self::VALUES];
 		$disabled = $this[self::DISABLED];
+		$errors = $this[self::ERRORS] ?: [];
 
-		$name = $this->name;
-		$errors = null;
-
-		if ($name)
-		{
-			$errors = $this[self::ERRORS];
-		}
-
-		if ($values || $disabled || $errors)
+		if ($values || $disabled || count($errors))
 		{
 			if ($values)
 			{
 				$values = array_flatten($values);
-			}
-
-			if (!$errors)
-			{
-				$errors = new Errors();
 			}
 
 			$this->alter_elements($values, $disabled, $errors);
@@ -196,96 +189,6 @@ class Form extends Element implements Validator
 	public function getIterator()
 	{
 		return new \RecursiveIteratorIterator(new RecursiveIterator($this), \RecursiveIteratorIterator::SELF_FIRST);
-	}
-
-	/**
-	 * The required elements of the form.
-	 *
-	 * @var Element[]
-	 */
-	protected $required = [];
-
-	/**
-	 * Booleans found in the form.
-	 *
-	 * @var string[]
-	 */
-	protected $booleans = [];
-
-	/**
-	 * Elements of the form with a validator.
-	 *
-	 * @var Element[]
-	 */
-	protected $validators = [];
-
-	/**
-	 * Validator callback of the form.
-	 *
-	 * @var callable
-	 */
-	protected $validator;
-
-	/**
-	 * The method alters the {@link $required}, {@link $validators} and {@link $validator}
-	 * properties required for the serialization.
-	 *
-	 * The following properties are exported: name, required, validators and validator.
-	 *
-	 * @return array
-	 */
-	public function __sleep()
-	{
-		$required = [];
-		$booleans = [];
-		$validators = [];
-
-		foreach ($this as $element)
-		{
-			$name = $element['name'];
-
-			if (!$name)
-			{
-				continue;
-			}
-
-			if ($element[Element::REQUIRED])
-			{
-				$required[$name] = self::select_element_label($element);
-			}
-
-			if ($element->tag_name == 'input')
-			{
-				if ($element['type'] == 'checkbox')
-				{
-					$booleans[$name] = true;
-				}
-			}
-			else if ($element->type == Element::TYPE_CHECKBOX_GROUP)
-			{
-				foreach ($element[self::OPTIONS] as $option_name => $dummy)
-				{
-					$booleans[$name . '[' . $option_name . ']'] = true;
-				}
-			}
-
-			if ($element[self::VALIDATOR] || $element[self::VALIDATOR_OPTIONS] || $element instanceof Validator)
-			{
-				$validators[$name] = $element;
-			}
-		}
-
-		$this->required = $required;
-		$this->booleans = $booleans;
-		$this->validators = $validators;
-		$this->validator = $this[self::VALIDATOR];
-
-		#
-		# we return the variables to serialize, we only export variables needed for later
-		# validation.
-		#
-
-		return [ 'name', 'required', 'booleans', 'validators', 'validator' ];
 	}
 
 	/**
@@ -339,15 +242,11 @@ class Form extends Element implements Validator
 		#
 
 		$alert = null;
+		$errors = $this[self::ERRORS];
 
-		if (!$this[self::NO_LOG])
+		if ($errors)
 		{
-			$errors = $this[self::ERRORS];
-
-			if ($errors)
-			{
-				$alert = $this->render_errors($errors);
-			}
+			$alert = $this->render_errors(new ErrorCollectionIterator($errors, new RenderError($this)));
 		}
 
 		#
@@ -380,18 +279,18 @@ class Form extends Element implements Validator
 	 *
 	 * An {@link Alert} object is used to render the provided errors.
 	 *
-	 * @param string|\ICanBoogie\Errors $errors
+	 * @param \Traversable|array|string $errors
 	 *
 	 * @return string
 	 */
 	protected function render_errors($errors)
 	{
-		return (string) new Alert($errors, [
+		return (new Alert($errors, [
 
 			Alert::CONTEXT => Alert::CONTEXT_DANGER,
 			Alert::DISMISSIBLE => true
 
-		]);
+		]));
 	}
 
 	/**
@@ -439,7 +338,7 @@ class Form extends Element implements Validator
 	 *
 	 * @param array $values
 	 * @param bool $disabled true if the form is disabled, false otherwise.
-	 * @param array|\ICanBoogie\Errors $errors The validation errors.
+	 * @param \Traversable|array $errors The validation errors.
 	 */
 	protected function alter_elements($values, $disabled, $errors)
 	{
@@ -507,300 +406,41 @@ class Form extends Element implements Validator
 	}
 
 	/**
-	 * Returns the best label for an element.
-	 *
-	 * **Note:** The label is also translated in the scope `element.label`.
-	 *
-	 * @param Element $element
-	 *
-	 * @return string
-	 */
-	static public function select_element_label(Element $element)
-	{
-		$label = $element[self::LABEL_MISSING];
-
-		if (!$label)
-		{
-			$label = $element[Group::LABEL];
-		}
-
-		if (!$label)
-		{
-			$label = $element[Element::LABEL];
-		}
-
-		if (!$label)
-		{
-			$label = $element[self::LEGEND] ?: $label;
-		}
-
-		#
-		# remove HTML markups from the label
-		#
-
-		$label = t($label, [], [ 'scope' => 'element.label' ]);
-		$label = strip_tags($label);
-
-		return $label;
-	}
-
-	/**
 	 * Validates the form using the provided values.
 	 *
-	 * @inheritdoc
+	 * @param array|null $values An array of values to validate, or `null` to validate the values
+	 * defined by {@link VALUES}.
+	 * @param ErrorCollection|null $errors
+	 *
+	 * @return ErrorCollection
 	 */
-	public function validate($values, Errors $errors = null)
+	public function validate(array $values = null, ErrorCollection $errors = null)
 	{
-		#
-		# validation without prior save
-		#
-
-		$this->__sleep();
-
-		#
-		# we flatten the array so that we can easily get values
-		# for keys such as `cars[1][color]`
-		#
-
-		$values = array_flatten($values);
-
-		#
-		# process required values
-		#
-
-		$validators = $this->validators;
-
-		foreach ($validators as $identifier => $element)
+		if ($values === null)
 		{
-			$element->form = $this;
-			$element->name = $identifier;
-			$element->label = self::select_element_label($element);
+			$values = $this[self::VALUES];
 		}
 
-		#
-		# process required elements
-		#
-
-		$this->validate_required_elements($this->required, $validators, $values, $errors);
-
-		#
-		# process elements validators
-		#
-		# note: If the value for the element is `null` and the value is not required the element's
-		# validator is *not* called.
-		#
-
-		foreach ($validators as $name => $element)
-		{
-			$value = isset($values[$name]) ? $values[$name] : null;
-
-			if (($value === null || $value === '') && empty($this->required[$name]))
-			{
-				continue;
-			}
-
-			$element->validate($value, $errors);
-		}
-
-		if (count($errors))
-		{
-			return false;
-		}
-
-		return parent::validate($values, $errors);
+		return $this[self::ERRORS] = $this->resolve_validator()->validate($values, $errors);
 	}
 
 	/**
-	 * Validates required elements.
+	 * Resolves form validator instance.
 	 *
-	 * @param array $required
-	 * @param array $validators
-	 * @param array $values
-	 * @param Errors $errors
+	 * @return FormValidator
 	 */
-	protected function validate_required_elements(array $required, array &$validators, array $values, Errors $errors)
+	protected function resolve_validator()
 	{
-		$missing = [];
+		$validator = $this[self::VALIDATOR] ?: $this->validator;
 
-		foreach ($required as $name => $label)
+		if (!$validator instanceof FormValidator)
 		{
-			if (!isset($values[$name]) || (isset($values[$name]) && is_string($values[$name]) && !strlen(trim($values[$name]))))
-			{
-				$missing[$name] = $this->t($label);
-
-				#
-				# The value for this required element is missing.
-				# In order to avoid troubles, the element is removed
-				# for the validators array.
-				#
-
-				unset($validators[$name]);
-			}
+			throw new \InvalidArgumentException(sprintf("Validator should be an instance of `%s`, `%s` given.",
+				FormValidator::class,
+				is_object($validator) ? get_class($validator) : gettype($validator)
+			));
 		}
 
-		if ($missing)
-		{
-			if (count($missing) == 1)
-			{
-				$errors[key($missing)] = $this->t('The field %field is required!', [ '%field' => $this->t(current($missing)) ]);
-			}
-			else
-			{
-				foreach ($missing as $name => $label)
-				{
-					$errors[$name] = true;
-				}
-
-				$last = array_pop($missing);
-
-				$errors[] = $this->t('The fields %list and %last are required!', [ '%list' => implode(', ', $missing), '%last' => $last ]);
-			}
-		}
-	}
-
-	/*
-	 * Validators
-	 */
-
-	/**
-	 * Validates an email address.
-	 *
-	 * @param Errors $errors
-	 * @param Element $element
-	 * @param string $value
-	 *
-	 * @return bool
-	 */
-	static public function validate_email(Errors $errors, $element, $value)
-	{
-		if (filter_var($value, FILTER_VALIDATE_EMAIL))
-		{
-			return true;
-		}
-
-		$errors[$element->name] = t('Invalid email address %value for the %label element.', [ 'value' => $value, 'label' => $element->label ]);
-
-		return false;
-	}
-
-	/**
-	 * Validates a URL.
-	 *
-	 * @param Errors $errors
-	 * @param Element $element
-	 * @param string $value
-	 *
-	 * @return bool
-	 */
-	static public function validate_url(Errors $errors, $element, $value)
-	{
-		if (filter_var($value, FILTER_VALIDATE_URL))
-		{
-			return true;
-		}
-
-		$errors[$element->name] = t('Invalid URL %value for the %label element.', [ 'value' => $value, 'label' => $element->label ]);
-
-		return false;
-	}
-
-	/**
-	 * Validates a string.
-	 *
-	 * @param Errors $errors
-	 * @param Element $element
-	 * @param string $value
-	 * @param array $rules
-	 *
-	 * @return bool
-	 */
-	static public function validate_string(Errors $errors, $element, $value, $rules)
-	{
-		$messages = [];
-		$args = [];
-
-		foreach ($rules as $rule => $params)
-		{
-			switch ($rule)
-			{
-				case 'length-min':
-				{
-					if (strlen($value) < $params)
-					{
-						$messages[] = t('The string %string is too short (minimum size is :size characters)', [
-
-							'%string' => $value,
-							':size' => $params
-
-						]);
-					}
-				}
-				break;
-
-				case 'length-max':
-				{
-					if (strlen($value) > $params)
-					{
-						$messages[] = t('The string %string is too long (maximum size is :size characters)', [
-
-							'%string' => shorten($value, 32, 1),
-							':size' => $params
-
-						]);
-					}
-				}
-				break;
-
-				case 'regex':
-				{
-					if (!preg_match($params, $value))
-					{
-						$messages[] = t('Invalid format of value %value', [ '%value' => $value ]);
-					}
-				}
-				break;
-			}
-		}
-
-		if ($messages)
-		{
-			$message = implode('. ', $messages);
-
-			$message .= t(' for the %label input element.', [ '%label' => $element->label ]);
-
-			$errors[$element->name] = t($message, $args);
-		}
-
-		return empty($messages);
-	}
-
-	/**
-	 * Validates a range.
-	 *
-	 * @param Errors $errors
-	 * @param Element $element
-	 * @param string $value
-	 * @param array $rules
-	 *
-	 * @return bool
-	 */
-	static public function validate_range(Errors $errors, $element, $value, $rules)
-	{
-		list($min, $max) = $rules;
-
-		$rc = ($value >= $min && $value <= $max);
-
-		if (!$rc)
-		{
-			$errors[$element->name] = t('@wdform.errors.range', [
-
-				'%label' => $element->label,
-				':min' => $min,
-				':max' => $max
-
-			]);
-		}
-
-		return $rc;
+		return $validator;
 	}
 }

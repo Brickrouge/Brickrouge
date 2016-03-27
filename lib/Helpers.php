@@ -11,7 +11,6 @@
 
 namespace Brickrouge;
 
-use ICanBoogie\Errors;
 use Brickrouge\Helpers\PublishAssets;
 
 /**
@@ -27,13 +26,13 @@ use Brickrouge\Helpers\PublishAssets;
  * - {@link render_exception()}
  * - {@link t()}
  *
- * @method static string format() format(string $str, array $args=[])
- * @method static string format_size() format_size(number $size)
- * @method static string get_accessible_file() get_accessible_file(string $path, $suffix=null)
- * @method static Document get_document() get_document()
- * @method static string normalize() normalize(string $str)
- * @method static string render_exception() render_exception(\Exception $exception)
- * @method static string t() t(string $str, array $args=[], array $options=[])
+ * @method static string format(string $str, array $args=[])
+ * @method static string format_size(number $size)
+ * @method static string get_accessible_file(string $path)
+ * @method static Document get_document()
+ * @method static string normalize(string $str)
+ * @method static string render_exception(\Exception $exception)
+ * @method static string t(string $str, array $args=[], array $options=[])
  */
 class Helpers
 {
