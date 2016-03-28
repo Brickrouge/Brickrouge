@@ -104,7 +104,7 @@ class File extends Element
 			'value' => $this['value'],
 			'readonly' => true,
 			'name' => $this['name'],
-			'class' => 'reminder'
+			'class' => 'form-control form-control-inline reminder'
 
 		])
 
