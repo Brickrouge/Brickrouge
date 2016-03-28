@@ -81,6 +81,10 @@
 		color: $white;
 	}
 
+	select option {
+		color: WindowText;
+	}
+
 	label {
 		color: darken($white, 20%);
 	}
