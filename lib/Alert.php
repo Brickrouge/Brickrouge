@@ -169,11 +169,17 @@ EOT;
 	 */
 	protected function render_alert_message($message)
 	{
+		if ($message instanceof HTMLString || $message instanceof Element)
+		{
+			return $message;
+		}
+
 		if (is_array($message) || $message instanceof \Traversable)
 		{
 			return $this->render_errors($message);
 		}
-		else if (is_object($message))
+
+		if (is_object($message))
 		{
 			throw new \InvalidArgumentException("Don't know how to render message of type: " . get_class($message));
 		}
