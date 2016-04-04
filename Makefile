@@ -1,11 +1,18 @@
 BRICKROUGE = ./assets/brickrouge
+BRICKROUGE_UNCOMPRESSED = ./build/brickrouge-uncompressed.js
 BRICKROUGE_JS = ./node_modules/brickrouge/dist/brickrouge-uncompressed.js
-BRICKROUGE_JS_VERSION = master
 
 JS_COMPILER = `which webpack`
-JS_COMPILER_OPTIONS = -p                    # comment to disable compression
+#JS_COMPILER_OPTIONS = -p                    # comment to disable compression
 CSS_COMPILER = `which sass`
 CSS_COMPILER_OPTIONS = --style compressed   # comment to disable compression
+
+JS_COMPRESSOR = curl -s \
+	-d compilation_level=SIMPLE_OPTIMIZATIONS \
+	-d output_format=text \
+	-d output_info=compiled_code \
+	--data-urlencode "js_code@$^" \
+	http://closure-compiler.appspot.com/compile
 
 #
 
@@ -16,16 +23,20 @@ CSS_FILES = $(shell ls lib/*.scss)
 
 all: \
 	$(BRICKROUGE_JS) \
+	$(BRICKROUGE_UNCOMPRESSED) \
 	$(JS_COMPRESSED) \
 	$(CSS_COMPRESSED)
 
-$(JS_COMPRESSED): $(JS_FILES)
-	$(JS_COMPILER) $(JS_COMPILER_OPTIONS)
+$(BRICKROUGE_JS): node_modules
+
+$(BRICKROUGE_UNCOMPRESSED): $(JS_FILES)
+	$(JS_COMPILER)
+
+$(JS_COMPRESSED): $(BRICKROUGE_UNCOMPRESSED)
+	$(JS_COMPRESSOR) > $@
 
 $(CSS_COMPRESSED): $(CSS_FILES)
 	$(CSS_COMPILER) $(CSS_COMPILER_OPTIONS) lib/Brickrouge.scss:$@
-
-$(BRICKROUGE_JS): node_modules
 
 node_modules:
 	npm install
@@ -75,3 +86,5 @@ clean:
 	@rm -fR vendor
 	@rm -f composer.lock
 	@rm -fR node_modules
+
+.PHONE: autoload clean update test test-coverage usage watch
