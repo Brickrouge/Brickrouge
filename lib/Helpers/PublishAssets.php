@@ -39,7 +39,7 @@ class PublishAssets
 		$source = dirname($pathname) . DIRECTORY_SEPARATOR;
 		$destination = $this->destination . sha1($source) . DIRECTORY_SEPARATOR;
 
-		if (!file_exists($destination) || filectime($source) > filectime($destination))
+//		if (!file_exists($destination) || filectime($source) > filectime($destination))
 		{
 			$this->copy_recursive($source, $destination);
 		}
@@ -78,7 +78,7 @@ class PublishAssets
 
 			$d = $destination . $filename;
 
-			if (!file_exists($d) || filectime($d) < $file->getCTime())
+//			if (!file_exists($d) || filectime($d) < $file->getCTime())
 			{
 				copy($file->getPathname(), $d);
 			}

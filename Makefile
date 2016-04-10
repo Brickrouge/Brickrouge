@@ -3,7 +3,7 @@ BRICKROUGE_UNCOMPRESSED = ./build/brickrouge-uncompressed.js
 BRICKROUGE_JS = ./node_modules/brickrouge/dist/brickrouge-uncompressed.js
 
 JS_COMPILER = `which webpack`
-#JS_COMPILER_OPTIONS = -p                    # comment to disable compression
+JS_COMPILER_OPTIONS = --display-modules
 CSS_COMPILER = `which sass`
 CSS_COMPILER_OPTIONS = --style compressed   # comment to disable compression
 
@@ -30,7 +30,7 @@ all: \
 $(BRICKROUGE_JS): node_modules
 
 $(BRICKROUGE_UNCOMPRESSED): $(JS_FILES)
-	$(JS_COMPILER)
+	$(JS_COMPILER) $(JS_COMPILER_OPTIONS)
 
 $(JS_COMPRESSED): $(BRICKROUGE_UNCOMPRESSED)
 	$(JS_COMPRESSOR) > $@
@@ -44,7 +44,7 @@ node_modules:
 watch:
 	echo "Watching files..."
 	$(CSS_COMPILER) --watch lib/Brickrouge.scss:$(BRICKROUGE).css && \
-	$(JS_COMPILER)  --watch --progress --colors
+	$(JS_COMPILER) $(JS_COMPILER_OPTIONS) --watch --progress --colors
 
 # customization
 
@@ -87,4 +87,4 @@ clean:
 	@rm -f composer.lock
 	@rm -fR node_modules
 
-.PHONE: autoload clean update test test-coverage usage watch
+.PHONE: all autoload clean update test test-coverage usage watch
