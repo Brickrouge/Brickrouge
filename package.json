@@ -1,8 +1,4 @@
 {
-  "devDependencies": {
-    "babel-core": "^6.7",
-    "babel-loader": "^6.2"
-  },
   "dependencies": {
     "brickrouge": "^0.4",
     "olvlvl-assets-promises": "^0.1"

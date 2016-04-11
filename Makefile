@@ -13,8 +13,7 @@ JS_COMPRESSOR = curl -s \
 	-d output_info=compiled_code \
 	--data-urlencode "js_code@$^" \
 	http://closure-compiler.appspot.com/compile
-
-#
+#JS_COMPRESSOR = cat $^
 
 JS_COMPRESSED = $(BRICKROUGE).js
 CSS_COMPRESSED = $(BRICKROUGE).css
