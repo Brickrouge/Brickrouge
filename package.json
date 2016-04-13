@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "brickrouge": "^0.4",
-    "olvlvl-assets-promises": "^0.1"
+    "olvlvl-assets-promises": "^0.1",
+    "olvlvl-mixin": "0.0.2"
   }
 }
