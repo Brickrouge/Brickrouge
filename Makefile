@@ -7,12 +7,11 @@ JS_COMPILER_OPTIONS = --display-modules
 CSS_COMPILER = `which sass`
 CSS_COMPILER_OPTIONS = --style compressed   # comment to disable compression
 
-JS_COMPRESSOR = curl -s \
-	-d compilation_level=SIMPLE_OPTIMIZATIONS \
-	-d output_format=text \
-	-d output_info=compiled_code \
-	--data-urlencode "js_code@$^" \
-	http://closure-compiler.appspot.com/compile
+JS_COMPRESSOR = `which uglifyjs` $^ \
+	--compress \
+	--mangle \
+	--srew-ie8 \
+	--source-map $@.map
 #JS_COMPRESSOR = cat $^
 
 JS_COMPRESSED = $(BRICKROUGE).js
