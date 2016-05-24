@@ -305,7 +305,7 @@ echo new Form([
 			Group::LABEL => "Sender's e-mail",
 
 			Element::REQUIRED => true,
-			Element::VALIDATOR => [ 'Brickrouge\Form::validate_email' ]
+			Element::VALIDATION => 'email'
 
 		])
 
