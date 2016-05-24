@@ -10,7 +10,7 @@ CSS_COMPILER_OPTIONS = --style compressed   # comment to disable compression
 JS_COMPRESSOR = `which uglifyjs` $^ \
 	--compress \
 	--mangle \
-	--srew-ie8 \
+	--screw-ie8 \
 	--source-map $@.map
 #JS_COMPRESSOR = cat $^
 
