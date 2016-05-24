@@ -189,7 +189,7 @@ class Document extends Prototyped
 	 */
 	static public function resolve_url($path, $relative=null)
 	{
-		if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0)
+		if (strpos($path, '//') === 0 || strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0)
 		{
 			return $path;
 		}
