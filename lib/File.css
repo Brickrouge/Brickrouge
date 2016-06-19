@@ -35,14 +35,16 @@
 .widget-file .progress {
 	display: inline-block;
 	width: 32ex;
+	height: 2.4rem;
 	position: relative;
-	border: 1px solid #CFCFCF;
-	background: white;
+	border: 0;
+	background: #E6E6E6;
+	margin-bottom: 0;
 	vertical-align: middle;
+	overflow: hidden;
 }
 
-.widget-file .progress,
-.widget-file .progress .position {
+.widget-file .progress {
 	border-radius: 3px;
 }
 
@@ -51,8 +53,8 @@
 	top: 0;
 	left: 0;
 	bottom: 0;
-	color: #808000;
-	background: #FFC;
+	color: white;
+	background: #5BC0DE;
 	position: absolute;
 	text-align: right;
 	font-size: .8em;
