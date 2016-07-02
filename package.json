@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "brickrouge": "^0.4",
+    "brickrouge": "git://github.com/Brickrouge/Brickrouge.js.git",
     "olvlvl-assets-promises": "^0.1",
-    "olvlvl-mixin": "0.0.2"
+    "olvlvl-mixin": "^0.0.2"
   }
 }
