@@ -1,8 +1,8 @@
 declare namespace Brickrouge {
 
     class Popover extends Subject {
-        static DEFAULT_OPTIONS: Popover.Options
-        static ActionEvent: Popover.ActionEvent
+        static readonly DEFAULT_OPTIONS: Popover.Options
+        static readonly ActionEvent: Popover.ActionEvent
         static from(options: Popover.FromOptions)
 
         constructor(element: Element, options: Popover.Options)
