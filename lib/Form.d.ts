@@ -47,4 +47,9 @@ declare namespace Brickrouge {
         observeFailure(callback: Function)
         observeComplete(callback: Function)
     }
+
+    interface Response {
+        errors: Object|undefined
+        exception: string|undefined
+    }
 }

@@ -17,7 +17,7 @@ Here are some of its features:
 * Compatible with Bootstrap
 * Standalone and patchable
 * Object-oriented
-* Localization support
+* Support localization
 * Populate and validate forms
 
 Brickrouge uses [Bootstrap](http://twitter.github.com/bootstrap/) for its style,
@@ -182,11 +182,10 @@ and the normalized data attributes of that element.
 ```js
 !function (Brickrouge) {
 
-	var Color = new Class({
+	class Color {
 
-		initialize: function(el, options) {
+		constructor(el, options) {
 
-			el = document.id(el)
 			el.setStyle('background', options.color)
 			el.innerHTML = options.colorName
 
@@ -194,7 +193,7 @@ and the normalized data attributes of that element.
 
 	})
 
-	Brickrouge.register('Color', function (element, options) {
+	Brickrouge.register('Color', (element, options) => {
 
 		return new Color(element, options)
 
@@ -214,11 +213,10 @@ the widget has not yet been created, getting the property creates it. The elemen
 widget is always available through its `element` property.
 
 ```js
-var color = Brickrouge.Widget.from(document.id('my-color'))
+const element = document.getElementById('my-color')
+const color = Brickrouge.Widget.from(element)
 // or
-var color = Brickrouge.from(document.id('my-color'))
-
-console.log('element and options:', color.element, color.options)
+const color = Brickrouge.from(element)
 ```
 
 
@@ -230,9 +228,9 @@ console.log('element and options:', color.element, color.options)
 The `widget` event is fired after a widget has been built.
 
 ```js
-Brickrouge.observe('widget', function(widget) {
+Brickrouge.observeWidget(ev => {
 
-	console.log('A widget has been built:', widget)
+	console.log('A widget has been built:', ev.widget)
 
 })
 ```
@@ -246,11 +244,11 @@ Brickrouge.observe('widget', function(widget) {
 The `update` event is fired after the DOM was updated.
 
 ```js
-Brickrouge.observe('update', function(fragment, elements, widgets) {
+Brickrouge.observeUpdate(ev => {
 
-    console.log('This fragment updated the DOM:', fragment)
-    console.log('These elements are new to:', elements)
-    console.log('These widgets have been built:', widgets)
+    console.log('This fragment updated the DOM:', ev.fragment)
+    console.log('These are new custom elements:', ev.elements)
+    console.log('These widgets have been built:', ev.widgets)
 
 })
 ```
@@ -356,13 +354,12 @@ The produced HTML, formatted for readability:
 Forms can be sent using XHR very easily thanks to the JavaScript `Form` class:
 
 ```js
-var form = new Brickrouge.Form('myForm', {
+const element = document.getElementById('myForm')
+const form = new Brickrouge.Form(element)
 
-	onComplete: function(response) {
+form.observeComplete(ev => {
 
-		console.log('complete:', response)
-
-	}
+	console.log('complete:', ev.response)
 
 });
 
@@ -382,15 +379,16 @@ option is true the _success_ message is inserted before the form element, which 
 
 
 
-### Retriving the instance associated with a form element
+### Retrieving the instance associated with a form element
 
-The `Form` instance associated with a form element can be retrived with the `retrieve()` method:
+The `Form` instance associated with a form element can be retrieved with the `retrieve()` method:
 
 ```js
-var form = document.id('myForm').retrieve('brickrouge.form')
+const element = document.getElementById('myForm')
+const form = Brickrouge.Form.from(element)
 ```
 
-Note: Unlike the `widget` custom property, `brickrouge.form` does not create an instance, you
+> **Note:** Unlike `Brickrouge.from()`, `Brickrouge.Form.from()` does not create an instance, you
 need to do that yourself. This might change is the future.
 
 
