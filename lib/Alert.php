@@ -193,9 +193,16 @@ EOT;
 	 * @param string $message
 	 *
 	 * @return string
+	 *
+	 * @throws ElementIsEmpty
 	 */
 	protected function render_alert_content($message)
 	{
+		if (!$message)
+		{
+			throw new ElementIsEmpty;
+		}
+
 		return <<<EOT
 <div class="content">$message</div>
 EOT;
