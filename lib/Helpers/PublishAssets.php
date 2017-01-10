@@ -19,7 +19,7 @@ class PublishAssets
 	/**
 	 * @var string
 	 */
-	protected $destination;
+	private $destination;
 
 	/**
 	 * @param string $destination
@@ -36,67 +36,21 @@ class PublishAssets
 	 */
 	public function __invoke($pathname)
 	{
-		$source = dirname($pathname) . DIRECTORY_SEPARATOR;
-		$destination = $this->destination . sha1($source) . DIRECTORY_SEPARATOR;
+		$source = dirname($pathname);
+		$destination = $this->destination . sha1($source);
 
-//		if (!file_exists($destination) || filectime($source) > filectime($destination))
+		if (!file_exists($destination))
 		{
-			$this->copy_recursive($source, $destination);
-		}
+			$parent = dirname($destination);
 
-		return $destination . basename($pathname);
-	}
-
-	/**
-	 * Copy file recursively when needed.
-	 *
-	 * @param string $source
-	 * @param string $destination
-	 */
-	protected function copy_recursive($source, $destination)
-	{
-		$this->ensure_destination($destination);
-
-		foreach (new \DirectoryIterator($source) as $file)
-		{
-			if ($file->isDot())
+			if (!file_exists($parent))
 			{
-				continue;
+				throw new \LogicException("Unable to create symlink, parent directory is missing: $parent");
 			}
 
-			$filename = $file->getFilename();
-
-			if ($file->isDir())
-			{
-				$this->copy_recursive(
-					$source . $filename . DIRECTORY_SEPARATOR,
-					$destination . $filename . DIRECTORY_SEPARATOR
-				);
-
-				continue;
-			}
-
-			$d = $destination . $filename;
-
-//			if (!file_exists($d) || filectime($d) < $file->getCTime())
-			{
-				copy($file->getPathname(), $d);
-			}
-		}
-	}
-
-	/**
-	 * Ensures the destination folder exists.
-	 *
-	 * @param string $destination
-	 */
-	protected function ensure_destination($destination)
-	{
-		if (file_exists($destination))
-		{
-			return;
+			symlink($source, $destination);
 		}
 
-		mkdir($destination, 0777, true);
+		return $destination . DIRECTORY_SEPARATOR . basename($pathname);
 	}
 }
