@@ -11,7 +11,8 @@ JS_COMPRESSOR = `which uglifyjs` $^ \
 	--compress \
 	--mangle \
 	--screw-ie8 \
-	--source-map $@.map
+	--source-map $@.map \
+	--source-map-url https://github.com/Brickrouge/Brickrouge/tree/master/dist/$@.map
 #JS_COMPRESSOR = cat $^ # uncomment to create uncompressed JS
 
 JS_COMPRESSED = $(BRICKROUGE).js
