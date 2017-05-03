@@ -12,7 +12,7 @@
 namespace Brickrouge;
 
 use Brickrouge\Validate\FormValidator;
-use Brickrouge\Validate\RenderError;
+use Brickrouge\Validate\ErrorRenderer;
 use ICanBoogie\ErrorCollection;
 use ICanBoogie\ErrorCollectionIterator;
 
@@ -246,7 +246,7 @@ class Form extends Element
 
 		if ($errors)
 		{
-			$alert = $this->render_errors(new ErrorCollectionIterator($errors, new RenderError($this)));
+			$alert = $this->render_errors(new ErrorCollectionIterator($errors, new ErrorRenderer($this)));
 		}
 
 		#

@@ -18,7 +18,7 @@ use ICanBoogie\ErrorCollection;
 /**
  * Render an error into a string using the form's translator.
  */
-class RenderError implements \ICanBoogie\RenderError
+class ErrorRenderer implements \ICanBoogie\ErrorRenderer
 {
 	/**
 	 * @var Form
