@@ -355,8 +355,13 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
 		switch ((string) $this->type)
 		{
-			case self::TYPE_CHECKBOX_GROUP: $this->add_class('checkbox-group'); break;
-			case self::TYPE_RADIO_GROUP: $this->add_class('radio-group'); break;
+			case self::TYPE_CHECKBOX_GROUP:
+				$this->add_class('checkbox-group');
+				break;
+
+			case self::TYPE_RADIO_GROUP:
+				$this->add_class('radio-group');
+				break;
 		}
 	}
 
@@ -874,10 +879,11 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 		# this is the 'template' child
 		#
 
-		$child = new Element('input', [
+		$input = new Element('input', [
 
 			'type' => 'checkbox',
-			'readonly' => $readonly
+			'readonly' => $readonly,
+			'class' => 'form-check-input',
 
 		]);
 
@@ -890,14 +896,14 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
 		foreach ($this[self::OPTIONS] as $option_name => $label)
 		{
-			$child[self::LABEL] = $label;
-			$child['name'] = $name ? $name . '[' . $option_name . ']' : $option_name;
-			$child['checked'] = !empty($selected[$option_name]);
-			$child['disabled'] = $disabled || !empty($disabled_list[$option_name]);
-			$child['data-key'] = $option_name;
-			$child['data-name'] = $name ?: $option_name;
+			$input[self::LABEL] = $label;
+			$input['name'] = $name ? $name . '[' . $option_name . ']' : $option_name;
+			$input['checked'] = !empty($selected[$option_name]);
+			$input['disabled'] = $disabled || !empty($disabled_list[$option_name]);
+			$input['data-key'] = $option_name;
+			$input['data-name'] = $name ?: $option_name;
 
-			$html .= $child;
+			$html .= '<div class="form-check">' . $input . '</div>';
 		}
 
 		return $html;
@@ -929,11 +935,12 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 		# this is the 'template' child
 		#
 
-		$child = new Element('input', [
+		$input = new Element('input', [
 
 			'type' => 'radio',
 			'name' => $name,
-			'readonly' => $readonly
+			'readonly' => $readonly,
+			'class' => 'form-check-input',
 
 		]);
 
@@ -953,12 +960,12 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 				$label = $this->t(substr($label, 1), [], [ 'scope' => 'element.option' ]);
 			}
 
-			$child[self::LABEL] = $label;
-			$child['value'] = $value;
-			$child['checked'] = (string) $value === (string) $selected;
-			$child['disabled'] = $disabled || !empty($disabled_list[$value]);
+			$input[self::LABEL] = $label;
+			$input['value'] = $value;
+			$input['checked'] = (string) $value === (string) $selected;
+			$input['disabled'] = $disabled || !empty($disabled_list[$value]);
 
-			$html .= $child;
+			$html .= '<div class="form-check">' . $input . '</div>';
 		}
 
 		return $html;
@@ -1308,6 +1315,11 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 			$class .= ' disabled';
 		}
 
+		if ($this->has_class('form-check-input'))
+		{
+			$class .= ' form-check-label';
+		}
+
 		switch ($this[self::LABEL_POSITION] ?: 'after')
 		{
 			case 'above': return <<<EOT
@@ -1321,12 +1333,12 @@ $html
 EOT;
 
 			case 'before': return <<<EOT
-<label class="$class wrapping before"><span class="label-text">$label</span> $html</label>
+<label class="$class wrapping before">$label $html</label>
 EOT;
 
 			case 'after':
 			default: return <<<EOT
-<label class="$class wrapping after">$html <span class="label-text">$label</span></label>
+<label class="$class wrapping after">$html $label</label>
 EOT;
 		}
 	}

@@ -45,17 +45,11 @@ input.measure {
 	text-align: right;
 }
 
-// checkbox & radio
-
-.checkbox-group:not(.inline-inputs) > label,
-.radio-group:not(.inline-inputs) > label {
-	display: block;
+.inline-check {
+	margin-left: -$input-padding-x;
 }
 
-.inline-inputs > label {
-	margin-bottom: 0;
-}
-
-.inline-inputs > label + label {
+.inline-check > .form-check {
+	display: inline-block;
 	margin-left: $input-padding-x;
 }
