@@ -60,6 +60,7 @@ vendor:
 
 update:
 	@composer update
+	@npm upgrade
 
 autoload: vendor
 	@composer dump-autoload
