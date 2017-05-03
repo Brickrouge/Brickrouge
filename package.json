@@ -1,7 +1,12 @@
 {
-  "dependencies": {
-    "brickrouge": "git://github.com/Brickrouge/Brickrouge.js.git",
-    "olvlvl-assets-promises": "^0.1",
-    "olvlvl-mixin": "^0.0.2"
-  }
+	"name": "brickrouge",
+	"version": "3.0.0",
+	"repository": "git://github.com/Brickrouge/Brickrouge.git",
+	"author": "Olivier Laviale <olivier.laviale@gmail.com>",
+	"license": "BSD-3-Clause",
+	"dependencies": {
+		"brickrouge": "git://github.com/Brickrouge/Brickrouge.js.git",
+		"olvlvl-assets-promises": "^0.1",
+		"olvlvl-mixin": "^0.0.2"
+	}
 }

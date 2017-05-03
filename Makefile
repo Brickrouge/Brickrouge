@@ -38,7 +38,7 @@ $(CSS_COMPRESSED): $(CSS_FILES)
 	$(CSS_COMPILER) $(CSS_COMPILER_OPTIONS) lib/Brickrouge.scss:$@
 
 node_modules:
-	npm install
+	yarn install
 
 watch:
 	echo "Watching files..."
@@ -60,7 +60,7 @@ vendor:
 
 update:
 	@composer update
-	@npm upgrade
+	@yarn upgrade
 
 autoload: vendor
 	@composer dump-autoload
