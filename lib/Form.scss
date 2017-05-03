@@ -27,24 +27,16 @@
 	cursor: not-allowed;
 }
 
-// help-inline
-
-.help-inline,
-.element-description {
-	padding: $input-padding-y $input-padding-x 0 $input-padding-x;
-	font-size: $font-size-sm;
-}
-
 .has-danger .help-inline {
-	color: $brand-danger;
+	color: $brand-danger !important;
 }
 
 .has-success .help-inline {
-	color: $brand-success;
+	color: $brand-success !important;
 }
 
 .has-warning .help-inline {
-	color: $brand-warning;
+	color: $brand-warning !important;
 }
 
 // input

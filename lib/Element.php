@@ -1354,7 +1354,7 @@ EOT;
 	 */
 	protected function decorate_with_inline_help($html, $help)
 	{
-		return $html . '<div class="help-inline text-muted">' . $help . '</div>';
+		return $html . '<div class="help-inline form-text text-muted">' . $help . '</div>';
 	}
 
 	/**
@@ -1367,7 +1367,7 @@ EOT;
 	 */
 	protected function decorate_with_description($html, $description)
 	{
-		return $html . '<div class="element-description text-muted">' . $description . '</div>';
+		return $html . '<div class="form-text text-muted">' . $description . '</div>';
 	}
 
 	/**
