@@ -70,7 +70,12 @@ test: vendor
 
 test-coverage: vendor
 	@mkdir -p build/coverage
-	@phpunit --coverage-html build/coverage
+	@XDEBUG_MODE=coverage $(PHPUNIT) --coverage-html build/coverage $(ARGS)
+
+.PHONY: test-container
+test-container:
+	@-docker-compose run --rm app bash
+	@docker-compose down -v
 
 doc: vendor
 	@mkdir -p build/docs
