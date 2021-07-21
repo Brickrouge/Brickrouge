@@ -1,8 +1,6 @@
 # Brickrouge
 
 [![Release](https://img.shields.io/packagist/v/Brickrouge/Brickrouge.svg)](https://github.com/Brickrouge/Brickrouge/releases)
-[![Build Status](https://img.shields.io/travis/Brickrouge/Brickrouge.svg)](http://travis-ci.org/Brickrouge/Brickrouge)
-[![HHVM](https://img.shields.io/hhvm/brickrouge/brickrouge.svg)](http://hhvm.h4cc.de/package/brickrouge/brickrouge)
 [![Code Quality](https://img.shields.io/scrutinizer/g/Brickrouge/Brickrouge.svg)](https://scrutinizer-ci.com/g/Brickrouge/Brickrouge)
 [![Code Coverage](https://img.shields.io/coveralls/Brickrouge/Brickrouge.svg)](https://coveralls.io/r/Brickrouge/Brickrouge)
 [![Packagist](https://img.shields.io/packagist/dt/brickrouge/brickrouge.svg)](https://packagist.org/packages/brickrouge/brickrouge)
@@ -29,6 +27,12 @@ precious components that make the CMS [Icybee](http://icybee.org/).
 Please, visit [brickrouge.org](http://brickrouge.org/) for more information.
 
 
+
+## Installation
+
+```bash
+composer require brickrouge/brickrouge
+```
 
 
 
@@ -496,48 +500,11 @@ For more information and a demonstration please visit the [Brickrouge homepage](
 
 
 
+## Continuous Integration
 
+The project is continuously tested by [GitHub actions](https://github.com/Brickrouge/Brickrouge/actions).
 
-## Requirements
-
-The package requires PHP 5.5 or later.
-The following packages are also required: [icanboogie/prototype](https://packagist.org/packages/icanboogie/prototype)
-and [icanboogie/errors](https://packagist.org/packages/icanboogie/errors).
-
-
-
-
-
-## Installation
-
-The recommended way to install this package is through [composer](http://getcomposer.org/):
-
-```
-$ composer require brickrouge/brickrouge
-```
-
-
-
-
-
-### Cloning the repository
-
-The package is [available on GitHub](https://github.com/Brickrouge/Brickrouge), its repository can
-be cloned with the following command line:
-
-	$ git clone https://github.com/Brickrouge/Brickrouge.git
-
-
-
-
-
-## Documentation
-
-You can generate the documentation for the package and its dependencies with the `make doc` command.
-The documentation is generated in the `build/docs` directory. [ApiGen](http://apigen.org/) is
-required. The directory can later be cleaned with the `make clean` command.
-
-
+[![Tests](https://github.com/Brickrouge/Brickrouge/workflows/test/badge.svg?branch=master)](https://github.com/Brickrouge/Brickrouge/actions?query=workflow%3Atest)
 
 
 
@@ -547,18 +514,11 @@ We provide a Docker container for local development. Run `make test-container` t
 container run `make test` to run the test suite. Alternatively, run `make test-coverage` for a breakdown of the code
 coverage. The coverage report is available in `build/coverage/index.html`.
 
-The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
-
-[![Build Status](https://img.shields.io/travis/Brickrouge/Brickrouge.svg)](https://travis-ci.org/Brickrouge/Brickrouge)
-[![Code Coverage](https://img.shields.io/coveralls/Brickrouge/Brickrouge.svg)](https://coveralls.io/r/Brickrouge/Brickrouge)
-
-
 
 
 ## License
 
-**Brickrouge** is licensed under the New BSD License. See the [LICENSE](LICENSE) file for details.
-
+**Brickrouge** is released under the [BSD-3-Clause](LICENSE).
 
 
 

@@ -67,14 +67,22 @@ update:
 autoload: vendor
 	@composer dump-autoload
 
+.PHONY: test-dependencies
+test-dependencies: vendor
+
 .PHONY: test
-test: vendor
+test: test-dependencies
 	@$(PHPUNIT) $(ARGS)
 
 .PHONY: test-coverage
-test-coverage: vendor
+test-coverage: test-dependencies
 	@mkdir -p build/coverage
 	@XDEBUG_MODE=coverage $(PHPUNIT) --coverage-html build/coverage $(ARGS)
+
+.PHONY: test-coveralls
+test-coveralls: test-dependencies
+	@mkdir -p build/logs
+	@XDEBUG_MODE=coverage $(PHPUNIT) --coverage-clover build/logs/clover.xml
 
 .PHONY: test-container
 test-container:

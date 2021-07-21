@@ -10,11 +10,11 @@
 		 colors="true">
 	<coverage>
 		<include>
-			<directory suffix=".php">src</directory>
+			<directory suffix=".php">lib</directory>
 		</include>
 	</coverage>
 	<testsuites>
-		<testsuite name="default">
+		<testsuite name="brickrouge/brickrouge">
 			<directory>tests</directory>
 		</testsuite>
 	</testsuites>
