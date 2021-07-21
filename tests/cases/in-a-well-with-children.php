@@ -4,17 +4,17 @@ use Brickrouge\Element;
 
 echo new Element('div', [
 
-	Element::INNER_HTML => "I'm in a (magic) well",
-	Element::CHILDREN => [
+    Element::INNER_HTML => "I'm in a (magic) well",
+    Element::CHILDREN => [
 
-		'<span>Me too !</span>',
+        '<span>Me too !</span>',
 
-		new Element('span', [ Element::INNER_HTML => "Me three !" ])
+        new Element('span', [ Element::INNER_HTML => "Me three !" ])
 
-	],
+    ],
 
-	'data-type' => 'magic',
+    'data-type' => 'magic',
 
-	'class' => 'well'
+    'class' => 'well'
 
 ]);

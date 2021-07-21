@@ -19,8 +19,8 @@ JS_COMPRESSOR = `which uglifyjs` $^ \
 
 JS_COMPRESSED = $(BRICKROUGE).js
 CSS_COMPRESSED = $(BRICKROUGE).css
-JS_FILES = $(shell ls lib/*.js)
-CSS_FILES = $(shell ls lib/*.scss)
+JS_FILES = $(shell ls src/*.js)
+CSS_FILES = $(shell ls src/*.scss)
 
 all: \
 	$(BRICKROUGE_JS) \
@@ -37,14 +37,14 @@ $(JS_COMPRESSED): $(BRICKROUGE_UNCOMPRESSED)
 	$(JS_COMPRESSOR) > $@
 
 $(CSS_COMPRESSED): $(CSS_FILES)
-	$(CSS_COMPILER) $(CSS_COMPILER_OPTIONS) lib/Brickrouge.scss:$@
+	$(CSS_COMPILER) $(CSS_COMPILER_OPTIONS) src/Brickrouge.scss:$@
 
 node_modules:
 	yarn install
 
 watch:
 	echo "Watching files..."
-	$(CSS_COMPILER) --watch lib/Brickrouge.scss:$(BRICKROUGE).css && \
+	$(CSS_COMPILER) --watch src/Brickrouge.scss:$(BRICKROUGE).css && \
 	$(JS_COMPILER) $(JS_COMPILER_OPTIONS) --watch --progress --colors
 
 # customization
@@ -89,10 +89,14 @@ test-container:
 	@-docker-compose run --rm app bash
 	@docker-compose down -v
 
+.PHONY: lint
+lint:
+	@XDEBUG_MODE=off phpcs
+
 doc: vendor
 	@mkdir -p build/docs
 	@apigen generate \
-	--source lib \
+	--source src \
 	--destination build/docs/ \
 	--title "$(PACKAGE_NAME) $(PACKAGE_VERSION)" \
 	--template-theme "bootstrap"

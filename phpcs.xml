@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PHP_CodeSniffer"
+		 xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+	<file>src</file>
+	<file>tests</file>
+    <exclude-pattern>*.js</exclude-pattern>
+
+	<rule ref="PSR12">
+        <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
+    </rule>
+</ruleset>

@@ -4,19 +4,9 @@ namespace Brickrouge;
 
 echo new Element('input', [
 
-	Element::LABEL => 0,
+    Element::LABEL => 0,
 
-	'type' => 'checkbox'
-
-]);
-
-echo "\n";
-
-echo new Element('input', [
-
-	Element::LABEL => null,
-
-	'type' => 'checkbox'
+    'type' => 'checkbox'
 
 ]);
 
@@ -24,9 +14,9 @@ echo "\n";
 
 echo new Element('input', [
 
-	Element::LABEL => false,
+    Element::LABEL => null,
 
-	'type' => 'checkbox'
+    'type' => 'checkbox'
 
 ]);
 
@@ -34,8 +24,18 @@ echo "\n";
 
 echo new Element('input', [
 
-	Element::LABEL => '',
+    Element::LABEL => false,
 
-	'type' => 'checkbox'
+    'type' => 'checkbox'
+
+]);
+
+echo "\n";
+
+echo new Element('input', [
+
+    Element::LABEL => '',
+
+    'type' => 'checkbox'
 
 ]);

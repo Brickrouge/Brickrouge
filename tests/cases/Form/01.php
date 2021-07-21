@@ -8,42 +8,42 @@ use Brickrouge\Text;
 
 echo new Form([
 
-	Form::RENDERER => Form\GroupRenderer::class,
+    Form::RENDERER => Form\GroupRenderer::class,
 
-	Form::HIDDENS => [
+    Form::HIDDENS => [
 
-		'hidden1' => 'one',
-		'hidden2' => 'two'
+        'hidden1' => 'one',
+        'hidden2' => 'two'
 
-	],
+    ],
 
-	Form::ACTIONS => [
+    Form::ACTIONS => [
 
-		new Button('Reset', [ 'type' => 'reset' ]),
-		new Button('Submit', [ 'class' => 'primary', 'type' => 'submit' ])
+        new Button('Reset', [ 'type' => 'reset' ]),
+        new Button('Submit', [ 'class' => 'primary', 'type' => 'submit' ])
 
-	],
+    ],
 
-	Element::CHILDREN => [
+    Element::CHILDREN => [
 
-		'sender_name' => new Text([
+        'sender_name' => new Text([
 
-			Group::LABEL => "Sender's name",
+            Group::LABEL => "Sender's name",
 
-			Element::REQUIRED => true
+            Element::REQUIRED => true
 
-		]),
+        ]),
 
-		'sender_email' => new Text([
+        'sender_email' => new Text([
 
-			Group::LABEL => "Sender's e-mail",
+            Group::LABEL => "Sender's e-mail",
 
-			Element::REQUIRED => true,
+            Element::REQUIRED => true,
 
-		])
+        ])
 
-	],
+    ],
 
-	'name' => 'sender'
+    'name' => 'sender'
 
 ]);

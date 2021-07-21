@@ -21,35 +21,35 @@ use const DIRECTORY_SEPARATOR;
 
 class CasesTest extends TestCase
 {
-	/**
-	 * @dataProvider provide_test_case
-	 */
-	public function test_case(string $case)
-	{
-		$path = __DIR__ . DIRECTORY_SEPARATOR . "cases" . DIRECTORY_SEPARATOR . "$case";
+    /**
+     * @dataProvider provide_test_case
+     */
+    public function test_case(string $case)
+    {
+        $path = __DIR__ . DIRECTORY_SEPARATOR . "cases" . DIRECTORY_SEPARATOR . "$case";
 
-		ob_start();
-		include "$path.php";
-		$html = ob_get_clean();
+        ob_start();
+        include "$path.php";
+        $html = ob_get_clean();
 
-		$this->assertStringEqualsFile("$path.html", $html);
-	}
+        $this->assertStringEqualsFile("$path.html", $html);
+    }
 
-	public function provide_test_case(): array
-	{
-		$dir = __DIR__ . DIRECTORY_SEPARATOR . 'cases' . DIRECTORY_SEPARATOR;
-		$dir_prefix_len = strlen($dir);
-		$di = new \RecursiveDirectoryIterator($dir);
-		$it = new \RecursiveIteratorIterator($di);
-		$iterator = new \RegexIterator($it, '/\.php$/');
-		$cases = [];
+    public function provide_test_case(): array
+    {
+        $dir = __DIR__ . DIRECTORY_SEPARATOR . 'cases' . DIRECTORY_SEPARATOR;
+        $dir_prefix_len = strlen($dir);
+        $di = new \RecursiveDirectoryIterator($dir);
+        $it = new \RecursiveIteratorIterator($di);
+        $iterator = new \RegexIterator($it, '/\.php$/');
+        $cases = [];
 
-		foreach ($iterator as $file) {
-			$cases[] = [ substr($file->getPathname(), $dir_prefix_len, -4) ];
-		}
+        foreach ($iterator as $file) {
+            $cases[] = [ substr($file->getPathname(), $dir_prefix_len, -4) ];
+        }
 
-		sort($cases);
+        sort($cases);
 
-		return $cases;
-	}
+        return $cases;
+    }
 }

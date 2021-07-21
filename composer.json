@@ -41,7 +41,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Brickrouge\\": "lib/"
+			"Brickrouge\\": "src"
 		},
 		"files": [
 			"bootstrap.php",
