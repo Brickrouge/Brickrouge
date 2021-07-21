@@ -11,34 +11,44 @@
 
 namespace Brickrouge;
 
-class CasesTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+use function strlen;
+use function substr;
+use function var_dump;
+
+use const DIRECTORY_SEPARATOR;
+
+class CasesTest extends TestCase
 {
 	/**
 	 * @dataProvider provide_test_case
 	 */
-	public function test_case($pathname)
+	public function test_case(string $case)
 	{
+		$path = __DIR__ . DIRECTORY_SEPARATOR . "cases" . DIRECTORY_SEPARATOR . "$case";
+
 		ob_start();
-
-		include $pathname;
-
+		include "$path.php";
 		$html = ob_get_clean();
-		$expected_pathname = preg_replace('#\.php$#', '.html', $pathname);
-		$expected = file_get_contents($expected_pathname);
 
-		$this->assertEquals($expected, $html);
+		$this->assertStringEqualsFile("$path.html", $html);
 	}
 
-	public function provide_test_case()
+	public function provide_test_case(): array
 	{
-		$di = new \DirectoryIterator(__DIR__ . '/cases');
-		$iterator = new \RegexIterator($di, '#\.php$#');
+		$dir = __DIR__ . DIRECTORY_SEPARATOR . 'cases' . DIRECTORY_SEPARATOR;
+		$dir_prefix_len = strlen($dir);
+		$di = new \RecursiveDirectoryIterator($dir);
+		$it = new \RecursiveIteratorIterator($di);
+		$iterator = new \RegexIterator($it, '/\.php$/');
 		$cases = [];
 
-		foreach ($iterator as $file)
-		{
-			$cases[] = [ $file->getPathname() ];
+		foreach ($iterator as $file) {
+			$cases[] = [ substr($file->getPathname(), $dir_prefix_len, -4) ];
 		}
+
+		sort($cases);
 
 		return $cases;
 	}

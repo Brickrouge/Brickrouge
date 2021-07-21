@@ -24,7 +24,7 @@ echo new Form([
 
 	],
 
-	Form::CHILDREN => [
+	Element::CHILDREN => [
 
 		'sender_name' => new Text([
 
@@ -39,7 +39,6 @@ echo new Form([
 			Group::LABEL => "Sender's e-mail",
 
 			Element::REQUIRED => true,
-			Element::VALIDATOR => [ 'Brickrouge\Form::validate_email' ]
 
 		])
 

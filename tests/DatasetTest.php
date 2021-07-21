@@ -11,14 +11,16 @@
 
 namespace Brickrouge;
 
-class DatasetTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class DatasetTest extends TestCase
 {
 	/**
 	 * @var Element
 	 */
 	private $element;
 
-	public function setUp()
+	protected function setUp(): void
 	{
 		$this->element = new Element('div', [
 
@@ -43,16 +45,6 @@ class DatasetTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('Brickrouge\Dataset', $d1);
 		$this->assertInstanceOf('Brickrouge\Dataset', $d2);
 		$this->assertEquals(spl_object_hash($d1), spl_object_hash($d2));
-	}
-
-	public function testRendering()
-	{
-		$rendered = (string) $this->element;
-
-		$this->assertEquals(<<<EOT
-<div class="testing" data-one="one" data-two="two" data-three="three" data-true="1" data-false="0" data-numeric="1" />
-EOT
-		, $rendered);
 	}
 
 	public function testTraversing()

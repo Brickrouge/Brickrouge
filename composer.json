@@ -2,40 +2,52 @@
 	"name": "brickrouge/brickrouge",
 	"type": "library",
 	"description": "A toolkit to create HTML elements",
-	"keywords": ["html", "element", "form", "widget", "bootstrap"],
-	"homepage": "http://brickrouge.org/",
+	"keywords": [
+		"html",
+		"element",
+		"form",
+		"widget",
+		"bootstrap"
+	],
+	"homepage": "https://brickrouge.org/",
 	"license": "BSD-3-Clause",
 	"authors": [
 		{
 			"name": "Olivier Laviale",
 			"email": "olivier.laviale@gmail.com",
-			"homepage": "http://www.weirdog.com/",
-			"role" : "Developer"
+			"homepage": "https://olvlvl.com",
+			"role": "Developer"
 		}
 	],
 	"support": {
 		"issues": "https://github.com/Brickrouge/Brickrouge/issues",
 		"source": "https://github.com/Brickrouge/Brickrouge"
 	},
+	"config": {
+		"sort-packages": true
+	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"prefer-dist": true,
 	"require": {
-		"php": ">=5.5",
-		"icanboogie/common": "^1.3|^2.0",
-		"icanboogie/prototype": "^2.3|^3.0|^4.0|^5.0",
-		"icanboogie/errors": "^2.0"
+		"php": ">=8.0",
+		"icanboogie/common": "^2.0",
+		"icanboogie/errors": "^2.0",
+		"icanboogie/prototype": "^5.0"
 	},
 	"require-dev": {
-		"olvlvl/filecache": "dev-master"
+		"olvlvl/filecache": "dev-master",
+		"phpunit/phpunit": "^9.5"
 	},
 	"autoload": {
 		"psr-4": {
 			"Brickrouge\\": "lib/"
 		},
-		"files": [ "bootstrap.php", "helpers.php" ]
+		"files": [
+			"bootstrap.php",
+			"helpers.php"
+		]
 	},
-
 	"extra": {
 		"icanboogie": {
 			"locale-path": "locale"

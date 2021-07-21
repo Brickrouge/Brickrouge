@@ -1,5 +1,6 @@
 .sass-cache
 build
+.phpunit.result.cache
 composer.lock
 yarn.lock
 node_modules

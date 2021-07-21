@@ -266,7 +266,7 @@ class Document extends Prototyped
 			$url = strtr($url, '\\', '/');
 		}
 
-		if ($url{0} != '/')
+		if ($url[0] != '/')
 		{
 			$url = '/' . $url;
 		}

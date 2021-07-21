@@ -1,3 +1,5 @@
+PHPUNIT=vendor/bin/phpunit
+
 BRICKROUGE = ./assets/brickrouge
 BRICKROUGE_UNCOMPRESSED = ./build/brickrouge-uncompressed.js
 BRICKROUGE_JS = ./node_modules/brickrouge/dist/brickrouge-uncompressed.js
@@ -65,9 +67,11 @@ update:
 autoload: vendor
 	@composer dump-autoload
 
+.PHONY: test
 test: vendor
-	@phpunit
+	@$(PHPUNIT) $(ARGS)
 
+.PHONY: test-coverage
 test-coverage: vendor
 	@mkdir -p build/coverage
 	@XDEBUG_MODE=coverage $(PHPUNIT) --coverage-html build/coverage $(ARGS)
@@ -92,4 +96,4 @@ clean:
 	@rm -f composer.lock
 	@rm -fR node_modules
 
-.PHONE: all autoload clean update test test-coverage usage watch
+.PHONE: all autoload clean update usage watch

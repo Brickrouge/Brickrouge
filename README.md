@@ -543,11 +543,9 @@ required. The directory can later be cleaned with the `make clean` command.
 
 ## Testing
 
-The test suite is ran with the `make test` command. [PHPUnit](https://phpunit.de/) and
-[Composer](http://getcomposer.org/) need to be globally available to run the suite. The command
-installs dependencies as required. The `make test-coverage` command runs test suite and also creates
-an HTML coverage report in "build/coverage". The directory can later be cleaned with the `make
-clean` command.
+We provide a Docker container for local development. Run `make test-container` to create a new session. Inside the
+container run `make test` to run the test suite. Alternatively, run `make test-coverage` for a breakdown of the code
+coverage. The coverage report is available in `build/coverage/index.html`.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 

@@ -185,8 +185,19 @@ function sort_by_weight(array $array, $weight_picker)
 	}
 
 	$n = count($order);
-	$top = min($order) - $n;
-	$bottom = max($order) + $n;
+
+	$numeric_order = array_filter($order, fn(mixed $weight) => is_scalar($weight) && is_numeric($weight));
+
+	if ($numeric_order)
+	{
+		$top = min($numeric_order) - $n;
+		$bottom = max($numeric_order) + $n;
+	}
+	else
+	{
+		$top = -$n;
+		$bottom = $n;
+	}
 
 	foreach ($order as &$weight)
 	{

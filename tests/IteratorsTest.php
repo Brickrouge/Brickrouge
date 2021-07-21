@@ -11,11 +11,13 @@
 
 namespace Brickrouge;
 
-class IteratorsTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class IteratorsTest extends TestCase
 {
 	private $children;
 
-	public function setUp()
+	protected function setUp(): void
 	{
 		$this->children = $children = [
 

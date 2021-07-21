@@ -955,7 +955,7 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
 		foreach ($this[self::OPTIONS] as $value => $label)
 		{
-			if ($label && !is_object($label) && $label{0} == '.')
+			if ($label && !is_object($label) && $label[0] == '.')
 			{
 				$label = $this->t(substr($label, 1), [], [ 'scope' => 'element.option' ]);
 			}
@@ -1065,7 +1065,7 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
 		foreach ($attributes as $attribute => $value)
 		{
-			if ($value === false || $value === null || $attribute{0} == '#')
+			if ($value === false || $value === null || $attribute[0] == '#')
 			{
 				continue;
 			}
@@ -1338,7 +1338,7 @@ EOT;
 
 			case 'after':
 			default: return <<<EOT
-<label class="$class wrapping after">$html $label</label>
+<label class="$class wrapping after">$html <span class="label-text">$label</span></label>
 EOT;
 		}
 	}

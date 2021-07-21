@@ -127,9 +127,9 @@ class Dataset implements \ArrayAccess, \IteratorAggregate, ToArray
 	/**
 	 * Returns an array representation of the dataset.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
-	public function to_array()
+	public function to_array(): array
 	{
 		$properties = [];
 
