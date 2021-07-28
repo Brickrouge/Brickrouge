@@ -18,8 +18,6 @@ class PopoverWidget extends Popover
 {
     /**
      * Whether the widget should be made visible once elements are ready.
-     *
-     * @var bool
      */
     public const VISIBLE = '#visible';
 
@@ -30,8 +28,6 @@ class PopoverWidget extends Popover
      *
      * If you override the `class` attribute, remember to define this two class names, unless
      * you want to use a different behaviour or style.
-     *
-     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -46,10 +42,8 @@ class PopoverWidget extends Popover
 
     /**
      * Adds the `visible` property to the dataset.
-     *
-     * @inheritdoc
      */
-    protected function alter_dataset(array $dataset)
+    protected function alter_dataset(array $dataset): array
     {
         return parent::alter_dataset($dataset + [
 

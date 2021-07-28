@@ -23,14 +23,15 @@ class Actions extends Element
      *
      * @var string|array
      */
-    protected $actions;
+    private $actions;
 
     /**
-     * @param boolean|array|string|Element $actions Actions can be defined as a boolean, an array
-     * a string or an instance of the {@link Element} class. @param array $attributes
+     * @inheritDoc
+     *
+     * @param bool|array|string|Element $actions
+     *     Actions can be defined as a bool, an array a string or an instance of the {@link Element} class.
      *
      * @see {@link render_inner_html()}
-     *
      */
     public function __construct($actions, array $attributes = [])
     {
@@ -54,7 +55,7 @@ class Actions extends Element
      *
      * Otherwise actions are used as is.
      */
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         return parent::render_inner_html() . $this->render_actions($this->actions);
     }
@@ -63,10 +64,8 @@ class Actions extends Element
      * Renders actions.
      *
      * @param mixed $actions
-     *
-     * @return string
      */
-    protected function render_actions($actions)
+    protected function render_actions($actions): string
     {
         if ($actions == self::ACTIONS_BOOLEAN) {
             $actions = [

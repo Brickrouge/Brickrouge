@@ -20,29 +20,18 @@ use ICanBoogie\ErrorCollection;
  */
 class ErrorRenderer implements \ICanBoogie\ErrorRenderer
 {
-    /**
-     * @var Form
-     */
-    private $form;
+    private Form\ResolveLabel $label_resolver;
 
-    /**
-     * @var Form\ResolveLabel
-     */
-    private $label_resolver;
-
-    /**
-     * @param Form $form
-     */
-    public function __construct(Form $form)
-    {
-        $this->form = $form;
+    public function __construct(
+        private Form $form
+    ) {
         $this->label_resolver = new Form\ResolveLabel($form);
     }
 
     /**
      * @inheritdoc
      */
-    public function __invoke(Error $error, $attribute, ErrorCollection $collection)
+    public function __invoke(Error $error, string $attribute, ErrorCollection $collection): string
     {
         $label = $this->resolve_label($attribute);
 
@@ -51,48 +40,30 @@ class ErrorRenderer implements \ICanBoogie\ErrorRenderer
         }
 
         return $this->render_error($error->format, $error->args + [
-
                 'name' => $attribute,
                 'label' => $label
-
             ]);
     }
 
-    /**
-     * Resolves label.
-     *
-     * @param string $attribute
-     *
-     * @return string
-     */
-    protected function resolve_label($attribute)
+    private function resolve_label(string $attribute): ?string
     {
-        $label_resolver = $this->label_resolver;
-
-        return $label_resolver($attribute);
+        return ($this->label_resolver)($attribute);
     }
 
     /**
      * Renders an error.
      *
-     * @param string $format
-     * @param array $args
-     *
-     * @return string
+     * @param array<int|string, mixed> $args
      */
-    protected function render_error($format, $args)
+    private function render_error(string $format, array $args): string
     {
         return $this->t($format, $args, [ 'scope' => 'validation' ]);
     }
 
     /**
      * Translates a label.
-     *
-     * @param string $label
-     *
-     * @return string
      */
-    protected function translate_label($label)
+    private function translate_label(string $label): string
     {
         return $this->t($label, [], [ 'scope' => 'element.label' ]);
     }
@@ -100,13 +71,10 @@ class ErrorRenderer implements \ICanBoogie\ErrorRenderer
     /**
      * Translates and formats a string.
      *
-     * @param string $format
-     * @param array $args
-     * @param array $options
-     *
-     * @return string
+     * @param array<int|string, mixed> $args
+     * @param array<string, mixed> $options
      */
-    protected function t($format, array $args = [], array $options = [])
+    private function t(string $format, array $args = [], array $options = []): string
     {
         return $this->form->t($format, $args, $options);
     }

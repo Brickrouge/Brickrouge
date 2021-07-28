@@ -11,7 +11,10 @@
 
 namespace Brickrouge;
 
+use Exception;
 use ICanBoogie\Prototyped;
+use LogicException;
+use RuntimeException;
 
 /**
  * An HTML document.
@@ -20,17 +23,9 @@ use ICanBoogie\Prototyped;
  */
 class Document extends Prototyped
 {
-    public $body;
-
-    /**
-     * @var JSCollector Collector for Javascript assets.
-     */
-    public $js;
-
-    /**
-     * @var CSSCollector Collector for CSS assets.
-     */
-    public $css;
+    public Element $body;
+    public JSCollector $js;
+    public CSSCollector $css;
 
     /**
      * Constructor.
@@ -53,9 +48,9 @@ class Document extends Prototyped
     /**
      * Returns the Javascript and CSS assets used by the document as an array or URLs.
      *
-     * @return array The assets used by the document.
+     * @phpstan-return array{'css': string[], 'js': string[]} The assets used by the document.
      */
-    protected function get_assets()
+    protected function get_assets(): array
     {
         return [
 
@@ -174,23 +169,24 @@ class Document extends Prototyped
      * relative to the path specified by the $relative parameter or to the `DOCUMENT_ROOT`.
      *
      * @param string $path
-     * @param string $relative Relative path that can be used to resolve the path. If the
+     * @param string|null $relative Relative path that can be used to resolve the path. If the
      * parameter is null the method tries to _guess_ the relative path using the
      * {@link resolve_root()} private method.
      *
      * @return string The URL resolved from the path.
+     * @throws Exception
      */
-    public static function resolve_url($path, $relative = null)
+    public static function resolve_url(string $path, string $relative = null): string
     {
-        if (strpos($path, '//') === 0 || strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) {
+        if (str_starts_with($path, '//') || str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
             return $path;
-        } elseif (strpos($path, 'phar://') === 0) {
-            if (file_exists($path)) {
-                $path = get_accessible_file($path, 'phar');
-            } else {
-                trigger_error(format('Phar file %path does not exists.', [ '%path' => $path ]));
+        }
 
-                return null;
+        if (str_starts_with($path, 'phar://')) {
+            if (file_exists($path)) {
+                $path = get_accessible_file($path);
+            } else {
+                throw new LogicException(format('Phar file %path does not exists.', [ '%path' => $path ]));
             }
         }
 
@@ -224,19 +220,17 @@ class Document extends Prototyped
         #
 
         if (!$realpath) {
-            trigger_error(format('Unable to resolve path %path to an URL, tried: !tried', [
+            throw new RuntimeException(format('Unable to resolve path %path to an URL, tried: !tried', [
                 'path' => $path,
                 'tried' => implode(', ', $tried)
             ]));
-
-            return null;
         }
 
         #
         # If the file is not accessible from the document root, we create an accessible version.
         #
 
-        if (strpos($realpath, $root) === false) {
+        if (!str_contains($realpath, $root)) {
             $realpath = get_accessible_file($realpath);
         }
 
@@ -246,7 +240,7 @@ class Document extends Prototyped
 
         $url = substr($realpath, strlen($root));
 
-        if (DIRECTORY_SEPARATOR == '\\') {
+        if (DIRECTORY_SEPARATOR === '\\') {
             $url = strtr($url, '\\', '/');
         }
 

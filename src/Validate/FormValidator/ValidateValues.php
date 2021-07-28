@@ -21,11 +21,11 @@ interface ValidateValues
     /**
      * Validate values against a set of rules.
      *
-     * @param array $values Values to validate.
-     * @param array $rules Validation rules.
+     * @param array<string, mixed> $values Values to validate.
+     * @param array<string, mixed> $rules Validation rules.
      * @param ErrorCollection $errors Used to collect errors.
      *
      * @return void
      */
-    public function __invoke(array $values, array $rules, ErrorCollection $errors);
+    public function __invoke(array $values, array $rules, ErrorCollection $errors): void;
 }

@@ -14,6 +14,11 @@ namespace Brickrouge\Form;
 use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Group;
+use InvalidArgumentException;
+
+use function Brickrouge\normalize;
+use function ICanBoogie\sort_by_weight;
+use function is_numeric;
 
 /**
  * Renders form's children in groups.
@@ -23,14 +28,9 @@ class GroupRenderer extends Element
     public const GROUP_CLASS = '#group-class';
 
     /**
-     * @var Form
-     */
-    protected $form;
-
-    /**
      * Circumvent Element constructor.
      *
-     * @param array $attributes
+     * @inheritDoc
      */
     public function __construct(array $attributes = [])
     {
@@ -41,14 +41,12 @@ class GroupRenderer extends Element
             ]);
     }
 
+    private Form $form;
+
     /**
      * Renders form's children in groups.
-     *
-     * @param Form $form
-     *
-     * @return string
      */
-    public function __invoke(Form $form)
+    public function __invoke(Form $form): ?string
     {
         $this->form = $form;
         $this->children = $form->get_ordered_children();
@@ -71,9 +69,9 @@ class GroupRenderer extends Element
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         $groups = ($this->form[self::GROUPS] ?: []) + [
 
@@ -88,13 +86,33 @@ class GroupRenderer extends Element
     }
 
     /**
+     * Resolves a group definition into an {@link Element} instance.
+     *
+     * @param array<string, mixed>|Element $group
+     */
+    private function resolve_group(Element|array $group): Element
+    {
+        if ($group instanceof Element) {
+            return $group;
+        }
+
+        $constructor = $this[self::GROUP_CLASS];
+
+        return new $constructor($this->normalize_group_attributes($group) + [
+
+                self::CHILDREN => []
+
+            ]);
+    }
+
+    /**
      * Normalizes former group definition to use {@link Element} attributes.
      *
-     * @param array $attributes
+     * @param array<string, mixed> $attributes
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    protected function normalize_group_attributes(array $attributes = [])
+    private function normalize_group_attributes(array $attributes = []): array
     {
         static $transform = [
 
@@ -118,58 +136,35 @@ class GroupRenderer extends Element
     }
 
     /**
-     * Resolves a group definition into an {@link Element} instance.
-     *
-     * @param Element|array $group
-     *
-     * @return Element
-     */
-    protected function resolve_group($group)
-    {
-        if ($group instanceof Element) {
-            return $group;
-        }
-
-        $constructor = $this[self::GROUP_CLASS];
-
-        return new $constructor($this->normalize_group_attributes($group) + [
-
-                self::CHILDREN => []
-
-            ]);
-    }
-
-    /**
      * Resolves group definitions into {@link Element} instances and sort them according to their
      * {@link WEIGHT}.
      *
-     * @param array $groups
+     * @param array<string, Element> $groups
+     *     Where _key_ is a Group identifier and _value_ an Element.
      *
      * @return Element[]
      */
-    protected function resolve_groups(array $groups)
+    protected function resolve_groups(array $groups): array
     {
         foreach ($groups as $group_id => &$group) {
             $group = $this->resolve_group($group);
 
             if ($group_id && !is_numeric($group_id)) {
-                $group->add_class('group--' . \Brickrouge\normalize($group_id));
+                $group->add_class('group--' . normalize($group_id));
             }
         }
 
-        return \ICanBoogie\sort_by_weight($groups, function ($v) {
-            return $v[self::WEIGHT];
-        });
+        return sort_by_weight($groups, fn(Element $v): int|string => $v[self::WEIGHT] ?? 0);
     }
 
     /**
      * Dispatches children into groups.
      *
-     * @param Element[] $groups
+     * @param array<string, Element> $groups
      *
-     * @return Element[]
+     * @return array<string, Element>
      */
-    protected function dispatch_children(array $groups)
+    private function dispatch_children(array $groups): array
     {
         foreach ($this->children as $name => $child) {
             if (!$child) {
@@ -183,7 +178,7 @@ class GroupRenderer extends Element
             }
 
             if (empty($groups[$group_name])) {
-                throw new \InvalidArgumentException("There is no group with id $group_name.");
+                throw new InvalidArgumentException("There is no group with id $group_name.");
             }
 
             $groups[$group_name]->children[$name] = $child;

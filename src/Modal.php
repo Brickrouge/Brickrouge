@@ -14,7 +14,7 @@ class Modal extends Element
         parent::__construct('div', $attributes);
     }
 
-    protected function alter_class_names(array $class_names)
+    protected function alter_class_names(array $class_names): array
     {
         return parent::alter_class_names($class_names) + [
 
@@ -25,7 +25,7 @@ class Modal extends Element
             ];
     }
 
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         $html = '';
 
@@ -71,7 +71,7 @@ EOT;
 EOT;
     }
 
-    protected function decorate_with_legend($html, $legend)
+    protected function decorate_with_legend(string $html, string $legend): string
     {
         return $html;
     }

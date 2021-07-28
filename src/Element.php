@@ -11,7 +11,12 @@
 
 namespace Brickrouge;
 
+use ArrayAccess;
 use ICanBoogie\Prototyped;
+use InvalidArgumentException;
+use IteratorAggregate;
+use Stringable;
+use Throwable;
 
 /**
  * An HTML element.
@@ -38,10 +43,12 @@ use ICanBoogie\Prototyped;
  *
  * @property-read array $ordered_children Children ordered according to their {@link WEIGHT}.
  *
- *
  * @see http://dev.w3.org/html5/spec/Overview.html#embedding-custom-non-visible-data-with-the-data-attributes
+ *
+ * @implements ArrayAccess<string, mixed>
+ * @implements IteratorAggregate<string, Element>
  */
-class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HTMLStringInterface
+class Element extends Prototyped implements ArrayAccess, IteratorAggregate, HTMLStringInterface
 {
     #
     # special elements
@@ -194,13 +201,17 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      */
     public const IS = 'brickrouge-is';
 
-    private static $inputs = [ 'button', 'form', 'input', 'option', 'select', 'textarea' ];
-    private static $has_attribute_disabled = [ 'button', 'input', 'optgroup', 'option', 'select', 'textarea' ];
-    private static $has_attribute_value = [ 'button', 'input', 'option' ];
-    private static $has_attribute_required = [ 'input', 'select', 'textarea' ];
-    private static $handled_assets = [];
+    private const INPUTS = [ 'button', 'form', 'input', 'option', 'select', 'textarea' ];
+    private const HAS_ATTRIBUTE_DISABLED = [ 'button', 'input', 'optgroup', 'option', 'select', 'textarea' ];
+    private const HAS_ATTRIBUTE_VALUE = [ 'button', 'input', 'option' ];
+    private const HAS_ATTRIBUTE_REQUIRED = [ 'input', 'select', 'textarea' ];
 
-    protected static function handle_assets()
+    /**
+     * @var array<class-string, true>
+     */
+    private static array $handled_assets = [];
+
+    private static function handle_assets(): void
     {
         $class = get_called_class();
 
@@ -215,26 +226,20 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
     /**
      * Adds assets to the document.
-     *
-     * @param Document $document
      */
-    protected static function add_assets(Document $document)
+    protected static function add_assets(Document $document): void
     {
     }
 
     /**
      * Next available auto element id index.
-     *
-     * @var int
      */
-    protected static $auto_element_id = 1;
+    private static int $auto_element_id = 1;
 
     /**
      * Returns a unique element id string.
-     *
-     * @return string
      */
-    public static function auto_element_id()
+    public static function auto_element_id(): string
     {
         return 'autoid--' . self::$auto_element_id++;
     }
@@ -244,45 +249,42 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      *
      * @var string
      */
-    public $type;
+    public string $type;
 
     /**
      * Tag name of the rendered HTML element.
      *
      * @var string
      */
-    public $tag_name;
+    public string $tag_name;
 
     /**
      * An array containing the children of the element.
      *
-     * @var array
+     * @var array<int|string, Element|string>
      */
-    public $children = [];
+    public array $children = [];
 
     /**
      * Attributes of the element, including HTML and special attributes.
      *
-     * @var array[string]mixed
+     * @var array<string, mixed>
      */
-    private $attributes = [];
+    private array $attributes = [];
 
     /**
      * Inner HTML of the element.
      *
-     * @var string|null
-     *
      * @see Element::render_inner_html()
      */
-    protected $inner_html;
+    protected ?string $inner_html = null;
 
     /**
-     * @param string $type Type of the element, it can be one of the custom types (`TYPE_*`) or
-     * any HTML type.
+     * @param string $type Type of the element, it can be one of the custom types (`TYPE_*`) or any HTML type.
      *
-     * @param array $attributes HTML and custom attributes.
+     * @param array<string, mixed> $attributes HTML and custom attributes.
      */
-    public function __construct($type, array $attributes = [])
+    public function __construct(string $type, array $attributes = [])
     {
         $this->type = $type;
 
@@ -301,7 +303,7 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
         # prepare special elements
         #
 
-        switch ((string) $type) {
+        switch ($type) {
             case self::TYPE_CHECKBOX:
             case self::TYPE_RADIO:
                 static $translate = [
@@ -316,9 +318,6 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
                 break;
 
             case self::TYPE_CHECKBOX_GROUP:
-                $this->tag_name = 'div';
-                break;
-
             case self::TYPE_RADIO_GROUP:
                 $this->tag_name = 'div';
                 break;
@@ -337,7 +336,7 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
             $this[$attribute] = $value;
         }
 
-        switch ((string) $this->type) {
+        switch ($this->type) {
             case self::TYPE_CHECKBOX_GROUP:
                 $this->add_class('checkbox-group');
                 break;
@@ -351,37 +350,34 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
     /**
      * Checks is an attribute is set.
      *
-     * @param string $attribute
-     *
-     * @return bool
+     * @param string $offset An attribute.
      */
-    public function offsetExists($attribute)
+    public function offsetExists($offset): bool
     {
-        return isset($this->attributes[$attribute]);
+        return isset($this->attributes[$offset]);
     }
 
     /**
      * Returns the value of an attribute.
      *
-     * @param string $attribute
-     * @param mixed|null $default The default value of the attribute.
+     * @param string $offset An attribute.
      *
-     * @return mixed The value of the attribute, or null if is not set.
+     * @return mixed The value of the attribute, or `null` if is not set.
      */
-    public function offsetGet($attribute, $default = null)
+    public function offsetGet($offset): mixed
     {
-        return isset($this->attributes[$attribute]) ? $this->attributes[$attribute] : $default;
+        return $this->attributes[$offset] ?? null;
     }
 
     /**
      * Sets the value of an attribute.
      *
-     * @param string $attribute The attribute.
+     * @param string $offset An attribute.
      * @param mixed $value The value of the attribute.
      */
-    public function offsetSet($attribute, $value)
+    public function offsetSet($offset, $value)
     {
-        switch ($attribute) {
+        switch ($offset) {
             case self::CHILDREN:
                 $this->children = [];
                 $this->adopt($value);
@@ -392,7 +388,7 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
                 break;
 
             case 'class':
-                $this->class = $value;
+                $this->class = $value ?? '';
                 break;
 
             case 'id':
@@ -400,37 +396,35 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
                 break;
         }
 
-        $this->attributes[$attribute] = $value;
+        $this->attributes[$offset] = $value;
     }
 
     /**
      * Removes an attribute.
      *
-     * @param string $attribute The name of the attribute.
+     * @param string $offset An attribute.
      */
-    public function offsetUnset($attribute)
+    public function offsetUnset($offset): void
     {
-        unset($this->attributes[$attribute]);
+        unset($this->attributes[$offset]);
     }
 
     /**
-     * Returns an iterator.
+     * Iterates through the Element children.
      *
-     * @return Iterator
+     * @return iterable<int|string, Element>
      */
-    public function getIterator()
+    public function getIterator(): iterable
     {
         return new Iterator($this);
     }
 
-    private $private_dataset;
+    private ?Dataset $private_dataset = null;
 
     /**
      * Returns the {@link Dataset} of the element.
-     *
-     * @return Dataset
      */
-    protected function get_dataset()
+    protected function get_dataset(): Dataset
     {
         return $this->private_dataset ??= new Dataset($this);
     }
@@ -438,25 +432,21 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
     /**
      * Sets the dataset of the element.
      *
-     * @param array|Dataset #dataset
-     *
-     * @return Dataset
+     * @param array<string, mixed>|Dataset $dataset
      */
-    protected function set_dataset($dataset)
+    protected function set_dataset(Dataset|array $dataset): void
     {
-        if (!$dataset instanceof Dataset) {
-            $dataset = new Dataset($this, $dataset);
-        }
-
-        $this->private_dataset = $dataset;
+        $this->private_dataset = $dataset instanceof Dataset
+            ? $dataset
+            : new Dataset($this, $dataset);
     }
 
     /**
      * Returns the attributes of the element.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    protected function get_attributes()
+    protected function get_attributes(): array
     {
         return $this->attributes;
     }
@@ -465,10 +455,8 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      * Returns the element's id.
      *
      * If the element's id is empty, a unique id is generated and added to its attributes.
-     *
-     * @return string
      */
-    protected function lazy_get_id()
+    protected function lazy_get_id(): string
     {
         $id = $this['id'];
 
@@ -489,17 +477,13 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
     /**
      * Class names used to compose the value of the `class` attribute.
-     *
-     * @var array
      */
-    protected $class_names = [];
+    protected array $class_names = [];
 
     /**
      * Returns the value of the "class" attribute.
-     *
-     * @return string
      */
-    protected function get_class()
+    protected function get_class(): string
     {
         $class_names = $this->alter_class_names($this->class_names);
 
@@ -508,10 +492,8 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
     /**
      * Sets the value of the "class" attribute.
-     *
-     * @param string $class
      */
-    protected function set_class($class)
+    protected function set_class(string $class): void
     {
         $names = explode(' ', trim($class));
         $names = array_map('trim', $names);
@@ -522,11 +504,9 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
     /**
      * Adds a class name to the "class" attribute.
      *
-     * @param $class
-     *
-     * @return Element
+     * @return $this
      */
-    public function add_class($class)
+    public function add_class(string $class): self
     {
         $this->class_names[$class] = true;
 
@@ -536,11 +516,9 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
     /**
      * Removes a class name from the `class` attribute.
      *
-     * @param $class
-     *
-     * @return Element
+     * @return $this
      */
-    public function remove_class($class)
+    public function remove_class(string $class): self
     {
         unset($this->class_names[$class]);
 
@@ -549,12 +527,8 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
     /**
      * Checks if a class name is defined in the `class` attribute.
-     *
-     * @param string $class_name
-     *
-     * @return boolean true if the element has the class name, false otherwise.
      */
-    public function has_class($class_name)
+    public function has_class(string $class_name): bool
     {
         return isset($this->class_names[$class_name]);
     }
@@ -564,11 +538,11 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      *
      * This method is invoked before the class names are rendered.
      *
-     * @param array $class_names
+     * @param array<string, bool|string> $class_names
      *
-     * @return array
+     * @phpstan-return array<string, bool|string>
      */
-    protected function alter_class_names(array $class_names)
+    protected function alter_class_names(array $class_names): array
     {
         return $class_names;
     }
@@ -576,14 +550,12 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
     /**
      * Renders the `class` attribute value.
      *
-     * @param array $class_names An array of class names. Each key/value pair describe a class
-     * name. The key is the identifier of the class name, the value is its value. If the value is
-     * empty then the class name is discarded. If the value is `true` the identifier of the class
-     * name is used as value.
-     *
-     * @return string
+     * @param array<string, bool|string> $class_names
+     *     An array of class names. Each key/value pair describe a class name. The key is the identifier of the class
+     *     name, the value is its value. If the value is empty then the class name is discarded. If the value is `true`
+     *     the identifier of the class name is used as value.
      */
-    protected function render_class(array $class_names)
+    protected function render_class(array $class_names): string
     {
         $class = '';
         $class_names = array_filter($class_names);
@@ -606,9 +578,9 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      * and the child itself. If the key is not numeric it is considered as the child's name and is
      * used to set its `name` attribute, unless the attribute is already defined.
      *
-     * @param string|Element|array $child The child or children to add.
+     * @param Element|string|array<string, Element|string> $child The child or children to add.
      */
-    public function adopt($child)
+    public function adopt(Element|string|array $child): void
     {
         if (func_num_args() > 1) {
             $child = func_get_args();
@@ -636,27 +608,24 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
     /**
      * Returns the children of the element ordered according to their weight.
      *
-     * @return array
+     * @return array<int|string, Element>
      */
-    public function get_ordered_children()
+    public function get_ordered_children(): array
     {
         if (!$this->children) {
             return [];
         }
 
-        return sort_by_weight($this->children, function ($v) {
-            return $v instanceof self ? ($v[self::WEIGHT] ?: 0) : 0;
-        });
+        return sort_by_weight(
+            $this->children,
+            fn($v) => $v instanceof self ? ($v[self::WEIGHT] ?? 0) : 0
+        );
     }
 
     /**
      * Returns the HTML representation of a child element.
-     *
-     * @param Element|string $child
-     *
-     * @return string
      */
-    protected function render_child($child)
+    protected function render_child(Element|string $child): string
     {
         return (string) $child;
     }
@@ -664,11 +633,9 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
     /**
      * Renders the children of the element into a HTML string.
      *
-     * @param array $children
-     *
-     * @return string
+     * @param array<Element|string> $children
      */
-    protected function render_children(array $children)
+    protected function render_children(array $children): string
     {
         $html = '';
 
@@ -696,24 +663,15 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      * @return string|null The content of the element. The element is to be considered
      * _self-closing_ if `null` is returned.
      */
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
-        $html = null;
-
-        switch ($this->type) {
-            case 'select':
-                $html = $this->render_inner_html_for_select();
-                break;
-            case 'textarea':
-                $html = $this->render_inner_html_for_textarea();
-                break;
-            case self::TYPE_CHECKBOX_GROUP:
-                $html = $this->render_inner_html_for_checkbox_group();
-                break;
-            case self::TYPE_RADIO_GROUP:
-                $html = $this->render_inner_html_for_radio_group();
-                break;
-        }
+        $html = match ($this->type) {
+            'select' => $this->render_inner_html_for_select(),
+            'textarea' => $this->render_inner_html_for_textarea(),
+            self::TYPE_CHECKBOX_GROUP => $this->render_inner_html_for_checkbox_group(),
+            self::TYPE_RADIO_GROUP => $this->render_inner_html_for_radio_group(),
+            default => null,
+        };
 
         $children = $this->get_ordered_children();
 
@@ -728,10 +686,8 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
     /**
      * Renders inner HTML of `SELECT` elements.
-     *
-     * @return string
      */
-    protected function render_inner_html_for_select()
+    protected function render_inner_html_for_select(): string
     {
         #
         # get the name and selected value for our children
@@ -755,7 +711,7 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
         $html = '';
 
-        $options = $this[self::OPTIONS] ?: [];
+        $options = $this[self::OPTIONS] ?? [];
         $disabled = $this[self::OPTIONS_DISABLED];
 
         foreach ($options as $value => $label) {
@@ -789,10 +745,8 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
     /**
      * Renders the inner HTML of `TEXTAREA` elements.
-     *
-     * @return string
      */
-    protected function render_inner_html_for_textarea()
+    protected function render_inner_html_for_textarea(): string
     {
         $value = $this['value'];
 
@@ -800,15 +754,13 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
             $value = $this[self::DEFAULT_VALUE];
         }
 
-        return escape($value);
+        return $value ? escape($value) : '';
     }
 
     /**
      * Renders inner HTML of {@link TYPE_CHECKBOX_GROUP} custom elements.
-     *
-     * @return string
      */
-    protected function render_inner_html_for_checkbox_group()
+    protected function render_inner_html_for_checkbox_group(): string
     {
         #
         # get the name and selected value for our children
@@ -854,10 +806,8 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
 
     /**
      * Renders inner HTML of {@link TYPE_RADIO_GROUP} custom elements.
-     *
-     * @return string
      */
-    protected function render_inner_html_for_radio_group()
+    protected function render_inner_html_for_radio_group(): string
     {
         #
         # get the name and selected value for our children
@@ -926,40 +876,40 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      * - The `value` attribute of `INPUT` and `BUTTON` elements is altered if the
      * {@link DEFAULT_VALUE} attribute is defined and the `value` attribute is not (`null`).
      *
-     * @param array $attributes
+     * @param array<string, mixed> $attributes
      *
-     * @return array The altered attributes.
+     * @return array<string, mixed> The altered attributes.
      */
-    protected function alter_attributes(array $attributes)
+    protected function alter_attributes(array $attributes): array
     {
         $tag_name = $this->tag_name;
 
         foreach ($attributes as $attribute => $value) {
-            if ($attribute == 'value' && !in_array($tag_name, self::$has_attribute_value)) {
+            if ($attribute === 'value' && !in_array($tag_name, self::HAS_ATTRIBUTE_VALUE)) {
                 unset($attributes[$attribute]);
 
                 continue;
             }
 
-            if ($attribute == 'required' && !in_array($tag_name, self::$has_attribute_required)) {
+            if ($attribute === 'required' && !in_array($tag_name, self::HAS_ATTRIBUTE_REQUIRED)) {
                 unset($attributes[$attribute]);
 
                 continue;
             }
 
-            if ($attribute == 'disabled' && !in_array($tag_name, self::$has_attribute_disabled)) {
+            if ($attribute === 'disabled' && !in_array($tag_name, self::HAS_ATTRIBUTE_DISABLED)) {
                 unset($attributes[$attribute]);
 
                 continue;
             }
 
-            if ($attribute == 'name' && !in_array($tag_name, self::$inputs)) {
+            if ($attribute === 'name' && !in_array($tag_name, self::INPUTS)) {
                 unset($attributes[$attribute]);
 
                 continue;
             }
 
-            if ($attribute == 'title') {
+            if ($attribute === 'title' && $value) {
                 $attributes[$attribute] = $this->t($value, [], [ 'scope' => 'element.title' ]);
             }
         }
@@ -968,9 +918,9 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
         # value/checked
         #
 
-        if ($this->type == self::TYPE_CHECKBOX && $this['checked'] === null) {
+        if ($this->type === self::TYPE_CHECKBOX && $this['checked'] === null) {
             $attributes['checked'] = !!$this[self::DEFAULT_VALUE];
-        } elseif (($tag_name == 'input' || $tag_name == 'button') && $this['value'] === null) {
+        } elseif (($tag_name === 'input' || $tag_name === 'button') && $this['value'] === null) {
             $attributes['value'] = $this[self::DEFAULT_VALUE];
         }
 
@@ -983,24 +933,22 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      * Attributes with `false` or `null` values as well as custom attributes are discarded.
      * Attributes with the `true` value are translated to XHTML standard e.g. readonly="readonly".
      *
-     * @param array $attributes
+     * @param array<string, mixed> $attributes
      *
-     * @return string
-     *
-     * @throws \InvalidArgumentException if the value is an array or an object that doesn't
+     * @throws InvalidArgumentException if the value is an array or an object that doesn't
      * implement the `toString()` method.
      */
-    protected function render_attributes(array $attributes)
+    protected function render_attributes(array $attributes): string
     {
         $html = '';
 
         foreach ($attributes as $attribute => $value) {
-            if ($value === false || $value === null || $attribute[0] == '#') {
+            if ($value === false || $value === null || $attribute[0] === '#') {
                 continue;
             } elseif ($value === true) {
                 $value = $attribute;
-            } elseif (is_array($value) || (is_object($value) && !method_exists($value, '__toString'))) {
-                throw new \InvalidArgumentException(format('Invalid value for attribute %attribute: :value', [
+            } elseif (is_array($value) || (is_object($value) && !$value instanceof Stringable)) {
+                throw new InvalidArgumentException(format('Invalid value for attribute %attribute: :value', [
                     'attribute' => $attribute,
                     'value' => $value
                 ]));
@@ -1019,14 +967,14 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      *
      * The method might add the `default-value` and {@link IS_ATTRIBUTE} keys.
      *
-     * @param array $dataset
+     * @param array<string, mixed> $dataset
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    protected function alter_dataset(array $dataset)
+    protected function alter_dataset(array $dataset): array
     {
         if (
-            (in_array($this->tag_name, self::$has_attribute_value) || $this->tag_name == 'textarea')
+            (in_array($this->tag_name, self::HAS_ATTRIBUTE_VALUE) || $this->tag_name == 'textarea')
             && $this['data-default-value'] === null
         ) {
             $dataset['default-value'] = $this[self::DEFAULT_VALUE];
@@ -1042,11 +990,9 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      * encoded using the {@link json_encode()} function. Attributes with null values are discarded,
      * but unlike classic attributes boolean values are converted to integers.
      *
-     * @param array $dataset
-     *
-     * @return string
+     * @param array<string, mixed> $dataset
      */
-    protected function render_dataset(array $dataset)
+    private function render_dataset(array $dataset): string
     {
         $rc = '';
 
@@ -1085,9 +1031,9 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      *
      * Note: The inner HTML is rendered before the outer HTML.
      *
-     * @return string
+     * @throws ElementIsEmpty
      */
-    protected function render_outer_html()
+    protected function render_outer_html(): string
     {
         $inner = $this->render_inner_html();
 
@@ -1099,7 +1045,7 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
         $dataset = [];
 
         foreach ($this->attributes as $attribute => $value) {
-            if (strpos($attribute, 'data-') === 0) {
+            if (str_starts_with($attribute, 'data-')) {
                 $dataset[substr($attribute, 5)] = $value;
             } else {
                 $attributes[$attribute] = $value;
@@ -1148,12 +1094,8 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      *
      * - A legend defined by the {@link LEGEND} special attribute. The
      * {@link decorate_with_label()} method is used to decorate the HTML with the legend.
-     *
-     * @param string $html The HTML to decorate.
-     *
-     * @return string The decorated HTML.
      */
-    protected function decorate($html)
+    protected function decorate(string $html): string
     {
         #
         # add label
@@ -1207,12 +1149,9 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
      *
      * The position of the label is defined using the {@link T_LABEL_POSITION} tag
      *
-     * @param string $html
      * @param string $label The label as defined by the {@link T_LABEL} tag.
-     *
-     * @return string
      */
-    protected function decorate_with_label($html, $label)
+    protected function decorate_with_label(string $html, string $label): string
     {
         $class = 'element-label';
 
@@ -1228,67 +1167,44 @@ class Element extends Prototyped implements \ArrayAccess, \IteratorAggregate, HT
             $class .= ' form-check-label';
         }
 
-        switch ($this[self::LABEL_POSITION] ?: 'after') {
-            case 'above':
-                return <<<EOT
+        return match ($this[self::LABEL_POSITION]) {
+            'above' => <<<EOT
 <label class="$class above">$label</label>
 $html
-EOT;
-
-            case 'below':
-                return <<<EOT
+EOT,
+            'below' => <<<EOT
 $html
 <label class="$class below">$label</label>
-EOT;
-
-            case 'before':
-                return <<<EOT
+EOT,
+            'before' => <<<EOT
 <label class="$class wrapping before">$label $html</label>
-EOT;
-
-            case 'after':
-            default:
-                return <<<EOT
+EOT,
+            default => <<<EOT
 <label class="$class wrapping after">$html <span class="label-text">$label</span></label>
-EOT;
-        }
+EOT,
+        };
     }
 
     /**
      * Decorates the specified HTML with a fieldset and the specified legend.
-     *
-     * @param string $html
-     * @param string $legend
-     *
-     * @return string
      */
-    protected function decorate_with_legend($html, $legend)
+    protected function decorate_with_legend(string $html, string $legend): string
     {
         return '<fieldset><legend>' . $legend . '</legend>' . $html . '</fieldset>';
     }
 
     /**
      * Decorates the specified HTML with an inline help element.
-     *
-     * @param string $html
-     * @param string $help
-     *
-     * @return string
      */
-    protected function decorate_with_inline_help($html, $help)
+    protected function decorate_with_inline_help(string $html, string $help): string
     {
         return $html . '<div class="help-inline form-text text-muted">' . $help . '</div>';
     }
 
     /**
      * Decorates the specified HTML with the specified description.
-     *
-     * @param string $html
-     * @param string $description
-     *
-     * @return string
      */
-    protected function decorate_with_description($html, $description)
+    protected function decorate_with_description(string $html, string $description): string
     {
         return $html . '<div class="form-text text-muted">' . $description . '</div>';
     }
@@ -1307,17 +1223,17 @@ EOT;
      *
      * @return string The HTML representation of the object
      */
-    public function render()
+    public function render(): string
     {
-        if (get_class($this) != __CLASS__) {
+        if (get_class($this) !== __CLASS__) {
             static::handle_assets();
         }
 
         try {
-            $html = $this->render_outer_html();
-
-            return $this->decorate($html);
-        } catch (ElementIsEmpty $e) {
+            return $this->decorate(
+                $this->render_outer_html()
+            );
+        } catch (ElementIsEmpty) {
             return '';
         }
     }
@@ -1336,7 +1252,7 @@ EOT;
     {
         try {
             return $this->render();
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             return render_exception($e);
         }
     }
@@ -1348,19 +1264,18 @@ EOT;
      * if it is not specified.
      *
      * @param string $pattern The native string to translate.
-     * @param array $args An array of replacements to make after the translation. The replacement is
+     * @param array<int|string, mixed> $args An array of replacements to make after the translation. The replacement is
      * handled by the {@link format()} function.
-     * @param array $options An array of additional options, with the following elements:
+     * @param array<string, mixed> $options An array of additional options, with the following elements:
      * - 'default': The default string to use if the translation failed.
      * - 'scope': The scope of the translation.
      *
      * @return string
      * @see \Brickrouge\t
-     *
      */
-    public function t($pattern, array $args = [], array $options = [])
+    public function t(string $pattern, array $args = [], array $options = []): string
     {
-        /* @var $translator callable */
+        /** @phpstan-var ?callable(string $pattern, array $args = [], array $options = []): string $translator */
         $translator = $this[self::TRANSLATOR];
 
         return $translator ? $translator($pattern, $args, $options) : t($pattern, $args, $options);

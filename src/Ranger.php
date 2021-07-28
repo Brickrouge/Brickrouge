@@ -25,7 +25,7 @@ class Ranger extends Element
         parent::__construct($type, $attributes + [ 'class' => 'wdranger' ]);
     }
 
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         $start = max(1, $this[self::T_START]);
         $limit = $this[self::T_LIMIT] ?: 10;

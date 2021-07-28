@@ -70,7 +70,7 @@ class JSCollector extends AssetsCollector
     /**
      * @inheritdoc
      */
-    public function cache_construct(FileCache $cache, $key, array $userdata)
+    public function cache_construct(FileCache $cache, $key, array $userdata): string
     {
         list($collected) = $userdata;
 

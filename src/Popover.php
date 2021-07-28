@@ -65,8 +65,6 @@ class Popover extends Element
      * you override the `class` attribute you should consider adding the "popover" class name.
      *
      * The element is created as a DIV element.
-     *
-     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -79,10 +77,8 @@ class Popover extends Element
 
     /**
      * Adds the 'fit-content' class name if the {@link FIT_CONTENT} attribute is truthy.
-     *
-     * @inheritdoc
      */
-    protected function alter_class_names(array $class_names)
+    protected function alter_class_names(array $class_names): array
     {
         $class_names = parent::alter_class_names($class_names);
 
@@ -96,10 +92,8 @@ class Popover extends Element
     /**
      * Adds the anchor specified using the {@link ANCHOR} special attribute to the dataset before
      * it is rendered.
-     *
-     * @inheritdoc
      */
-    protected function alter_dataset(array $dataset)
+    protected function alter_dataset(array $dataset): array
     {
         return parent::alter_dataset($dataset + [
 
@@ -112,10 +106,8 @@ class Popover extends Element
     /**
      * The inner HTML is wrapped in a number of DIV elements, and the title is used a the popover
      * title.
-     *
-     * @inheritdoc
      */
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         $content = parent::render_inner_html();
 
@@ -144,13 +136,9 @@ EOT;
      *
      * Actions buttons should provide a `data-action` attribute with the value of the action to use
      * when the `action` event is fired by Javascript.
-     *
-     * @param mixed $actions
-     *
-     * @return string
      */
-    protected function render_actions($actions)
+    private function render_actions(mixed $actions): string
     {
-        return new Actions($actions, [ 'class' => 'popover-actions' ]);
+        return (string) new Actions($actions, [ 'class' => 'popover-actions' ]);
     }
 }

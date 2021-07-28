@@ -44,7 +44,7 @@ class Pager extends Element
 
     protected $urlbase;
 
-    public function render_inner_html()
+    public function render_inner_html(): ?string
     {
         $limit = $this[self::T_LIMIT];
         $count = $this[self::T_COUNT];

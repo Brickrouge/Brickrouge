@@ -11,6 +11,7 @@
 
 namespace Brickrouge;
 
+use Exception;
 use ICanBoogie\FileCache;
 
 /**
@@ -21,23 +22,20 @@ abstract class AssetsCollector
     /**
      * Collected assets
      *
-     * @var array
+     * @var array<string, int>
+     *     Where _key_ is a path to an asset and _value_ its weight.
      */
-    protected $collected = [];
+    private array $collected = [];
 
     /**
      * Whether the collected assets should be cached.
-     *
-     * @var bool
      */
-    public $use_cache = false;
+    public bool $use_cache = false;
 
     /**
      * Sets the cache policy according to the configuration.
-     *
-     * @param bool $use_cache
      */
-    public function __construct($use_cache = false)
+    public function __construct(bool $use_cache = false)
     {
         $this->use_cache = $use_cache;
     }
@@ -49,9 +47,10 @@ abstract class AssetsCollector
      * @param int $weight Weight of the asset in the collection.
      * @param string|null $root Root used to resolve the asset path into a URL.
      *
-     * @return AssetsCollector Return the object itself for chainable calls.
+     * @return $this Return the object itself for chainable calls.
+     * @throws Exception when the URL cannot be resolved.
      */
-    public function add($path, $weight = 0, $root = null)
+    public function add(string $path, int $weight = 0, string $root = null): self
     {
         $url = Document::resolve_url($path, $root);
 
@@ -63,22 +62,22 @@ abstract class AssetsCollector
     /**
      * Returns the collected assets as an array of URL.
      *
-     * @return array
+     * @return string[] The paths, sorted.
      */
-    public function get()
+    public function get(): array
     {
         $sorted = \ICanBoogie\sort_by_weight($this->collected, function ($v) {
-
             return $v;
         });
 
+        /** @phpstan-ignore-next-line */
         return array_keys($sorted);
     }
 
     /**
      * Clears the collected assets.
      */
-    public function clear()
+    public function clear(): void
     {
         $this->collected = [];
     }
@@ -86,13 +85,9 @@ abstract class AssetsCollector
     /**
      * Construct cache entry.
      *
-     * @param FileCache $cache
-     * @param string $key
-     * @param array $userdata
-     *
-     * @return mixed
+     * @param array<mixed> $userdata
      *
      * @deprecated
      */
-    abstract public function cache_construct(FileCache $cache, $key, array $userdata);
+    abstract public function cache_construct(FileCache $cache, string $key, array $userdata): string;
 }

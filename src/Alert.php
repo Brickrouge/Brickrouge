@@ -12,6 +12,9 @@
 namespace Brickrouge;
 
 use ICanBoogie\ErrorCollection;
+use Stringable;
+
+use function is_iterable;
 
 /**
  * A `<DIV.alert>` element.
@@ -38,37 +41,38 @@ class Alert extends Element
     public const DISMISSIBLE = '#alert-dismissible';
 
     /**
-     * Alert message.
+     * Alert message(s).
+     *
+     * @phpstan-var string|iterable<string>|HTMLStringInterface
      */
-    protected $message;
+    private string|iterable|HTMLStringInterface $message;
 
     /**
      * Creates a `<DIV.alert>` element.
      *
-     * @param \Traversable|array|string $message The alert message is provided as a string,
-     * an array of strings or a {@link Errors} object.
+     * @param iterable<string>|string|HTMLStringInterface $message
+     *     The alert message is provided as a string, an array of strings or a {@link Errors} object.
      *
-     * If the message is provided as a string it is used as is. If the message is provided as an
-     * array each value of the array is considered as a message. If the message is provided as
-     * an {@link Errors} object each entry of the object is considered as a message.
+     *     If the message is provided as a string it is used as is. If the message is provided as an array each value
+     *     of the array is considered as a message. If the message is provided as an {@link Errors} object each entry
+     *     of the object is considered as a message.
      *
-     * Each message is wrapped in a `<P>` element and they are concatenated to create the final
-     * message.
+     *     Each message is wrapped in a `<P>` element, and they are concatenated to create the final message.
      *
-     * @param array $attributes Additional attributes.
+     * @inheritDoc
      */
-    public function __construct($message, array $attributes = [])
+    public function __construct(iterable|string|HTMLStringInterface $message, array $attributes = [])
     {
         $this->message = $message;
 
         parent::__construct('div', $attributes + [
 
-            self::CONTEXT => $message instanceof ErrorCollection ? self::CONTEXT_DANGER : self::CONTEXT_WARNING,
+                self::CONTEXT => $message instanceof ErrorCollection ? self::CONTEXT_DANGER : self::CONTEXT_WARNING,
 
-            'class' => 'alert',
-            'role' => 'alert'
+                'class' => 'alert',
+                'role' => 'alert'
 
-        ]);
+            ]);
     }
 
     /**
@@ -79,7 +83,7 @@ class Alert extends Element
      *
      * @inheritdoc
      */
-    protected function alter_class_names(array $class_names)
+    protected function alter_class_names(array $class_names): array
     {
         $class_names = parent::alter_class_names($class_names);
 
@@ -101,7 +105,7 @@ class Alert extends Element
      *
      * @inheritdoc
      */
-    public function render_inner_html()
+    public function render_inner_html(): ?string
     {
         $message = $this->message;
 
@@ -110,19 +114,15 @@ class Alert extends Element
         }
 
         return
-            $this->render_alert_dismiss($this[self::DISMISSIBLE]) .
+            $this->render_alert_dismiss($this[self::DISMISSIBLE] ?? false) .
             $this->render_alert_heading($this[self::HEADING]) .
             $this->render_alert_content($this->render_alert_message($message));
     }
 
     /**
      * Renders dismiss button.
-     *
-     * @param bool $dismissible
-     *
-     * @return string|null
      */
-    protected function render_alert_dismiss($dismissible)
+    private function render_alert_dismiss(bool $dismissible): ?string
     {
         if (!$dismissible) {
             return null;
@@ -139,12 +139,8 @@ EOT;
 
     /**
      * Renders alert heading.
-     *
-     * @param string|null $heading
-     *
-     * @return string|null
      */
-    protected function render_alert_heading($heading)
+    private function render_alert_heading(?string $heading): ?string
     {
         if (!$heading) {
             return null;
@@ -156,24 +152,16 @@ EOT;
     /**
      * Renders alert message.
      *
-     * @param mixed $message
-     *
-     * @return string
-     *
-     * @throws \InvalidArgumentException if the message cannot be rendered.
+     * @phpstan-param string|iterable<string>|HTMLStringInterface $message
      */
-    protected function render_alert_message($message)
+    private function render_alert_message(string|iterable|HTMLStringInterface $message): string
     {
-        if ($message instanceof HTMLString || $message instanceof Element) {
+        if ($message instanceof HTMLStringInterface) {
             return $message;
         }
 
-        if (is_array($message) || $message instanceof \Traversable) {
+        if (is_iterable($message)) {
             return $this->render_errors($message);
-        }
-
-        if (is_object($message)) {
-            throw new \InvalidArgumentException("Don't know how to render message of type: " . get_class($message));
         }
 
         return $message;
@@ -182,31 +170,25 @@ EOT;
     /**
      * Renders alert content.
      *
-     * @param string $message
-     *
-     * @return string
-     *
      * @throws ElementIsEmpty
      */
-    protected function render_alert_content($message)
+    protected function render_alert_content(string $message): string
     {
         if (!$message) {
             throw new ElementIsEmpty();
         }
 
         return <<<EOT
-<div class="content">$message</div>
-EOT;
+        <div class="content">$message</div>
+        EOT;
     }
 
     /**
      * Renders errors as an HTML string.
      *
-     * @param \Traversable|array $errors
-     *
-     * @return string
+     * @param iterable<Stringable|string> $errors
      */
-    protected function render_errors($errors)
+    private function render_errors(iterable $errors): string
     {
         $message = '';
 

@@ -1,56 +1,58 @@
 {
-	"name": "brickrouge/brickrouge",
-	"type": "library",
-	"description": "A toolkit to create HTML elements",
-	"keywords": [
-		"html",
-		"element",
-		"form",
-		"widget",
-		"bootstrap"
-	],
-	"homepage": "https://brickrouge.org/",
-	"license": "BSD-3-Clause",
-	"authors": [
-		{
-			"name": "Olivier Laviale",
-			"email": "olivier.laviale@gmail.com",
-			"homepage": "https://olvlvl.com",
-			"role": "Developer"
-		}
-	],
-	"support": {
-		"issues": "https://github.com/Brickrouge/Brickrouge/issues",
-		"source": "https://github.com/Brickrouge/Brickrouge"
-	},
-	"config": {
-		"sort-packages": true
-	},
-	"minimum-stability": "dev",
-	"prefer-stable": true,
-	"prefer-dist": true,
-	"require": {
-		"php": ">=8.0",
-		"icanboogie/common": "^2.0",
-		"icanboogie/errors": "^2.0",
-		"icanboogie/prototype": "^5.0"
-	},
-	"require-dev": {
-		"olvlvl/filecache": "dev-master",
-		"phpunit/phpunit": "^9.5"
-	},
-	"autoload": {
-		"psr-4": {
-			"Brickrouge\\": "src"
-		},
-		"files": [
-			"bootstrap.php",
-			"helpers.php"
-		]
-	},
-	"extra": {
-		"icanboogie": {
-			"locale-path": "locale"
-		}
-	}
+    "name": "brickrouge/brickrouge",
+    "type": "library",
+    "description": "A toolkit to create HTML elements",
+    "keywords": [
+        "html",
+        "element",
+        "form",
+        "widget",
+        "bootstrap"
+    ],
+    "homepage": "https://brickrouge.org/",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Olivier Laviale",
+            "email": "olivier.laviale@gmail.com",
+            "homepage": "https://olvlvl.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/Brickrouge/Brickrouge/issues",
+        "source": "https://github.com/Brickrouge/Brickrouge"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "prefer-dist": true,
+    "require": {
+        "php": ">=8.0",
+        "ext-mbstring": "*",
+        "icanboogie/common": "^2.0",
+        "icanboogie/errors": "^3.0",
+        "icanboogie/prototype": "^5.0"
+    },
+    "require-dev": {
+        "olvlvl/filecache": "dev-master",
+        "phpstan/phpstan": "^0.12.93",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Brickrouge\\": "src"
+        },
+        "files": [
+            "bootstrap.php",
+            "src/functions.php"
+        ]
+    },
+    "extra": {
+        "icanboogie": {
+            "locale-path": "locale"
+        }
+    }
 }

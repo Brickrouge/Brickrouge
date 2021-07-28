@@ -15,6 +15,7 @@ use Brickrouge\Validate\FormValidator;
 use Brickrouge\Validate\ErrorRenderer;
 use ICanBoogie\ErrorCollection;
 use ICanBoogie\ErrorCollectionIterator;
+use RecursiveIteratorIterator;
 
 /**
  * A `<FORM>` element.
@@ -81,29 +82,25 @@ class Form extends Element
 
     /**
      * Returns a unique form name.
-     *
-     * @return string
      */
-    protected static function get_auto_name()
+    protected static function get_auto_name(): string
     {
         return 'form-autoname-' . self::$auto_name_index++;
     }
 
-    protected static $auto_name_index = 1;
+    protected static int $auto_name_index = 1;
 
     /**
      * Hidden values, initialized with the {@link HIDDENS} tag.
      *
-     * @var array
+     * @var array<string, mixed>
      */
-    public $hiddens = [];
+    public array $hiddens = [];
 
     /**
      * Name of the form.
-     *
-     * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * Default attributes are added to those provided using a union:
@@ -113,9 +110,7 @@ class Form extends Element
      * - `enctype`: "multipart/form-data"
      * - `name`: The value of the `id` attribute or a name generated with the {@link get_auto_name()} method
      *
-     * If `method` is different than "POST" then the `enctype` attribute is unset.
-     *
-     * @param array $attributes
+     * If `method` is different from "POST" then the `enctype` attribute is unset.
      */
     public function __construct(array $attributes = [])
     {
@@ -124,15 +119,15 @@ class Form extends Element
             'action' => isset($attributes['id']) ? '#' . $attributes['id'] : '',
             'method' => 'POST',
             'enctype' => 'multipart/form-data',
-            'name' => isset($attributes['id']) ? $attributes['id'] : self::get_auto_name()
+            'name' => $name = $attributes['id'] ?? self::get_auto_name()
 
         ];
 
-        if (strtoupper($attributes['method']) != 'POST') {
+        if (strtoupper($attributes['method']) !== 'POST') {
             unset($attributes['enctype']);
         }
 
-        $this->name = $attributes['name'] ?: self::get_auto_name();
+        $this->name = $attributes['name'] ?? $name;
 
         parent::__construct('form', $attributes);
     }
@@ -165,11 +160,11 @@ class Form extends Element
      *
      * @inheritdoc
      */
-    public function offsetSet($attribute, $value)
+    public function offsetSet($offset, $value)
     {
-        parent::offsetSet($attribute, $value);
+        parent::offsetSet($offset, $value);
 
-        if ($attribute == self::HIDDENS) {
+        if ($offset == self::HIDDENS) {
             $this->hiddens = $value;
         }
     }
@@ -180,11 +175,14 @@ class Form extends Element
      * A recursive iterator is created to traverse the children of the form, with the
      * {@link SELF_FIRST} mode.
      *
-     * @return \RecursiveIteratorIterator
+     * @return iterable<string, Element>
      */
-    public function getIterator()
+    public function getIterator(): iterable
     {
-        return new \RecursiveIteratorIterator(new RecursiveIterator($this), \RecursiveIteratorIterator::SELF_FIRST);
+        return new RecursiveIteratorIterator(
+            new RecursiveIterator($this),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
     }
 
     /**
@@ -194,7 +192,7 @@ class Form extends Element
      *
      * @inheritdoc
      */
-    protected function render_children(array $children)
+    protected function render_children(array $children): string
     {
         /* @var $renderer callable */
 
@@ -217,7 +215,7 @@ class Form extends Element
      *
      * @inheritdoc
      */
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         $inner_html = parent::render_inner_html();
         $hiddens = $this->render_hiddens($this->hiddens);

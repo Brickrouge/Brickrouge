@@ -43,16 +43,16 @@ class Pagination extends Element
             ]);
     }
 
-    protected $urlbase;
+    private $url_base;
 
-    public function render_inner_html()
+    public function render_inner_html(): ?string
     {
         $limit = $this[self::LIMIT];
         $count = $this[self::COUNT];
 
-        $pages = ceil($count / $limit);
+        $pages = (int) ceil($count / $limit);
 
-        $this->urlbase = $this->render_urlbase();
+        $this->url_base = $this->render_url_base();
 
         $gap = '<li class="disabled">' . $this[self::GAP] . '</li>';
         $separator = $this[self::SEPARATOR];
@@ -150,7 +150,7 @@ class Pagination extends Element
         return $html;
     }
 
-    public function render_outer_html()
+    public function render_outer_html(): string
     {
         $limit = $this[self::LIMIT];
 
@@ -168,7 +168,7 @@ class Pagination extends Element
         return parent::render_outer_html();
     }
 
-    protected function render_urlbase()
+    private function render_url_base(): string
     {
         $rc = $this[self::URLBASE];
         $with = $this[self::WITH];
@@ -180,7 +180,7 @@ class Pagination extends Element
                 $parts = array_flip($parts);
 
                 foreach ($parts as $name => &$part) {
-                    $part = isset($_REQUEST[$name]) ? $_REQUEST[$name] : null;
+                    $part = $_REQUEST[$name] ?? null;
                 }
             } else {
                 $parts = (array) $with;
@@ -203,24 +203,24 @@ class Pagination extends Element
         # build the query
         #
 
-        return $rc .= '?' . http_build_query($parts, '', '&amp;');
+        return $rc . '?' . http_build_query($parts, '', '&amp;');
     }
 
-    protected function render_url($n)
+    private function render_url(int $n): string
     {
-        return $this->urlbase . $n;
+        return $this->url_base . $n;
     }
 
-    protected function render_link($n, $label = null, $class = 'page')
+    private function render_link(int $n, string $label = null, string $class = 'page'): string
     {
         $rc = '<li' . ($class ? ' class="' . $class . '"' : '') . '><a href="' . $this->render_url($n) . '">';
-        $rc .= $label ? $label : ($n + 1);
+        $rc .= $label ?? ($n + 1);
         $rc .= '</a></li>';
 
         return $rc;
     }
 
-    protected function render_current_link($n)
+    private function render_current_link(int $n): string
     {
         return '<li class="page active"><a href="#">' . $n . '</a></li>';
     }

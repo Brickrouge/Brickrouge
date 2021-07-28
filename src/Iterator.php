@@ -11,22 +11,29 @@
 
 namespace Brickrouge;
 
+use Iterator as SplIterator;
+
 /**
  * An iterator used to traverse {@link Element} descendant.
  *
  * The iterator collects all descendant elements excluding non {@link Element} instances.
+ *
+ * @implements SplIterator<int|string, Element>
  */
-class Iterator implements \Iterator
+class Iterator implements SplIterator
 {
-    protected $children = [];
-    protected $left;
+    /**
+     * @var array<int|string, Element>
+     */
+    private array $children;
+    private int $left = 0;
 
     public function __construct(Element $element)
     {
         $children = [];
 
         foreach ($element->children as $key => $child) {
-            if (!($child instanceof Element)) {
+            if (!$child instanceof Element) {
                 continue;
             }
 
@@ -55,11 +62,17 @@ class Iterator implements \Iterator
         return !!$this->left;
     }
 
+    /**
+     * @return int|string|null
+     */
     public function key()
     {
         return key($this->children);
     }
 
+    /**
+     * @return Element|false
+     */
     public function current()
     {
         return current($this->children);

@@ -13,7 +13,10 @@ namespace Brickrouge;
 
 class Searchbox extends Element
 {
-    private $elements = [];
+    /**
+     * @var array<string, Element>
+     */
+    private array $elements = [];
 
     public function __construct(array $attributes = [])
     {
@@ -38,12 +41,12 @@ class Searchbox extends Element
     /**
      * @inheritdoc
      */
-    public function offsetSet($attribute, $value)
+    public function offsetSet($offset, $value)
     {
-        if (in_array($attribute, [ 'name', 'value', 'placeholder' ])) {
-            $this->elements['q'][$attribute] = $value;
+        if (in_array($offset, [ 'name', 'value', 'placeholder' ])) {
+            $this->elements['q'][$offset] = $value;
         }
 
-        parent::offsetSet($attribute, $value);
+        parent::offsetSet($offset, $value);
     }
 }

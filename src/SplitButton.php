@@ -13,22 +13,14 @@ namespace Brickrouge;
 
 use UnexpectedValueException;
 
-use function get_debug_type;
-
 /**
- * An element made of a button and a drop down menu.
+ * An element made of a button and a drop-down menu.
  */
 class SplitButton extends Element
 {
-    /**
-     * @param string $label
-     * @param array $attributes
-     */
-    public function __construct($label, array $attributes = [])
+    public function __construct(string $label, array $attributes = [])
     {
-        if (is_string($label)) {
-            $label = escape(t($label, [], [ 'scope' => 'button' ]));
-        }
+        $label = escape(t($label, [], [ 'scope' => 'button' ]));
 
         parent::__construct('div', $attributes + [
 
@@ -38,18 +30,18 @@ class SplitButton extends Element
     }
 
     /**
-     * Renders the button and drop down trigger button.
+     * Renders the button and drop-down trigger button.
      *
      * The `btn-*` class names are forwarded to the buttons.
-     *
-     * @inheritdoc
      */
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         $label = parent::render_inner_html();
-        $class = parent::render_class(array_filter($this->class_names, function ($class_name) {
-            return strpos($class_name, 'btn-') === 0 || $class_name === 'disabled';
-        }, ARRAY_FILTER_USE_KEY));
+        $class = parent::render_class(array_filter(
+            $this->class_names,
+            fn($class_name) => str_starts_with($class_name, 'btn-') || $class_name === 'disabled',
+            ARRAY_FILTER_USE_KEY
+        ));
 
         return $this->render_splitbutton_label($label, $class)
             . $this->render_splitbutton_toggle($class)
@@ -58,10 +50,8 @@ class SplitButton extends Element
 
     /**
      * Removes the `btn-*` class names and adds the `btn-group` class.
-     *
-     * @inheritdoc
      */
-    protected function render_class(array $class_names)
+    protected function render_class(array $class_names): string
     {
         return parent::render_class(
             array_filter(
@@ -82,7 +72,7 @@ class SplitButton extends Element
      *
      * @return string A HTML string.
      */
-    protected function render_splitbutton_label($label, $class)
+    protected function render_splitbutton_label(string $label, string $class): string
     {
         return <<<EOT
 <button class="btn $class">$label</button>
@@ -96,7 +86,7 @@ EOT;
      *
      * @return string A HTML string.
      */
-    protected function render_splitbutton_toggle($class)
+    protected function render_splitbutton_toggle(string $class): string
     {
         return <<<EOT
 <button class="btn dropdown-toggle $class" data-toggle="dropdown"><span class="sr-only">Toggle Dropdown</span></button>
@@ -106,30 +96,23 @@ EOT;
     /**
      * Resolves the provided options into a {@link DropdownMenu} element.
      *
-     * @param mixed $options
+     * @param array<int|string, string>|DropdownMenu $options
      *
      * @return DropdownMenu
      *
      * @throws UnexpectedValueException If the provided options cannot be resolved into a
      * {@link DropdownMenu} element.
      */
-    protected function resolve_options($options)
+    private function resolve_options(DropdownMenu|array $options): DropdownMenu
     {
         if (is_array($options)) {
             $options = new DropdownMenu([
 
                 Element::OPTIONS => $options,
 
-                'value' => $this['value'] ?: $this[self::DEFAULT_VALUE]
+                'value' => $this['value'] ?? $this[self::DEFAULT_VALUE]
 
             ]);
-        }
-
-        if (!$options instanceof DropdownMenu) {
-            throw new UnexpectedValueException(format(
-                'OPTIONS should be either an array or a Brickrouge\DropDownMenu instance, %type given.',
-                [ 'type' => get_debug_type($options) ]
-            ));
         }
 
         return $options;

@@ -11,53 +11,44 @@
 
 namespace Brickrouge;
 
+use ArrayAccess;
 use ICanBoogie\ToArray;
+use IteratorAggregate;
+
+use function str_starts_with;
+use function strlen;
 
 /**
  * Custom data attributes are intended to store custom data private to the page or application,
  * for which there are no more appropriate attributes or elements.
  *
  * @see http://www.w3.org/TR/html5/elements.html#embedding-custom-non-visible-data-with-the-data-attributes
+ *
+ * @implements ArrayAccess<string, mixed>
+ * @implements IteratorAggregate<string, mixed>
  */
-class Dataset implements \ArrayAccess, \IteratorAggregate, ToArray
+final class Dataset implements ArrayAccess, IteratorAggregate, ToArray
 {
-    /**
-     * @param string $property
-     *
-     * @return string
-     */
-    protected static function serialize_property($property)
+    private const ATTRIBUTE_PREFIX = 'data-';
+
+    private static function to_attribute(string $property): string
     {
-        return 'data-' . $property;
+        return self::ATTRIBUTE_PREFIX . $property;
+    }
+
+    private static function to_property(string $attribute): string
+    {
+        return substr($attribute, strlen(self::ATTRIBUTE_PREFIX));
     }
 
     /**
-     * @param string $property
-     *
-     * @return string
-     */
-    protected static function unserialize_property($property)
-    {
-        return substr($property, 5);
-    }
-
-    /**
-     * The target element.
-     *
-     * @var Element
-     */
-    protected $element;
-
-    /**
-     * Constructor.
-     *
      * @param Element $element The target element.
-     * @param array $properties The initial properties of the dataset.
+     * @param array<string, mixed> $properties The initial properties of the dataset.
      */
-    public function __construct(Element $element, array $properties = [])
-    {
-        $this->element = $element;
-
+    public function __construct(
+        private Element $element,
+        array $properties = []
+    ) {
         foreach ($properties as $property => $value) {
             $this[$property] = $value;
         }
@@ -68,59 +59,58 @@ class Dataset implements \ArrayAccess, \IteratorAggregate, ToArray
      *
      * The attribute corresponding to the property is set.
      *
-     * @param string $property
+     * @param string $offset An attribute.
      * @param mixed $value
      */
-    public function offsetSet($property, $value)
+    public function offsetSet($offset, $value): void
     {
-        $this->element->offsetSet(self::serialize_property($property), $value);
+        $this->element->offsetSet(self::to_attribute($offset), $value);
     }
 
     /**
-     * Returns the value of a property,
+     * Returns the value of a data attribute.
      *
-     * The value is gotten from the attribute corresponding to the property.
+     * The value is read from the attribute corresponding to the property.
      *
-     * @param string $property
-     * @param mixed|null $default
-     *
-     * @return mixed
+     * @param string $offset
      */
-    public function offsetGet($property, $default = null)
+    public function offsetGet($offset): mixed
     {
-        return $this->element->offsetGet(self::serialize_property($property), $default);
+        return $this->element->offsetGet(self::to_attribute($offset));
     }
 
     /**
      * Checks if a data attribute exists.
      *
-     * @param string $property
-     *
-     * @return bool
+     * @param string $offset
      */
-    public function offsetExists($property)
+    public function offsetExists($offset): bool
     {
-        return $this->element->offsetExists(self::serialize_property($property));
+        return $this->element->offsetExists(self::to_attribute($offset));
     }
 
     /**
-     * Unset a data attribute.
+     * Remove a data attribute.
      *
-     * @param string $property
+     * @param string $offset
      */
-    public function offsetUnset($property)
+    public function offsetUnset($offset): void
     {
-        $this->element->offsetUnset(self::serialize_property($property));
+        $this->element->offsetUnset(self::to_attribute($offset));
     }
 
     /**
-     * Returns an iterator for the data attributes.
+     * Iterate over the data attributes.
      *
-     * @return \ArrayIterator
+     * @return iterable<string, mixed>
      */
-    public function getIterator()
+    public function getIterator(): iterable
     {
-        return new \ArrayIterator($this->to_array());
+        foreach ($this->element->attributes as $attribute => $value) {
+            if (str_starts_with($attribute, self::ATTRIBUTE_PREFIX)) {
+                yield self::to_property($attribute) => $value;
+            }
+        }
     }
 
     /**
@@ -133,11 +123,11 @@ class Dataset implements \ArrayAccess, \IteratorAggregate, ToArray
         $properties = [];
 
         foreach ($this->element->attributes as $attribute => $value) {
-            if (strpos($attribute, 'data-') !== 0) {
+            if (!str_starts_with($attribute, self::ATTRIBUTE_PREFIX)) {
                 continue;
             }
 
-            $properties[self::unserialize_property($attribute)] = $value;
+            $properties[self::to_property($attribute)] = $value;
         }
 
         return $properties;

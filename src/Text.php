@@ -33,8 +33,6 @@ class Text extends Element
      * Construct the element with the following initial attributes:
      *
      * - type: 'text'
-     *
-     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -68,7 +66,7 @@ EOT;
      *
      * @inheritdoc
      */
-    protected function decorate($html)
+    protected function decorate(string $html): string
     {
         $addon = $this[self::ADDON];
 

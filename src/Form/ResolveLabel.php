@@ -15,67 +15,56 @@ use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Group;
 
+use function assert;
+use function is_string;
+
 /**
  * Resolve labels from a form.
  */
 class ResolveLabel
 {
     /**
-     * @var Form
+     * @var array<string, string>
      */
-    protected $form;
+    private array $labels;
 
-    /**
-     * @var array
-     */
-    private $labels;
-
-    /**
-     * @param Form $form
-     */
-    public function __construct(Form $form)
-    {
-        $this->form = $form;
+    public function __construct(
+        private Form $form
+    ) {
     }
 
     /**
      * @param string $name Element name.
      *
-     * @return string|null
+     * @return string|null The Element's label.
      */
-    public function __invoke($name)
+    public function __invoke(string $name): ?string
     {
         $labels = $this->obtain_labels();
 
-        return isset($labels[$name]) ? $labels[$name] : null;
+        return $labels[$name] ?? null;
     }
 
     /**
      * Obtains labels from form.
      *
-     * @return array
+     * @return array<string, string>
+     *     Where _key_ is an Element's name and _value_ its label.
      */
-    protected function obtain_labels()
+    private function obtain_labels(): array
     {
-        $labels = &$this->labels;
-
-        if ($labels === null) {
-            $labels = $this->collect_labels();
-        }
-
-        return $labels;
+        return $this->labels ??= $this->collect_labels();
     }
 
     /**
      * Collects labels from form.
      *
-     * @return array
+     * @return array<string, string>
+     *     Where _key_ is an Element's name and _value_ its label.
      */
-    protected function collect_labels()
+    private function collect_labels(): array
     {
         $labels = [];
-
-        /* @var $element Element */
 
         foreach ($this->form as $element) {
             $name = $element['name'];
@@ -85,13 +74,15 @@ class ResolveLabel
             }
 
             $label = $element[Element::LABEL_MISSING]
-                ?: $element[Group::LABEL]
-                    ?: $element[Element::LABEL]
-                        ?: $element[Element::LEGEND];
+                ?? $element[Group::LABEL]
+                    ?? $element[Element::LABEL]
+                        ?? $element[Element::LEGEND];
 
             if (!$label) {
                 continue;
             }
+
+            assert(is_string($name));
 
             $labels[$name] = $label;
         }

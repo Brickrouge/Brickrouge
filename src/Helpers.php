@@ -12,6 +12,8 @@
 namespace Brickrouge;
 
 use Brickrouge\Helpers\PublishAssets;
+use RuntimeException;
+use Throwable;
 
 /**
  * Brickrouge helpers.
@@ -26,25 +28,28 @@ use Brickrouge\Helpers\PublishAssets;
  * - {@link render_exception()}
  * - {@link t()}
  *
- * @method static string format(string $str, array $args=[])
- * @method static string format_size(number $size)
+ * @method static string format(string $str, array $args = [])
+ * @method static string format_size(int $size)
  * @method static string get_accessible_file(string $path)
  * @method static Document get_document()
- * @method static string normalize(string $str)
- * @method static string render_exception(\Exception $exception)
- * @method static string t(string $str, array $args=[], array $options=[])
+ * @method static string normalize(string $str, string $separator = '-', string $charset = CHARSET)
+ * @method static string render_exception(Throwable $exception)
+ * @method static string t(string $str, array $args = [], array $options = [])
  */
-class Helpers
+final class Helpers
 {
-    private static $mapping = [
+    /**
+     * @var array<string, callable>
+     */
+    private static array $mapping = [
 
-        'format'               => [ __CLASS__, 'default_format' ],
-        'format_size'          => [ __CLASS__, 'default_format_size' ],
-        'get_accessible_file'  => [ __CLASS__, 'default_get_accessible_file' ],
-        'get_document'         => [ __CLASS__, 'default_get_document' ],
-        'normalize'            => [ __CLASS__, 'default_normalize' ],
-        'render_exception'     => [ __CLASS__, 'default_render_exception' ],
-        't'                    => [ __CLASS__, 'default_t' ]
+        'format' => [ __CLASS__, 'default_format' ],
+        'format_size' => [ __CLASS__, 'default_format_size' ],
+        'get_accessible_file' => [ __CLASS__, 'default_get_accessible_file' ],
+        'get_document' => [ __CLASS__, 'default_get_document' ],
+        'normalize' => [ __CLASS__, 'default_normalize' ],
+        'render_exception' => [ __CLASS__, 'default_render_exception' ],
+        't' => [ __CLASS__, 'default_t' ]
 
     ];
 
@@ -52,11 +57,11 @@ class Helpers
      * Calls the callback of a patchable function.
      *
      * @param string $name Name of the function.
-     * @param array $arguments Arguments.
+     * @param array<mixed> $arguments Arguments.
      *
      * @return mixed
      */
-    public static function __callStatic($name, array $arguments)
+    public static function __callStatic(string $name, array $arguments): mixed
     {
         return call_user_func_array(self::$mapping[$name], $arguments);
     }
@@ -67,12 +72,12 @@ class Helpers
      * @param string $name Name of the function.
      * @param callable $callback Callback.
      *
-     * @throws \RuntimeException is attempt to patch an undefined function.
+     * @throws RuntimeException is attempt to patch an undefined function.
      */
-    public static function patch($name, $callback)
+    public static function patch(string $name, callable $callback): void
     {
         if (empty(self::$mapping[$name])) {
-            throw new \RuntimeException("Undefined patchable: $name.");
+            throw new RuntimeException("Undefined patchable: $name.");
         }
 
         self::$mapping[$name] = $callback;
@@ -85,14 +90,11 @@ class Helpers
     /**
      * This method is the fallback for the {@link format()} function.
      *
-     * @param string $str
-     * @param array $args
-     *
-     * @return string
+     * @param array<int|string, mixed> $args
      *
      * @see \Brickrouge\format()
      */
-    protected static function default_format($str, array $args = [])
+    private static function default_format(string $str, array $args = []): string
     {
         return \ICanBoogie\format($str, $args);
     }
@@ -100,24 +102,20 @@ class Helpers
     /**
      * This method is the fallback for the {@link format_size()} function.
      *
-     * @param int $size
-     *
-     * @return string
-     *
      * @see \Brickrouge\format_size()
      */
-    protected static function default_format_size($size)
+    private static function default_format_size(int $size): string
     {
         if ($size < 1024) {
-            $str = ":size\xC2\xA0b";
+            $str = ":size\xC2\xA0B";
         } elseif ($size < 1024 * 1024) {
-            $str = ":size\xC2\xA0Kb";
+            $str = ":size\xC2\xA0KB";
             $size = $size / 1024;
         } elseif ($size < 1024 * 1024 * 1024) {
-            $str = ":size\xC2\xA0Mb";
+            $str = ":size\xC2\xA0MB";
             $size = $size / (1024 * 1024);
         } else {
-            $str = ":size\xC2\xA0Gb";
+            $str = ":size\xC2\xA0GB";
             $size = $size / (1024 * 1024 * 1024);
         }
 
@@ -128,14 +126,14 @@ class Helpers
      * This method is the fallback for the {@link normalize()} function.
      *
      * @param string $str
-     * @param string $separator
+     * @param non-empty-string $separator
      * @param string $charset
      *
      * @return string
      *
      * @see \Brickrouge\normalize()
      */
-    protected static function default_normalize($str, $separator = '-', $charset = CHARSET)
+    private static function default_normalize(string $str, string $separator = '-', $charset = CHARSET): string
     {
         $str = str_replace('\'', '', $str);
 
@@ -155,16 +153,13 @@ class Helpers
      * This method is the fallback for the {@link t()} function.
      *
      * We usually rely on the ICanBoogie framework I18n features to translate our string, if it is
-     * not available we simply format the string using the {@link Brickrouge\format()} function.
+     * not available we simply format the string using the {@link format()} function.
      *
-     * @param string $str
-     * @param array $args
-     *
-     * @return string
+     * @param array<int|string, mixed> $args
      *
      * @see \Brickrouge\t()
      */
-    protected static function default_t($str, array $args = [])
+    private static function default_t(string $str, array $args = []): string
     {
         return format($str, $args);
     }
@@ -174,27 +169,19 @@ class Helpers
      *
      * @see \Brickrouge\get_document()
      */
-    protected static function default_get_document()
+    private static function default_get_document(): Document
     {
-        if (self::$document === null) {
-            self::$document = new Document();
-        }
+        static $document;
 
-        return self::$document;
+        return $document ??= new Document();
     }
-
-    private static $document;
 
     /**
      * This method is the fallback for the {@link render_exception()} function.
      *
-     * @param \Exception $exception
-     *
-     * @return string
-     *
      * @see \Brickrouge\render_exception()
      */
-    protected static function default_render_exception(\Exception $exception)
+    private static function default_render_exception(Throwable $exception): string
     {
         return (string) $exception;
     }
@@ -206,17 +193,13 @@ class Helpers
      *
      * @return string The pathname of the replacement.
      *
-     * @throws \Exception if the replacement file could not be created.
-     *
      * @see \Brickrouge\get_accessible_file()
      */
-    protected static function default_get_accessible_file($path)
+    private static function default_get_accessible_file(string $path): string
     {
         static $publish_assets;
 
-        if (!$publish_assets) {
-            $publish_assets = new PublishAssets(ACCESSIBLE_ASSETS);
-        }
+        $publish_assets ??= new PublishAssets(ACCESSIBLE_ASSETS);
 
         return $publish_assets($path);
     }

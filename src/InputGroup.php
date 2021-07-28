@@ -18,7 +18,7 @@ class InputGroup extends Element
         parent::__construct('div', $attributes);
     }
 
-    protected function render_child($child)
+    protected function render_child(Element|string $child): string
     {
         if ($child instanceof Element) {
             return parent::render_child($child);
@@ -29,7 +29,7 @@ class InputGroup extends Element
 EOT;
     }
 
-    protected function render_class(array $class_names)
+    protected function render_class(array $class_names): string
     {
         return parent::render_class($class_names + [
 

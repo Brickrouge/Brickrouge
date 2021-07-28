@@ -24,7 +24,7 @@ class DropdownMenu extends Element
     /**
      * @inheritdoc
      */
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         $html = '';
         $options = $this[self::OPTIONS];
@@ -51,23 +51,17 @@ class DropdownMenu extends Element
 
     /**
      * Renders dropdown item.
-     *
-     * @param string|int $key
-     * @param Element|string $item
-     * @param mixed $selected
-     *
-     * @return A|Element
      */
-    protected function render_dropdown_item($key, $item, $selected)
+    private function render_dropdown_item(int|string $key, Element|string $item, int|string|null $selected): Element
     {
         if (!$item instanceof Element) {
-            $item = new A($item, is_numeric($key) ? '#' : $key);
+            $item = new A($item, is_string($key) && $key !== "" ? $key : '#');
         }
 
         $item['data-key'] = $key;
         $item->add_class('dropdown-item');
 
-        if ((string) $key === (string) $selected) {
+        if ($selected !== null & (string) $key === (string) $selected) {
             $item->add_class('active');
         }
 
@@ -76,10 +70,8 @@ class DropdownMenu extends Element
 
     /**
      * Renders dropdown divider.
-     *
-     * @return string
      */
-    protected function render_dropdown_divider()
+    private function render_dropdown_divider(): string
     {
         return <<<EOT
 <div class="dropdown-divider"></div>
@@ -89,9 +81,9 @@ EOT;
     /**
      * Adds the `dropdown-menu` class.
      *
-     * @inheritdoc
+     * @inheritDoc
      */
-    protected function render_class(array $class_names)
+    protected function render_class(array $class_names): string
     {
         return parent::render_class($class_names + [ 'dropdown-menu' => true ]);
     }

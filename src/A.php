@@ -25,14 +25,16 @@ namespace Brickrouge;
 class A extends Element
 {
     /**
-     * @param string|Element $label Defines the content of the element. If `$label` is not
-     * a {@link Element} instance it is escaped.
-     * @param string $href URI for linked resource.
-     * @param array $attributes Optional attributes.
+     * @inheritDoc
+     *
+     * @param HTMLStringInterface|string $label
+     *     Defines the content of the element. If `$label` is not a {@link Element} instance it is escaped.
+     * @param string $href
+     *     URI for linked resource.
      */
-    public function __construct($label, $href = '#', array $attributes = [])
+    public function __construct(HTMLStringInterface|string $label, string $href = '#', array $attributes = [])
     {
-        if (!($label instanceof HTMLStringInterface)) {
+        if (!$label instanceof HTMLStringInterface) {
             $label = escape(t($label));
         }
 

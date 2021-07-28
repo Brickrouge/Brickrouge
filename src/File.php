@@ -17,7 +17,7 @@ class File extends Element
     public const T_UPLOAD_URL = '#file-upload-url';
     public const BUTTON_LABEL = '#file-button-label';
 
-    protected static function add_assets(Document $document)
+    protected static function add_assets(Document $document): void
     {
         parent::add_assets($document);
 
@@ -65,7 +65,10 @@ class File extends Element
         return $rc;
     }
 
-    protected function details($path)
+    /**
+     * @return string[]
+     */
+    protected function details(string $path): array
     {
         $file = basename($path);
 
@@ -81,19 +84,17 @@ class File extends Element
         ];
     }
 
-    protected function preview($path)
+    protected function preview($path): string
     {
-        $rc = '<a class="download" href="' . $path . '">' . $this->t('download', [], [
+        return '<a class="download" href="' . $path . '">' . $this->t('download', [], [
                 'scope' => [
                     'fileupload',
                     'element'
                 ]
             ]) . '</a>';
-
-        return $rc;
     }
 
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         $path = $this['value'];
 
@@ -131,7 +132,7 @@ class File extends Element
 
         if ($limit) {
             if ($limit === true) {
-                $limit = ini_get('upload_max_filesize') * 1024;
+                $limit = (int) ini_get('upload_max_filesize') * 1024;
             }
 
             $limit = format_size($limit * 1024);
@@ -167,12 +168,12 @@ class File extends Element
 EOT;
     }
 
-    protected function alter_dataset(array $dataset)
+    protected function alter_dataset(array $dataset): array
     {
         $limit = $this[self::FILE_WITH_LIMIT] ?: 2 * 1024;
 
         if ($limit === true) {
-            $limit = ini_get('upload_max_filesize') * 1024;
+            $limit = (int) ini_get('upload_max_filesize') * 1024;
         }
 
         return parent::alter_dataset($dataset) + [
@@ -183,7 +184,7 @@ EOT;
             ];
     }
 
-    protected function render_outer_html()
+    protected function render_outer_html(): string
     {
         $upload_url = $this[self::T_UPLOAD_URL];
 

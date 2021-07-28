@@ -103,17 +103,6 @@
             const trigger = el.querySelector('.trigger')
             const control = trigger.querySelector('input[type="file"]')
 
-            if (Browser.name == 'firefox' && Browser.version < 22) {
-                trigger.addEventListener('click', ev => {
-
-                    if (ev.target != trigger) {
-                        return
-
-                        control.click()
-                    })
-                }
-            }
-
             control.addEvent('change', this.onChange.bind(this))
 
             function fileDragHover(ev)

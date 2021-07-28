@@ -11,30 +11,30 @@
 
 namespace Brickrouge;
 
+use Throwable;
+
 /**
  * Representation of an HTML string.
  *
  * An HTML string is considered safe to use and is not escaped after it has been rendered.
  */
-class HTMLString implements HTMLStringInterface
+final class HTMLString implements HTMLStringInterface
 {
-    protected $html;
-
-    public function __construct($html)
-    {
-        $this->html = $html;
+    public function __construct(
+        private string $html
+    ) {
     }
 
-    public function render()
+    public function render(): string
     {
         return $this->html;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         try {
-            return (string) $this->render();
-        } catch (\Exception $e) {
+            return $this->render();
+        } catch (Throwable $e) {
             return render_exception($e);
         }
     }

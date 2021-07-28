@@ -31,7 +31,7 @@ class Group extends Element
     /**
      * Creates a `<FIELDSET.group>` element.
      *
-     * @param array $attributes
+     * @inheritDoc
      */
     public function __construct(array $attributes = [])
     {
@@ -44,7 +44,7 @@ class Group extends Element
      *
      * @inheritdoc
      */
-    protected function alter_class_names(array $class_names)
+    protected function alter_class_names(array $class_names): array
     {
         $name = $this['name'];
 
@@ -69,7 +69,7 @@ class Group extends Element
      *
      * @inheritdoc
      */
-    protected function render_child($child)
+    protected function render_child(Element|string $child): string
     {
         $control_group_class = 'form-group';
 
@@ -137,7 +137,7 @@ EOT;
      *
      * @inheritdoc
      */
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         $html = parent::render_inner_html();
 
@@ -197,7 +197,7 @@ EOT;
      *
      * @inheritdoc
      */
-    protected function decorate_with_description($html, $description)
+    protected function decorate_with_description(string $html, string $description): string
     {
         return $html;
     }
@@ -208,7 +208,7 @@ EOT;
      *
      * @inheritdoc
      */
-    protected function decorate_with_legend($html, $legend)
+    protected function decorate_with_legend(string $html, string $legend): string
     {
         return $html;
     }

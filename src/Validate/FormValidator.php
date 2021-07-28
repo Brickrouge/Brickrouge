@@ -17,26 +17,21 @@ use Brickrouge\Group;
 use Brickrouge\Validate\FormValidator\ValidateValues;
 use ICanBoogie\ErrorCollection;
 
+use function Brickrouge\array_flatten;
+
 /**
  * Validates a form.
  */
 class FormValidator
 {
-    /**
-     * @var Form
-     */
-    private $form;
+    private Form $form;
 
     /**
      * @var ValidateValues|callable|null
      */
     private $validate_values;
 
-    /**
-     * @param Form $form
-     * @param ValidateValues|callable|null $validation
-     */
-    public function __construct(Form $form, callable $validation = null)
+    public function __construct(Form $form, ValidateValues|callable $validation = null)
     {
         $this->form = $form;
         $this->validate_values = $validation;
@@ -45,19 +40,16 @@ class FormValidator
     /**
      * Validate values.
      *
-     * @param array $values
-     * @param ErrorCollection|null $errors
-     *
-     * @return ErrorCollection
+     * @param array<string, mixed> $values
      */
-    public function validate(array $values, ErrorCollection $errors = null)
+    public function validate(array $values, ErrorCollection $errors = null): ErrorCollection
     {
         #
         # we flatten the array so that we can easily get values
         # for keys such as `cars[1][color]`
         #
 
-        $values = \Brickrouge\array_flatten($values);
+        $values = array_flatten($values);
         $errors = $this->ensure_error_collection($errors);
 
         #
@@ -75,12 +67,8 @@ class FormValidator
 
     /**
      * Creates an {@link ErrorCollection} instance if none is provided.
-     *
-     * @param ErrorCollection|null $errors
-     *
-     * @return ErrorCollection
      */
-    protected function ensure_error_collection(ErrorCollection $errors = null)
+    private function ensure_error_collection(ErrorCollection $errors = null): ErrorCollection
     {
         return $errors ?? new ErrorCollection();
     }
@@ -90,7 +78,7 @@ class FormValidator
      *
      * @return Element[]
      */
-    protected function collect_elements()
+    private function collect_elements(): array
     {
         $elements = [];
 
@@ -106,17 +94,19 @@ class FormValidator
     /**
      * Filter required elements.
      *
-     * @param array $elements
+     * @param Element[] $elements
      *
-     * @return array
+     * @return array<string, Element>
      */
-    protected function filter_required_elements(array $elements)
+    private function filter_required_elements(array $elements): array
     {
         $required = [];
 
         foreach ($elements as $element) {
             if ($element[Element::REQUIRED]) {
-                $required[$element['name']] = $element;
+                $name = $element['name'];
+                assert(is_string($name));
+                $required[$name] = $element;
             }
         }
 
@@ -126,11 +116,12 @@ class FormValidator
     /**
      * Validates required elements.
      *
-     * @param array $required
-     * @param array $values
+     * @param array<string, Element> $required
+     *     Where _key_ if an Element's name and _value_ an Element.
+     * @param array<string, mixed> $values
      * @param ErrorCollection $errors
      */
-    protected function validate_required(array $required, array $values, ErrorCollection $errors)
+    private function validate_required(array $required, array $values, ErrorCollection $errors): void
     {
         $missing = [];
 
@@ -175,13 +166,14 @@ class FormValidator
      * Collect validation rules from elements.
      *
      * @param Element[] $elements
-     * @param Element[] $required
-     * @param array $values
+     * @param array<string, Element> $required
+     *     Where _key_ if an Element's name and _value_ an Element.
+     * @param array<string, mixed> $values
      * @param ErrorCollection $errors
      *
-     * @return array
+     * @return array<string, ???>
      */
-    protected function collect_rules(array $elements, array $required, array $values, ErrorCollection $errors)
+    private function collect_rules(array $elements, array $required, array $values, ErrorCollection $errors): array
     {
         $rules = [];
 
@@ -192,7 +184,7 @@ class FormValidator
                 continue;
             }
 
-            $value = isset($values[$name]) ? $values[$name] : null;
+            $value = $values[$name] ?? null;
 
             if (($value === null || $value === '') && empty($required[$name])) {
                 continue;

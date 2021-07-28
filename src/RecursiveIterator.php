@@ -23,10 +23,13 @@ class RecursiveIterator extends Iterator implements \RecursiveIterator
         return !empty($current->children);
     }
 
+    /**
+     * @return RecursiveIterator
+     */
     public function getChildren()
     {
         $current = $this->current();
 
-        return new static($current);
+        return new self($current);
     }
 }

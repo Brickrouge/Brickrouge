@@ -92,6 +92,7 @@ test-container:
 .PHONY: lint
 lint:
 	@XDEBUG_MODE=off phpcs
+	@XDEBUG_MODE=off vendor/bin/phpstan
 
 doc: vendor
 	@mkdir -p build/docs

@@ -17,19 +17,19 @@ namespace Brickrouge;
 class Button extends Element
 {
     /**
-     * The element is created with the type "button" and an union of the provided attributes and
+     * The element is created with the type "button" and a union of the provided attributes and
      * the following values:
      *
      * - `type`: "button"
      * - {@link INNER_HTML}: The translated and escaped label. The label is translated with
      * the "button" scope. If an {@link HTMLString} instance is provided, it is used as is.
      *
-     * @param string $label Label of the button (inner text).
-     * @param array $attributes Optional attributes used to create the element.
+     * @param HTMLString|string $label Label of the button (inner text).
+     * @param array<string, mixed> $attributes Optional attributes used to create the element.
      */
-    public function __construct($label, array $attributes = [])
+    public function __construct(HTMLString|string $label, array $attributes = [])
     {
-        if (!($label instanceof HTMLString)) {
+        if (!$label instanceof HTMLString) {
             $label = escape(t($label, [], [ 'scope' => 'button' ]));
         }
 
@@ -37,7 +37,7 @@ class Button extends Element
 
             'type' => 'button',
 
-            self::INNER_HTML => $label
+            self::INNER_HTML => (string) $label
 
         ]);
     }
@@ -47,10 +47,9 @@ class Button extends Element
      *
      * @inheritdoc
      */
-    protected function alter_class_names(array $class_names)
+    protected function alter_class_names(array $class_names): array
     {
         return parent::alter_class_names($class_names) + [
-
             'btn' => true
         ];
     }

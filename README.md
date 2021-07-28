@@ -195,7 +195,7 @@ and the normalized data attributes of that element.
 
 		}
 
-	})
+	}
 
 	Brickrouge.register('Color', (element, options) => {
 
@@ -505,6 +505,7 @@ For more information and a demonstration please visit the [Brickrouge homepage](
 The project is continuously tested by [GitHub actions](https://github.com/Brickrouge/Brickrouge/actions).
 
 [![Tests](https://github.com/Brickrouge/Brickrouge/workflows/test/badge.svg?branch=master)](https://github.com/Brickrouge/Brickrouge/actions?query=workflow%3Atest)
+[![Static Analysis](https://github.com/Brickrouge/Brickrouge/workflows/static-analysis/badge.svg?branch=master)](https://github.com/Brickrouge/Brickrouge/actions?query=workflow%3Astatic-analysis)
 [![Code Style](https://github.com/Brickrouge/Brickrouge/workflows/code-style/badge.svg?branch=master)](https://github.com/Brickrouge/Brickrouge/actions?query=workflow%3Acode-style)
 
 

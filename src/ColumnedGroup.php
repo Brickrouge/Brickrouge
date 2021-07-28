@@ -32,24 +32,22 @@ class ColumnedGroup extends Group
      * - {@link COLUMNS}: 3.
      * - {@link COLUMNS_TOTAL}: 12.
      *
-     * @param array $attribute
+     * @inheritDoc
      */
-    public function __construct(array $attribute = [])
+    public function __construct(array $attributes = [])
     {
-        parent::__construct($attribute + [
+        parent::__construct($attributes + [
 
-            self::COLUMNS => 3,
-            self::COLUMNS_TOTAL => 12
+                self::COLUMNS => 3,
+                self::COLUMNS_TOTAL => 12
 
-        ]);
+            ]);
     }
 
     /**
      * Dispatch children into columns and render them.
-     *
-     * @return Element
      */
-    protected function render_inner_html()
+    protected function render_inner_html(): ?string
     {
         $columns = [];
         $children = $this->ordered_children;
@@ -79,11 +77,9 @@ class ColumnedGroup extends Group
     /**
      * Render a group column.
      *
-     * @param array $column
-     *
-     * @return Element
+     * @param array<string, Element|string> $column
      */
-    protected function render_group_column($column)
+    private function render_group_column(array $column): Element
     {
         $w = $this[self::COLUMNS_TOTAL] / $this[self::COLUMNS];
 

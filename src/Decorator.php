@@ -11,6 +11,8 @@
 
 namespace Brickrouge;
 
+use Throwable;
+
 /**
  * Decorates the specified component.
  */
@@ -19,16 +21,11 @@ abstract class Decorator implements DecoratorInterface
     /**
      * The component to decorate.
      *
-     * @var mixed
+     * @var Element|string
      */
-    protected $component;
+    protected Element|string $component;
 
-    /**
-     * Initializes the {@link $component} property.
-     *
-     * @param mixed $component
-     */
-    public function __construct($component)
+    public function __construct(Element|string $component)
     {
         $this->component = $component;
     }
@@ -36,7 +33,7 @@ abstract class Decorator implements DecoratorInterface
     /**
      * Renders the component.
      *
-     * @return mixed The component supplied during {@link __construct} is returned as is.
+     * @return Element|string The component supplied during {@link __construct} is returned as is.
      */
     public function render()
     {
@@ -56,7 +53,7 @@ abstract class Decorator implements DecoratorInterface
     {
         try {
             return (string) $this->render();
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             return render_exception($e);
         }
     }
