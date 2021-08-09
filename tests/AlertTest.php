@@ -9,8 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Brickrouge;
+namespace Tests\Brickrouge;
 
+use Brickrouge\Alert;
 use PHPUnit\Framework\TestCase;
 
 final class AlertTest extends TestCase
@@ -25,7 +26,7 @@ final class AlertTest extends TestCase
      * undismissible
      */
 
-    public function test_undismissible_alert()
+    public function test_undismissible_alert(): void
     {
         $this->assertEquals(
             '<div class="alert alert-warning" role="alert">'
@@ -35,7 +36,7 @@ final class AlertTest extends TestCase
         );
     }
 
-    public function test_undismissible_alert_error()
+    public function test_undismissible_alert_error(): void
     {
         $this->assertEquals(
             '<div class="alert alert-danger" role="alert">'
@@ -45,7 +46,7 @@ final class AlertTest extends TestCase
         );
     }
 
-    public function test_undismissible_alert_info()
+    public function test_undismissible_alert_info(): void
     {
         $this->assertEquals(
             '<div class="alert alert-info" role="alert">'
@@ -55,7 +56,7 @@ final class AlertTest extends TestCase
         );
     }
 
-    public function test_undismissible_alert_success()
+    public function test_undismissible_alert_success(): void
     {
         $this->assertEquals(
             '<div class="alert alert-success" role="alert">'

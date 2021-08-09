@@ -50,6 +50,11 @@
             "src/functions.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Brickrouge\\": "tests"
+        }
+    },
     "extra": {
         "icanboogie": {
             "locale-path": "locale"

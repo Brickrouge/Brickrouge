@@ -9,16 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Brickrouge;
+namespace Tests\Brickrouge;
 
+use Brickrouge\Element;
 use PHPUnit\Framework\TestCase;
 
-class DatasetTest extends TestCase
+final class DatasetTest extends TestCase
 {
-    /**
-     * @var Element
-     */
-    private $element;
+    private Element $element;
 
     protected function setUp(): void
     {
@@ -37,7 +35,7 @@ class DatasetTest extends TestCase
         ]);
     }
 
-    public function test_get_same()
+    public function test_get_same(): void
     {
         $d1 = $this->element->dataset;
         $d2 = $this->element->dataset;
@@ -47,7 +45,7 @@ class DatasetTest extends TestCase
         $this->assertEquals(spl_object_hash($d1), spl_object_hash($d2));
     }
 
-    public function testTraversing()
+    public function testTraversing(): void
     {
         $str = '';
 
@@ -61,7 +59,7 @@ EOT
             , $str);
     }
 
-    public function testMirroring()
+    public function testMirroring(): void
     {
         $this->element->dataset['mirror-string'] = 'mirror';
         $this->element->dataset['mirror-null'] = null;
@@ -83,7 +81,7 @@ EOT
         $this->assertEquals(null, $this->element['data-mirror-string']);
     }
 
-    public function testArrayConversion()
+    public function testArrayConversion(): void
     {
         $array = $this->element->dataset->to_array();
 

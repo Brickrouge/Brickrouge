@@ -65,7 +65,7 @@ class Ranger extends Element
         */
 
         if ($count > $limit && !$this[self::T_NO_ARROWS]) {
-            $url = $this->getURLBase();
+            $url = $this->render_url_base();
 
             $rc .= '<a href="' . $url . ($start - $limit < 1
                     ? $count - $limit + 1 + ($count % $limit ? $limit - ($count % $limit) : 0)
@@ -77,7 +77,7 @@ class Ranger extends Element
         return $rc;
     }
 
-    protected function getURLBase()
+    private function render_url_base(): string
     {
         $with = $this[self::T_WITH];
 

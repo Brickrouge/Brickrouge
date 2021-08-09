@@ -12,6 +12,7 @@
 namespace Brickrouge;
 
 use ArrayAccess;
+use Exception;
 use ICanBoogie\Prototyped;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -226,6 +227,8 @@ class Element extends Prototyped implements ArrayAccess, IteratorAggregate, HTML
 
     /**
      * Adds assets to the document.
+     *
+     * @throws Throwable if an asset cannot be added.
      */
     protected static function add_assets(Document $document): void
     {

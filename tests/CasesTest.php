@@ -9,13 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Brickrouge;
+namespace Tests\Brickrouge;
 
 use PHPUnit\Framework\TestCase;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
 
+use function is_string;
 use function strlen;
 use function substr;
-use function var_dump;
 
 use const DIRECTORY_SEPARATOR;
 
@@ -24,7 +27,7 @@ class CasesTest extends TestCase
     /**
      * @dataProvider provide_test_case
      */
-    public function test_case(string $case)
+    public function test_case(string $case): void
     {
         $path = __DIR__ . DIRECTORY_SEPARATOR . "cases" . DIRECTORY_SEPARATOR . "$case";
 
@@ -32,16 +35,20 @@ class CasesTest extends TestCase
         include "$path.php";
         $html = ob_get_clean();
 
+        assert(is_string($html));
         $this->assertStringEqualsFile("$path.html", $html);
     }
 
+    /**
+     * @return array[]
+     */
     public function provide_test_case(): array
     {
         $dir = __DIR__ . DIRECTORY_SEPARATOR . 'cases' . DIRECTORY_SEPARATOR;
         $dir_prefix_len = strlen($dir);
-        $di = new \RecursiveDirectoryIterator($dir);
-        $it = new \RecursiveIteratorIterator($di);
-        $iterator = new \RegexIterator($it, '/\.php$/');
+        $di = new RecursiveDirectoryIterator($dir);
+        $it = new RecursiveIteratorIterator($di);
+        $iterator = new RegexIterator($it, '/\.php$/');
         $cases = [];
 
         foreach ($iterator as $file) {

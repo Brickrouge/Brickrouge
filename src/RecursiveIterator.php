@@ -11,24 +11,25 @@
 
 namespace Brickrouge;
 
+use RecursiveIterator as SplRecursiveIterator;
+
 /**
  * An iterator used to traverse {@link Element} descendant in depth.
  */
-class RecursiveIterator extends Iterator implements \RecursiveIterator
+class RecursiveIterator extends Iterator implements SplRecursiveIterator
 {
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         $current = $this->current();
 
         return !empty($current->children);
     }
 
-    /**
-     * @return RecursiveIterator
-     */
-    public function getChildren()
+    public function getChildren(): RecursiveIterator
     {
         $current = $this->current();
+
+        assert($current instanceof Element);
 
         return new self($current);
     }

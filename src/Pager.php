@@ -231,14 +231,14 @@ class Pager extends Element
         return $rc;
     }
 
-    protected function getURL($n)
+    protected function render_url($n)
     {
         return $this->urlbase . $n;
     }
 
     protected function getLink($n, $label = null, $class = 'page')
     {
-        $rc = '<li' . ($class ? ' class="' . $class . '"' : '') . '><a href="' . $this->getURL($n) . '">';
+        $rc = '<li' . ($class ? ' class="' . $class . '"' : '') . '><a href="' . $this->render_url($n) . '">';
         $rc .= $label ? $label : ($n + 1);
         $rc .= '</a></li>';
 

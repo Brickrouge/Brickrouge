@@ -11,6 +11,10 @@
 
 namespace Brickrouge;
 
+use function implode;
+use function is_array;
+use function is_string;
+
 /**
  * An actions element that may be used with forms and popovers.
  */
@@ -21,19 +25,17 @@ class Actions extends Element
     /**
      * Actions.
      *
-     * @var string|array
+     * @phpstan-var self::ACTIONS_*|string|array<string|int, string|Element>|true
      */
-    private $actions;
+    private string|array|bool $actions;
 
     /**
-     * @inheritDoc
-     *
-     * @param bool|array|string|Element $actions
+     * @phpstan-param self::ACTIONS_*|string|array<string|int, string|Element>|true $actions
      *     Actions can be defined as a bool, an array a string or an instance of the {@link Element} class.
      *
      * @see {@link render_inner_html()}
      */
-    public function __construct($actions, array $attributes = [])
+    public function __construct(string|array|bool $actions, array $attributes = [])
     {
         $this->actions = $actions;
 
@@ -63,17 +65,19 @@ class Actions extends Element
     /**
      * Renders actions.
      *
-     * @param mixed $actions
+     * @phpstan-param self::ACTIONS_*|string|array<string|int, string|Element>|true $actions
      */
-    protected function render_actions($actions): string
+    protected function render_actions(mixed $actions): string
     {
-        if ($actions == self::ACTIONS_BOOLEAN) {
+        if ($actions === self::ACTIONS_BOOLEAN) {
             $actions = [
 
                 new Button("Cancel", [ 'data-action' => 'cancel', 'class' => 'btn-secondary' ]),
                 new Button("Ok", [ 'data-action' => 'ok', 'class' => 'btn-primary', 'type' => 'submit' ]),
 
             ];
+        } elseif ($actions === true) {
+            return (string) new Button("Ok", [ 'data-action' => 'ok', 'class' => 'btn-primary', 'type' => 'submit' ]);
         }
 
         if (is_array($actions)) {
@@ -86,10 +90,6 @@ class Actions extends Element
             }
 
             return implode($actions);
-        }
-
-        if ($actions === true) {
-            return new Button("Ok", [ 'data-action' => 'ok', 'class' => 'btn-primary', 'type' => 'submit' ]);
         }
 
         return $actions;

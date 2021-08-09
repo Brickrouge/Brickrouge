@@ -9,18 +9,24 @@
  * file that was distributed with this source code.
  */
 
-namespace Brickrouge;
+namespace Tests\Brickrouge;
 
+use Brickrouge\Element;
+use Brickrouge\Form;
+use Brickrouge\RecursiveIterator;
 use PHPUnit\Framework\TestCase;
 use RecursiveIteratorIterator;
 
-class IteratorsTest extends TestCase
+final class IteratorsTest extends TestCase
 {
-    private $children;
+    /**
+     * @var array<mixed>
+     */
+    private array $children;
 
     protected function setUp(): void
     {
-        $this->children = $children = [
+        $this->children = [
 
             'one' => new Element('div', [
 
@@ -92,7 +98,7 @@ class IteratorsTest extends TestCase
         ];
     }
 
-    public function testElementIterator()
+    public function testElementIterator(): void
     {
         $str = '';
         $element = new Element('div', [ Element::CHILDREN => $this->children ]);
@@ -104,7 +110,7 @@ class IteratorsTest extends TestCase
         $this->assertEquals('#one#two#three', $str);
     }
 
-    public function testElementRecusiveIterator()
+    public function testElementRecusiveIterator(): void
     {
         $str = '';
         $element = new Element('div', [ Element::CHILDREN => $this->children ]);
@@ -124,7 +130,7 @@ class IteratorsTest extends TestCase
         );
     }
 
-    public function testFormIterator()
+    public function testFormIterator(): void
     {
         $str = '';
         $element = new Form([ Element::CHILDREN => $this->children ]);
@@ -136,7 +142,7 @@ class IteratorsTest extends TestCase
         $this->assertNotEquals('#one#two#three', $str);
     }
 
-    public function testFormRecusiveIterator()
+    public function testFormRecusiveIterator(): void
     {
         $str = '';
         $element = new Form([ Element::CHILDREN => $this->children ]);

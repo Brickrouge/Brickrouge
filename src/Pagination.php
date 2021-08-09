@@ -18,13 +18,9 @@ class Pagination extends Element
     public const GAP = '#pagination-gap';
     public const NO_ARROWS = '#pagination-no-arrows';
 
-    /**
-     * @deprecated
-     */
-    public const POSITION = '#pagination-page';
     public const PAGE = '#pagination-page';
     public const SEPARATOR = '#pagination-separator';
-    public const URLBASE = '#pagination-urlbase';
+    public const URL_BASE = '#pagination-url-base';
     public const USING = '#pagination-using';
     public const WITH = '#pagination-with';
     public const BROWSE_PREVIOUS_LABEL = '#pagination-browse-previous-label';
@@ -57,7 +53,7 @@ class Pagination extends Element
         $gap = '<li class="disabled">' . $this[self::GAP] . '</li>';
         $separator = $this[self::SEPARATOR];
 
-        $on_page = $this[self::PAGE] + 1;
+        $on_page = (int) $this[self::PAGE] ?? 0 + 1;
 
         $html = '';
 
@@ -76,32 +72,30 @@ class Pagination extends Element
                 }
             }
 
-            if ($pages > 3) {
-                if ($on_page > 1 && $on_page < $pages) {
-                    $html .= ($on_page > 5) ? $gap : $separator;
+            if ($on_page > 1 && $on_page < $pages) {
+                $html .= ($on_page > 5) ? $gap : $separator;
 
-                    $init_page_min = ($on_page > 4) ? $on_page : 5;
-                    $init_page_max = ($on_page < $pages - 4) ? $on_page : $pages - 4;
+                $init_page_min = ($on_page > 4) ? $on_page : 5;
+                $init_page_max = ($on_page < $pages - 4) ? $on_page : $pages - 4;
 
-                    for ($i = $init_page_min - 1; $i < $init_page_max + 2; $i++) {
-                        $html .= ($i == $on_page) ? $this->render_current_link($i) : $this->render_link($i - 1);
-
-                        if ($i < $init_page_max + 1) {
-                            $html .= $separator;
-                        }
-                    }
-
-                    $html .= ($on_page < $pages - 4) ? $gap : $separator;
-                } else {
-                    $html .= $gap;
-                }
-
-                for ($i = $pages - 2; $i < $pages + 1; $i++) {
+                for ($i = $init_page_min - 1; $i < $init_page_max + 2; $i++) {
                     $html .= ($i == $on_page) ? $this->render_current_link($i) : $this->render_link($i - 1);
 
-                    if ($i < $pages) {
+                    if ($i < $init_page_max + 1) {
                         $html .= $separator;
                     }
+                }
+
+                $html .= ($on_page < $pages - 4) ? $gap : $separator;
+            } else {
+                $html .= $gap;
+            }
+
+            for ($i = $pages - 2; $i < $pages + 1; $i++) {
+                $html .= ($i == $on_page) ? $this->render_current_link($i) : $this->render_link($i - 1);
+
+                if ($i < $pages) {
+                    $html .= $separator;
                 }
             }
         } else {
@@ -170,7 +164,7 @@ class Pagination extends Element
 
     private function render_url_base(): string
     {
-        $rc = $this[self::URLBASE];
+        $rc = $this[self::URL_BASE];
         $with = $this[self::WITH];
 
         if ($with) {
@@ -206,7 +200,7 @@ class Pagination extends Element
         return $rc . '?' . http_build_query($parts, '', '&amp;');
     }
 
-    private function render_url(int $n): string
+    protected function render_url(int $n): string
     {
         return $this->url_base . $n;
     }
