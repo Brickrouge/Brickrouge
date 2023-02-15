@@ -43,21 +43,21 @@ class Iterator implements SplIterator
         $this->children = $children;
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->children);
 
         $this->left = count($this->children);
     }
 
-    public function next()
+    public function next(): void
     {
         next($this->children);
 
         $this->left--;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return !!$this->left;
     }
@@ -65,7 +65,7 @@ class Iterator implements SplIterator
     /**
      * @return int|string|null
      */
-    public function key()
+    public function key(): mixed
     {
         return key($this->children);
     }
@@ -73,7 +73,7 @@ class Iterator implements SplIterator
     /**
      * @return Element|false
      */
-    public function current()
+    public function current(): mixed
     {
         return current($this->children);
     }

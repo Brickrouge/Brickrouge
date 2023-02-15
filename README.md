@@ -48,9 +48,9 @@ use Brickrouge\Element;
 
 echo new Element('div', [
 
-	'data-type' => 'magic',
+    'data-type' => 'magic',
 
-	'class' => 'well'
+    'class' => 'well'
 
 ]);
 ```
@@ -76,11 +76,11 @@ use Brickrouge\Element;
 
 echo new Element('div', [
 
-	Element::INNER_HTML => "I'm in a (magic) well",
+    Element::INNER_HTML => "I'm in a (magic) well",
 
-	'data-type' => 'magic',
+    'data-type' => 'magic',
 
-	'class' => 'well'
+    'class' => 'well'
 
 ]);
 ```
@@ -98,18 +98,18 @@ use Brickrouge\Element;
 
 echo new Element('div', [
 
-	Element::INNER_HTML => "I'm in a (magic) well",
-	Element::CHILDREN => [
+    Element::INNER_HTML => "I'm in a (magic) well",
+    Element::CHILDREN => [
 
-		'<span>Me too !</span>',
+        '<span>Me too !</span>',
 
-		new Element('span', [ Element::INNER_HTML => "Me three !" ])
+        new Element('span', [ Element::INNER_HTML => "Me three !" ])
 
-	],
+    ],
 
-	'data-type' => 'magic',
+    'data-type' => 'magic',
 
-	'class' => 'well'
+    'class' => 'well'
 
 ]);
 ```
@@ -163,13 +163,13 @@ use Brickrouge\Element;
 
 echo new Element('div', [
 
-	Element::IS => "Color",
-	Element::INNER_HTML => "Color!",
+    Element::IS => "Color",
+    Element::INNER_HTML => "Color!",
 
-	'data-color' => "#F0F",
-	'data-color-name' => "Fuchsia"
+    'data-color' => "#F0F",
+    'data-color-name' => "Fuchsia"
 
-	'id' => 'my-color'
+    'id' => 'my-color'
 
 ]);
 ```
@@ -186,22 +186,22 @@ and the normalized data attributes of that element.
 ```js
 !function (Brickrouge) {
 
-	class Color {
+    class Color {
 
-		constructor(el, options) {
+        constructor(el, options) {
 
-			el.setStyle('background', options.color)
-			el.innerHTML = options.colorName
+            el.setStyle('background', options.color)
+            el.innerHTML = options.colorName
 
-		}
+        }
 
-	}
+    }
 
-	Brickrouge.register('Color', (element, options) => {
+    Brickrouge.register('Color', (element, options) => {
 
-		return new Color(element, options)
+        return new Color(element, options)
 
-	})
+    })
 
 } (Brickrouge);
 ```
@@ -234,7 +234,7 @@ The `widget` event is fired after a widget has been built.
 ```js
 Brickrouge.observeWidget(ev => {
 
-	console.log('A widget has been built:', ev.widget)
+    console.log('A widget has been built:', ev.widget)
 
 })
 ```
@@ -276,44 +276,44 @@ namespace Brickrouge;
 
 echo new Form([
 
-	Form::RENDERER => Form\GroupRenderer::class,
+    Form::RENDERER => Form\GroupRenderer::class,
 
-	Form::HIDDENS => [
+    Form::HIDDENS => [
 
-		'hidden1' => 'one',
-		'hidden2' => 'two'
+        'hidden1' => 'one',
+        'hidden2' => 'two'
 
-	],
+    ],
 
-	Form::ACTIONS => [
+    Form::ACTIONS => [
 
-		new Button('Reset', [ 'type' => 'reset' ]),
-		new Button('Submit', [ 'class' => 'primary', 'type' => 'submit' ])
+        new Button('Reset', [ 'type' => 'reset' ]),
+        new Button('Submit', [ 'class' => 'primary', 'type' => 'submit' ])
 
-	],
+    ],
 
-	Form::CHILDREN => [
+    Form::CHILDREN => [
 
-		'sender_name' => new Text([
+        'sender_name' => new Text([
 
-			Group::LABEL => "Sender's name",
+            Group::LABEL => "Sender's name",
 
-			Element::REQUIRED => true
+            Element::REQUIRED => true
 
-		]),
+        ]),
 
-		'sender_email' => new Text([
+        'sender_email' => new Text([
 
-			Group::LABEL => "Sender's e-mail",
+            Group::LABEL => "Sender's e-mail",
 
-			Element::REQUIRED => true,
-			Element::VALIDATION => 'email'
+            Element::REQUIRED => true,
+            Element::VALIDATION => 'email'
 
-		])
+        ])
 
-	],
+    ],
 
-	'name' => 'sender'
+    'name' => 'sender'
 
 ]);
 ```
@@ -322,30 +322,30 @@ The produced HTML, formatted for readability:
 
 ```html
 <form name="sender" action="" method="POST" enctype="multipart/form-data" class="has-actions">
-	<input type="hidden" name="hidden1" value="one" />
-	<input type="hidden" name="hidden2" value="two" />
+    <input type="hidden" name="hidden1" value="one" />
+    <input type="hidden" name="hidden2" value="two" />
 
-	<fieldset class="group--primary group no-legend">
-		<div class="form-group form-group--sender-name required">
-			<label for="autoid--sender-name" class="form-control-label">Sender's name</label>
-			<div class="controls">
-				<input required="required" type="text" name="sender_name" id="autoid--sender-name" />
-			</div>
-		</div>
+    <fieldset class="group--primary group no-legend">
+        <div class="form-group form-group--sender-name required">
+            <label for="autoid--sender-name" class="form-control-label">Sender's name</label>
+            <div class="controls">
+                <input required="required" type="text" name="sender_name" id="autoid--sender-name" />
+            </div>
+        </div>
 
-		<div class="form-group form-group--sender-email required">
-			<label for="autoid--sender-email" class="form-control-label">Sender's e-mail</label>
-			<div class="controls">
-				<input required="required" type="text" name="sender_email" id="autoid--sender-email" />
-			</div>
-		</div>
-	</fieldset>
+        <div class="form-group form-group--sender-email required">
+            <label for="autoid--sender-email" class="form-control-label">Sender's e-mail</label>
+            <div class="controls">
+                <input required="required" type="text" name="sender_email" id="autoid--sender-email" />
+            </div>
+        </div>
+    </fieldset>
 
-	<div class="form-actions">
-		<button type="reset" class="btn">Reset</button>
-		<span class="separator">&nbsp;</span>
-		<button class="primary btn" type="submit">Submit</button>
-	</div>
+    <div class="form-actions">
+        <button type="reset" class="btn">Reset</button>
+        <span class="separator">&nbsp;</span>
+        <button class="primary btn" type="submit">Submit</button>
+    </div>
 </form>
 ```
 
@@ -363,7 +363,7 @@ const form = new Brickrouge.Form(element)
 
 form.observeComplete(ev => {
 
-	console.log('complete:', ev.response)
+    console.log('complete:', ev.response)
 
 });
 
@@ -504,17 +504,21 @@ For more information and a demonstration please visit the [Brickrouge homepage](
 
 The project is continuously tested by [GitHub actions](https://github.com/Brickrouge/Brickrouge/actions).
 
-[![Tests](https://github.com/Brickrouge/Brickrouge/workflows/test/badge.svg?branch=master)](https://github.com/Brickrouge/Brickrouge/actions?query=workflow%3Atest)
-[![Static Analysis](https://github.com/Brickrouge/Brickrouge/workflows/static-analysis/badge.svg?branch=master)](https://github.com/Brickrouge/Brickrouge/actions?query=workflow%3Astatic-analysis)
-[![Code Style](https://github.com/Brickrouge/Brickrouge/workflows/code-style/badge.svg?branch=master)](https://github.com/Brickrouge/Brickrouge/actions?query=workflow%3Acode-style)
+[![Tests](https://github.com/Brickrouge/Brickrouge/workflows/test/badge.svg)](https://github.com/Brickrouge/Brickrouge/actions?query=workflow%3Atest)
+[![Static Analysis](https://github.com/Brickrouge/Brickrouge/workflows/static-analysis/badge.svg)](https://github.com/Brickrouge/Brickrouge/actions?query=workflow%3Astatic-analysis)
+[![Code Style](https://github.com/Brickrouge/Brickrouge/workflows/code-style/badge.svg)](https://github.com/Brickrouge/Brickrouge/actions?query=workflow%3Acode-style)
+
+
+## Code of Conduct
+
+This project adheres to a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in
+this project and its community, you are expected to uphold this code.
 
 
 
-## Testing
+## Contributing
 
-We provide a Docker container for local development. Run `make test-container` to create a new session. Inside the
-container run `make test` to run the test suite. Alternatively, run `make test-coverage` for a breakdown of the code
-coverage. The coverage report is available in `build/coverage/index.html`.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 
 

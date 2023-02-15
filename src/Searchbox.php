@@ -15,6 +15,8 @@ class Searchbox extends Element
 {
     /**
      * @var array<string, Element>
+     *
+     * @phpstan-ignore-next-line
      */
     private array $elements = [];
 
@@ -41,7 +43,7 @@ class Searchbox extends Element
     /**
      * @inheritdoc
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if (in_array($offset, [ 'name', 'value', 'placeholder' ])) {
             $this->elements['q'][$offset] = $value;

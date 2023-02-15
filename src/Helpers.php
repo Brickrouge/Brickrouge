@@ -40,6 +40,14 @@ final class Helpers
 {
     /**
      * @var array<string, callable>
+     *
+     * @uses default_format()
+     * @uses default_format_size()
+     * @uses default_get_accessible_file()
+     * @uses default_get_document()
+     * @uses default_normalize()
+     * @uses default_render_exception()
+     * @uses default_t()
      */
     private static array $mapping = [
 

@@ -1,0 +1,13 @@
+build:
+  nodes:
+    analysis:
+      tests:
+        override:
+        - php-scrutinizer-run
+  image: default-bionic
+  environment:
+    php:
+      version: "8.1"
+filter:
+  excluded_paths:
+  - 'tests/*'

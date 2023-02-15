@@ -18,6 +18,7 @@ use InvalidArgumentException;
 use IteratorAggregate;
 use Stringable;
 use Throwable;
+use Traversable;
 
 /**
  * An HTML element.
@@ -367,7 +368,7 @@ class Element extends Prototyped implements ArrayAccess, IteratorAggregate, HTML
      *
      * @return mixed The value of the attribute, or `null` if is not set.
      */
-    public function offsetGet($offset): mixed
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->attributes[$offset] ?? null;
     }
@@ -378,7 +379,7 @@ class Element extends Prototyped implements ArrayAccess, IteratorAggregate, HTML
      * @param string $offset An attribute.
      * @param mixed $value The value of the attribute.
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         switch ($offset) {
             case self::CHILDREN:
@@ -415,9 +416,9 @@ class Element extends Prototyped implements ArrayAccess, IteratorAggregate, HTML
     /**
      * Iterates through the Element children.
      *
-     * @return iterable<int|string, Element>
+     * @return Traversable<int|string, Element>
      */
-    public function getIterator(): iterable
+    public function getIterator(): Traversable
     {
         return new Iterator($this);
     }
@@ -1229,6 +1230,7 @@ EOT,
     public function render(): string
     {
         if (get_class($this) !== __CLASS__) {
+            /** @phpstan-ignore-next-line */
             static::handle_assets();
         }
 

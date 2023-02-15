@@ -6,7 +6,7 @@ on:
 
 jobs:
   phpstan:
-    name: PHPStan
+    name: phpstan
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
@@ -28,5 +28,5 @@ jobs:
     - name: Install dependencies
       run: composer install --no-interaction --no-progress
 
-    - name: Run PHPStan
+    - name: Analyze
       run: vendor/bin/phpstan

@@ -54,6 +54,7 @@ PACKAGE_VERSION = 3.0.0
 
 # do not edit the following lines
 
+.PHONY: usage
 usage:
 	@echo "test:  Runs the test suite.\ndoc:   Creates the documentation.\nclean: Removes the documentation, the dependencies and the Composer files."
 
@@ -64,8 +65,7 @@ update:
 	@composer update
 	@yarn upgrade
 
-autoload: vendor
-	@composer dump-autoload
+# testing
 
 .PHONY: test-dependencies
 test-dependencies: vendor
@@ -85,13 +85,21 @@ test-coveralls: test-dependencies
 	@XDEBUG_MODE=coverage $(PHPUNIT) --coverage-clover build/logs/clover.xml
 
 .PHONY: test-container
-test-container:
-	@-docker-compose run --rm app bash
+test-container: test-container-80
+
+.PHONY: test-container-80
+test-container-80:
+	@-docker-compose run --rm app80 bash
+	@docker-compose down -v
+
+.PHONY: test-container-82
+test-container-82:
+	@-docker-compose run --rm app82 bash
 	@docker-compose down -v
 
 .PHONY: lint
 lint:
-	@XDEBUG_MODE=off phpcs
+	@XDEBUG_MODE=off phpcs -s
 	@XDEBUG_MODE=off vendor/bin/phpstan
 
 doc: vendor

@@ -19,7 +19,7 @@ use RuntimeException;
 /**
  * An HTML document.
  *
- * @property $assets array The Javascript and CSS assets used by the document.
+ * @property array $assets The Javascript and CSS assets used by the document.
  */
 class Document extends Prototyped
 {

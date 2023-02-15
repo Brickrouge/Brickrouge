@@ -33,6 +33,7 @@ class CSSCollector extends AssetsCollector
 
                 $cache = new FileCache([
 
+                    /** @phpstan-ignore-next-line */
                     FileCache::T_REPOSITORY => \ICanBoogie\app()->config['repository.files'] . '/assets',
                     FileCache::T_MODIFIED_TIME => $recent
 

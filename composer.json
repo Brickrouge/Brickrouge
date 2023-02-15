@@ -15,7 +15,7 @@
         {
             "name": "Olivier Laviale",
             "email": "olivier.laviale@gmail.com",
-            "homepage": "https://olvlvl.com",
+            "homepage": "https://olvlvl.com/",
             "role": "Developer"
         }
     ],
@@ -34,12 +34,12 @@
         "ext-mbstring": "*",
         "icanboogie/common": "^2.0",
         "icanboogie/errors": "^3.0",
-        "icanboogie/prototype": "^5.0"
+        "icanboogie/prototype": "^5.1"
     },
     "require-dev": {
         "olvlvl/filecache": "dev-master",
-        "phpstan/phpstan": "^0.12.93",
-        "phpunit/phpunit": "^9.5"
+        "phpstan/phpstan": "^1.9",
+        "phpunit/phpunit": "^9.6"
     },
     "autoload": {
         "psr-4": {

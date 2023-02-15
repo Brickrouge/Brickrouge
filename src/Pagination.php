@@ -53,6 +53,7 @@ class Pagination extends Element
         $gap = '<li class="disabled">' . $this[self::GAP] . '</li>';
         $separator = $this[self::SEPARATOR];
 
+        /** @phpstan-ignore-next-line */
         $on_page = (int) $this[self::PAGE] ?? 0 + 1;
 
         $html = '';

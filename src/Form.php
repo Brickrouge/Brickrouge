@@ -16,6 +16,7 @@ use Brickrouge\Validate\ErrorRenderer;
 use ICanBoogie\ErrorCollection;
 use ICanBoogie\ErrorCollectionIterator;
 use RecursiveIteratorIterator;
+use Traversable;
 
 /**
  * A `<FORM>` element.
@@ -160,7 +161,7 @@ class Form extends Element
      *
      * @inheritdoc
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         parent::offsetSet($offset, $value);
 
@@ -175,9 +176,9 @@ class Form extends Element
      * A recursive iterator is created to traverse the children of the form, with the
      * {@link SELF_FIRST} mode.
      *
-     * @return iterable<string, Element>
+     * @return Traversable<string, Element>
      */
-    public function getIterator(): iterable
+    public function getIterator(): Traversable
     {
         return new RecursiveIteratorIterator(
             new RecursiveIterator($this),

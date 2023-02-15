@@ -14,6 +14,7 @@ namespace Brickrouge;
 use ArrayAccess;
 use ICanBoogie\ToArray;
 use IteratorAggregate;
+use Traversable;
 
 use function str_starts_with;
 use function strlen;
@@ -102,9 +103,9 @@ final class Dataset implements ArrayAccess, IteratorAggregate, ToArray
     /**
      * Iterate over the data attributes.
      *
-     * @return iterable<string, mixed>
+     * @return Traversable<string, mixed>
      */
-    public function getIterator(): iterable
+    public function getIterator(): Traversable
     {
         foreach ($this->element->attributes as $attribute => $value) {
             if (str_starts_with($attribute, self::ATTRIBUTE_PREFIX)) {

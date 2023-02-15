@@ -150,6 +150,7 @@ class File extends Element
 
         if ($path) {
             if (!is_file(DOCUMENT_ROOT . $path)) {
+                /** @phpstan-ignore-next-line */
                 $this->app->logger->debug("path: $path");
 
                 $infos = '<span class="warn">'

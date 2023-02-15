@@ -70,7 +70,6 @@ abstract class AssetsCollector
             return $v;
         });
 
-        /** @phpstan-ignore-next-line */
         return array_keys($sorted);
     }
 

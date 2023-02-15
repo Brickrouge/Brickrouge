@@ -171,7 +171,7 @@ class FormValidator
      * @param array<string, mixed> $values
      * @param ErrorCollection $errors
      *
-     * @return array<string, ???>
+     * @return array<string, mixed>
      */
     private function collect_rules(array $elements, array $required, array $values, ErrorCollection $errors): array
     {
