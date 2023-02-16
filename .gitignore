@@ -1,7 +1,8 @@
-.phpunit.result.cache
+.phpunit.cache
 .sass-cache
 build
 composer.lock
-yarn.lock
 node_modules
+package-lock.json
 vendor
+yarn.lock

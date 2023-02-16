@@ -48,15 +48,15 @@ class CSSCollector extends AssetsCollector
 
                     return <<<EOT
 
-<link type="text/css" href="{$cache->repository}/{$key}" rel="stylesheet" />
+                    <link type="text/css" href="{$cache->repository}/{$key}" rel="stylesheet" />
 
-<script type="text/javascript">
+                    <script type="text/javascript">
 
-var brickrouge_cached_css_assets = $list;
+                    var brickrouge_cached_css_assets = $list;
 
-</script>
+                    </script>
 
-EOT;
+                    EOT;
                 }
             }
         } catch (\Exception $e) {
@@ -64,7 +64,7 @@ EOT;
         }
 
         #
-        # default ouput
+        # default output
         #
 
         $rc = '';
@@ -79,7 +79,7 @@ EOT;
     /**
      * @inheritdoc
      */
-    public function cache_construct(FileCache $cache, $key, array $userdata): string
+    public function cache_construct(FileCache $cache, string $key, array $userdata): string
     {
         list($collected) = $userdata;
 

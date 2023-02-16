@@ -1,10 +1,10 @@
 # Migration
 
-## v3.x to v4.0
+## v4.x to v5.0
 
 ### New Requirements
 
-- Requires PHP 8.0+
+- Requires PHP 8.1+
 
 ### New features
 
@@ -20,4 +20,4 @@ None
 
 ### Other Changes
 
-- Compatible with PHP 8.2
+None

@@ -18,22 +18,22 @@ use Brickrouge\Validate\FormValidator\ValidateValues;
 use ICanBoogie\ErrorCollection;
 
 use function Brickrouge\array_flatten;
+use function is_string;
 
 /**
  * Validates a form.
  */
 class FormValidator
 {
-    private Form $form;
-
     /**
      * @var ValidateValues|callable|null
      */
     private $validate_values;
 
-    public function __construct(Form $form, ValidateValues|callable $validation = null)
-    {
-        $this->form = $form;
+    public function __construct(
+        private readonly Form $form,
+        ValidateValues|callable $validation = null
+    ) {
         $this->validate_values = $validation;
     }
 
@@ -128,7 +128,7 @@ class FormValidator
         foreach ($required as $name => $element) {
             if (
                 !isset($values[$name])
-                || (isset($values[$name]) && is_string($values[$name]) && !strlen(trim($values[$name])))
+                || (is_string($values[$name]) && !strlen(trim($values[$name])))
             ) {
                 $missing[$name] = $this->resolve_label($element);
             }
@@ -180,6 +180,8 @@ class FormValidator
         foreach ($elements as $element) {
             $name = $element['name'];
 
+            assert(is_string($name));
+
             if (!$element[Element::VALIDATION] || isset($errors[$name])) {
                 continue;
             }
@@ -196,12 +198,7 @@ class FormValidator
         return $rules;
     }
 
-    /**
-     * @param Element $element
-     *
-     * @return string|null
-     */
-    protected function resolve_label(Element $element)
+    protected function resolve_label(Element $element): ?string
     {
         $label = $element[Element::LABEL_MISSING]
             ?: $element[Group::LABEL]

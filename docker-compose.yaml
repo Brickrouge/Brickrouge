@@ -1,11 +1,11 @@
 ---
 version: "3.2"
 services:
-  app80:
+  app81:
     build:
       context: .
       args:
-        PHP_VERSION: "8.0"
+        PHP_VERSION: "8.1"
     environment:
         PHP_IDE_CONFIG: 'serverName=brickrouge'
     volumes:

@@ -96,6 +96,8 @@ class GroupRenderer extends Element
             return $group;
         }
 
+        /** @var class-string<Element> $constructor */
+
         $constructor = $this[self::GROUP_CLASS];
 
         return new $constructor($this->normalize_group_attributes($group) + [
@@ -132,6 +134,7 @@ class GroupRenderer extends Element
             $normalized_attributes[$attribute] = $value;
         }
 
+        /** @phpstan-ignore-next-line  */
         return $normalized_attributes;
     }
 

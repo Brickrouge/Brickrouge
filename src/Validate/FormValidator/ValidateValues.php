@@ -24,8 +24,6 @@ interface ValidateValues
      * @param array<string, mixed> $values Values to validate.
      * @param array<string, mixed> $rules Validation rules.
      * @param ErrorCollection $errors Used to collect errors.
-     *
-     * @return void
      */
     public function __invoke(array $values, array $rules, ErrorCollection $errors): void;
 }

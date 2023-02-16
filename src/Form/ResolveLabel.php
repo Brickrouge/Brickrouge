@@ -29,7 +29,7 @@ class ResolveLabel
     private array $labels;
 
     public function __construct(
-        private Form $form
+        private readonly Form $form
     ) {
     }
 

@@ -30,16 +30,16 @@
     "prefer-stable": true,
     "prefer-dist": true,
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.1",
         "ext-mbstring": "*",
-        "icanboogie/common": "^2.0",
-        "icanboogie/errors": "^3.0",
-        "icanboogie/prototype": "^5.1"
+        "icanboogie/common": "^6.0",
+        "icanboogie/errors": "^6.0",
+        "icanboogie/prototype": "^6.0"
     },
     "require-dev": {
         "olvlvl/filecache": "dev-master",
-        "phpstan/phpstan": "^1.9",
-        "phpunit/phpunit": "^9.6"
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10.3"
     },
     "autoload": {
         "psr-4": {

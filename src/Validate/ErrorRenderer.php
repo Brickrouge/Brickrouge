@@ -23,7 +23,7 @@ class ErrorRenderer implements \ICanBoogie\ErrorRenderer
     private Form\ResolveLabel $label_resolver;
 
     public function __construct(
-        private Form $form
+        private readonly Form $form
     ) {
         $this->label_resolver = new Form\ResolveLabel($form);
     }

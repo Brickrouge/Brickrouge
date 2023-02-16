@@ -22,7 +22,7 @@ use function substr;
 
 use const DIRECTORY_SEPARATOR;
 
-class CasesTest extends TestCase
+final class CasesTest extends TestCase
 {
     /**
      * @dataProvider provide_test_case
@@ -40,9 +40,9 @@ class CasesTest extends TestCase
     }
 
     /**
-     * @return array[]
+     * @return array<array{ string }>
      */
-    public function provide_test_case(): array
+    public static function provide_test_case(): array
     {
         $dir = __DIR__ . DIRECTORY_SEPARATOR . 'cases' . DIRECTORY_SEPARATOR;
         $dir_prefix_len = strlen($dir);
